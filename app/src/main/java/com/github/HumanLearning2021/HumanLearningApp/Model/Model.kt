@@ -16,7 +16,7 @@ interface Model {
 
     fun switchUser(user: User)
 
-    fun postPicture(categorizedPicture: CategorizedPicture, dataset: Dataset)
+    fun postPicture(categorizedPicture: CategorizedPicture, dataset: DataSet)
 
     //TODO: display dataset
 

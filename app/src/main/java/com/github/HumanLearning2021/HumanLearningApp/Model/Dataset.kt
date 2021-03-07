@@ -1,4 +1,4 @@
 package com.github.HumanLearning2021.HumanLearningApp.Model
 
-interface Dataset {
+class DataSet(name: String, category: Category, admin: Admin) {
 }
