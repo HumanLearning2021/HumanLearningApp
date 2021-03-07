@@ -13,6 +13,11 @@ interface Model {
 
     fun getPicturesToDisplay(): PictureSet
 
+    /*
+        TODO:
+         return Statistics object, or something more primitive, like a Map<String, String>
+         representing e.g. <category, score> (see next todo for similar issue)
+     */
     fun getStatistics(): Statistics
 
     fun postStatistic(picture: CategorizedPicture, wasCorrect: Boolean)
@@ -26,7 +31,7 @@ interface Model {
          really not sure about this one: return a set of dataset, or just set of names,
          or a set of pictures representing each dataset? i.e do the view or the presenter store
          (name, creator), or actual pointer to dataset object? Same problem applies to creator of
-         dataset
+         dataset.
      */
     fun browseDataSets(category: Category, creatorName: String): Set<DataSet>
 
