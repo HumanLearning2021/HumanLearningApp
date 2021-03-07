@@ -18,7 +18,19 @@ class DummyData:Model {
         TODO("Not yet implemented")
     }
 
-    override fun postPicture(categorizedPicture: CategorizedPicture, dataset: Dataset) {
+    override fun postPictureToDataSet(categorizedPicture: CategorizedPicture, dataSet: DataSet) {
+        TODO("Not yet implemented")
+    }
+
+    override fun browseDataSets(category: Category, creator: User): Set<DataSet> {
+        TODO("Not yet implemented")
+    }
+
+    override fun selectDataSet(name: String, creator: User) {
+        TODO("Not yet implemented")
+    }
+
+    override fun createDataSet(name: String) {
         TODO("Not yet implemented")
     }
 }
