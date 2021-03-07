@@ -17,4 +17,8 @@ class DummyData:Model {
     override fun switchUser(user: User) {
         TODO("Not yet implemented")
     }
+
+    override fun postPicture(categorizedPicture: CategorizedPicture, dataset: Dataset) {
+        TODO("Not yet implemented")
+    }
 }
