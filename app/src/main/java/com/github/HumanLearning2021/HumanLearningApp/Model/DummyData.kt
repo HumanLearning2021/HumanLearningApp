@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.Model
 
 class DummyData:Model {
-
     override fun getPicturesToDisplay(): PictureSet {
         TODO("Not yet implemented")
     }
@@ -14,23 +13,24 @@ class DummyData:Model {
         TODO("Not yet implemented")
     }
 
-    override fun switchUser(user: User) {
+    override fun postPictureToDataSet(categorizedPicture: CategorizedPicture, dataSetName: String, dataSetCreator: User) {
         TODO("Not yet implemented")
     }
 
-    override fun postPictureToDataSet(categorizedPicture: CategorizedPicture, dataSet: DataSet) {
+    override fun browseDataSets(category: Category, creatorName: String): Set<DataSet> {
         TODO("Not yet implemented")
     }
 
-    override fun browseDataSets(category: Category, creator: User): Set<DataSet> {
-        TODO("Not yet implemented")
-    }
-
-    override fun selectDataSet(name: String, creator: User) {
+    override fun selectDataSet(dataSetName: String, creatorName: String) {
         TODO("Not yet implemented")
     }
 
     override fun createDataSet(name: String) {
         TODO("Not yet implemented")
     }
+
+    override fun switchUser(user: User) {
+        TODO("Not yet implemented")
+    }
+
 }
