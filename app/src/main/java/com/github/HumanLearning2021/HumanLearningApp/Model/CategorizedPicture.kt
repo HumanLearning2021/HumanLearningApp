@@ -1,6 +1,17 @@
 package com.github.HumanLearning2021.HumanLearningApp.Model
 
 import android.graphics.drawable.Drawable
+import android.widget.ImageView
 
 // TODO: find better name
-class CategorizedPicture(val picture: Drawable, val category: Category)
+abstract class CategorizedPicture(val category: Category){
+    abstract fun displayOn(imageView: ImageView)
+
+    override fun equals(other: Any?): Boolean {
+        return (other is CategorizedPicture) && category == other.category
+    }
+
+    override fun hashCode(): Int {
+        return category.hashCode()
+    }
+}
