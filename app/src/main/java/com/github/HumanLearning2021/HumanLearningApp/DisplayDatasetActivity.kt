@@ -3,7 +3,6 @@ package com.github.HumanLearning2021.HumanLearningApp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +13,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 
-class ViewDatasetActivity : AppCompatActivity() {
+class DisplayDatasetActivity : AppCompatActivity() {
 
     var datasetImageModelList = ArrayList<DatasetImageModel>();
 
-    var names = arrayOf(
+    var categories = arrayOf(
             "chat",
             "chat",
             "chien"
@@ -28,49 +27,49 @@ class ViewDatasetActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_view_dataset)
+        setContentView(R.layout.activity_display_dataset)
 
-        for(i in names.indices){
-            datasetImageModelList.add(DatasetImageModel(names[i], images[i]))
+        for (i in categories.indices) {
+            datasetImageModelList.add(DatasetImageModel(categories[i], images[i]))
         }
 
-        var customAdapter = CustomAdapter(datasetImageModelList, this);
+        val customAdapter = DisplayDatasetAdapter(datasetImageModelList, this);
 
-        findViewById<GridView>(R.id.gridView).adapter = customAdapter;
+        findViewById<GridView>(R.id.imagesGridView).adapter = customAdapter;
 
-        findViewById<GridView>(R.id.gridView).setOnItemClickListener {adapterView, view, i, l ->
-            var intent = Intent(this, ViewImageActivity::class.java)
-            intent.putExtra("label", datasetImageModelList[i])
+        findViewById<GridView>(R.id.imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
+            val intent = Intent(this, DisplayImageActivity::class.java)
+            intent.putExtra("image", datasetImageModelList[i])
             startActivity(intent);
         };
 
 
     }
 
-    class CustomAdapter(
-            var imageModel: ArrayList<DatasetImageModel>,
+    class DisplayDatasetAdapter(
+            var images: ArrayList<DatasetImageModel>,
             var context: Context
-    ) : BaseAdapter(){
+    ) : BaseAdapter() {
 
         var layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         override fun getView(position: Int, view: View?, viewGroup: ViewGroup?): View {
             var view = view;
-            if(view == null){
-                view = layoutInflater.inflate(R.layout.row_items, viewGroup, false);
+            if (view == null) {
+                view = layoutInflater.inflate(R.layout.image_and_category_item, viewGroup, false);
             }
 
-            var tvImageName = view?.findViewById<TextView>(R.id.imageLabel);
+            var imageCat = view?.findViewById<TextView>(R.id.imageCategory);
             var imageView = view?.findViewById<ImageView>(R.id.imageView);
 
-            tvImageName?.text = imageModel[position].label;
-            imageView?.setImageResource(imageModel[position].image!!)
+            imageCat?.text = images[position].category;
+            imageView?.setImageResource(images[position].image!!)
 
             return view!!;
         }
 
         override fun getItem(position: Int): Any {
-            return imageModel[position];
+            return images[position];
         }
 
         override fun getItemId(position: Int): Long {
@@ -78,7 +77,7 @@ class ViewDatasetActivity : AppCompatActivity() {
         }
 
         override fun getCount(): Int {
-            return imageModel.size;
+            return images.size;
         }
 
     }

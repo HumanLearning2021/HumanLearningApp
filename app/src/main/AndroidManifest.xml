@@ -9,9 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HumanLearning">
-        <activity android:name=".ViewImageActivity"></activity>
+        <activity android:name=".DisplayImageActivity"></activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".ViewDatasetActivity">
+        <activity android:name=".DisplayDatasetActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
