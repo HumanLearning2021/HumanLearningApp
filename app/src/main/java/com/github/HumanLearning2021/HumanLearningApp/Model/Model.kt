@@ -2,6 +2,9 @@ package com.github.HumanLearning2021.HumanLearningApp.Model
 
 import android.graphics.drawable.Drawable
 
+//TODO: what to store in dataset: just image/category and assemble later, or image/options
+
+
 interface Model {
     /*
     * TODO:
