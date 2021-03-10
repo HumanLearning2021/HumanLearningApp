@@ -11,12 +11,15 @@
         android:layout_width="@dimen/learning_image_size"
         android:layout_height="@dimen/learning_image_size"
         android:layout_margin="64dp"
+        android:longClickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:srcCompat="@color/purple_700" />
+        android:tag="@color/blue"
+        app:srcCompat="@color/blue" />
+<!--    TODO remove this useless tag-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -34,7 +37,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="#0a0" />
+            android:tag="@color/red"
+            app:srcCompat="@color/red" />
 
         <ImageView
             android:id="@+id/learning_cat_1"
@@ -45,7 +49,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/learning_cat_0"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="#0a0" />
+            android:tag="@color/green"
+            app:srcCompat="@color/green" />
 
         <ImageView
             android:id="@+id/learning_cat_2"
@@ -56,7 +61,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/learning_cat_1"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="#0a0" />
+            android:tag="@color/blue"
+            app:srcCompat="@color/blue" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
