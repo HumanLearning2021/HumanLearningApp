@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".DisplayDatasetActivity">
+    tools:context=".DisplayDatasetActivity.DisplayDatasetActivity">
 
     <GridView
-        android:id="@+id/imagesGridView"
+        android:id="@+id/display_dataset_imagesGridView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"

@@ -3,7 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp
 import java.io.Serializable
 
 
-//TODO : Delete this class to replace with the CategorizedPicture class
+//TODO : DELETE and replace by CategorizedPicture
 class DatasetImageModel : Serializable {
 
     var category: String?;
