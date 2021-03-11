@@ -10,7 +10,7 @@ import java.lang.IllegalArgumentException
 class DummyUIPresenter:UIPresenter {
     private val dataSetInterface: DataSetInterface = DummyDataSetInterface()
 
-    override fun getPicture(categoryString: String): CategorizedPicture =
+    override suspend fun getPicture(categoryString: String): CategorizedPicture =
             dataSetInterface.getPicture(categoryString)
 
 }

@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.Model
 
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -15,7 +16,7 @@ class DummyDataSetInterfaceTest {
     }
 
     @Test
-    fun getPicture() {
+    fun getPicture() = runBlockingTest {
         assert(dummyDataSetInterface1.getPicture("fork") == DummyCategorizedPicture(Category("fork")))
     }
 

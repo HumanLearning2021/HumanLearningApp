@@ -18,7 +18,7 @@ class DummyDataSet : DataSet("Dummy", admin, setOf(fork, knife, spoon), 1) {
     private val spoonPic = DummyCategorizedPicture(spoon)
 
 
-    override fun getPicture(category: Category): CategorizedPicture =
+    override suspend fun getPicture(category: Category): CategorizedPicture =
             when (category) {
                 fork -> forkPic
                 knife -> knifePic

@@ -21,7 +21,7 @@ abstract class DataSet(
      *
      * @param category the category of the image to be retrieved
      */
-    abstract fun getPicture(category: Category): CategorizedPicture
+    abstract suspend fun getPicture(category: Category): CategorizedPicture
 
     override fun equals(other: Any?): Boolean {
         return (other is DataSet && other.name == name && other.admin == admin &&

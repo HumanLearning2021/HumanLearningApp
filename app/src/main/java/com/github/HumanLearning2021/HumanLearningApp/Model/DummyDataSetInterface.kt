@@ -8,7 +8,7 @@ import java.lang.IllegalArgumentException
 class DummyDataSetInterface: DataSetInterface {
     val currentDataSet = DummyDataSet()
 
-    override fun getPicture(categoryString: String): CategorizedPicture {
+    override suspend fun getPicture(categoryString: String): CategorizedPicture {
         return currentDataSet.getPicture(getCategory(categoryString))
 
     }
