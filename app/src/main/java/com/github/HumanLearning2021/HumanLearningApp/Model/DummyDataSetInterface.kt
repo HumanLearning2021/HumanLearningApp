@@ -2,6 +2,9 @@ package com.github.HumanLearning2021.HumanLearningApp.Model
 
 import java.lang.IllegalArgumentException
 
+/**
+ * a class representing the dummy interface to a data set
+ */
 class DummyDataSetInterface: DataSetInterface {
     val currentDataSet = DummyDataSet()
 

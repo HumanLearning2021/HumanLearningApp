@@ -1,8 +1,13 @@
 package com.github.HumanLearning2021.HumanLearningApp.Model
 
+
+/**
+ * Class representing a category, which can be used to classify images
+ *
+ * @param name the name of the category
+ */
 class Category(val name: String) {
 
-    //TODO can't put parent into equation because of null-safety
     override fun equals(other: Any?): Boolean {
         return other is Category && other.name.equals(name, ignoreCase = true)
     }

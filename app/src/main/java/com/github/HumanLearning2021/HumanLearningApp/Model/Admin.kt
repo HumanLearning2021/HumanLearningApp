@@ -1,5 +1,11 @@
 package com.github.HumanLearning2021.HumanLearningApp.Model
 
+/**
+ * A class representing users with admin privileges
+ *
+ * @param name the name of the admin
+ */
+
 class Admin(val name: String): User {
 
     override fun equals(other: Any?): Boolean {

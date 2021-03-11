@@ -3,10 +3,8 @@ package com.github.HumanLearning2021.HumanLearningApp.Presenter
 import com.github.HumanLearning2021.HumanLearningApp.Model.*
 import org.junit.Test
 
-import org.junit.Assert.*
 
-
-class DummyPresenterTest {
+class DummyUIPresenterTest {
     val fork = Category("Fork")
     val knife = Category("Knife")
     val spoon = Category("Spoon")
@@ -19,7 +17,7 @@ class DummyPresenterTest {
 
     @Test
     fun getPictureTest() {
-        val dummyPresenter = DummyPresenter()
+        val dummyPresenter = DummyUIPresenter()
 
         assert(dummyPresenter.getPicture("Fork").equals(forkPic))
 

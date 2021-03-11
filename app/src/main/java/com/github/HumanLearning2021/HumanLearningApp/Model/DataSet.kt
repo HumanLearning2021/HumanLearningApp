@@ -1,18 +1,31 @@
 package com.github.HumanLearning2021.HumanLearningApp.Model
 
 
-//TODO: what to store in dataset: just image/category and assemble later, or image/options
-
+/**
+ * A class representing a data set of images
+ *
+ * @param name the name of the data set
+ * @param admin the admin who created the data set
+ * @param categories the set of categories of images present in the dataset
+ * @param comVoorLevel the ComVoor level (1-5) describing the difficulty of the data set
+ */
 abstract class DataSet(
     val name: String,
     val admin: Admin,
     val categories: Set<Category>,
     val comVoorLevel: Int
 ) {
+
+    /**
+     * A function to retrieve a picture from the data set given a category
+     *
+     * @param category the category of the image to be retrieved
+     */
     abstract fun getPicture(category: Category): CategorizedPicture
 
     override fun equals(other: Any?): Boolean {
-        return other is DataSet && other.name == name && other.admin == admin && other.comVoorLevel == comVoorLevel && other.categories == categories
+        return (other is DataSet && other.name == name && other.admin == admin &&
+                other.comVoorLevel == comVoorLevel && other.categories == categories)
     }
 
     override fun hashCode(): Int {
