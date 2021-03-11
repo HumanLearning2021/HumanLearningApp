@@ -62,9 +62,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
         override fun getView(position: Int, view: View?, viewGroup: ViewGroup?): View {
             val view = view ?: layoutInflater.inflate(R.layout.image_and_category_item, viewGroup, false)
-            if (view == null) {
-                view = layoutInflater.inflate(R.layout.image_and_category_item, viewGroup, false)
-            }
 
             val imageCat = view?.findViewById<TextView>(R.id.image_and_category_item_imageCategory)
             val imageView = view?.findViewById<ImageView>(R.id.image_and_category_item_imageView)
