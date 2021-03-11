@@ -17,15 +17,20 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
-    var datasetImagesList = ArrayList<DatasetImageModel>();
 
-    var categories = arrayOf(
+    //List of all images in the dataset
+    //This is going to be replaced. The Dataset will be given via an intent when clicking on a dataset.
+    private var datasetImagesList = ArrayList<DatasetImageModel>()
+
+    //images categories. Are going to be accessible in the intent.
+    private var categories = arrayOf(
             "chat",
             "chat",
             "chien"
     )
 
-    var images = intArrayOf(R.drawable.chat1, R.drawable.chat2, R.drawable.chien1);
+    //images in Drawable. Are going to be accessible in the intent.
+    private var images = intArrayOf(R.drawable.chat1, R.drawable.chat2, R.drawable.chien1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,51 +40,51 @@ class DisplayDatasetActivity : AppCompatActivity() {
             datasetImagesList.add(DatasetImageModel(categories[i], images[i]))
         }
 
-        val customAdapter = DisplayDatasetAdapter(datasetImagesList, this);
+        val displayDatasetAdapter = DisplayDatasetAdapter(datasetImagesList, this)
 
-        findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter = customAdapter;
+        findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter = displayDatasetAdapter
 
         findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
             val intent = Intent(this, DisplayImageActivity::class.java)
             intent.putExtra("display_image_image", datasetImagesList[i])
-            startActivity(intent);
-        };
+            startActivity(intent)
+        }
 
 
     }
 
     class DisplayDatasetAdapter(
-            var images: ArrayList<DatasetImageModel>,
-            var context: Context
+            private var images: ArrayList<DatasetImageModel>,
+            private var context: Context
     ) : BaseAdapter() {
 
-        var layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        private var layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         override fun getView(position: Int, view: View?, viewGroup: ViewGroup?): View {
-            var view = view;
+            var view = view
             if (view == null) {
-                view = layoutInflater.inflate(R.layout.image_and_category_item, viewGroup, false);
+                view = layoutInflater.inflate(R.layout.image_and_category_item, viewGroup, false)
             }
 
-            var imageCat = view?.findViewById<TextView>(R.id.image_and_category_item_imageCategory);
-            var imageView = view?.findViewById<ImageView>(R.id.image_and_category_item_imageView);
+            val imageCat = view?.findViewById<TextView>(R.id.image_and_category_item_imageCategory)
+            val imageView = view?.findViewById<ImageView>(R.id.image_and_category_item_imageView)
 
-            imageCat?.text = images[position].category;
+            imageCat?.text = images[position].category
             imageView?.setImageResource(images[position].image!!)
 
-            return view!!;
+            return view!!
         }
 
         override fun getItem(position: Int): Any {
-            return images[position];
+            return images[position]
         }
 
         override fun getItemId(position: Int): Long {
-            return position.toLong();
+            return position.toLong()
         }
 
         override fun getCount(): Int {
-            return images.size;
+            return images.size
         }
 
     }

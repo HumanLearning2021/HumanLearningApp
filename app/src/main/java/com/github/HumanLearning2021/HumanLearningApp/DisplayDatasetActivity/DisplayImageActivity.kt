@@ -12,9 +12,9 @@ class DisplayImageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_image)
 
-        var images: DatasetImageModel = intent.getSerializableExtra("display_image_image") as DatasetImageModel;
+        val images: DatasetImageModel = intent.getSerializableExtra("display_image_image") as DatasetImageModel
 
-        findViewById<TextView>(R.id.display_image_viewCategory).text = images.category;
-        findViewById<ImageView>(R.id.display_image_viewImage).setImageResource(images.image!!);
+        findViewById<TextView>(R.id.display_image_viewCategory).text = images.category
+        findViewById<ImageView>(R.id.display_image_viewImage).setImageResource(images.image!!)
     }
 }
