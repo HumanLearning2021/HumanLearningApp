@@ -7,9 +7,9 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 class DummyCategorizedPicture(category: Category): CategorizedPicture(category) {
     override fun displayOn(imageView: ImageView) {
         when(category.name){
-            "Fork" -> imageView.setImageResource()
-            "Knife" -> imageView. //TODO
-            "Spoon" -> imageView.
+            "Fork" -> imageView.setImageResource(R.drawable.fork)
+            "Knife" -> imageView.setImageResource(R.drawable.knife)
+            "Spoon" -> imageView.setImageResource(R.drawable.spoon)
         }
     }
 }

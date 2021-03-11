@@ -9,9 +9,9 @@ val spoon = Category("Spoon", utensil)
 val admin = Admin("HLStaff")
 
 class DummyDataSet : DataSet("Dummy", admin, setOf(fork, knife, spoon), 1) {
-    val forkPic = CategorizedPicture(fork)
-    val knifePic = CategorizedPicture(knife)
-    val spoonPic = CategorizedPicture(spoon)
+    val forkPic = DummyCategorizedPicture(fork)
+    val knifePic = DummyCategorizedPicture(knife)
+    val spoonPic = DummyCategorizedPicture(spoon)
 
 
     override fun getPicture(category: Category): CategorizedPicture =
