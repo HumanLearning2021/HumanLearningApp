@@ -61,7 +61,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
         private var layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         override fun getView(position: Int, view: View?, viewGroup: ViewGroup?): View {
-            var view = view
+            val view = view ?: layoutInflater.inflate(R.layout.image_and_category_item, viewGroup, false)
             if (view == null) {
                 view = layoutInflater.inflate(R.layout.image_and_category_item, viewGroup, false)
             }
