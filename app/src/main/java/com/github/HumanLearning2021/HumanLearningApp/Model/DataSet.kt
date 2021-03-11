@@ -11,7 +11,7 @@ package com.github.HumanLearning2021.HumanLearningApp.Model
  */
 abstract class DataSet(
     val name: String,
-    val admin: Admin,
+    val creator: Admin,
     val categories: Set<Category>,
     val comVoorLevel: Int
 ) {

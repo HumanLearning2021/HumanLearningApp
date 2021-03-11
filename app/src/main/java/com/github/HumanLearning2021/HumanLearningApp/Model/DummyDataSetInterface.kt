@@ -17,7 +17,6 @@ class DummyDataSetInterface: DataSetInterface {
 
     }
 
-
     private fun getCategory(name: String):Category {
         for(category in currentDataSet.categories) {
             if(category.name.equals(name, ignoreCase = true)) return category

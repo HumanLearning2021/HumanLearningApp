@@ -6,13 +6,13 @@ val utensil = Category("Utensil")
 val fork = Category("Fork")
 val knife = Category("Knife")
 val spoon = Category("Spoon")
-val admin = Admin("HLStaff")
+val creator = Admin("HLStaff")
 
 
 /**
  * a class representing a dummy data set
  */
-class DummyDataSet : DataSet("Dummy", admin, setOf(fork, knife, spoon), 1) {
+class DummyDataSet : DataSet("Dummy", creator, setOf(fork, knife, spoon), 1) {
     private val forkPic = DummyCategorizedPicture(fork)
     private val knifePic = DummyCategorizedPicture(knife)
     private val spoonPic = DummyCategorizedPicture(spoon)

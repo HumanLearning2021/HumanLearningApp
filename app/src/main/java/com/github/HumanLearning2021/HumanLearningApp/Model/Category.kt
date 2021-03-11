@@ -8,12 +8,14 @@ package com.github.HumanLearning2021.HumanLearningApp.Model
  */
 class Category(val name: String) {
 
+
+    //TODO: Odersky canEqual
     override fun equals(other: Any?): Boolean {
-        return other is Category && other.name.equals(name, ignoreCase = true)
+        return other is Category && other.name == (name.toLowerCase())
     }
 
     override fun hashCode(): Int {
-        return 17 + 31 * name.hashCode()
+        return 17 + 31 * name.toLowerCase().hashCode()
     }
 
 }
