@@ -12,6 +12,6 @@ abstract class CategorizedPicture(val category: Category){
     }
 
     override fun hashCode(): Int {
-        return category.hashCode()
+        return 17 + 31 * category.hashCode()
     }
 }

@@ -18,5 +18,13 @@ class DummyDataSetInterface: DataSetInterface {
         throw IllegalArgumentException("no category found that matches name")
     }
 
+    override fun equals(other: Any?): Boolean {
+        return other is DummyDataSetInterface && other.currentDataSet == currentDataSet
+    }
+
+    override fun hashCode(): Int {
+        return 17 + 31*currentDataSet.hashCode()
+    }
+
 
 }

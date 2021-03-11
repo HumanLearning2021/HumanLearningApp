@@ -8,4 +8,5 @@ class DummyPresenter:UIPresenter {
 
     override fun getPicture(categoryString: String): CategorizedPicture =
             dataSetInterface.getPicture(categoryString)
+
 }
