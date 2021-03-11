@@ -1,8 +1,8 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
 

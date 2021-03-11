@@ -7,4 +7,9 @@
     <string name="AddPicture_categorySelectionDialogTitle">Pick a category</string>
     <string name="AddPicture_permissionNeededDialogTitle">Camera required</string>
     <string name="AddPicture_permissionNeededDialogMessage">To use this functionality, access to the camera is required. Either you have denied the app the permission to use it or your device has no camera.</string>
+
+    <string name="learning_im_to_sort_descr">blue</string>
+    <string name="learning_cat_0_descr">red</string>
+    <string name="learning_cat_1_descr">green</string>
+    <string name="learning_cat_2_descr">blue</string>
 </resources>
