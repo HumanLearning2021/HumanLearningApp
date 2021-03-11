@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    tools:context=".AddPictureActivity">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/cameraPreviewView"
+        class="androidx.camera.view.PreviewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/twoButtons"
+        android:layout_alignParentTop="true"
+        android:clickable="false">
+
+    </androidx.camera.view.PreviewView>
+
+    <LinearLayout
+        android:id="@+id/twoButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/saveButton"
+        style="?android:attr/buttonBarStyle">
+
+        <Button
+            android:id="@+id/takePictureButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="@string/AddPicture_takePictureButtonText"/>
+
+        <Button
+            android:id="@+id/selectCategoryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/AddPicture_selectCategoryButtonText"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:backgroundTint="@color/purple_500"
+        android:enabled="false"
+        android:text="@string/AddPicture_saveButtonText" />
+
+</RelativeLayout>
