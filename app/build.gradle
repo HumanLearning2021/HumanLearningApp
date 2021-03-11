@@ -48,17 +48,17 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
     }
 
     def fileFilter = [
-        '**/R.class',
-        '**/R$*.class',
-        '**/BuildConfig.*',
-        '**/Manifest*.*',
-        '**/*Test*.*',
-        'android/**/*.*',
-        // Exclude Hilt generated classes
-        '**/*Hilt*.*',
-        'hilt_aggregated_deps/**',
-        '**/*_Factory.class',
-        '**/*_MembersInjector.class'
+            '**/R.class',
+            '**/R$*.class',
+            '**/BuildConfig.*',
+            '**/Manifest*.*',
+            '**/*Test*.*',
+            'android/**/*.*',
+            // Exclude Hilt generated classes
+            '**/*Hilt*.*',
+            'hilt_aggregated_deps/**',
+            '**/*_Factory.class',
+            '**/*_MembersInjector.class'
     ]
     def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/java"
@@ -84,11 +84,20 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3'
+
+    implementation 'androidx.fragment:fragment-ktx:1.3.0'
+    implementation 'androidx.activity:activity-ktx:1.2.1'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation('com.schibsted.spain:barista:3.8.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3'
+
+    implementation "androidx.camera:camera-core:1.1.0-alpha02"
+    implementation "androidx.camera:camera-camera2:1.1.0-alpha02"
+    implementation "androidx.camera:camera-lifecycle:1.1.0-alpha02"
+    implementation "androidx.camera:camera-view:1.0.0-alpha22"
 
 }
