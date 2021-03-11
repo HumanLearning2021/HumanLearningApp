@@ -71,7 +71,7 @@ class LearningPresenter {
                         when(val iv = event.localState){
                             is ImageView -> displayNextPicture(iv)
                             else -> throw IllegalStateException("The local state of the drag " +
-                                    "and drop should be the ImageView to sort")
+                                    "and drop should be of type ImageView")
                         }
                         true
                     }else{
