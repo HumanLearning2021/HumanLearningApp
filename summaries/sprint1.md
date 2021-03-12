@@ -9,6 +9,10 @@ The knowledge and (small) codebase I obtained will be useful in later phases.
 
 I spent much more time than alloted on this, and I hope to be able to focus more on a concrete increment rather than learning in the future.
 
+This week I worked on breaking ground for the cloud back-end subsystem of the application. I learned about Firebase and organized a project there. I could not get anything in the code for the lack of the model interface.
+The knowledge and (small) codebase I obtained will be useful in later phases.
+I spent much more time than alloted on this, and I hope to be able to focus more on a concrete increment rather than learning in the future.
+
 ## Jaakik, Marouane
 
 ## Konrad, Jonas Franz
@@ -20,6 +24,8 @@ This week I started implementing the activity used to add a picture to a dataset
 This week I desiged the learning UI. At first I had to learn about how to use Constraint Layouts so that the UI adapts well to different screen sizes. I also learned how to do a drag and drop mechanism in android. I think the UI design and the drag feature went quite well. What went wrong is that I underestimated the time to learn about android libraries so I did not have enough time to write the tests and thus be able to merge into main.
 
 ## Lenweiter, Martin
+
+This week I created a first version of the interface to data sets. This is part of the model of the MVP pattern. The first implementation of the interface allows to retrieve an image from a dummy data set based on the category of the desired image.
 
 ## Vial, Nicolas
 
