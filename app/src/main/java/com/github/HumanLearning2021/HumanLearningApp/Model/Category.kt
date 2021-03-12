@@ -6,16 +6,17 @@ package com.github.HumanLearning2021.HumanLearningApp.Model
  *
  * @param name the name of the category
  */
-class Category(val name: String) {
+class Category(name: String) {
+    val name = name.toLowerCase()
 
 
     //TODO: Odersky canEqual
     override fun equals(other: Any?): Boolean {
-        return other is Category && other.name == (name.toLowerCase())
+        return other is Category && other.name == name
     }
 
     override fun hashCode(): Int {
-        return 17 + 31 * name.toLowerCase().hashCode()
+        return 17 + 31 * name.hashCode()
     }
 
 }
