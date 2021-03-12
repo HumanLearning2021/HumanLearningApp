@@ -2,6 +2,11 @@
 
 ## Scrum master (Lenweiter, Martin)
 
+## Lessons Learned
+Markup : *From now on, submit all pull requests by wednesday evening, to be able to do comprehensive code reviews on Thursday, merge the code and lower stress
+
+
+
 ## Bettens, Louis
 This week I worked on breaking ground for the cloud back-end subsystem of the application. I learned about Firebase and organized a project there. I could not get anything in the code for the lack of the model interface.
 
