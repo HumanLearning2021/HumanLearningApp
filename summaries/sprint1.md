@@ -9,10 +9,6 @@ The knowledge and (small) codebase I obtained will be useful in later phases.
 
 I spent much more time than alloted on this, and I hope to be able to focus more on a concrete increment rather than learning in the future.
 
-This week I worked on breaking ground for the cloud back-end subsystem of the application. I learned about Firebase and organized a project there. I could not get anything in the code for the lack of the model interface.
-The knowledge and (small) codebase I obtained will be useful in later phases.
-I spent much more time than alloted on this, and I hope to be able to focus more on a concrete increment rather than learning in the future.
-
 ## Jaakik, Marouane
 
 This week I have been implementing the user interface for creating datasets and associating the necessary categories names. Initially I thought of making a simple interface to chose whether to download or create a dataset consisting only of one single category object, However during the midweek standup there has been a change of plans so then I switched to implementing an interface to dynamically add the categories necessary when taking the picture
