@@ -12,14 +12,16 @@ class DummyDataSetInterfaceTest {
 
 
     @Test
-    fun getCurrentDataSet() {
+    fun getCurrentDataSetTest() {
         assert(dummyDataSetInterface1.equals(DummyDataSetInterface()))
     }
 
     @Test
 
-    fun getPicture() = runBlockingTest {
-        assert(dummyDataSetInterface1.getPicture("fork") == DummyCategorizedPicture(Category("fork")))
+    fun getPictureTest() = runBlockingTest {
+        val actual = dummyDataSetInterface1.getPicture("Fork")
+        val expected = DummyCategorizedPicture(Category("Fork"))
+        assert(actual == expected)
     }
 
     @Test
