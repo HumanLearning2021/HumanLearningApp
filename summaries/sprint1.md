@@ -27,7 +27,7 @@ This week I desiged the learning UI. At first I had to learn about how to use Co
 
 ## Lenweiter, Martin
 
-This week I created a first version of the interface to data sets. This is part of the model of the MVP pattern. The first implementation of the interface allows to retrieve an image from a dummy data set based on the category of the desired image.
+This week I created a first version of the interface to data sets. This is part of the model of the MVP pattern. The first implementation of the interface allows to retrieve an image from a dummy data set based on the category of the desired image. As for the challenges I faced, I underestimated the time it would take, and am still learning to work with development tools.
 
 ## Vial, Nicolas
 
