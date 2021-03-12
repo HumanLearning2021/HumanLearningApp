@@ -4,6 +4,10 @@
 
 ## Bettens, Louis
 
+This week I worked on breaking ground for the cloud back-end subsystem of the application. I learned about Firebase and organized a project there. I could not get anything in the code for the lack of the model interface.
+The knowledge and (small) codebase I obtained will be useful in later phases.
+I spent much more time than alloted on this, and I hope to be able to focus more on a concrete increment rather than learning in the future.
+
 ## Jaakik, Marouane
 
 ## Konrad, Jonas Franz
