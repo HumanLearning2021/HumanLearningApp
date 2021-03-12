@@ -15,6 +15,8 @@ I spent much more time than alloted on this, and I hope to be able to focus more
 
 ## Jaakik, Marouane
 
+This week I have been implementing the user interface for creating datasets and associating the necessary categories names. Initially I thought of making a simple interface to chose whether to download or create a dataset consisting only of one single category object, However during the midweek standup there has been a change of plans so then I switched to implementing an interface to dynamically add the categories necessary when taking the picture
+
 ## Konrad, Jonas Franz
 
 This week I started implementing the activity used to add a picture to a dataset. The activity manages the camera permission and informs the user that it can't use this functionality if it does not give permission to the app to use the camera. The activity also has three buttons ; take the picture, select the category and save. Taking the picture and saving are not yet functional but selecting the category is. I had trouble getting the tests to work but I feel confident that this will go better next week. I also underestimated the time it would take to implement this functionality which means that it will have to be carried over into the next sprint. For next time I mainly need to improve on estimating how long a task will take, this way I will be able to post a pull request earlier which in turn will make the entire process smoother.
