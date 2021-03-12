@@ -17,3 +17,9 @@ This week I desiged the learning UI. At first I had to learn about how to use Co
 ## Lenweiter, Martin
 
 ## Vial, Nicolas
+
+During this sprint, I designed the UI that allows to display the images of a dataset and to display them in large size.
+I first did some research about Gridview and some layout features.
+As we had not yet created a precise model for a dataset and an image, I could not make a usable UI in the hand because I relied on "dummy classes" created to start implementing the UI. I think that the UI is a good base to make a good UI for viewing a dataset.
+I clearly underestimated the total time to complete this task, especially because of the testing. I had to do a lot of reading and still need to do so to fully understand all the intricacies of testing an UI.
+So I couldn't merge into main but now that the model is well defined, it will be possible to modify the UI to satisfy this model.
