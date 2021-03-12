@@ -3,7 +3,8 @@
 ## Scrum master (Lenweiter, Martin)
 
 ## Lessons Learned
-* From now on, submit all pull requests by wednesday evening, to be able to do comprehensive code reviews on Thursday, merge the code and lower stress
+* From now on, submit all pull requests by wednesday evening, to be able to do comprehensive code reviews on Thursday, merge the code and lower stress.
+* Keep meetings short by doing only the stand-up all together. Specific issues need to be discussed only among concerned team members.
 
 
 
