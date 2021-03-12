@@ -30,3 +30,9 @@ This week I desiged the learning UI. At first I had to learn about how to use Co
 This week I created a first version of the interface to data sets. This is part of the model of the MVP pattern. The first implementation of the interface allows to retrieve an image from a dummy data set based on the category of the desired image.
 
 ## Vial, Nicolas
+
+During this sprint, I designed the UI that allows to display the images of a dataset and to display them in large size.
+I first did some research about Gridview and some layout features.
+As we had not yet created a precise model for a dataset and an image, I could not make a usable UI in the hand because I relied on "dummy classes" created to start implementing the UI. I think that the UI is a good base to make a good UI for viewing a dataset.
+I clearly underestimated the total time to complete this task, especially because of the testing. I had to do a lot of reading and still need to do so to fully understand all the intricacies of testing an UI.
+So I couldn't merge into main but now that the model is well defined, it will be possible to modify the UI to satisfy this model.
