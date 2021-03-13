@@ -32,13 +32,13 @@ class LearningTest {
     @Test fun dragImageOnCorrectCategory(){
         val imToSort = getImageToSort()
         val startDescr = imToSort.contentDescription
-        val NUMBER_OF_TENTATIVES = 100
+        val NUMBER_OF_ATTEMPTS = 100
         var foundImageChange = false
-        // tries drag and drop NUMBER_OF_TENTATIVES times until there is a change in the image to sort
+        // tries drag and drop NUMBER_OF_ATTEMPTS times until there is a change in the image to sort
         // (change in description)
-        // prob to have the same color NUMBER_OF_TENTATIVES (eg 100) times in a row with a working UI is
-        // P = (1/NUMBER_OF_CATEGORIES)^NUMBER_OF_TENTATIVES (eg (1/3)^100, aka very small)
-        for(i in 1..NUMBER_OF_TENTATIVES){
+        // prob to have the same color NUMBER_OF_ATTEMPTS (eg 100) times in a row with a working UI is
+        // P = (1/NUMBER_OF_CATEGORIES)^NUMBER_OF_ATTEMPTS (eg (1/3)^100, aka very small)
+        for(i in 1..NUMBER_OF_ATTEMPTS){
             if(imToSort.contentDescription != startDescr){
                 foundImageChange = true
                 break
