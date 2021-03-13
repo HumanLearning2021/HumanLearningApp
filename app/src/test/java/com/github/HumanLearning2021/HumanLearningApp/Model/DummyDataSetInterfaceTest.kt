@@ -6,15 +6,12 @@ import org.junit.Test
 
 import org.junit.Assert.*
 
+/*
 class DummyDataSetInterfaceTest {
     val dummyDataSetInterface1 = DummyDataSetInterface()
     val dummyDataSetInterface2 = DummyDataSetInterface()
 
 
-    @Test
-    fun getCurrentDataSetTest() {
-        assert(dummyDataSetInterface1.equals(DummyDataSetInterface()))
-    }
 
     @Test
 
@@ -27,6 +24,5 @@ class DummyDataSetInterfaceTest {
     @Test
     fun equalsHashCodeTest(){
         assert(dummyDataSetInterface1.hashCode() == dummyDataSetInterface2.hashCode() && dummyDataSetInterface1 == dummyDataSetInterface2)
-
     }
-}
+}*/

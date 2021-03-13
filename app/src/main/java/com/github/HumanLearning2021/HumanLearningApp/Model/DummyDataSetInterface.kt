@@ -3,31 +3,30 @@ package com.github.HumanLearning2021.HumanLearningApp.Model
 import java.lang.IllegalArgumentException
 
 /**
- * a class representing the dummy interface to a data set
+ * a class representing a dummy data set Interface
  */
-class DummyDataSetInterface: DataSetInterface {
-    val currentDataSet = DummyDataSet()
+class DummyDataSetInterface : DataSetInterface {
+    private val fork = DummyCategory("Fork")
+    private val knife = DummyCategory("Knife")
+    private val spoon = DummyCategory("Spoon")
+
+    val categories: Set<Category> = setOf(fork, knife, spoon)
+
+    private val forkPic = DummyCategorizedPicture(fork)
+    private val knifePic = DummyCategorizedPicture(knife)
+    private val spoonPic = DummyCategorizedPicture(spoon)
 
 
-    override suspend fun getPicture(categoryString: String): CategorizedPicture {
-        return currentDataSet.getPicture(getCategory(categoryString))
+    /**
+     * A function to retrieve a picture from the data set given a category
+     *
+     * @param category the category of the image to be retrieved
+     */
+    override suspend fun getPicture(category: Category): CategorizedPicture =
+        when (category) {
+            fork -> forkPic
+            knife -> knifePic
+            else -> spoonPic
 
-    }
-
-    private fun getCategory(name: String):Category {
-        for(category in currentDataSet.categories) {
-            if(category.name.equals(name, ignoreCase = true)) return category
         }
-        throw IllegalArgumentException("no category found that matches name")
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return other is DummyDataSetInterface && other.currentDataSet == currentDataSet
-    }
-
-    override fun hashCode(): Int {
-        return 17 + 31*currentDataSet.hashCode()
-    }
-
-
 }

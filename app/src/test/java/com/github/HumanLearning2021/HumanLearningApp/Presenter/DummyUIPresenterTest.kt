@@ -5,7 +5,7 @@ import com.github.HumanLearning2021.HumanLearningApp.Model.*
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
-
+/*
 class DummyUIPresenterTest {
     val fork = Category("Fork")
     val knife = Category("Knife")
@@ -25,3 +25,5 @@ class DummyUIPresenterTest {
 
     }
 }
+
+*/
