@@ -19,5 +19,5 @@ interface CategorizedPicture {
      *
      */
 
-    abstract suspend fun displayOn(imageView: ImageView)
+    abstract fun displayOn(imageView: ImageView)
 }

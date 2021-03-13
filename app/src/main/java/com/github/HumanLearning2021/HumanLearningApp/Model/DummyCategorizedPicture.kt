@@ -9,7 +9,7 @@ import java.lang.IllegalArgumentException
  * A picture part of the dummy data set. Can be of any of the following categories: "fork", "knife", "spoon"
  */
 class DummyCategorizedPicture(override val category: Category) : CategorizedPicture {
-    override suspend fun displayOn(imageView: ImageView) {
+    override fun displayOn(imageView: ImageView) {
         if(category !is DummyCategory) throw IllegalArgumentException("provide a dummy category to the class constructor")
 
         when(category.name){
