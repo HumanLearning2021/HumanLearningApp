@@ -10,8 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HumanLearning">
         <activity android:name=".DisplayDatasetActivity.DisplayImageActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".DisplayDatasetActivity.DisplayDatasetActivity">
+        <activity android:name=".DisplayDatasetActivity.DisplayDatasetActivity" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
