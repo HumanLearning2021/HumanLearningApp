@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:text="@string/DataCreationTitle"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
+
+
+    <LinearLayout
+        android:id="@+id/parent_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_add"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/DataCreationAddButton"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_submit_list"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/DataCrationSubmitButton"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+
+</LinearLayout>
+

@@ -7,4 +7,8 @@
     <string name="AddPicture_categorySelectionDialogTitle">Pick a category</string>
     <string name="AddPicture_permissionNeededDialogTitle">Camera required</string>
     <string name="AddPicture_permissionNeededDialogMessage">To use this functionality, access to the camera is required. Either you have denied the app the permission to use it or your device has no camera.</string>
+    <string name="DataCreationTitle">Categories List</string>
+    <string name="DataCrationSubmitButton">Submit</string>
+    <string name="DataCreationAddButton">Add</string>
+    <string name="DataCreationCat">Enter Category</string>
 </resources>
