@@ -14,4 +14,13 @@ class DatasetImageModel : Serializable {
         this.category = category
         this.image = image
     }
+
+    @Override
+    override fun equals(other: Any?): Boolean {
+        if(other is DatasetImageModel){
+            return other.category == this.category && other.image == this.image
+        }else{
+            return false
+        }
+    }
 }
