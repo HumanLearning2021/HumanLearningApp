@@ -13,10 +13,18 @@ class DummyCategorizedPicture(override val category: Category) : CategorizedPict
         if(category !is DummyCategory) throw IllegalArgumentException("provide a dummy category to the class constructor")
 
         when(category.name){
-            "Fork" -> imageView.setImageResource(R.drawable.fork)
-            "Knife" -> imageView.setImageResource(R.drawable.knife)
-            "Spoon" -> imageView.setImageResource(R.drawable.spoon)
+            "fork" -> imageView.setImageResource(R.drawable.fork)
+            "knife" -> imageView.setImageResource(R.drawable.knife)
+            "spoon" -> imageView.setImageResource(R.drawable.spoon)
             else -> throw IllegalArgumentException("only spoon, fork, knife are valid category to retrieve from dummy dataset")
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is CategorizedPicture && other.category == category
+    }
+
+    override fun hashCode(): Int {
+        return 17 + 31*category.hashCode()
     }
 }

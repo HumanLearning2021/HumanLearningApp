@@ -5,8 +5,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
 import org.junit.Assert.*
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+
 
 
 class DummyCategorizedPictureTest {
