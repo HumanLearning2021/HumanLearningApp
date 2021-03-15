@@ -5,12 +5,11 @@ import com.github.HumanLearning2021.HumanLearningApp.Model.*
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
-/*
+
 class DummyUIPresenterTest {
-    val fork = Category("Fork")
-    val knife = Category("Knife")
-    val spoon = Category("Spoon")
-    val admin = Admin("HLStaff")
+    val fork = DummyCategory("fork")
+    val knife = DummyCategory("knife")
+    val spoon = DummyCategory("spoon")
 
     private val forkPic = DummyCategorizedPicture(fork)
     private val knifePic = DummyCategorizedPicture(knife)
@@ -22,8 +21,6 @@ class DummyUIPresenterTest {
     fun getPictureTest() = runBlockingTest {
         val dummyPresenter = DummyUIPresenter()
         assert(dummyPresenter.getPicture("Fork").equals(forkPic))
-
     }
 }
 
-*/

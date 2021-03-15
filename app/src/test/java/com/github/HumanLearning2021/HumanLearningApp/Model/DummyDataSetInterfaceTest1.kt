@@ -6,7 +6,9 @@ import org.junit.Test
 import org.junit.Assert.*
 
 class DummyDataSetInterfaceTest {
-    val dummyDataSetInterface = DummyDataSetInterface()
+    val dummyDataSetInterface1 = DummyDataSetInterface()
+    val dummyDataSetInterface2 = DummyDataSetInterface()
+
 
     private val fork = DummyCategory("Fork")
     private val knife = DummyCategory("Knife")
@@ -20,12 +22,12 @@ class DummyDataSetInterfaceTest {
 
     @Test
     fun getCategories() {
-        assertEquals(dummyDataSetInterface.categories, setOf(fork, knife, spoon))
+        assertEquals(dummyDataSetInterface1.categories, setOf(fork, knife, spoon))
     }
 
     @Test
     fun getPicture() = runBlockingTest {
-        val actual = dummyDataSetInterface.getPicture(fork)
+        val actual = dummyDataSetInterface1.getPicture(fork)
         val expected = forkPic
         assertEquals(actual, expected)
     }
