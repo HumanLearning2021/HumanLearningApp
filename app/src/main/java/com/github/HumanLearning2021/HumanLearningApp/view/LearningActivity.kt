@@ -12,15 +12,13 @@ class LearningActivity : AppCompatActivity() {
         setContentView(R.layout.activity_learning)
 
         findViewById<ImageView>(R.id.learning_cat_0)
-            .setOnDragListener(LearningPresenter.targetOnDragListener)
+                .setOnDragListener(LearningPresenter.targetOnDragListener)
         findViewById<ImageView>(R.id.learning_cat_1)
-            .setOnDragListener(LearningPresenter.targetOnDragListener)
+                .setOnDragListener(LearningPresenter.targetOnDragListener)
         findViewById<ImageView>(R.id.learning_cat_2)
-            .setOnDragListener(LearningPresenter.targetOnDragListener)
+                .setOnDragListener(LearningPresenter.targetOnDragListener)
 
         findViewById<ImageView>(R.id.learning_im_to_sort)
                 .setOnTouchListener(LearningPresenter::onImageToSortTouched)
     }
-
-//    fun onImageToSortClicked(view: View) = LearningPresenter.onImageToSortClicked(view)
 }

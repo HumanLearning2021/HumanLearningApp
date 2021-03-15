@@ -12,9 +12,9 @@ import kotlin.random.Random
 
 class LearningPresenter {
     companion object {
-        fun onImageToSortTouched(view : View, event: MotionEvent): Boolean{
+        fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
             val clipDataLabel = "My Clip Data"
-            return when(event.action){
+            return when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     val item = ClipData.Item(view.contentDescription)
                     val dragData = ClipData(
@@ -32,8 +32,8 @@ class LearningPresenter {
 
         val targetOnDragListener = View.OnDragListener { v, event ->
             val opaque = 1.0f
-            val halfOpaque = opaque/2
-            when(event.action){
+            val halfOpaque = opaque / 2
+            when (event.action) {
                 DragEvent.ACTION_DRAG_STARTED -> true
                 DragEvent.ACTION_DRAG_ENTERED -> {
                     v.alpha = halfOpaque
@@ -53,14 +53,14 @@ class LearningPresenter {
                     item.text == v.contentDescription
                 }
                 DragEvent.ACTION_DRAG_ENDED -> {
-                    if(event.result){
-                        when(val iv = event.localState){
+                    if (event.result) {
+                        when (val iv = event.localState) {
                             is ImageView -> displayNextPicture(iv)
                             else -> throw IllegalStateException("The local state of the drag " +
                                     "and drop should be of type ImageView")
                         }
                         true
-                    }else{
+                    } else {
                         false
                     }
                 }
@@ -73,7 +73,7 @@ class LearningPresenter {
 
         private fun displayNextPicture(view: ImageView) {
             // TODO this is a dirty hack, replace with model call
-            fun gS(id:Int) = view.context.getString(id)
+            fun gS(id: Int) = view.context.getString(id)
             val colorStrings = listOf(gS(R.string.learning_cat_0_descr),
                     gS(R.string.learning_cat_1_descr), gS(R.string.learning_cat_2_descr))
             val colorInts = listOf(R.color.red, R.color.green, R.color.blue)
