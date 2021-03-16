@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.schibsted.spain.barista.assertion.BaristaImageViewAssertions.assertHasDrawable
@@ -44,7 +43,7 @@ class DisplayPictureActivityTest {
 
     @Test
     fun forkIsDisplayedInView(){
-        assertHasDrawable(R.id.imageView, R.drawable.spoon)
+        assertHasDrawable(R.id.DisplayPicture_imageView, R.drawable.spoon)
     }
 
 }

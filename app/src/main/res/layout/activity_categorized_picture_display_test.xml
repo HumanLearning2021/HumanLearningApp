@@ -7,7 +7,7 @@
     tools:context=".model.DisplayPictureActivity">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/DisplayPicture_imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="124dp"
