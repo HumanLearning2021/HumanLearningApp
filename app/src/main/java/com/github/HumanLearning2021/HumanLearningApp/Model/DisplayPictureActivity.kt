@@ -13,6 +13,6 @@ class DisplayPictureActivity : AppCompatActivity() {
         val spoon = DummyCategorizedPicture(DummyCategory("spoon"))
 
         val imageView = findViewById<ImageView>(R.id.imageView)
-        spoon.displayOn(imageView)
+        spoon.displayOn(this, imageView)
     }
 }

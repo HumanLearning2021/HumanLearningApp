@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.Model
 
+import android.app.Activity
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -10,8 +11,7 @@ import java.lang.IllegalArgumentException
  */
 class DummyCategorizedPicture(override val category: Category) : CategorizedPicture {
 
-    //TODO: pass activity as argument
-    override fun displayOn(imageView: ImageView) {
+    override fun displayOn(activity: Activity, imageView: ImageView) {
         if(category !is DummyCategory) throw IllegalArgumentException("provide a dummy category to the class constructor")
 
         when(category.name){

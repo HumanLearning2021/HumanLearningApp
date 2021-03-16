@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.Model
 
+import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 
@@ -19,5 +20,5 @@ interface CategorizedPicture {
      *
      */
 
-    abstract fun displayOn(imageView: ImageView)
+    abstract fun displayOn(activity: Activity, imageView: ImageView)
 }
