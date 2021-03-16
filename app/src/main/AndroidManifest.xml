@@ -13,10 +13,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HumanLearning">
-        <activity android:name=".DisplayDatasetActivity.DisplayImageActivity" />
-        <activity android:name=".DisplayDatasetActivity.DisplayDatasetActivity" />
+        <activity android:name=".view.DisplayImageActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".model.DisplayPictureActivity" />
         <activity android:name=".AddPictureActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".view.LearningActivity" />
+        <activity android:name=".view.DisplayDatasetActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

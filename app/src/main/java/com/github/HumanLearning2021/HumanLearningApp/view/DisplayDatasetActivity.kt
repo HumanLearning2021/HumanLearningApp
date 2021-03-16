@@ -1,8 +1,10 @@
-package com.github.HumanLearning2021.HumanLearningApp.DisplayDatasetActivity
+package com.github.HumanLearning2021.HumanLearningApp.view
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,33 +13,32 @@ import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.github.HumanLearning2021.HumanLearningApp.DatasetImageModel
+import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
+import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
+import kotlinx.coroutines.launch
+import java.io.Serializable
 
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
+    val fork = DummyCategory("fork")
+    val knife = DummyCategory("knife")
+    val spoon = DummyCategory("spoon")
 
-    //List of all images in the dataset
-    //This is going to be replaced. The Dataset will be given via an intent when clicking on a dataset.
-    private var datasetImagesList = ArrayList<DatasetImageModel>()
+    val dummyPresenter = DummyUIPresenter()
 
-    //images categories. Are going to be accessible in the intent.
-    private var categories = arrayOf(
-            "chat",
-            "chat",
-            "chien"
-    )
-
-    //images in Drawable. Are going to be accessible in the intent.
-    private var images = intArrayOf(R.drawable.chat1, R.drawable.chat2, R.drawable.chien1)
+    val datasetImagesList = ArrayList<CategorizedPicture>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_dataset)
-
-        for (i in categories.indices) {
-            datasetImagesList.add(DatasetImageModel(categories[i], images[i]))
+        lifecycleScope.launch {
+            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
+            datasetImagesList.add(dummyPresenter.getPicture(knife.name)!!)
+            datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
         }
 
         val displayDatasetAdapter = DisplayDatasetAdapter(datasetImagesList, this)
@@ -46,7 +47,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
         findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
             val intent = Intent(this, DisplayImageActivity::class.java)
-            intent.putExtra("display_image_image", datasetImagesList[i])
+            intent.putExtra("display_image_image", (datasetImagesList[i]) as Serializable)
             startActivity(intent)
         }
 
@@ -54,20 +55,22 @@ class DisplayDatasetActivity : AppCompatActivity() {
     }
 
     class DisplayDatasetAdapter(
-            private var images: ArrayList<DatasetImageModel>,
-            private var context: Context
+        private var images: ArrayList<CategorizedPicture>,
+        private var context: Context
     ) : BaseAdapter() {
 
-        private var layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        private var layoutInflater =
+            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         override fun getView(position: Int, view: View?, viewGroup: ViewGroup?): View {
-            val view = view ?: layoutInflater.inflate(R.layout.image_and_category_item, viewGroup, false)
+            val view =
+                view ?: layoutInflater.inflate(R.layout.image_and_category_item, viewGroup, false)
 
             val imageCat = view?.findViewById<TextView>(R.id.image_and_category_item_imageCategory)
             val imageView = view?.findViewById<ImageView>(R.id.image_and_category_item_imageView)
 
-            imageCat?.text = images[position].category
-            imageView?.setImageResource(images[position].image!!)
+            imageCat?.text = images[position].category.name
+            images[position].displayOn(context as Activity , imageView as ImageView)
 
             return view!!
         }
