@@ -1,13 +1,13 @@
-package com.github.HumanLearning2021.HumanLearningApp.Presenter
+package com.github.HumanLearning2021.HumanLearningApp.presenter
 
-import com.github.HumanLearning2021.HumanLearningApp.Model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import java.lang.IllegalArgumentException
 
 
 /**
  * a class representing a dummy UI presenter
  */
-class DummyUIPresenter:UIPresenter {
+class DummyUIPresenter: UIPresenter {
     private val dataSetInterface: DummyDataSetInterface = DummyDataSetInterface()
 
 

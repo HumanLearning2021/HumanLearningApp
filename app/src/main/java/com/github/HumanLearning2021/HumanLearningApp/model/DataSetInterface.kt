@@ -1,6 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.Model
-
-import android.graphics.drawable.Drawable
+package com.github.HumanLearning2021.HumanLearningApp.model
 
 
 /**

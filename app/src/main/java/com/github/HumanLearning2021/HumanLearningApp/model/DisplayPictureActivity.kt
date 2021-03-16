@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.Model
+package com.github.HumanLearning2021.HumanLearningApp.model
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

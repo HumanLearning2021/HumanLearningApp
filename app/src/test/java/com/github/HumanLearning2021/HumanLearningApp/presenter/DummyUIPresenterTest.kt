@@ -1,13 +1,9 @@
-package com.github.HumanLearning2021.HumanLearningApp.Presenter
+package com.github.HumanLearning2021.HumanLearningApp.presenter
 
-import com.github.HumanLearning2021.HumanLearningApp.Model.DummyCategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.Model.DummyCategory
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
-import java.lang.IllegalArgumentException
-import java.lang.NullPointerException
 
 
 class DummyUIPresenterTest {

@@ -1,6 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.Model
-
-import java.lang.IllegalArgumentException
+package com.github.HumanLearning2021.HumanLearningApp.model
 
 /**
  * a class representing a dummy data set Interface

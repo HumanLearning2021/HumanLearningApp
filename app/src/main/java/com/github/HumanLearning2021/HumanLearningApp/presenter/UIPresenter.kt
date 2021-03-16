@@ -1,6 +1,6 @@
-package com.github.HumanLearning2021.HumanLearningApp.Presenter
+package com.github.HumanLearning2021.HumanLearningApp.presenter
 
-import com.github.HumanLearning2021.HumanLearningApp.Model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 
 
 /**

@@ -1,7 +1,6 @@
-package com.github.HumanLearning2021.HumanLearningApp.Model
+package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.app.Activity
-import android.graphics.drawable.Drawable
 import android.widget.ImageView
 
 

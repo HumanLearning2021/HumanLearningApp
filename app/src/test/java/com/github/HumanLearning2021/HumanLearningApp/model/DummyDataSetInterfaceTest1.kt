@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.Model
+package com.github.HumanLearning2021.HumanLearningApp.model
 
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test

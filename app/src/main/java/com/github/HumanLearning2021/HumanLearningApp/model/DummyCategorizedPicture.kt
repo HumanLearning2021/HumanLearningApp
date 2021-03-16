@@ -1,8 +1,7 @@
-package com.github.HumanLearning2021.HumanLearningApp.Model
+package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.app.Activity
 import android.widget.ImageView
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.github.HumanLearning2021.HumanLearningApp.R
 import java.lang.IllegalArgumentException
 
