@@ -26,9 +26,14 @@ class DummyDataSetInterfaceTest {
     }
 
     @Test
-    fun getPicture() = runBlockingTest {
+    fun getPictureWorks() = runBlockingTest {
         val actual = dummyDataSetInterface1.getPicture(fork)
         val expected = forkPic
         assertEquals(actual, expected)
+    }
+
+    @Test
+    fun getPictureInvalidCategory() = runBlockingTest {
+        assert(dummyDataSetInterface1.getPicture(DummyCategory("plate")) == null)
     }
 }

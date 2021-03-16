@@ -21,12 +21,17 @@ class DummyDataSetInterface : DataSetInterface {
      * A function to retrieve a picture from the data set given a category
      *
      * @param category the category of the image to be retrieved
+     * @return a CategorizedPicture from the desired category. Null if no picture of the desired
+     * category is present in the dataset.
      */
-    override suspend fun getPicture(category: Category): CategorizedPicture =
-        when (category) {
+    override suspend fun getPicture(category: Category): CategorizedPicture? {
+        if (!categories.contains(category)) return null
+
+        return when (category) {
             fork -> forkPic
             knife -> knifePic
-            else -> spoonPic
-
+            spoon -> spoonPic
+            else -> null
         }
+    }
 }

@@ -23,20 +23,19 @@ class DummyUIPresenterTest {
     @Test
     fun getPictureTestEquals() = runBlockingTest {
         val dummyPresenter = DummyUIPresenter()
-        assert(dummyPresenter.getPicture("Fork").equals(forkPic))
+        assert(dummyPresenter.getPicture("Fork")!!.equals(forkPic))
     }
 
     @Test
     fun getPictureTestNotEqual() = runBlockingTest {
         val dummyPresenter = DummyUIPresenter()
-        assert(!dummyPresenter.getPicture("Fork").equals(knifePic))
+        assert(!dummyPresenter.getPicture("Fork")!!.equals(knifePic))
     }
 
-
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun illegalCategoryThrows() = runBlockingTest {
         val dummyPresenter = DummyUIPresenter()
-        dummyPresenter.getPicture("plate")
+        assert(dummyPresenter.getPicture("plate") == null)
     }
 }
 

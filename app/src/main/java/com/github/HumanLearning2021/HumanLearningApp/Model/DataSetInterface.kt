@@ -7,5 +7,5 @@ import android.graphics.drawable.Drawable
  * An interface representing the part of the model interacting with data sets
  */
 interface DataSetInterface {
-    suspend fun getPicture(category: Category): CategorizedPicture
+    suspend fun getPicture(category: Category): CategorizedPicture?
 }
