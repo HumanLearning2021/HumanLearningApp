@@ -45,7 +45,7 @@ class DisplayPictureActivityTest {
 
     @Test
     fun viewIsDisplayed(){
-        assertDisplayed(R.id.imageView)
+        assertDisplayed(R.id.DisplayPicture_imageView)
     }
 
     @Test
