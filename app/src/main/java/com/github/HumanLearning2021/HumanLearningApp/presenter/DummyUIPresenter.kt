@@ -8,7 +8,7 @@ import java.lang.IllegalArgumentException
  * a class representing a dummy UI presenter
  */
 class DummyUIPresenter: UIPresenter {
-    private val dataSetInterface: DummyDataSetInterface = DummyDataSetInterface()
+    private val dataSetInterface: DummyDatasetInterface = DummyDatasetInterface()
 
 
     /**
