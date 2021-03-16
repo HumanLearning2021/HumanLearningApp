@@ -3,7 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 /**
  * a class representing a dummy data set Interface
  */
-class DummyDataSetInterface : DataSetInterface {
+class DummyDatasetInterface : DatasetInterface {
     private val fork = DummyCategory("Fork")
     private val knife = DummyCategory("Knife")
     private val spoon = DummyCategory("Spoon")
