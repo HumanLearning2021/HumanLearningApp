@@ -4,6 +4,7 @@ import com.github.HumanLearning2021.HumanLearningApp.Model.*
 
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
+import java.lang.IllegalArgumentException
 
 
 class DummyUIPresenterTest {
@@ -17,10 +18,15 @@ class DummyUIPresenterTest {
 
 
     @Test
-
-    fun getPictureTest() = runBlockingTest {
+    fun getPictureTestEquals() = runBlockingTest {
         val dummyPresenter = DummyUIPresenter()
         assert(dummyPresenter.getPicture("Fork").equals(forkPic))
+    }
+
+    @Test
+    fun getPictureTestNotEqual() = runBlockingTest {
+        val dummyPresenter = DummyUIPresenter()
+        assert(!dummyPresenter.getPicture("Fork").equals(knifePic))
     }
 }
 
