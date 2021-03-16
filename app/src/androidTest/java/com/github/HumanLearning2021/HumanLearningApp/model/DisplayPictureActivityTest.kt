@@ -36,12 +36,6 @@ class DisplayPictureActivityTest {
     fun cleanUp() {
         Intents.release()
     }
-    @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.github.HumanLearning2021.HumanLearningApp", appContext.packageName)
-    }
 
     @Test
     fun viewIsDisplayed(){
