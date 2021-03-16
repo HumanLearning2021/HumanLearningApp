@@ -8,7 +8,7 @@ import java.lang.IllegalArgumentException
 /**
  * A picture part of the dummy data set. Can be of any of the following categories: "fork", "knife", "spoon"
  */
-class DummyCategorizedPicture(override val category: Category) : CategorizedPicture {
+data class DummyCategorizedPicture(override val category: Category) : CategorizedPicture {
 
     override fun displayOn(activity: Activity, imageView: ImageView) {
         if(category !is DummyCategory) throw IllegalArgumentException("provide a dummy category to the class constructor")
@@ -19,13 +19,5 @@ class DummyCategorizedPicture(override val category: Category) : CategorizedPict
             "spoon" -> imageView.setImageResource(R.drawable.spoon)
             else -> throw IllegalArgumentException("only spoon, fork, knife are valid category to retrieve from dummy dataset")
         }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return other is CategorizedPicture && other.category == category
-    }
-
-    override fun hashCode(): Int {
-        return 17 + 31*category.hashCode()
     }
 }
