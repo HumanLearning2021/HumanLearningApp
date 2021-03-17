@@ -15,7 +15,6 @@
         android:theme="@style/Theme.HumanLearning">
         <activity android:name=".view.DisplayImageActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".model.DisplayPictureActivity" />
         <activity android:name=".AddPictureActivity" />
         <activity android:name=".view.LearningActivity" />
         <activity android:name=".view.DisplayDatasetActivity">
