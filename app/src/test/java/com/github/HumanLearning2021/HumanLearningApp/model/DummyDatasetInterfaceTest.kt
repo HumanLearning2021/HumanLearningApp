@@ -29,10 +29,12 @@ class DummyDataSetInterfaceTest {
     private val forkPic = DummyCategorizedPicture(fork)
     private val knifePic = DummyCategorizedPicture(knife)
     private val spoonPic = DummyCategorizedPicture(spoon)
+    private val tablePic = DummyCategorizedPicture(table)
+
 
 
     @Test
-    fun getPictureWorks() = runBlockingTest {
+    fun getForkWorks() = runBlockingTest {
         val actual = dummyDatasetInterface1.getPicture(fork)
         val expected = forkPic
         assertEquals(actual, expected)
@@ -46,6 +48,17 @@ class DummyDataSetInterfaceTest {
     @Test
     fun getPictureCategoryEmpty() = runBlockingTest {
         assertThat(dummyDatasetInterface1.getPicture(dummyDatasetInterface1.putCategory("plate")), equalTo(null))
+    }
+
+    @Test
+    fun putAndThenGetWorks() = runBlockingTest {
+        //TODO: find a way to create drawable outside of activity
+        /*
+        dummyDatasetInterface1.putCategory("table")
+        dummyDatasetInterface1.putPicture(null!!, table)
+
+        assertThat(dummyDatasetInterface1.getPicture(table), equalTo(DummyCategorizedPicture(table)))
+         */
     }
 
     @Test//(expected = IllegalArgumentException::class)
@@ -84,7 +97,5 @@ class DummyDataSetInterfaceTest {
     fun getCategoriesWorks() = runBlockingTest {
         dummyDatasetInterface1.putCategory("table")
         assertThat(dummyDatasetInterface1.getCategories(), equalTo(setOf(fork, spoon, knife, table)))
-
-
     }
 }

@@ -11,8 +11,17 @@ class DisplayPictureActivity : AppCompatActivity() {
         setContentView(R.layout.activity_categorized_picture_display_test)
 
         val spoon = DummyCategorizedPicture(DummyCategory("spoon"))
+        val knife = DummyCategorizedPicture(DummyCategory("knife"))
+        val fork = DummyCategorizedPicture(DummyCategory("fork"))
 
-        val imageView = findViewById<ImageView>(R.id.DisplayPicture_imageView)
-        spoon.displayOn(this, imageView)
+        val imageViewFork = findViewById<ImageView>(R.id.DisplayFork_imageView)
+        val imageViewSpoon = findViewById<ImageView>(R.id.DisplaySpoon_imageView)
+        val imageViewKnife = findViewById<ImageView>(R.id.DisplayKnife_imageView)
+
+        spoon.displayOn(this, imageViewSpoon)
+        fork.displayOn(this, imageViewFork)
+        knife.displayOn(this, imageViewKnife)
+
+
     }
 }

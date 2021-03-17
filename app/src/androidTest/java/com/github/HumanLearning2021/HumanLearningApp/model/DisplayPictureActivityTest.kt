@@ -37,13 +37,35 @@ class DisplayPictureActivityTest {
     }
 
     @Test
-    fun viewIsDisplayed(){
-        assertDisplayed(R.id.DisplayPicture_imageView)
+    fun viewForkIsDisplayed(){
+        assertDisplayed(R.id.DisplayFork_imageView)
     }
 
     @Test
-    fun forkIsDisplayedInView(){
-        assertHasDrawable(R.id.DisplayPicture_imageView, R.drawable.spoon)
+    fun viewSpoonIsDisplayed(){
+        assertDisplayed(R.id.DisplaySpoon_imageView)
     }
+
+    @Test
+    fun viewKnifeIsDisplayed(){
+        assertDisplayed(R.id.DisplayKnife_imageView)
+    }
+
+
+    @Test
+    fun forkIsDisplayedInView(){
+        assertHasDrawable(R.id.DisplayFork_imageView, R.drawable.fork)
+    }
+
+    @Test
+    fun spoonIsDisplayedInView(){
+        assertHasDrawable(R.id.DisplaySpoon_imageView, R.drawable.spoon)
+    }
+
+    @Test
+    fun knifeIsDisplayedInView(){
+        assertHasDrawable(R.id.DisplayKnife_imageView, R.drawable.knife)
+    }
+
 
 }

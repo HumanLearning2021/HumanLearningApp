@@ -19,8 +19,6 @@ data class DummyCategorizedPicture(override val category: Category) : Categorize
             "fork" -> imageView.setImageResource(R.drawable.fork)
             "knife" -> imageView.setImageResource(R.drawable.knife)
             "spoon" -> imageView.setImageResource(R.drawable.spoon)
-            else -> throw IllegalArgumentException("only spoon, fork, knife can currently be " +
-                    "displayed")
         }
     }
 }

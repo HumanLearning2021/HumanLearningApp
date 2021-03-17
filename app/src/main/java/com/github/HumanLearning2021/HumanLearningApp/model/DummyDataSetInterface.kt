@@ -18,25 +18,29 @@ class DummyDatasetInterface : DatasetInterface {
     private val knifePic = DummyCategorizedPicture(knife)
     private val spoonPic = DummyCategorizedPicture(spoon)
 
+    val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
+
+
+
 
     override suspend fun getPicture(category: Category): CategorizedPicture?{
         if (!categories.contains(category)) throw IllegalArgumentException("The provided category" +
                 "is not present in the dataset")
-        if(category != fork && category != spoon && category != knife) return null
 
-        return when (category) {
-            fork -> forkPic
-            knife -> knifePic
-            spoon -> spoonPic
-            else -> null
-        }
+        for(p in pictures)
+            if(p == DummyCategorizedPicture(category)) return p
+
+        return null
     }
 
     override suspend fun putPicture(picture: Drawable, category: Category): CategorizedPicture {
         if(!categories.contains(category)) throw IllegalArgumentException("The provided category" +
                 "is not present in the dataset")
 
-        return DummyCategorizedPicture(category)
+        val picture = DummyCategorizedPicture(category)
+        pictures.add(picture)
+
+        return picture
     }
 
     override suspend fun getCategory(categoryName: String): Category? {
