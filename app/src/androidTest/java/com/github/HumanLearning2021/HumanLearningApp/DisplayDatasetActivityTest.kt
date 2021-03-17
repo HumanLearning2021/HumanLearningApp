@@ -71,13 +71,14 @@ class DisplayDatasetActivityTest {
                 .inAdapterView(withId(R.id.display_dataset_imagesGridView))
                 .atPosition(randomNb)
                 .perform(click())
-        }
-        intended(
-            allOf(
-                hasComponent(DisplayImageActivity::class.java.name),
-                hasExtra("display_image_image", (datasetImagesList[randomNb]) as Serializable)
+
+            intended(
+                allOf(
+                    hasComponent(DisplayImageActivity::class.java.name),
+                    hasExtra("display_image_image", (datasetImagesList[randomNb]) as Serializable)
+                )
             )
-        )
+        }
     }
 
 }

@@ -39,7 +39,8 @@ class DisplayDatasetActivity : AppCompatActivity() {
             datasetImagesList.add(dummyPresenter.getPicture(knife.name)!!)
             datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
 
-            val displayDatasetAdapter = DisplayDatasetAdapter(datasetImagesList, this@DisplayDatasetActivity)
+            val displayDatasetAdapter =
+                DisplayDatasetAdapter(datasetImagesList, this@DisplayDatasetActivity)
 
             findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
                 displayDatasetAdapter

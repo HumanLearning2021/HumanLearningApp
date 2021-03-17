@@ -1,11 +1,10 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategorizedPicture
 
 class DisplayImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
