@@ -1,6 +1,5 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
-import androidx.lifecycle.lifecycleScope
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -18,9 +17,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
-import com.schibsted.spain.barista.rule.flaky.Repeat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.anything
@@ -28,7 +25,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.Serializable
-import kotlin.random.Random
 
 
 @RunWith(AndroidJUnit4::class)
@@ -62,25 +58,26 @@ class DisplayDatasetActivityTest {
     @ExperimentalCoroutinesApi
     @Test
     fun WhenClickOnImageDisplayImageActivityAndCorrectImage() {
+
+        val randomNb = (0 until NUMBER_OF_CAT).random()
+
         runBlockingTest {
 
             datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
             datasetImagesList.add(dummyPresenter.getPicture(knife.name)!!)
             datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
 
-            var randomNb = (0 until NUMBER_OF_CAT).random()
             onData(anything())
                 .inAdapterView(withId(R.id.display_dataset_imagesGridView))
                 .atPosition(randomNb)
                 .perform(click())
-
-            intended(
-                allOf(
-                    hasComponent(DisplayImageActivity::class.java.name),
-                    hasExtra("display_image_image", (datasetImagesList[randomNb]) as Serializable)
-                )
-            )
         }
+        intended(
+            allOf(
+                hasComponent(DisplayImageActivity::class.java.name),
+                hasExtra("display_image_image", (datasetImagesList[randomNb]) as Serializable)
+            )
+        )
     }
 
 }

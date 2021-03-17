@@ -1,4 +1,4 @@
-    package com.github.HumanLearning2021.HumanLearningApp.presenter
+package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory

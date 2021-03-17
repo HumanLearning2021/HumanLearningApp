@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,13 +23,13 @@ import java.io.Serializable
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
-    val fork = DummyCategory("fork")
-    val knife = DummyCategory("knife")
-    val spoon = DummyCategory("spoon")
+    private val fork = DummyCategory("fork")
+    private val knife = DummyCategory("knife")
+    private val spoon = DummyCategory("spoon")
 
-    val dummyPresenter = DummyUIPresenter()
+    private val dummyPresenter = DummyUIPresenter()
 
-    val datasetImagesList = ArrayList<CategorizedPicture>()
+    private val datasetImagesList = ArrayList<CategorizedPicture>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,24 +38,25 @@ class DisplayDatasetActivity : AppCompatActivity() {
             datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
             datasetImagesList.add(dummyPresenter.getPicture(knife.name)!!)
             datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
-        }
 
-        val displayDatasetAdapter = DisplayDatasetAdapter(datasetImagesList, this)
+            val displayDatasetAdapter = DisplayDatasetAdapter(datasetImagesList, this@DisplayDatasetActivity)
 
-        findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter = displayDatasetAdapter
+            findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
+                displayDatasetAdapter
 
-        findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
-            val intent = Intent(this, DisplayImageActivity::class.java)
-            intent.putExtra("display_image_image", (datasetImagesList[i]) as Serializable)
-            startActivity(intent)
+            findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
+                val intent = Intent(this@DisplayDatasetActivity, DisplayImageActivity::class.java)
+                intent.putExtra("display_image_image", (datasetImagesList[i]) as Serializable)
+                startActivity(intent)
+            }
         }
 
 
     }
 
     class DisplayDatasetAdapter(
-        private var images: ArrayList<CategorizedPicture>,
-        private var context: Context
+        private val images: ArrayList<CategorizedPicture>,
+        private val context: Activity
     ) : BaseAdapter() {
 
         private var layoutInflater =
@@ -70,9 +70,9 @@ class DisplayDatasetActivity : AppCompatActivity() {
             val imageView = view?.findViewById<ImageView>(R.id.image_and_category_item_imageView)
 
             imageCat?.text = images[position].category.name
-            images[position].displayOn(context as Activity , imageView as ImageView)
+            images[position].displayOn(context, imageView as ImageView)
 
-            return view!!
+            return view
         }
 
         override fun getItem(position: Int): Any {

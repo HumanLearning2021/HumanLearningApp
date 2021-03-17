@@ -9,7 +9,7 @@ import java.io.Serializable
  * @param name the name of the category (case-insensitive)
  */
 
-class DummyCategory(name: String):Category, Serializable {
+class DummyCategory(name: String):Category{
     override val name = name.toLowerCase()
 
     override fun equals(other: Any?): Boolean {
