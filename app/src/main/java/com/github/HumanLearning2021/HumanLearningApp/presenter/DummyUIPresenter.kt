@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
+import android.graphics.drawable.Drawable
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import java.lang.IllegalArgumentException
 
@@ -8,7 +9,7 @@ import java.lang.IllegalArgumentException
  * a class representing a dummy UI presenter
  */
 class DummyUIPresenter: UIPresenter {
-    private val dataSetInterface: DummyDatasetInterface = DummyDatasetInterface()
+    val dataSetInterface: DummyDatasetInterface = DummyDatasetInterface()
 
 
     /**
@@ -19,5 +20,14 @@ class DummyUIPresenter: UIPresenter {
      */
     override suspend fun getPicture(categoryString: String): CategorizedPicture? {
         return dataSetInterface.getPicture(DummyCategory(categoryString))
+    }
+
+    override suspend fun putPicture(picture: Drawable, categoryString: String): CategorizedPicture {
+        var category = dataSetInterface.getCategory(categoryString)
+
+        if(category == null)
+            category = dataSetInterface.putCategory(categoryString)
+
+        return dataSetInterface.putPicture(picture, category)
     }
 }
