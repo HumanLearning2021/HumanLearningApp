@@ -18,7 +18,7 @@ import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.anything
 import org.junit.Rule
@@ -61,7 +61,7 @@ class DisplayDatasetActivityTest {
 
         val randomNb = (0 until NUMBER_OF_CAT).random()
 
-        runBlockingTest {
+        runBlocking {
 
             datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
             datasetImagesList.add(dummyPresenter.getPicture(knife.name)!!)
