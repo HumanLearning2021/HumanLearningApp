@@ -4,7 +4,11 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.core.app.ActivityOptionsCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -25,6 +29,8 @@ import org.hamcrest.Matchers.not
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
+import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
 import java.lang.reflect.Method
 
 @RunWith(AndroidJUnit4::class)
@@ -211,4 +217,16 @@ class AddPictureActivityTest {
         }
         onView(withText("Error")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
     }
+
+    @Test
+    fun activityContractCorrectlyParsesResult() {
+        val bundle = Bundle().apply {
+            putString("category", "some_category")
+            putParcelable("image", Uri.EMPTY)
+        }
+        val intent = Intent().putExtra("result", bundle)
+        assert(AddPictureActivity.AddPictureContract.parseResult(Activity.RESULT_OK, intent)!!.first == "some_category")
+        assert(AddPictureActivity.AddPictureContract.parseResult(Activity.RESULT_CANCELED, intent) == null)
+    }
+
 }

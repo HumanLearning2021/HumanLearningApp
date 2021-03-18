@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -17,7 +16,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
@@ -48,7 +46,7 @@ class AddPictureActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val extra = intent.getStringArrayExtra("categories")
         if (extra != null) {
-            categories += extra!!
+            categories += extra
         }
         if (cameraIsAvailable()) {
             when {
@@ -89,6 +87,7 @@ class AddPictureActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onSave(view: View) {
         val returnIntent = Intent()
         val bundle = Bundle().apply {
@@ -100,6 +99,7 @@ class AddPictureActivity : AppCompatActivity() {
         finish()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onTakePicture(view: View) {
         val executor = Executors.newSingleThreadExecutor()
         val file: File = filesDir
@@ -127,6 +127,7 @@ class AddPictureActivity : AppCompatActivity() {
             })
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onSelectCategoryButton(view: View) {
         val builder = AlertDialog.Builder(this)
         builder.apply {
@@ -220,6 +221,7 @@ class AddPictureActivity : AppCompatActivity() {
         return applicationContext.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun resetCaptureButton(view: View) {
         val button = findViewById<Button>(R.id.takePictureButton)
         updateButton(button, R.string.AddPicture_takePictureButtonText, R.color.white,  R.color.button_default)
