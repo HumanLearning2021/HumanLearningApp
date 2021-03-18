@@ -7,7 +7,7 @@ import android.widget.ImageView
 /**
  * Interface representing a categorized picture
  */
-interface CategorizedPicture {
+interface CategorizedPicture: Serializable{
     abstract val category:Category
 
     /**
