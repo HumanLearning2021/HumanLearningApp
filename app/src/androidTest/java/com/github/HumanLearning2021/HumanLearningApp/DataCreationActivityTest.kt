@@ -83,16 +83,7 @@ class DataCreationActivityTest {
 
 
     }
-    @Test
-    fun rowViewIsRemovedWhenRemoveButtonIsClicked(){
-        onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
-        val delayBeforeTestStart: Long = 100
-        onView(isRoot()).perform(waitFor(delayBeforeTestStart))
-        onView(ViewMatchers.withId(R.id.button_remove)).perform(ViewActions.click())
-        onView(ViewMatchers.withId(R.id.parent_linear_layout)).check(ViewAssertions.matches(
-            ViewMatchers.hasChildCount(0)))
-
-    }
+   
 
 
 
