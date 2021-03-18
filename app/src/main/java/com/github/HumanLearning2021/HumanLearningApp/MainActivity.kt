@@ -1,22 +1,40 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
 
+
 class MainActivity : AppCompatActivity() {
+    val addPicture = registerForActivityResult(AddPictureActivity.AddPictureContract) { result ->
+        if (result != null) {
+            val img = ImageView(this)
+            img.setImageDrawable(Drawable.createFromPath(result.second.path))
+            val builder: AlertDialog.Builder =
+                AlertDialog.Builder(this).apply {
+                    setMessage(result.first)
+                    setPositiveButton("OK"
+                    ) { dialog, which -> dialog.dismiss() }.setView(img)
+                }
+            builder.create().show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
 
     fun launchToCameraActivity(view: View) {
-        val intent = Intent(this, AddPictureActivity::class.java)
-        startActivity(intent)
+        addPicture.launch(arrayOf("selfie", "yellow head", "some guy"))
     }
 
     fun launchToDisplayDatasetActivity(view: View) {
