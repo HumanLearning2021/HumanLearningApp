@@ -45,7 +45,8 @@ class DisplayDatasetActivity : AppCompatActivity() {
             findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
                 displayDatasetAdapter
 
-            findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
+            findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { 
+            adapterView, view, i, l ->
                 val intent = Intent(this@DisplayDatasetActivity, DisplayImageActivity::class.java)
                 intent.putExtra("display_image_image", (datasetImagesList[i]) as Serializable)
                 startActivity(intent)
