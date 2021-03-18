@@ -15,7 +15,7 @@ I noted that, since Martin and I miscommunicated, it might be preferable in the 
 
 ## Konrad, Jonas Franz
 This week I implemented the AddPictureActivity completely. I had to resolve how this activity would communicate with the rest of the app and how it will return the result (the picture which was taken and the assigned category). This was done using an ActivityResultContract.
-I could not find out how to deny permissions during testing. This lead to the 80% test coverage being unachievable and the merge to be impossible due to the CI. I also don't know how to test the aforementioned contract correctly.
+I could not find out how to deny permissions during testing which means that I can't test the activity properly.
 
 ## Lachat, Niels Marco
 
