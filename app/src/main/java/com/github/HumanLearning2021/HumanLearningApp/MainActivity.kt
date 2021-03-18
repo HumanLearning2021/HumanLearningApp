@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun launchToCameraActivity(view: View) {
-        addPicture.launch(arrayOf("selfie", "yellow head", "some guy"))
+        addPicture.launch(arrayOf("window", "sofa", "television"))
     }
 
     fun launchToDisplayDatasetActivity(view: View) {
