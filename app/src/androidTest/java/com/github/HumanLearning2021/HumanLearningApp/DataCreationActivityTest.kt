@@ -18,16 +18,24 @@ import org.junit.Test
 
 
 @RunWith(AndroidJUnit4::class)
-class DataCreationActivityTestgit  {
+class DataCreationActivityTest {
 
     @get:Rule
     var testRule = ActivityTestRule(DataCreationActivity::class.java)
 
 
     @Test
-    fun rowViewIsDsiplayedWhenAddButtonIsClicked(){
+    fun rowViewIsDsiplayedWhenAddButtonIsClicked() {
         onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
         onView(ViewMatchers.withHint("Enter Category")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+
+    }
+
+    @Test
+    fun rowButtonViewIsDsiplayedWhenAddButtonIsClicked(){
+        onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
+        onView(ViewMatchers.withId(R.id.button_add)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
 
     }
@@ -36,24 +44,17 @@ class DataCreationActivityTestgit  {
     fun rowViewIsAddedWhenAddButtonIsClicked(){
         onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
         onView(ViewMatchers.withId(R.id.parent_linear_layout)).check(ViewAssertions.matches(
-            ViewMatchers.hasChildCount(1)))
+                ViewMatchers.hasChildCount(1)))
 
 
     }
-    /*@Test
+    @Test
     fun rowViewIsRemovedWhenRemoveButtonIsClicked(){
         onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
         onView(ViewMatchers.withId(R.id.button_remove)).perform(ViewActions.click())
         onView(ViewMatchers.withId(R.id.parent_linear_layout)).check(ViewAssertions.matches(
             ViewMatchers.hasChildCount(0)))
 
-    }*/
-
-
-
-
-
-
-
+    }
 
 }
