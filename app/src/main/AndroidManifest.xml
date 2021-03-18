@@ -15,6 +15,9 @@
         android:theme="@style/Theme.HumanLearning">
         <activity android:name=".DataCreationActivity"/>
         <activity android:name=".AddPictureActivity" />
+        <activity android:name=".view.DisplayImageActivity" />
+        <activity android:name=".view.DisplayDatasetActivity" />
+        <activity android:name=".view.LearningActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

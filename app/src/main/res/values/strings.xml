@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Human Learning</string>
+    
     <string name="AddPicture_takePictureButtonText">Take a picture</string>
     <string name="AddPicture_selectCategoryButtonText">Select the category</string>
     <string name="AddPicture_saveButtonText">Save selection</string>
@@ -11,4 +12,8 @@
     <string name="DataCreationActivity_DataCreationSubmitButton">Submit</string>
     <string name="DataCreationActivity_DataCreationAddButton">Add</string>
     <string name="DataCreationActivity_DataCreationCat">Enter Category</string>
+    <string name="learning_im_to_sort_descr">blue</string>
+    <string name="learning_cat_0_descr">red</string>
+    <string name="learning_cat_1_descr">green</string>
+    <string name="learning_cat_2_descr">blue</string>
 </resources>
