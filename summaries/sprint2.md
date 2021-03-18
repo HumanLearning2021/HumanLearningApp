@@ -1,4 +1,4 @@
-# Week 1 sprint retrospective
+# Week 2 sprint retrospective
 
 ## Scrum master (Konrad, Jonas)
 This week we vastly improved on time management in meetings. They were much shorter and a lot more efficient.
