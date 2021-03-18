@@ -46,7 +46,7 @@
         android:layout_marginRight="15dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:text="@string/DataCreationActivity_DataCrationSubmitButton"
+        android:text="@string/DataCreationActivity_DataCreationSubmitButton"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
