@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.app.Activity
 import android.widget.ImageView
+import java.io.Serializable
 
 
 /**
