@@ -3,6 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -25,7 +26,6 @@ import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.lang.reflect.Method
-
 
 @RunWith(AndroidJUnit4::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // to enforce consistent order of tests
