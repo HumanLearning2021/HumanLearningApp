@@ -18,7 +18,7 @@ class DummyUIPresenter: UIPresenter {
      * @param categoryString the name of the category of the picture to retrieve. Can be "knife", "fork", or "spoon"
      * @throws IllegalArgumentException if the string provided doesn't match any of "knife", "fork", or "spoon"
      */
-    override suspend fun getPicture(categoryString: String): CategorizedPicture? {
+    override suspend fun getPicture(categoryName: String): CategorizedPicture? {
         return dataSetInterface.getPicture(DummyCategory(categoryString))
     }
 
