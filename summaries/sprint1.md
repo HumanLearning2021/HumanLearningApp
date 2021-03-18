@@ -11,7 +11,7 @@ I spent much more time than alloted on this, and I hope to be able to focus more
 
 ## Jaakik, Marouane
 
-This week I have been implementing the user interface for creating datasets and associating the necessary categories names. Initially I thought of making a simple interface to chose whether to download or create a dataset consisting only of one single category object, However during the midweek standup there has been a change of plans so then I switched to implementing an interface to dynamically add the categories necessary when taking the picture
+This week I have been implementing the user interface for creating datasets and associating the necessary categories names. Initially I thought of making a simple interface to chose whether to download or create a dataset consisting only of one single category object, However during the midweek standup there has been a change of plans so then I switched to implementing an interface to dynamically add the categories necessary when taking the picture.
 
 ## Konrad, Jonas Franz
 
