@@ -7,6 +7,9 @@ Average meeting duration was 15 minutes.
 Pull request were there faster but not entirely ready for merging on Wednesday because of troubles writing the tests.
 
 ## Bettens, Louis
+This week I provided a well-modularised implementation of the cloud database back-end of the app. This required discussing the interface of the module with the rest of the team, in particular with Martin who provided it. I also had to fight the CI to get acceptable test coverage on my work due to odd issues with the Glide library, which took a lot of time at the end of the process and almost caused a failure to deliver on time.
+
+I noted that, since Martin and I miscommunicated, it might be preferable in the future to structure such discussions around trying to write down a decision in an electronic document, so as to make sure everything is clear and can be referred back to.
 
 ## Jaakik, Marouane
 
