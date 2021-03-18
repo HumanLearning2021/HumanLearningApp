@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.graphics.drawable.Drawable
+import java.io.Serializable
 
 
 /**
@@ -21,12 +22,14 @@ interface DatasetInterface {
     /**
      * A function that allows to put a picture in the dataset
      *
-     * @param picture the picture to put in the dataset
+     * @param picture the picture to put in the dataset. Must implement the serializable interface.
+     * A way to do this is by creating a class containing an ID and an array of bytes containing the
+     * PNG data.
      * @param category the category to which the picture belongs
      * @return a Categorized picture built using 'picture' and 'category'
      * @throws IllegalArgumentException if the category provided is not present in the dataset
      */
-    suspend fun putPicture(picture: Drawable, category: Category): CategorizedPicture
+    suspend fun putPicture(picture: Serializable, category: Category): CategorizedPicture
 
     /**
      * A function to retrieve a category

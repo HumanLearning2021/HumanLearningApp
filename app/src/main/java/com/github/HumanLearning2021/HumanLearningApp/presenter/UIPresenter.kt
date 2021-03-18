@@ -3,6 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 import android.graphics.drawable.Drawable
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import java.io.Serializable
 
 
 /**
@@ -23,10 +24,12 @@ interface UIPresenter {
     /**
      * A function that allows to put a picture in the dataset
      *
-     * @param picture the picture to put in the dataset
+     * @param picture the picture to put in the dataset. Must implement the serializable interface.
+     * A way to do this is by creating a class containing an ID and an array of bytes containing the
+     * PNG data.
      * @param categoryName the name of the category to which the picture belongs
      * @return a Categorized picture built using 'picture' and 'category'
      * @throws IllegalArgumentException if the category provided is not present in the dataset
      */
-    suspend fun putPicture(picture: Drawable, categoryName: String): CategorizedPicture
+    suspend fun putPicture(picture: Serializable, categoryName: String): CategorizedPicture
 }

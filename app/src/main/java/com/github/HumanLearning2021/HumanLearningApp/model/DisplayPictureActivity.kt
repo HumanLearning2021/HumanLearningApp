@@ -21,7 +21,5 @@ class DisplayPictureActivity : AppCompatActivity() {
         spoon.displayOn(this, imageViewSpoon)
         fork.displayOn(this, imageViewFork)
         knife.displayOn(this, imageViewKnife)
-
-
     }
 }
