@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.app.Activity
 import android.widget.ImageView
+import java.io.Serializable
 
 
 /**
@@ -9,7 +10,7 @@ import android.widget.ImageView
  */
 
 
-interface CategorizedPicture {
+interface CategorizedPicture : Serializable{
     abstract val category:Category
 
     /**
