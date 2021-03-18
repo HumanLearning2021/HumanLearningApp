@@ -2,10 +2,13 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
+import com.github.HumanLearning2021.HumanLearningApp.model.DummySerializable
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.junit.Test
+import java.io.Serializable
 
 
 class DummyUIPresenterTest {
@@ -42,14 +45,25 @@ class DummyUIPresenterTest {
         assertThat(dummyPresenter.getPicture("plate"), equalTo(null))
     }
 
-    @Test//(expected = IllegalArgumentException::class)
-    fun putPictureCategoryNotPresentThrows() = runBlockingTest {
-        //TODO: find a way to create drawable outside of activity
+    @Test
+    fun putAndThenGetWorks() = runBlockingTest {
+        val dummyPresenter = DummyUIPresenter()
+        dummyPresenter.putPicture(DummySerializable(),"fork")
+        assertThat(dummyPresenter.getPicture("fork"),
+            Matchers.equalTo(DummyCategorizedPicture(fork))
+        )
     }
 
     @Test
-    fun putPictureCategoryPresent() = runBlockingTest {
-        //TODO: find a way to create drawable outside of activity
+    fun putPictureCategoryNotPresent() = runBlockingTest {
+        val dummyPresenter = DummyUIPresenter()
+        val tablePic = dummyPresenter.putPicture(DummySerializable(),"table")
+        assertThat(dummyPresenter.getPicture("table"),
+            Matchers.equalTo(tablePic)
+        )
     }
+}
+
+class DummySerializable: Serializable {
 }
 

@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.graphics.drawable.Drawable
+import java.io.Serializable
 import java.lang.IllegalArgumentException
 import java.util.*
 
@@ -33,7 +34,7 @@ class DummyDatasetInterface : DatasetInterface {
         return null
     }
 
-    override suspend fun putPicture(picture: Drawable, category: Category): CategorizedPicture {
+    override suspend fun putPicture(picture: Serializable, category: Category): CategorizedPicture {
         if(!categories.contains(category)) throw IllegalArgumentException("The provided category" +
                 "is not present in the dataset")
 

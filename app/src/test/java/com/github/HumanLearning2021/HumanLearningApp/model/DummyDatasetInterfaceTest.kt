@@ -2,6 +2,8 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.core.content.res.ResourcesCompat.getDrawable
 import com.github.HumanLearning2021.HumanLearningApp.R
 import org.junit.Assert.*
@@ -12,8 +14,7 @@ import org.junit.Assert.*
 import java.lang.IllegalArgumentException
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-
-
+import java.io.Serializable
 class DummyDataSetInterfaceTest {
     val dummyDatasetInterface1 = DummyDatasetInterface()
     val dummyDatasetInterface2 = DummyDatasetInterface()
@@ -30,6 +31,7 @@ class DummyDataSetInterfaceTest {
     private val knifePic = DummyCategorizedPicture(knife)
     private val spoonPic = DummyCategorizedPicture(spoon)
     private val tablePic = DummyCategorizedPicture(table)
+
 
 
 
@@ -52,23 +54,17 @@ class DummyDataSetInterfaceTest {
 
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
-        //TODO: find a way to create drawable outside of activity
-        /*
+
         dummyDatasetInterface1.putCategory("table")
-        dummyDatasetInterface1.putPicture(null!!, table)
+        dummyDatasetInterface1.putPicture(DummySerializable(), table)
 
         assertThat(dummyDatasetInterface1.getPicture(table), equalTo(DummyCategorizedPicture(table)))
-         */
+
     }
 
-    @Test//(expected = IllegalArgumentException::class)
+    @Test(expected = IllegalArgumentException::class)
     fun putPictureCategoryNotPresentThrows() = runBlockingTest {
-        //TODO: find a way to create drawable outside of activity
-    }
-
-    @Test
-    fun putPictureCategoryPresent() = runBlockingTest {
-        //TODO: find a way to create drawable outside of activity
+        dummyDatasetInterface1.putPicture(DummySerializable(), table)
     }
 
     @Test
@@ -98,4 +94,7 @@ class DummyDataSetInterfaceTest {
         dummyDatasetInterface1.putCategory("table")
         assertThat(dummyDatasetInterface1.getCategories(), equalTo(setOf(fork, spoon, knife, table)))
     }
+}
+
+class DummySerializable:Serializable {
 }

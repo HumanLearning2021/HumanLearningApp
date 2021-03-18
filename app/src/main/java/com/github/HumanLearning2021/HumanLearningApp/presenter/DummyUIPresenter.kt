@@ -32,3 +32,4 @@ class DummyUIPresenter: UIPresenter {
         return dataSetInterface.putPicture(picture, category)
     }
 }
+
