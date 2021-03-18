@@ -19,5 +19,5 @@ I could not find out how to deny permissions during testing. This lead to the 80
 ## Lenweiter, Martin
 
 ## Vial, Nicolas
-
+During this sprint I finished the UI to display a dataset and the UI that displays the picture on which we click and I made it work with the actual model. I also learned how to do certain type of tests to be able to do add some more tests next week. i think that those UI are working great and we are now able to use them. What went wrong was when I had to do the tests pass with CI which causes a lot of weird errors but I finally managed to pass the tests. It is still really hard for me to estimate how much time it takes to finish a certain task (Probably due to the fact that I need a lot of time to write good tests).
 ## Overall Team: Lessons Learned
