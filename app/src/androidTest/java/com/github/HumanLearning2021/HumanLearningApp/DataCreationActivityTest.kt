@@ -30,8 +30,9 @@ class DataCreationActivityTestgit  {
         onView(ViewMatchers.withHint("Enter Category")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
 
-
     }
+
+    @Test
     fun rowViewIsAddedWhenAddButtonIsClicked(){
         onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
         onView(ViewMatchers.withId(R.id.parent_linear_layout)).check(ViewAssertions.matches(
@@ -39,7 +40,7 @@ class DataCreationActivityTestgit  {
 
 
     }
-
+    @Test
     fun rowViewIsRemovedWhenRemoveButtonIsClicked(){
         onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
         onView(ViewMatchers.withId(R.id.button_remove)).perform(ViewActions.click())
@@ -47,6 +48,7 @@ class DataCreationActivityTestgit  {
             ViewMatchers.hasChildCount(0)))
 
     }
+
 
 
 
