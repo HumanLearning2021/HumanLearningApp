@@ -48,6 +48,7 @@ class DataCreationActivity : AppCompatActivity() {
 
     }
 
+    // this method will be the building block for linking this activtiy to the camera activity
 
     /*private fun saveData() {
         categoryList.clear()
