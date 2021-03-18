@@ -28,9 +28,9 @@ class DataCreationActivity : AppCompatActivity() {
         }
 
 
-        binding.buttonSubmitList.setOnClickListener {
+        /*binding.buttonSubmitList.setOnClickListener {
             saveData()
-        }
+        }*/
 
 
     }
@@ -49,7 +49,7 @@ class DataCreationActivity : AppCompatActivity() {
     }
 
 
-    private fun saveData() {
+    /*private fun saveData() {
         categoryList.clear()
 
         val count = binding.parentLinearLayout.childCount
@@ -66,7 +66,7 @@ class DataCreationActivity : AppCompatActivity() {
             // add the data to arraylist
             categoryList.add(category)
         }
-    }
+    }*/
 
 
 
