@@ -82,6 +82,18 @@ class DataCreationActivityTest {
                 ViewMatchers.hasChildCount(1)))
 
 
+     @Test
+     fun canAddMultipleRowViews(){
+         onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
+         onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
+         onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
+         onView(ViewMatchers.withId(R.id.parent_linear_layout)).check(ViewAssertions.matches(
+             ViewMatchers.hasChildCount(3)))
+
+
+     }
+
+
     }
     @Test
     fun rowViewIsRemovedWhenRemoveButtonIsClicked(){
