@@ -1,5 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import java.io.Serializable
+
 
 /**
  * Class representing a dummy implementation of the category interface
@@ -7,7 +9,7 @@ package com.github.HumanLearning2021.HumanLearningApp.model
  * @param name the name of the category (case-insensitive)
  */
 
-class DummyCategory(name: String):Category {
+class DummyCategory(name: String):Category{
     override val name = name.toLowerCase()
 
     override fun equals(other: Any?): Boolean {
