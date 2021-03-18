@@ -12,6 +12,7 @@ This week I provided a well-modularised implementation of the cloud database bac
 I noted that, since Martin and I miscommunicated, it might be preferable in the future to structure such discussions around trying to write down a decision in an electronic document, so as to make sure everything is clear and can be referred back to.
 
 ## Jaakik, Marouane
+During This week, I have been able to implement a dynamic interface to enter the required label names for the creation of the Dataset, where the user can add and remove and edit the labels before submitting those. The main challenges I faced this week were in regard of testing my interface and actually making the tests pass the CI. In general, this week has been positive as I feel more comfortable with the many developpement tools that we have to use.
 
 ## Konrad, Jonas Franz
 This week I implemented the AddPictureActivity completely. I had to resolve how this activity would communicate with the rest of the app and how it will return the result (the picture which was taken and the assigned category). This was done using an ActivityResultContract.
