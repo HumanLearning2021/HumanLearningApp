@@ -6,16 +6,29 @@
     android:layout_gravity="center_horizontal"
     tools:context=".AddPictureActivity">
 
-    <androidx.camera.view.PreviewView
-        android:id="@+id/cameraPreviewView"
-        class="androidx.camera.view.PreviewView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/twoButtons"
-        android:layout_alignParentTop="true"
-        android:clickable="false">
+        android:layout_alignParentTop="true">
 
-    </androidx.camera.view.PreviewView>
+        <androidx.camera.view.PreviewView
+            android:id="@+id/cameraPreviewView"
+            class="androidx.camera.view.PreviewView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false">
+        </androidx.camera.view.PreviewView>
+
+        <ImageView
+            android:id="@+id/cameraImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            android:contentDescription="@string/AddPicture_camareImageViewDescription">
+        </ImageView>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/twoButtons"
@@ -31,14 +44,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:text="@string/AddPicture_takePictureButtonText"/>
+            android:text="@string/AddPicture_takePictureButtonText"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/selectCategoryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="@string/AddPicture_selectCategoryButtonText"/>
+            android:text="@string/AddPicture_selectCategoryButtonText"
+            tools:ignore="ButtonStyle" />
     </LinearLayout>
 
     <Button
@@ -47,8 +62,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:backgroundTint="@color/purple_500"
+        android:background="@color/purple_500"
         android:enabled="false"
-        android:text="@string/AddPicture_saveButtonText" />
+        android:text="@string/AddPicture_saveButtonText"
+        android:layout_marginBottom="5dp"/>
 
 </RelativeLayout>

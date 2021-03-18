@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Human Learning</string>
-    
     <string name="AddPicture_takePictureButtonText">Take a picture</string>
+    <string name="AddPicture_takePictureButtonTextWhenImageTaken">Change picture</string>
     <string name="AddPicture_selectCategoryButtonText">Select the category</string>
     <string name="AddPicture_saveButtonText">Save selection</string>
     <string name="AddPicture_permissionGrantedToast">Camera permission granted.</string>
@@ -12,6 +12,10 @@
     <string name="DataCreationActivity_DataCreationSubmitButton">Submit</string>
     <string name="DataCreationActivity_DataCreationAddButton">Add</string>
     <string name="DataCreationActivity_DataCreationCat">Enter Category</string>
+    <string name="AddPicture_errorWhileTakingPictureDialogTitle">Error</string>
+    <string name="AddPicture_errorWhileTakingPictureDialogMessage">An error occurred while taking the picture, please try again.</string>
+    <string name="AddPicture_camareImageViewDescription">Shows the picture which has just been taken</string>
+
     <string name="learning_im_to_sort_descr">blue</string>
     <string name="learning_cat_0_descr">red</string>
     <string name="learning_cat_1_descr">green</string>
