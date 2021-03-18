@@ -5,4 +5,37 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/goToCameraButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:onClick="launchToCameraActivity"
+        android:text="Add an image to the dataset"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/goToDisplayDatasetButton" />
+
+    <Button
+        android:id="@+id/goToDisplayDatasetButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:onClick="launchToDisplayDatasetActivity"
+        android:text="Display Dataset"
+        app:layout_constraintBottom_toTopOf="@+id/goToCameraButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/goToLearningButton" />
+
+    <Button
+        android:id="@+id/goToLearningButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:onClick="launchToLearningActivity"
+        android:text="Learning"
+        app:layout_constraintBottom_toTopOf="@+id/goToDisplayDatasetButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
