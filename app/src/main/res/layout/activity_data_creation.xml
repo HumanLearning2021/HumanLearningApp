@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:text="@string/DataCreationTitle"
+        android:text="@string/DataCreationActivity_DataCreationTitle"
         android:textColor="@color/black"
         android:textSize="15sp" />
 
@@ -31,7 +31,7 @@
         android:layout_marginTop="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:text="@string/DataCreationAddButton"
+        android:text="@string/DataCreationActivity_DataCreationAddButton"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
@@ -46,7 +46,7 @@
         android:layout_marginRight="15dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:text="@string/DataCrationSubmitButton"
+        android:text="@string/DataCreationActivity_DataCrationSubmitButton"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
