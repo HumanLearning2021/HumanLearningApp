@@ -8,6 +8,10 @@
     <string name="AddPicture_categorySelectionDialogTitle">Pick a category</string>
     <string name="AddPicture_permissionNeededDialogTitle">Camera required</string>
     <string name="AddPicture_permissionNeededDialogMessage">To use this functionality, access to the camera is required. Either you have denied the app the permission to use it or your device has no camera.</string>
+    <string name="DataCreationActivity_DataCreationTitle">Categories List</string>
+    <string name="DataCreationActivity_DataCreationSubmitButton">Submit</string>
+    <string name="DataCreationActivity_DataCreationAddButton">Add</string>
+    <string name="DataCreationActivity_DataCreationCat">Enter Category</string>
     <string name="AddPicture_errorWhileTakingPictureDialogTitle">Error</string>
     <string name="AddPicture_errorWhileTakingPictureDialogMessage">An error occurred while taking the picture, please try again.</string>
     <string name="AddPicture_camareImageViewDescription">Shows the picture which has just been taken</string>
