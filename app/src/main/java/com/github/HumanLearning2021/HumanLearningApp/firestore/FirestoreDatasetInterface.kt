@@ -41,7 +41,7 @@ class FirestoreDatasetInterface(
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    suspend fun getCategories(): Set<FirestoreCategory> {
+    override suspend fun getCategories(): Set<FirestoreCategory> {
         val query = db.collection("$dbPrefix/categories")
         val cats = query.get().await().toObjects(CategorySchema::class.java)
         return buildSet(cats.size) {
