@@ -59,7 +59,7 @@ class FirestoreDatasetInterface(
         return pic?.toPublic()
     }
 
-    override suspend fun putPicture(picture: Serializable, category: Category): CategorizedPicture {
+    override suspend fun putPicture(picture: android.net.Uri, category: Category): CategorizedPicture {
         TODO("Not yet implemented")
     }
 
