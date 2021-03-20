@@ -29,7 +29,7 @@ interface DatasetInterface {
      * @return a Categorized picture built using 'picture' and 'category'
      * @throws IllegalArgumentException if the category provided is not present in the dataset
      */
-    suspend fun putPicture(picture: Serializable, category: Category): CategorizedPicture
+    suspend fun putPicture(picture: android.net.Uri, category: Category): CategorizedPicture
 
     /**
      * A function to retrieve a category
