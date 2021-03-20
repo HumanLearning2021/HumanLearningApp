@@ -9,7 +9,7 @@ import java.lang.IllegalArgumentException
 /**
  * a class representing a dummy UI presenter
  */
-class DummyUIPresenter: UIPresenter {
+class DummyUIPresenter {
     val dataSetInterface: DummyDatasetInterface = DummyDatasetInterface()
 
 
@@ -19,11 +19,11 @@ class DummyUIPresenter: UIPresenter {
      * @param categoryName the name of the category of the picture to retrieve. Can be "knife", "fork", or "spoon"
      * @throws IllegalArgumentException if the string provided doesn't match any of "knife", "fork", or "spoon"
      */
-    override suspend fun getPicture(categoryName: String): CategorizedPicture? {
+    suspend fun getPicture(categoryName: String): CategorizedPicture? {
         return dataSetInterface.getPicture(DummyCategory(categoryName))
     }
 
-    override suspend fun putPicture(picture: Serializable, categoryName: String): CategorizedPicture {
+    suspend fun putPicture(picture: Serializable, categoryName: String): CategorizedPicture {
         var category = dataSetInterface.getCategory(categoryName)
 
         if(category == null)
