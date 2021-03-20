@@ -8,7 +8,9 @@ import java.io.Serializable
 /**
  * Interface representing a categorized picture
  */
-interface CategorizedPicture: Serializable{
+
+
+interface CategorizedPicture : Serializable{
     abstract val category:Category
 
     /**

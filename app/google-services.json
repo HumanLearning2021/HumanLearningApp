@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "511027907553",
+    "project_id": "human-learning-app",
+    "storage_bucket": "human-learning-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:511027907553:android:b33af54d509560a8f160a0",
+        "android_client_info": {
+          "package_name": "com.github.HumanLearning2021.HumanLearningApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "511027907553-p0sqbict6r6hh81bdrrp1v73idj2tshh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5eHV4qLeWm_JT0cwnKslI-Mts9w6oA8g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "511027907553-p0sqbict6r6hh81bdrrp1v73idj2tshh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
