@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.github.HumanLearning2021.HumanLearningApp.BuildConfig
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatasetInterface
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
@@ -18,18 +19,29 @@ import kotlinx.coroutines.launch
 
 class LearningActivity : AppCompatActivity() {
 
-    private val dummyPres = DummyUIPresenter()
-    private val learningPresenter = LearningPresenter(DummyDatasetInterface(), lifecycleScope)
+    private val dummyPres = DummyUIPresenter(DummyDatasetInterface())
+    private val learningPresenter = LearningPresenter(DummyDatasetInterface())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
 
-        initTargetCategory(R.id.learning_cat_0, "knife")
-        initTargetCategory(R.id.learning_cat_1, "spoon")
-        initTargetCategory(R.id.learning_cat_2, "fork")
+        lifecycleScope.launch {
+            val cats = DummyDatasetInterface().getCategories()
+            if (BuildConfig.DEBUG && cats.size < 3) {
+                // TODO : maybe allow fewer categories in the future
+                error("There should be at least 3 categories")
+            }
 
-        initImageToSort(R.id.learning_im_to_sort, "fork")
+            val cat0Name = cats.elementAt(0).name
+
+            initTargetCategory(R.id.learning_cat_0, cat0Name)
+            initTargetCategory(R.id.learning_cat_1, cats.elementAt(1).name)
+            initTargetCategory(R.id.learning_cat_2, cats.elementAt(2).name)
+
+            initImageToSort(R.id.learning_im_to_sort, cat0Name)
+        }
+
 
     }
 
@@ -57,27 +69,11 @@ class LearningActivity : AppCompatActivity() {
             DragEvent.ACTION_DRAG_ENTERED -> dragEnteredCallback(v)
             DragEvent.ACTION_DRAG_EXITED -> dragExitedCallback(v)
             DragEvent.ACTION_DROP -> dropCallback(event, v)
-            DragEvent.ACTION_DRAG_ENDED -> dragEndedCallback(event)
 
+            // DragEvent.ACTION_DRAG_ENDED &
             // DragEvent.ACTION_DRAG_LOCATION & DragEvent.ACTION_DRAG_STARTED
             else -> true
         }
-    }
-
-    private fun dragEndedCallback(event: DragEvent) = if (event.result) {
-        when (val iv = event.localState) {
-            is ImageView ->
-                lifecycleScope.launch {
-                    learningPresenter.displayNextPicture(this@LearningActivity, iv)
-                }
-            else -> throw IllegalStateException(
-                "The local state of the drag " +
-                        "and drop should be of type ImageView"
-            )
-        }
-        true
-    } else {
-        false
     }
 
     private fun dropCallback(event: DragEvent, v: View): Boolean {
@@ -85,10 +81,18 @@ class LearningActivity : AppCompatActivity() {
         v.alpha = opaque
         v.invalidate()
         Log.d("dropCallback", "${item.text} vs ${v.contentDescription}")
-        return item.text == v.contentDescription
+        val res = item.text == v.contentDescription
+        lifecycleScope.launch {
+            if(res) {
+                learningPresenter.displayNextPicture(this@LearningActivity,
+                    findViewById(R.id.learning_im_to_sort))
+            }
+        }
+        return res
     }
 
-    private fun dragInOutCallback(v: View, opacity: Float):Boolean{
+
+    private fun dragInOutCallback(v: View, opacity: Float): Boolean {
         v.alpha = opacity
         v.invalidate()
         return true
@@ -110,7 +114,7 @@ class LearningActivity : AppCompatActivity() {
                         item
                     )
                     val shadow = View.DragShadowBuilder(view)
-                    view.startDragAndDrop(dragData, shadow, view, 0)
+                    view.startDragAndDrop(dragData, shadow, null, 0)
                     true
                 }
                 else -> false
