@@ -38,10 +38,10 @@ class DummyDatasetInterface : DatasetInterface {
         if(!categories.contains(category)) throw IllegalArgumentException("The provided category" +
                 "is not present in the dataset")
 
-        val picture = DummyCategorizedPicture(category)
-        pictures.add(picture)
+        val addedPicture = DummyCategorizedPicture(category)
+        pictures.add(addedPicture)
 
-        return picture
+        return addedPicture
     }
 
     override suspend fun getCategory(categoryName: String): Category? {
