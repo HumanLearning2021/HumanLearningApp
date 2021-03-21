@@ -29,5 +29,5 @@ interface UIPresenter {
      * @return a Categorized picture built using 'picture' and 'category'
      * @throws IllegalArgumentException if the category provided is not present in the dataset
      */
-    suspend fun putPicture(picture: Serializable, categoryName: String): CategorizedPicture
+    suspend fun putPicture(picture: android.net.Uri, categoryName: String): CategorizedPicture
 }
