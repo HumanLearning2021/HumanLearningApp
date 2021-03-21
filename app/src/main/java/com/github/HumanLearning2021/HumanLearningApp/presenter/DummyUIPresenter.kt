@@ -9,27 +9,25 @@ import java.lang.IllegalArgumentException
 /**
  * a class representing a dummy UI presenter
  */
-class DummyUIPresenter {
-    val dataSetInterface: DummyDatasetInterface = DummyDatasetInterface()
-
-
+class DummyUIPresenter(val datasetInterface: DatasetInterface) {
     /**
      * Allows to retrieve a picture fron the dummy dataset
      *
      * @param categoryName the name of the category of the picture to retrieve. Can be "knife", "fork", or "spoon"
      * @throws IllegalArgumentException if the string provided doesn't match any of "knife", "fork", or "spoon"
      */
+
     suspend fun getPicture(categoryName: String): CategorizedPicture? {
-        return dataSetInterface.getPicture(DummyCategory(categoryName))
+        return datasetInterface.getPicture(DummyCategory(categoryName))
     }
 
     suspend fun putPicture(picture: android.net.Uri, categoryName: String): CategorizedPicture {
-        var category = dataSetInterface.getCategory(categoryName)
+        var category = datasetInterface.getCategory(categoryName)
 
         if(category == null)
-            category = dataSetInterface.putCategory(categoryName)
+            category = datasetInterface.putCategory(categoryName)
 
-        return dataSetInterface.putPicture(picture, category)
+        return datasetInterface.putPicture(picture, category)
     }
 }
 
