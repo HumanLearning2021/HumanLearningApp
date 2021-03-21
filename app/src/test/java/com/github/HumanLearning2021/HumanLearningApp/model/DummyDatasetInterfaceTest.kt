@@ -32,6 +32,7 @@ class DummyDataSetInterfaceTest {
     private val spoonPic = DummyCategorizedPicture(spoon)
     private val tablePic = DummyCategorizedPicture(table)
 
+    val dummyUri =  android.net.Uri.Builder().build()
 
 
 
@@ -52,12 +53,12 @@ class DummyDataSetInterfaceTest {
         assertThat(dummyDatasetInterface1.getPicture(dummyDatasetInterface1.putCategory("plate")), equalTo(null))
     }
 
-    /*
+
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
 
         dummyDatasetInterface1.putCategory("table")
-        dummyDatasetInterface1.putPicture(null!!, table)
+        dummyDatasetInterface1.putPicture(dummyUri, table)
 
         assertThat(dummyDatasetInterface1.getPicture(table), equalTo(DummyCategorizedPicture(table)))
 
@@ -65,11 +66,9 @@ class DummyDataSetInterfaceTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun putPictureCategoryNotPresentThrows() = runBlockingTest {
-        dummyDatasetInterface1.putPicture(null!!, table)
+        dummyDatasetInterface1.putPicture(dummyUri, table)
     }
-
-     */
-
+    
     @Test
     fun getCategoryPresent() = runBlockingTest {
         dummyDatasetInterface2.putCategory("table")

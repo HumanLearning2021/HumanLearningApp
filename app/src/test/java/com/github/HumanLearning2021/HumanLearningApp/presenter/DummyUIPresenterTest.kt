@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
+import android.os.Parcel
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 import kotlinx.coroutines.test.runBlockingTest
@@ -17,6 +18,9 @@ class DummyUIPresenterTest {
     private val forkPic = DummyCategorizedPicture(fork)
     private val knifePic = DummyCategorizedPicture(knife)
     private val spoonPic = DummyCategorizedPicture(spoon)
+
+    val dummyUri =  android.net.Uri.Builder().build()
+
 
 
     @Test
@@ -43,11 +47,11 @@ class DummyUIPresenterTest {
         assertThat(dummyPresenter.getPicture("plate"), equalTo(null))
     }
 
-    /*
+
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
         val dummyPresenter = DummyUIPresenter()
-        dummyPresenter.putPicture(null!!,"fork")
+        dummyPresenter.putPicture(dummyUri,"fork")
         assertThat(dummyPresenter.getPicture("fork"),
             Matchers.equalTo(DummyCategorizedPicture(fork))
         )
@@ -56,12 +60,13 @@ class DummyUIPresenterTest {
     @Test
     fun putPictureCategoryNotPresent() = runBlockingTest {
         val dummyPresenter = DummyUIPresenter()
-        val tablePic = dummyPresenter.putPicture(null!!,"table")
+        val tablePic = dummyPresenter.putPicture(dummyUri,"table")
         assertThat(dummyPresenter.getPicture("table"),
             Matchers.equalTo(tablePic)
         )
     }
-    
-     */
+
+
 }
+
 
