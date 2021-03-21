@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.graphics.drawable.Drawable
-import java.io.Serializable
 import java.lang.IllegalArgumentException
 import java.util.*
 

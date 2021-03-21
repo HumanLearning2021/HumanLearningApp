@@ -23,7 +23,7 @@ class DummyUIPresenter {
         return dataSetInterface.getPicture(DummyCategory(categoryName))
     }
 
-    suspend fun putPicture(picture: Serializable, categoryName: String): CategorizedPicture {
+    suspend fun putPicture(picture: android.net.Uri, categoryName: String): CategorizedPicture {
         var category = dataSetInterface.getCategory(categoryName)
 
         if(category == null)
