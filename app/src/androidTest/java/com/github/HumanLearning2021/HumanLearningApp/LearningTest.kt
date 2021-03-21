@@ -1,5 +1,10 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
+import android.widget.ImageView
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -29,6 +34,15 @@ class LearningTest {
     fun init() {
         mDevice = UiDevice.getInstance(getInstrumentation())
     }
+
+    @Test
+    fun allImageViewsAreDisplayed(){
+        viewWithIdisDisplayed(R.id.learning_im_to_sort)
+        viewWithIdisDisplayed(R.id.learning_cat_0)
+        viewWithIdisDisplayed(R.id.learning_cat_1)
+        viewWithIdisDisplayed(R.id.learning_cat_2)
+    }
+    private fun viewWithIdisDisplayed(id: Int) = onView(withId(id)).check(matches(isDisplayed()))
 
     @Test
     fun dragImageOnCorrectCategory() {
