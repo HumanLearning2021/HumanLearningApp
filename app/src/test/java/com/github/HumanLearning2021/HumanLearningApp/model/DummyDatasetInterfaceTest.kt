@@ -1,20 +1,16 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
-import android.content.res.Resources
-import android.graphics.drawable.Drawable
-import android.os.Parcel
-import android.os.Parcelable
-import androidx.core.content.res.ResourcesCompat.getDrawable
-import com.github.HumanLearning2021.HumanLearningApp.R
-import org.junit.Assert.*
-
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Test
-import org.junit.Assert.*
-import java.lang.IllegalArgumentException
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
-import java.io.Serializable
+import org.hamcrest.Matchers.equalTo
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
+
+
 class DummyDataSetInterfaceTest {
     val dummyDatasetInterface1 = DummyDatasetInterface()
     val dummyDatasetInterface2 = DummyDatasetInterface()
@@ -32,7 +28,10 @@ class DummyDataSetInterfaceTest {
     private val spoonPic = DummyCategorizedPicture(spoon)
     private val tablePic = DummyCategorizedPicture(table)
 
-    val dummyUri =  android.net.Uri.Builder().build()
+
+
+
+    val dummyUri = Mockito.mock(android.net.Uri::class.java)
 
 
 
@@ -50,7 +49,11 @@ class DummyDataSetInterfaceTest {
 
     @Test
     fun getPictureCategoryEmpty() = runBlockingTest {
-        assertThat(dummyDatasetInterface1.getPicture(dummyDatasetInterface1.putCategory("plate")), equalTo(null))
+        assertThat(
+            dummyDatasetInterface1.getPicture(dummyDatasetInterface1.putCategory("plate")), equalTo(
+                null
+            )
+        )
     }
 
 
@@ -60,7 +63,10 @@ class DummyDataSetInterfaceTest {
         dummyDatasetInterface1.putCategory("table")
         dummyDatasetInterface1.putPicture(dummyUri, table)
 
-        assertThat(dummyDatasetInterface1.getPicture(table), equalTo(DummyCategorizedPicture(table)))
+        assertThat(
+            dummyDatasetInterface1.getPicture(table),
+            equalTo(DummyCategorizedPicture(table))
+        )
 
     }
 
@@ -94,7 +100,10 @@ class DummyDataSetInterfaceTest {
     @Test
     fun getCategoriesWorks() = runBlockingTest {
         dummyDatasetInterface1.putCategory("table")
-        assertThat(dummyDatasetInterface1.getCategories(), equalTo(setOf(fork, spoon, knife, table)))
+        assertThat(
+            dummyDatasetInterface1.getCategories(),
+            equalTo(setOf(fork, spoon, knife, table))
+        )
     }
 }
 

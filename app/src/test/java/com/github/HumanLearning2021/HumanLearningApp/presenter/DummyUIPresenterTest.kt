@@ -8,6 +8,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.Test
+import org.mockito.Mockito
 
 
 class DummyUIPresenterTest {
@@ -19,7 +20,7 @@ class DummyUIPresenterTest {
     private val knifePic = DummyCategorizedPicture(knife)
     private val spoonPic = DummyCategorizedPicture(spoon)
 
-    val dummyUri =  android.net.Uri.Builder().build()
+    val dummyUri = Mockito.mock(android.net.Uri::class.java)
 
 
 
