@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import java.lang.IllegalArgumentException
 import java.util.*
 
@@ -12,20 +13,20 @@ class DummyDatasetInterface : DatasetInterface {
     private val knife = DummyCategory("Knife")
     private val spoon = DummyCategory("Spoon")
 
-    val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
+    private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
 
     private val forkPic = DummyCategorizedPicture(fork)
     private val knifePic = DummyCategorizedPicture(knife)
     private val spoonPic = DummyCategorizedPicture(spoon)
 
-    val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
+    private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
 
 
 
 
     override suspend fun getPicture(category: Category): CategorizedPicture?{
         if (!categories.contains(category)) throw IllegalArgumentException("The provided category" +
-                "is not present in the dataset")
+                " is not present in the dataset")
 
         for(p in pictures)
             if(p == DummyCategorizedPicture(category)) return p

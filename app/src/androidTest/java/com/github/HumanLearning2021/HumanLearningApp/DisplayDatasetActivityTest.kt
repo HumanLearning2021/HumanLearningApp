@@ -38,9 +38,10 @@ class DisplayDatasetActivityTest {
 
     val NUMBER_OF_CAT = 3
     val datasetImagesList = ArrayList<CategorizedPicture>()
-    val fork = DummyCategory("fork")
-    val knife = DummyCategory("knife")
-    val spoon = DummyCategory("spoon")
+    // TODO : Should use DummyDatasetInterface::getCategories
+    val fork = DummyCategory("Fork")
+    val knife = DummyCategory("Knife")
+    val spoon = DummyCategory("Spoon")
 
     val dummyPresenter = DummyUIPresenter(DummyDatasetInterface())
 

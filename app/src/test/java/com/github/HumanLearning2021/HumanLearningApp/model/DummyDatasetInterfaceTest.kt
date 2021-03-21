@@ -1,14 +1,12 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 
 
 class DummyDataSetInterfaceTest {
@@ -35,6 +33,7 @@ class DummyDataSetInterfaceTest {
 
 
 
+    @ExperimentalCoroutinesApi
     @Test
     fun getForkWorks() = runBlockingTest {
         val actual = dummyDatasetInterface1.getPicture(fork)
@@ -42,25 +41,28 @@ class DummyDataSetInterfaceTest {
         assertEquals(actual, expected)
     }
 
+    @ExperimentalCoroutinesApi
     @Test(expected = IllegalArgumentException::class)
     fun getPictureCategoryNotPresentThrows() = runBlockingTest {
-        DummyDatasetInterface().getPicture(DummyCategory("plate"))
+        DummyDatasetInterface().getPicture(DummyCategory("Plate"))
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun getPictureCategoryEmpty() = runBlockingTest {
         assertThat(
-            dummyDatasetInterface1.getPicture(dummyDatasetInterface1.putCategory("plate")), equalTo(
+            dummyDatasetInterface1.getPicture(dummyDatasetInterface1.putCategory("Plate")), equalTo(
                 null
             )
         )
     }
 
 
+    @ExperimentalCoroutinesApi
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
 
-        dummyDatasetInterface1.putCategory("table")
+        dummyDatasetInterface1.putCategory("Table")
         dummyDatasetInterface1.putPicture(dummyUri, table)
 
         assertThat(
@@ -70,36 +72,42 @@ class DummyDataSetInterfaceTest {
 
     }
 
+    @ExperimentalCoroutinesApi
     @Test(expected = IllegalArgumentException::class)
     fun putPictureCategoryNotPresentThrows() = runBlockingTest {
         dummyDatasetInterface1.putPicture(dummyUri, table)
     }
     
+    @ExperimentalCoroutinesApi
     @Test
     fun getCategoryPresent() = runBlockingTest {
-        dummyDatasetInterface2.putCategory("table")
-        assertThat(dummyDatasetInterface2.getCategory("table"), equalTo(DummyCategory("Table")))
+        dummyDatasetInterface2.putCategory("Table")
+        assertThat(dummyDatasetInterface2.getCategory("Table"), equalTo(DummyCategory("Table")))
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun getCategoryNotPresent() = runBlockingTest {
-        assertThat(dummyDatasetInterface2.getCategory("table"), equalTo(null))
+        assertThat(dummyDatasetInterface2.getCategory("Table"), equalTo(null))
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun putCategoryNotPresent() = runBlockingTest {
-        assertThat(dummyDatasetInterface1.putCategory("table"), equalTo(DummyCategory("table")))
+        assertThat(dummyDatasetInterface1.putCategory("Table"), equalTo(DummyCategory("Table")))
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun putCategoryAlreadyPresentChangesNothing() = runBlockingTest {
-        dummyDatasetInterface1.putCategory("table")
-        assertThat(dummyDatasetInterface1.putCategory("table"), equalTo(DummyCategory("table")))
+        dummyDatasetInterface1.putCategory("Table")
+        assertThat(dummyDatasetInterface1.putCategory("Table"), equalTo(DummyCategory("Table")))
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun getCategoriesWorks() = runBlockingTest {
-        dummyDatasetInterface1.putCategory("table")
+        dummyDatasetInterface1.putCategory("Table")
         assertThat(
             dummyDatasetInterface1.getCategories(),
             equalTo(setOf(fork, spoon, knife, table))
