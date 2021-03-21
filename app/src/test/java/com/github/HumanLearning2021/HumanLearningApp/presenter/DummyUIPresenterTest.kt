@@ -43,6 +43,7 @@ class DummyUIPresenterTest {
         assertThat(dummyPresenter.getPicture("plate"), equalTo(null))
     }
 
+    /*
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
         val dummyPresenter = DummyUIPresenter()
@@ -60,5 +61,7 @@ class DummyUIPresenterTest {
             Matchers.equalTo(tablePic)
         )
     }
+    
+     */
 }
 
