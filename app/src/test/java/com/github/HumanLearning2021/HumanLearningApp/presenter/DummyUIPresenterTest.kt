@@ -2,13 +2,11 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
-import com.github.HumanLearning2021.HumanLearningApp.model.DummySerializable
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.Test
-import java.io.Serializable
 
 
 class DummyUIPresenterTest {
