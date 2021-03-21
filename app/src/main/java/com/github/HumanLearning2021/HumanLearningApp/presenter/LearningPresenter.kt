@@ -31,13 +31,6 @@ class LearningPresenter {
     }
 
     suspend fun displayNextPicture(activity: Activity, view: ImageView) {
-        // TODO this is a dirty hack, replace with model call
-//            fun gS(id: Int) = view.context.getString(id)
-//            val colorStrings = listOf(gS(R.string.learning_cat_0_descr),
-//                    gS(R.string.learning_cat_1_descr), gS(R.string.learning_cat_2_descr))
-//            val colorInts = listOf(R.color.red, R.color.green, R.color.blue)
-//            val rCol = Random.nextInt(from = 0, until = 2)
-
         // safety check to be sure there is no race condition
         if(!this::categories.isInitialized) return
         val rndCat = categories.random()

@@ -54,16 +54,13 @@ class LearningActivity : AppCompatActivity() {
     private val halfOpaque = opaque / 2
     private val targetOnDragListener = View.OnDragListener { v, event ->
         when (event.action) {
-            DragEvent.ACTION_DRAG_STARTED -> true
             DragEvent.ACTION_DRAG_ENTERED -> dragEnteredCallback(v)
-            DragEvent.ACTION_DRAG_LOCATION -> true
             DragEvent.ACTION_DRAG_EXITED -> dragExitedCallback(v)
             DragEvent.ACTION_DROP -> dropCallback(event, v)
             DragEvent.ACTION_DRAG_ENDED -> dragEndedCallback(event)
-            else -> {
-                Log.e("targetOnDragListener", "Unkown action type")
-                false
-            }
+
+            // DragEvent.ACTION_DRAG_LOCATION & DragEvent.ACTION_DRAG_STARTED
+            else -> true
         }
     }
 
@@ -91,17 +88,15 @@ class LearningActivity : AppCompatActivity() {
         return item.text == v.contentDescription
     }
 
-    private fun dragExitedCallback(v: View): Boolean {
-        v.alpha = opaque
+    private fun dragInOutCallback(v: View, opacity: Float):Boolean{
+        v.alpha = opacity
         v.invalidate()
         return true
     }
 
-    private fun dragEnteredCallback(v: View): Boolean {
-        v.alpha = halfOpaque
-        v.invalidate() // to force redraw
-        return true
-    }
+    private fun dragExitedCallback(v: View): Boolean = dragInOutCallback(v, opaque)
+
+    private fun dragEnteredCallback(v: View): Boolean = dragInOutCallback(v, halfOpaque)
 
     companion object {
         fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
