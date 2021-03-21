@@ -14,6 +14,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatasetInterface
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
@@ -41,7 +42,7 @@ class DisplayDatasetActivityTest {
     val knife = DummyCategory("knife")
     val spoon = DummyCategory("spoon")
 
-    val dummyPresenter = DummyUIPresenter()
+    val dummyPresenter = DummyUIPresenter(DummyDatasetInterface())
 
 
     /**

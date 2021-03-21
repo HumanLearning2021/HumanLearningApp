@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatasetInterface
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import kotlinx.coroutines.launch
 import java.io.Serializable
@@ -27,7 +28,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
     private val knife = DummyCategory("knife")
     private val spoon = DummyCategory("spoon")
 
-    private val dummyPresenter = DummyUIPresenter()
+    private val dummyPresenter = DummyUIPresenter(DummyDatasetInterface())
 
     private val datasetImagesList = ArrayList<CategorizedPicture>()
 

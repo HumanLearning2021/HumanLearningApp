@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatasetInterface
 import com.google.firebase.FirebaseApp
@@ -10,6 +11,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
 import kotlinx.coroutines.tasks.await
+import java.io.Serializable
 
 class FirestoreDatasetInterface(
     dbName: String,
@@ -39,7 +41,7 @@ class FirestoreDatasetInterface(
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    suspend fun getCategories(): Set<FirestoreCategory> {
+    override suspend fun getCategories(): Set<FirestoreCategory> {
         val query = db.collection("$dbPrefix/categories")
         val cats = query.get().await().toObjects(CategorySchema::class.java)
         return buildSet(cats.size) {
@@ -55,5 +57,17 @@ class FirestoreDatasetInterface(
                 .limit(1)
         val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
         return pic?.toPublic()
+    }
+
+    override suspend fun putPicture(picture: android.net.Uri, category: Category): CategorizedPicture {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getCategory(categoryName: String): Category? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun putCategory(categoryName: String): Category {
+        TODO("Not yet implemented")
     }
 }

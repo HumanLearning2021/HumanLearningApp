@@ -11,14 +11,14 @@ import java.io.Serializable
 
 
 interface CategorizedPicture : Serializable{
-    abstract val category:Category
+    val category:Category
 
     /**
      * A function that allows to display this image on an ImageView
      *
+     * @param activity the activity to which the ImageView belongs
      *  @param imageView the ImageView on which to display the image
      *
      */
-
-    abstract fun displayOn(activity: Activity, imageView: ImageView)
+    fun displayOn(activity: Activity, imageView: ImageView)
 }

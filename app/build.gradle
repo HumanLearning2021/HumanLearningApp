@@ -67,7 +67,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             '**/*_Factory.class',
             '**/*_MembersInjector.class',
 
-	    // Not coverable by any tests
+            // Not coverable by any tests
             '**/com/github/HumanLearning2021/HumanLearningApp/App*',
     ]
     def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
