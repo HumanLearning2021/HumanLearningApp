@@ -7,6 +7,8 @@
     android:orientation="vertical"
     tools:context=".view.DisplayDatasetActivity">
 
+    //TODO : either change in constraint Layout to put buttons or create a Menu.
+
     <GridView
         android:id="@+id/display_dataset_imagesGridView"
         android:layout_width="match_parent"
