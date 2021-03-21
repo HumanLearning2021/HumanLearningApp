@@ -48,7 +48,7 @@ class DummyUIPresenterTest {
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
         val dummyPresenter = DummyUIPresenter()
-        dummyPresenter.putPicture(DummySerializable(),"fork")
+        dummyPresenter.putPicture(null!!,"fork")
         assertThat(dummyPresenter.getPicture("fork"),
             Matchers.equalTo(DummyCategorizedPicture(fork))
         )
@@ -57,13 +57,10 @@ class DummyUIPresenterTest {
     @Test
     fun putPictureCategoryNotPresent() = runBlockingTest {
         val dummyPresenter = DummyUIPresenter()
-        val tablePic = dummyPresenter.putPicture(DummySerializable(),"table")
+        val tablePic = dummyPresenter.putPicture(null!!,"table")
         assertThat(dummyPresenter.getPicture("table"),
             Matchers.equalTo(tablePic)
         )
     }
-}
-
-class DummySerializable: Serializable {
 }
 

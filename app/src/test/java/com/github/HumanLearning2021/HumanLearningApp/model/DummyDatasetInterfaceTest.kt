@@ -56,7 +56,7 @@ class DummyDataSetInterfaceTest {
     fun putAndThenGetWorks() = runBlockingTest {
 
         dummyDatasetInterface1.putCategory("table")
-        dummyDatasetInterface1.putPicture(DummySerializable(), table)
+        dummyDatasetInterface1.putPicture(null!!, table)
 
         assertThat(dummyDatasetInterface1.getPicture(table), equalTo(DummyCategorizedPicture(table)))
 
@@ -64,7 +64,7 @@ class DummyDataSetInterfaceTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun putPictureCategoryNotPresentThrows() = runBlockingTest {
-        dummyDatasetInterface1.putPicture(DummySerializable(), table)
+        dummyDatasetInterface1.putPicture(null!!, table)
     }
 
     @Test
@@ -96,5 +96,3 @@ class DummyDataSetInterfaceTest {
     }
 }
 
-class DummySerializable:Serializable {
-}
