@@ -83,7 +83,7 @@ class DummyDataSetInterfaceTest {
 
     @Test
     fun getCategoryNotPresent() = runBlockingTest {
-        assertThat(dummyDatasetInterface2.getCategory("table"), equalTo(null));
+        assertThat(dummyDatasetInterface2.getCategory("table"), equalTo(null))
     }
 
     @Test

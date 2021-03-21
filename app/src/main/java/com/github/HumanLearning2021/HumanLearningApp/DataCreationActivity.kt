@@ -43,7 +43,7 @@ class DataCreationActivity : AppCompatActivity() {
 
     }
 
-    public fun removeView(view:View){
+    fun removeView(view:View){
         binding.parentLinearLayout.removeView(view.parent as View)
 
     }
