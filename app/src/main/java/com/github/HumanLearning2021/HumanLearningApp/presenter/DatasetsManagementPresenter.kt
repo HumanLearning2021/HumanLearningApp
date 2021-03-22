@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.net.Uri
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatasetInterface
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatasetsManagement
@@ -23,5 +24,20 @@ object DatasetsManagementPresenter: DatasetsManagementPresenterInterface {
 
     override fun editDatasetName(key: String, newName: String) {
         TODO("Not yet implemented")
+    }
+
+    fun getDataset(key: String): FirestoreDatasetInterface {
+        return datasetsManager.getDataset(key)
+    }
+
+    fun initializeDataset(
+        key: String,
+        categories: Set<Category>
+    ): FirestoreDatasetInterface {
+        return datasetsManager.initializeDataset(key, categories)
+    }
+
+    fun deleteDataset(key: String) {
+        return datasetsManager.deleteDataset(key)
     }
 }
