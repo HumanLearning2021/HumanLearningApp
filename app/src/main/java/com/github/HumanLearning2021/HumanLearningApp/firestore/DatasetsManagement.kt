@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.firestore
+package com.github.HumanLearning2021.HumanLearningApp.model
 
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
