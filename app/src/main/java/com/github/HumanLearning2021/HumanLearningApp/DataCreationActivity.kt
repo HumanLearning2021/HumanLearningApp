@@ -3,10 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-
 import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityDataCreationBinding
 
 class DataCreationActivity : AppCompatActivity() {
@@ -43,7 +40,7 @@ class DataCreationActivity : AppCompatActivity() {
 
     }
 
-    fun removeView(view:View){
+    fun removeView(view: View) {
         binding.parentLinearLayout.removeView(view.parent as View)
 
     }
@@ -68,9 +65,6 @@ class DataCreationActivity : AppCompatActivity() {
             categoryList.add(category)
         }
     }*/
-
-
-
 
 
     override fun onDestroy() {
