@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 
 interface DatasetsManagementPresenterInterface {
@@ -13,6 +14,14 @@ interface DatasetsManagementPresenterInterface {
     suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
 
     /**
+     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
+     *
+     * @param picture - the picture to put as a representative
+     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     */
+    suspend fun putRepresentativePicture(picture: CategorizedPicture)
+
+    /**
      * Retrieves the names of all the datasets available
      *
      * @return a set containing the names off all the available datasets
@@ -22,9 +31,9 @@ interface DatasetsManagementPresenterInterface {
     /**
      * Changes the name of an existing dataset
      *
-     * @param currentName - the current name of the dataset
+     * @param key - the unique key of the dataset to edit
      * @param newName - the new name the dataset should take
      * @throws IllegalArgumentException if there exists no dataset of the specified name
      */
-    fun editDatasetName(currentName: String, newName: String)
+    fun editDatasetName(key: String, newName: String)
 }
