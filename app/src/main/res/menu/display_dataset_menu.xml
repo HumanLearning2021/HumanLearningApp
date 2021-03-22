@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="Modify categories"
+        android:id="@+id/display_dataset_menu_modify_categories"/>
+    <item
+        android:title="Other"
+        android:id="@+id/display_dataset_menu_other"/>
+
+</menu>
