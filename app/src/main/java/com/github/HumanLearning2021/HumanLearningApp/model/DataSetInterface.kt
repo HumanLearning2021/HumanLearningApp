@@ -95,5 +95,5 @@ interface DatasetInterface {
      * @param picture - the picture to remove from the dataset
      * @throws IllegalArgumentException if the dataset does not contain the specified picture
      */
-    suspend fun deletePicture(picture: FirestoreCategorizedPicture)
+    suspend fun deletePicture(picture: CategorizedPicture)
 }
