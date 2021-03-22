@@ -50,6 +50,22 @@ class FirestoreDatasetInterface(
         }
     }
 
+    override suspend fun getRepresentativePicture(category: Category): CategorizedPicture {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeCategory(category: Category) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removePicture(picture: CategorizedPicture) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
         val cat: FirestoreCategory = category as FirestoreCategory
         val query =

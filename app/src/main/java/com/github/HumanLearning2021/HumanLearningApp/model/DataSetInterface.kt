@@ -73,15 +73,6 @@ interface DatasetInterface {
     suspend fun getAllPictures(category: Category): Set<CategorizedPicture>
 
     /**
-     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
-     *
-     * @param picture - the picture to put as a representative
-     * @param category - the category whose representative picture we want to change
-     * @throws IllegalArgumentException if the dataset does not contain the specified category
-     */
-    suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
-
-    /**
      * Remove the category from the dataset
      *
      * @param category - the category to remove from the dataset
@@ -90,10 +81,10 @@ interface DatasetInterface {
     suspend fun removeCategory(category: Category)
 
     /**
-     * Deletes the corresponding picture from the dataset
+     * Removes the corresponding picture from the dataset
      *
      * @param picture - the picture to remove from the dataset
      * @throws IllegalArgumentException if the dataset does not contain the specified picture
      */
-    suspend fun deletePicture(picture: CategorizedPicture)
+    suspend fun removePicture(picture: CategorizedPicture)
 }
