@@ -21,7 +21,7 @@ interface DatasetsManagement {
      * @return an instance of FirestoreDatasetInterface
      * @throws IllegalArgumentException: if there exists no dataset of the specified name
      */
-    fun getDataset(name: String): FirestoreDatasetInterface {
+    fun getDataset(name: String): DataSetInterface {
         TODO("not yet implemented")
     }
 
