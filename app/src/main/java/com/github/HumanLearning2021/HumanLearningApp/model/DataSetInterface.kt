@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.graphics.drawable.Drawable
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategorizedPicture
 import java.io.Serializable
 
 
@@ -53,4 +54,46 @@ interface DatasetInterface {
      */
     suspend fun getCategories(): Set<Category>
 
+    /**
+     * Retrieves the representative picture of the specified category
+     *
+     * @param category - the category whose representative picture we want to retrieve
+     * @return the representative picture associated to the specified category
+     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     */
+    suspend fun getRepresentativePicture(category: Category): FirestoreCategorizedPicture
+
+    /**
+     * Retrieves all the pictures categorized with the specified category
+     *
+     * @param category - the category whose pictures we want to retrieve
+     * @return the pictures categorized with the specified category
+     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     */
+    suspend fun getAllPictures(category: Category): Set<CategorizedPicture>
+
+    /**
+     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
+     *
+     * @param picture - the picture to put as a representative
+     * @param category - the category whose representative picture we want to change
+     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     */
+    suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
+
+    /**
+     * Remove the category from the dataset
+     *
+     * @param category - the category to remove from the dataset
+     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     */
+    suspend fun removeCategory(category: Category)
+
+    /**
+     * Deletes the corresponding picture from the dataset
+     *
+     * @param picture - the picture to remove from the dataset
+     * @throws IllegalArgumentException if the dataset does not contain the specified picture
+     */
+    suspend fun deletePicture(picture: FirestoreCategorizedPicture)
 }
