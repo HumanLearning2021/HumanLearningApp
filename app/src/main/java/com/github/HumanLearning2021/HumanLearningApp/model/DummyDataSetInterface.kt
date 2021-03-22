@@ -59,4 +59,20 @@ class DummyDatasetInterface : DatasetInterface {
     override suspend fun getCategories(): Set<Category> {
         return Collections.unmodifiableSet(categories)
     }
+
+    override suspend fun getRepresentativePicture(category: Category): CategorizedPicture {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeCategory(category: Category) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removePicture(picture: CategorizedPicture) {
+        TODO("Not yet implemented")
+    }
 }
