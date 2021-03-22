@@ -3,8 +3,12 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DatasetsManagement
 
 object DatasetsManagementPresenter: DatasetsManagementPresenterInterface {
+
+    val datasetsManager = DatasetsManagement
+
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
         TODO("Not yet implemented")
     }
