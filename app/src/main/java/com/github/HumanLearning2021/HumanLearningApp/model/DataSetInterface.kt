@@ -61,7 +61,7 @@ interface DatasetInterface {
      * @return the representative picture associated to the specified category
      * @throws IllegalArgumentException if the dataset does not contain the specified category
      */
-    suspend fun getRepresentativePicture(category: Category): FirestoreCategorizedPicture
+    suspend fun getRepresentativePicture(category: Category): CategorizedPicture
 
     /**
      * Retrieves all the pictures categorized with the specified category
