@@ -31,10 +31,10 @@ object DatasetsManagementPresenter: DatasetsManagementPresenterInterface {
     }
 
     fun initializeDataset(
-        key: String,
+        name: String,
         categories: Set<Category>
     ): FirestoreDatasetInterface {
-        return datasetsManager.initializeDataset(key, categories)
+        return datasetsManager.initializeDataset(name, categories)
     }
 
     fun deleteDataset(key: String) {

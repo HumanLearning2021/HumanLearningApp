@@ -58,10 +58,11 @@ interface DatasetInterface {
      * Retrieves the representative picture of the specified category
      *
      * @param category - the category whose representative picture we want to retrieve
-     * @return the representative picture associated to the specified category
+     * @return the representative picture associated to the specified category. Null if no representative picture is available for
+     * this category
      * @throws IllegalArgumentException if the dataset does not contain the specified category
      */
-    suspend fun getRepresentativePicture(category: Category): CategorizedPicture
+    suspend fun getRepresentativePicture(category: Category): CategorizedPicture?
 
     /**
      * Retrieves all the pictures categorized with the specified category

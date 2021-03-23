@@ -16,10 +16,10 @@ interface DatasetsManagementInterface {
     /**
      * Initializes a new dataset
      *
-     * @param key - the unique key of the desired dataset
+     * @param name - the name of the dataset
      * @param categories - the set of categories the dataset contains, can be empty
      */
-    fun initializeDataset(key: String, categories: Set<Category>): FirestoreDatasetInterface
+    fun initializeDataset(name: String, categories: Set<Category>): FirestoreDatasetInterface
 
     /**
      * Deletes the dataset
