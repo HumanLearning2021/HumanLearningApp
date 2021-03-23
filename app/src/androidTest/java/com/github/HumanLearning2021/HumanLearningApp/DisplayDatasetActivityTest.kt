@@ -18,6 +18,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatasetInterface
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
+import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
@@ -38,11 +39,7 @@ class DisplayDatasetActivityTest {
 
     val NUMBER_OF_CAT = 3
     val datasetImagesList = ArrayList<CategorizedPicture>()
-    // TODO : Should use DummyDatasetInterface::getCategories
-    val fork = DummyCategory("Fork")
-    val knife = DummyCategory("Knife")
-    val spoon = DummyCategory("Spoon")
-
+    val dummydsinterface = DummyDatasetInterface()
     val dummyPresenter = DummyUIPresenter(DummyDatasetInterface())
 
 
@@ -64,10 +61,10 @@ class DisplayDatasetActivityTest {
         val randomNb = (0 until NUMBER_OF_CAT).random()
 
         runBlocking {
-
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(knife.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
+            val categories = dummydsinterface.getCategories()
+            for (cat in categories){
+                datasetImagesList.add(dummyPresenter.getPicture(cat.name)!!)
+            }
 
             onData(anything())
                 .inAdapterView(withId(R.id.display_dataset_imagesGridView))
@@ -76,8 +73,8 @@ class DisplayDatasetActivityTest {
 
             intended(
                 allOf(
-                    hasComponent(DisplayImageActivity::class.java.name),
-                    hasExtra("display_image_image", (datasetImagesList[randomNb]) as Serializable)
+                    hasComponent(DisplayImageSetActivity::class.java.name),
+                    hasExtra("display_image_set_images", (datasetImagesList[randomNb]) as Serializable)
                 )
             )
         }

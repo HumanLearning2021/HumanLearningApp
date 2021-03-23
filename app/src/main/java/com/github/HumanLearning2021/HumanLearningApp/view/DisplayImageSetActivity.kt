@@ -46,10 +46,6 @@ class DisplayImageSetActivity : AppCompatActivity() {
         }
     }
 
-    fun removePicture(view: View) {
-        //TODO: Implement : remove picture from the list and send intent to the previous activity with the updated list
-    }
-
     class DisplayImageSetAdapter(
         private val images: ArrayList<CategorizedPicture>,
         private val context: Activity

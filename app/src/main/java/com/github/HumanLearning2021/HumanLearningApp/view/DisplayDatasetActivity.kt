@@ -35,26 +35,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
             datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
             datasetImagesList.add(dummyPresenter.getPicture(knife.name)!!)
             datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-
 
             val displayDatasetAdapter =
                 DisplayDatasetAdapter(datasetImagesList, this@DisplayDatasetActivity)
@@ -62,10 +42,10 @@ class DisplayDatasetActivity : AppCompatActivity() {
             findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
                 displayDatasetAdapter
 
-            //TODO: Modify it such that it goes to DisplayImageSetCategory and displays all the images in the dataset that belong to the given category.
             findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
                 val intent =
                     Intent(this@DisplayDatasetActivity, DisplayImageSetActivity::class.java)
+                //TODO: All the images that belong to the specified category will be sent to DisplayImageSetActivity
                 intent.putExtra("display_image_set_images", (datasetImagesList[i]) as Serializable)
                 startActivity(intent)
             }
@@ -89,8 +69,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 true
             }
             else -> {
-                Toast.makeText(this, item?.title.toString() + " is Selected", Toast.LENGTH_SHORT)
-                    .show()
                 true
             }
         }
