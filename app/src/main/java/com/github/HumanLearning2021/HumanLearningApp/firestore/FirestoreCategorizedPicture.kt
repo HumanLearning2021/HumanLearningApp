@@ -8,11 +8,11 @@ import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
-data class FirestoreCategorizedPicture(
-    val path: String,
+data class FirestoreCategorizedPicture internal constructor(
+    override val path: String,
     override val category: Category,
     val url: String,
-) : CategorizedPicture {
+) : CategorizedPicture, FirestoreDocument {
     override fun displayOn(activity: Activity, imageView: ImageView) {
         Glide.with(activity)
             .load(Firebase.storage.getReferenceFromUrl(url))

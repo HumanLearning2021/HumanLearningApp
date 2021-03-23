@@ -9,7 +9,7 @@ private class HasName(private val nameMatcher: Matcher<String>) :
     TypeSafeMatcher<Category>() {
     override fun matchesSafely(cat: Category) = nameMatcher.matches(cat.name)
     override fun describeTo(description: Description) {
-        description.appendText("has name").appendDescriptionOf(nameMatcher)
+        description.appendText("has name ").appendDescriptionOf(nameMatcher)
     }
 }
 
@@ -20,7 +20,7 @@ private class HasCategory(private val categoryMatcher: Matcher<Category>) :
     TypeSafeMatcher<CategorizedPicture>() {
     override fun matchesSafely(pic: CategorizedPicture) = categoryMatcher.matches(pic.category)
     override fun describeTo(description: Description) {
-        description.appendText("has category").appendDescriptionOf(categoryMatcher)
+        description.appendText("has category ").appendDescriptionOf(categoryMatcher)
     }
 }
 
