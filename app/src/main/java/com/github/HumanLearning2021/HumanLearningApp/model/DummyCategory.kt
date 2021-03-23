@@ -6,18 +6,7 @@ import java.io.Serializable
 /**
  * Class representing a dummy implementation of the category interface
  *
- * @param name the name of the category (case-insensitive)
+ * @param name the name of the category (case-sensitive)
  */
 
-class DummyCategory(name: String):Category{
-    override val name = name.toLowerCase()
-
-    override fun equals(other: Any?): Boolean {
-        return other is Category && other.name == name
-    }
-
-    override fun hashCode(): Int {
-        return 17 + 31 * name.hashCode()
-    }
-
-}
+data class DummyCategory(override val name: String): Category

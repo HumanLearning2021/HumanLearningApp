@@ -1,6 +1,5 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
-import android.os.Parcel
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatasetInterface
@@ -13,9 +12,9 @@ import org.mockito.Mockito
 
 
 class DummyUIPresenterTest {
-    val fork = DummyCategory("fork")
-    val knife = DummyCategory("knife")
-    val spoon = DummyCategory("spoon")
+    val fork = DummyCategory("Fork")
+    val knife = DummyCategory("Knife")
+    val spoon = DummyCategory("Spoon")
 
     private val forkPic = DummyCategorizedPicture(fork)
     private val knifePic = DummyCategorizedPicture(knife)
@@ -37,28 +36,30 @@ class DummyUIPresenterTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun getPictureCategoryNotPresent() = runBlockingTest {
-        dummyPresenter.getPicture("plate")
+        dummyPresenter.getPicture("Plate")
     }
 
     @Test
     fun getPictureCategoryEmpty() = runBlockingTest {
-        dummyPresenter.datasetInterface.putCategory("plate")
-        assertThat(dummyPresenter.getPicture("plate"), equalTo(null))
+        dummyPresenter.datasetInterface.putCategory("Plate")
+        assertThat(dummyPresenter.getPicture("Plate"), equalTo(null))
     }
 
 
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
-        dummyPresenter.putPicture(dummyUri,"fork")
-        assertThat(dummyPresenter.getPicture("fork"),
+        dummyPresenter.putPicture(dummyUri, "Fork")
+        assertThat(
+            dummyPresenter.getPicture("Fork"),
             Matchers.equalTo(DummyCategorizedPicture(fork))
         )
     }
 
     @Test
     fun putPictureCategoryNotPresent() = runBlockingTest {
-        val tablePic = dummyPresenter.putPicture(dummyUri,"table")
-        assertThat(dummyPresenter.getPicture("table"),
+        val tablePic = dummyPresenter.putPicture(dummyUri, "Table")
+        assertThat(
+            dummyPresenter.getPicture("Table"),
             Matchers.equalTo(tablePic)
         )
     }
