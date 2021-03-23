@@ -9,9 +9,9 @@ import org.junit.Test
 import org.mockito.Mockito
 
 
-class DummyDataSetInterfaceTest {
-    val dummyDatasetInterface1 = DummyDatabaseService()
-    val dummyDatasetInterface2 = DummyDatabaseService()
+class DummyDatabaseServiceTest {
+    val dummyDatabaseService1 = DummyDatabaseService()
+    val dummyDatabseService2 = DummyDatabaseService()
 
 
     private val fork = DummyCategory("Fork")
@@ -26,17 +26,12 @@ class DummyDataSetInterfaceTest {
     private val spoonPic = DummyCategorizedPicture(spoon)
     private val tablePic = DummyCategorizedPicture(table)
 
-
-
-
     val dummyUri = Mockito.mock(android.net.Uri::class.java)
-
-
 
     @ExperimentalCoroutinesApi
     @Test
     fun getForkWorks() = runBlockingTest {
-        val actual = dummyDatasetInterface1.getPicture(fork)
+        val actual = dummyDatabaseService1.getPicture(fork)
         val expected = forkPic
         assertEquals(actual, expected)
     }
@@ -51,7 +46,7 @@ class DummyDataSetInterfaceTest {
     @Test
     fun getPictureCategoryEmpty() = runBlockingTest {
         assertThat(
-            dummyDatasetInterface1.getPicture(dummyDatasetInterface1.putCategory("Plate")), equalTo(
+            dummyDatabaseService1.getPicture(dummyDatabaseService1.putCategory("Plate")), equalTo(
                 null
             )
         )
@@ -62,11 +57,11 @@ class DummyDataSetInterfaceTest {
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
 
-        dummyDatasetInterface1.putCategory("Table")
-        dummyDatasetInterface1.putPicture(dummyUri, table)
+        dummyDatabaseService1.putCategory("Table")
+        dummyDatabaseService1.putPicture(dummyUri, table)
 
         assertThat(
-            dummyDatasetInterface1.getPicture(table),
+            dummyDatabaseService1.getPicture(table),
             equalTo(DummyCategorizedPicture(table))
         )
 
@@ -75,42 +70,61 @@ class DummyDataSetInterfaceTest {
     @ExperimentalCoroutinesApi
     @Test(expected = IllegalArgumentException::class)
     fun putPictureCategoryNotPresentThrows() = runBlockingTest {
-        dummyDatasetInterface1.putPicture(dummyUri, table)
+        dummyDatabaseService1.putPicture(dummyUri, table)
     }
     
     @ExperimentalCoroutinesApi
     @Test
     fun getCategoryPresent() = runBlockingTest {
-        dummyDatasetInterface2.putCategory("Table")
-        assertThat(dummyDatasetInterface2.getCategory("Table"), equalTo(DummyCategory("Table")))
+        dummyDatabseService2.putCategory("Table")
+        assertThat(dummyDatabseService2.getCategory("Table"), equalTo(DummyCategory("Table")))
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun getCategoryNotPresent() = runBlockingTest {
-        assertThat(dummyDatasetInterface2.getCategory("Table"), equalTo(null))
+        assertThat(dummyDatabseService2.getCategory("Table"), equalTo(null))
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun putCategoryNotPresent() = runBlockingTest {
-        assertThat(dummyDatasetInterface1.putCategory("Table"), equalTo(DummyCategory("Table")))
+        assertThat(dummyDatabaseService1.putCategory("Table"), equalTo(DummyCategory("Table")))
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun putCategoryAlreadyPresentChangesNothing() = runBlockingTest {
-        dummyDatasetInterface1.putCategory("Table")
-        assertThat(dummyDatasetInterface1.putCategory("Table"), equalTo(DummyCategory("Table")))
+        dummyDatabaseService1.putCategory("Table")
+        assertThat(dummyDatabaseService1.putCategory("Table"), equalTo(DummyCategory("Table")))
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun getCategoriesWorks() = runBlockingTest {
-        dummyDatasetInterface1.putCategory("Table")
+        dummyDatabaseService1.putCategory("Table")
         assertThat(
-            dummyDatasetInterface1.getCategories(),
+            dummyDatabaseService1.getCategories(),
             equalTo(setOf(fork, spoon, knife, table))
+        )
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun putDatasetWorks() = runBlockingTest {
+        assertThat(
+            dummyDatabaseService1.putDataset("Utensils", setOf(knife, spoon)),
+            equalTo(DummyDataset("Utensils", setOf(knife, spoon)))
+        )
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun getDatasetWorks() = runBlockingTest {
+        dummyDatabaseService1.putDataset("Utensils", setOf(knife, spoon))
+        assertThat(
+            dummyDatabaseService1.getDataset("Utensils")!!.categories,
+            equalTo(setOf(knife, spoon))
         )
     }
 }

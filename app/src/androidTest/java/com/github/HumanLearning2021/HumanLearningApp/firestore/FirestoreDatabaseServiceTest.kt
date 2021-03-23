@@ -14,7 +14,7 @@ import org.junit.Assert.assertThat
 import java.io.File
 
 
-class FirestoreDataSetInterfaceTest : TestCase() {
+class FirestoreDatabaseServiceTest : TestCase() {
     lateinit var demoInterface: FirestoreDatabaseService
     lateinit var scratchInterface: FirestoreDatabaseService
 
