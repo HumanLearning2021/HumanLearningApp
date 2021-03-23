@@ -10,8 +10,8 @@ import org.mockito.Mockito
 
 
 class DummyDataSetInterfaceTest {
-    val dummyDatasetInterface1 = DummyDatasetInterface()
-    val dummyDatasetInterface2 = DummyDatasetInterface()
+    val dummyDatasetInterface1 = DummyDatabaseService()
+    val dummyDatasetInterface2 = DummyDatabaseService()
 
 
     private val fork = DummyCategory("Fork")
@@ -44,7 +44,7 @@ class DummyDataSetInterfaceTest {
     @ExperimentalCoroutinesApi
     @Test(expected = IllegalArgumentException::class)
     fun getPictureCategoryNotPresentThrows() = runBlockingTest {
-        DummyDatasetInterface().getPicture(DummyCategory("Plate"))
+        DummyDatabaseService().getPicture(DummyCategory("Plate"))
     }
 
     @ExperimentalCoroutinesApi

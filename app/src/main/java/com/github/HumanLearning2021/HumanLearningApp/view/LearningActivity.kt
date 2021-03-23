@@ -12,22 +12,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.BuildConfig
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatasetInterface
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
 import kotlinx.coroutines.launch
 
 class LearningActivity : AppCompatActivity() {
 
-    private val dummyPres = DummyUIPresenter(DummyDatasetInterface())
-    private val learningPresenter = LearningPresenter(DummyDatasetInterface())
+    private val dummyPres = DummyUIPresenter(DummyDatabaseService())
+    private val learningPresenter = LearningPresenter(DummyDatabaseService())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
 
         lifecycleScope.launch {
-            val cats = DummyDatasetInterface().getCategories()
+            val cats = DummyDatabaseService().getCategories()
             if (BuildConfig.DEBUG && cats.size < 3) {
                 // TODO : maybe allow fewer categories in the future
                 error("There should be at least 3 categories")

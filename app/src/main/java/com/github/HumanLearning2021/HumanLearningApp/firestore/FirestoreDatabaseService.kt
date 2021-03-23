@@ -2,7 +2,8 @@ package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatasetInterface
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.DocumentReference
@@ -13,17 +14,18 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
-class FirestoreDatasetInterface(
+class FirestoreDatabaseService(
     /**
      * name of a database within the Firebase App
      */
     dbName: String,
     app: FirebaseApp? = null,
-) : DatasetInterface {
+) : DatabaseService {
     private val app = app ?: Firebase.app
     private val db = Firebase.firestore(this.app)
     private val categories = db.collection("/databases/$dbName/categories")
     private val pictures = db.collection("/databases/$dbName/pictures")
+    private val datasets = db.collection("/databases/$dbName/datasets")
     private val storage = Firebase.storage(this.app)
     private val imagesDir = storage.reference.child("$dbName/images")
 
@@ -66,6 +68,14 @@ class FirestoreDatasetInterface(
             for (cat in cats)
                 add(cat.toPublic())
         }
+    }
+
+    override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getDataset(name: String): Dataset? {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
