@@ -63,5 +63,15 @@ class FirestoreDatabaseServiceTest : TestCase() {
         }
         assertThat(pic, hasCategory(equalTo(cat)))
     }
+
+    fun test_putDataset() = runBlocking {
+        TODO("not yet implemented")
+        assert(true)
+    }
+
+    fun test_getDataset() = runBlocking {
+        TODO("not yet implemented")
+        assert(true)
+    }
 }
 
