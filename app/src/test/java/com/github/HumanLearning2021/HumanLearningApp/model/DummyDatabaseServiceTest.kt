@@ -1,5 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import android.net.Uri
+import com.github.HumanLearning2021.HumanLearningApp.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
@@ -14,17 +16,17 @@ class DummyDatabaseServiceTest {
     val dummyDatabseService2 = DummyDatabaseService()
 
 
-    private val fork = DummyCategory("Fork")
-    private val knife = DummyCategory("Knife")
-    private val spoon = DummyCategory("Spoon")
-    private val table = DummyCategory("Table")
+    private val fork = DummyCategory("Fork", null)
+    private val knife = DummyCategory("Knife", null)
+    private val spoon = DummyCategory("Spoon", null)
+    private val table = DummyCategory("Table", null)
 
     val categories: Set<Category> = mutableSetOf(fork, knife, spoon)
 
-    private val forkPic = DummyCategorizedPicture(fork)
-    private val knifePic = DummyCategorizedPicture(knife)
-    private val spoonPic = DummyCategorizedPicture(spoon)
-    private val tablePic = DummyCategorizedPicture(table)
+    private val forkPic = DummyCategorizedPicture(fork, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork))
+    private val knifePic = DummyCategorizedPicture(knife, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife))
+    private val spoonPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon))
+    private val tablePic = DummyCategorizedPicture(table, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.chien1))
 
     val dummyUri = Mockito.mock(android.net.Uri::class.java)
 
@@ -39,7 +41,7 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test(expected = IllegalArgumentException::class)
     fun getPictureCategoryNotPresentThrows() = runBlockingTest {
-        DummyDatabaseService().getPicture(DummyCategory("Plate"))
+        DummyDatabaseService().getPicture(DummyCategory("Plate", null))
     }
 
     @ExperimentalCoroutinesApi
@@ -62,7 +64,7 @@ class DummyDatabaseServiceTest {
 
         assertThat(
             dummyDatabaseService1.getPicture(table),
-            equalTo(DummyCategorizedPicture(table))
+            equalTo(DummyCategorizedPicture(table, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.chien1)))
         )
 
     }
@@ -77,7 +79,7 @@ class DummyDatabaseServiceTest {
     @Test
     fun getCategoryPresent() = runBlockingTest {
         dummyDatabseService2.putCategory("Table")
-        assertThat(dummyDatabseService2.getCategory("Table"), equalTo(DummyCategory("Table")))
+        assertThat(dummyDatabseService2.getCategory("Table"), equalTo(DummyCategory("Table", null)))
     }
 
     @ExperimentalCoroutinesApi
@@ -89,14 +91,14 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test
     fun putCategoryNotPresent() = runBlockingTest {
-        assertThat(dummyDatabaseService1.putCategory("Table"), equalTo(DummyCategory("Table")))
+        assertThat(dummyDatabaseService1.putCategory("Table"), equalTo(DummyCategory("Table", null)))
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun putCategoryAlreadyPresentChangesNothing() = runBlockingTest {
         dummyDatabaseService1.putCategory("Table")
-        assertThat(dummyDatabaseService1.putCategory("Table"), equalTo(DummyCategory("Table")))
+        assertThat(dummyDatabaseService1.putCategory("Table"), equalTo(DummyCategory("Table", null)))
     }
 
     @ExperimentalCoroutinesApi
@@ -113,15 +115,15 @@ class DummyDatabaseServiceTest {
     @Test
     fun putDatasetWorks() = runBlockingTest {
         assertThat(
-            dummyDatabaseService1.putDataset("Utensils", setOf(knife, spoon)),
-            equalTo(DummyDataset("Utensils", setOf(knife, spoon)))
+            dummyDatabaseService1.putDataset("Utensils", mutableSetOf(knife, spoon)),
+            equalTo(DummyDataset("Utensils", mutableSetOf(knife, spoon)))
         )
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun getDatasetWorks() = runBlockingTest {
-        dummyDatabaseService1.putDataset("Utensils", setOf(knife, spoon))
+        dummyDatabaseService1.putDataset("Utensils", mutableSetOf(knife, spoon))
         assertThat(
             dummyDatabaseService1.getDataset("Utensils")!!.categories,
             equalTo(setOf(knife, spoon))

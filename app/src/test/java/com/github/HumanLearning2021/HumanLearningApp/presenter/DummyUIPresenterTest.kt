@@ -1,5 +1,8 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
+import android.net.Uri
+import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
@@ -12,13 +15,13 @@ import org.mockito.Mockito
 
 
 class DummyUIPresenterTest {
-    val fork = DummyCategory("Fork")
-    val knife = DummyCategory("Knife")
-    val spoon = DummyCategory("Spoon")
+    private val fork = DummyCategory("Fork", null)
+    private val knife = DummyCategory("Knife", null)
+    private val spoon = DummyCategory("Spoon", null)
 
-    private val forkPic = DummyCategorizedPicture(fork)
-    private val knifePic = DummyCategorizedPicture(knife)
-    private val spoonPic = DummyCategorizedPicture(spoon)
+    private val forkPic = DummyCategorizedPicture(fork, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork))
+    private val knifePic = DummyCategorizedPicture(knife, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.knife))
+    private val spoonPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.spoon))
 
     val dummyUri = Mockito.mock(android.net.Uri::class.java)
     val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
@@ -51,7 +54,7 @@ class DummyUIPresenterTest {
         dummyPresenter.putPicture(dummyUri, "Fork")
         assertThat(
             dummyPresenter.getPicture("Fork"),
-            Matchers.equalTo(DummyCategorizedPicture(fork))
+            Matchers.equalTo(DummyCategorizedPicture(fork, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork)))
         )
     }
 

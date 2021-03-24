@@ -16,7 +16,7 @@ class DummyUIPresenter(val databaseService: DatabaseService) {
      */
 
     suspend fun getPicture(categoryName: String): CategorizedPicture? {
-        return databaseService.getPicture(DummyCategory(categoryName))
+        return databaseService.getPicture(DummyCategory(categoryName, null))
     }
 
     suspend fun putPicture(picture: android.net.Uri, categoryName: String): CategorizedPicture {
