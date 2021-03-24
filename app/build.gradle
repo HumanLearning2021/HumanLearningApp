@@ -129,4 +129,5 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha22"
     implementation 'androidx.fragment:fragment:1.1.0-alpha03'
     debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha03'
+
 }
