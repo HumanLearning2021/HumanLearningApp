@@ -14,7 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HumanLearning">
-        <activity android:name=".DataOverviewActivity"></activity>
+        <activity android:name=".DataOverviewActivity"
+        android:exported="true">
+
+        </activity>
         <activity android:name=".DataCreationActivity" />
         <activity android:name=".AddPictureActivity" />
         <activity android:name=".view.DisplayImageActivity" />

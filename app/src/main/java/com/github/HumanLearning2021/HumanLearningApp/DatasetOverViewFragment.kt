@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -41,7 +42,7 @@ class DatasetOverViewFragment : Fragment(), MyDatasetRecyclerViewAdapter.OnItemC
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = MyDatasetRecyclerViewAdapter(listener = this@DatasetOverViewFragment)
+                adapter = MyDatasetRecyclerViewAdapter(listener =  this@DatasetOverViewFragment)
 
             }
         }

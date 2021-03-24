@@ -44,7 +44,7 @@ class MyDatasetRecyclerViewAdapter(
             init {
                 view.setOnClickListener(this)
             }
-            override fun onClick(v: View?){
+            override fun onClick(v: View){
                 val position = adapterPosition
                 //checking if position is still valid
                 if (position != RecyclerView.NO_POSITION) {

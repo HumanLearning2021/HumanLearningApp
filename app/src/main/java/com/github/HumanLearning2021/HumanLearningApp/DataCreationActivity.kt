@@ -29,9 +29,9 @@ class DataCreationActivity : AppCompatActivity() {
         }
 
 
-        binding.buttonSubmitList.setOnClickListener {
+        /*binding.buttonSubmitList.setOnClickListener {
             saveData()
-        }
+        }*/
 
 
     }
@@ -51,7 +51,7 @@ class DataCreationActivity : AppCompatActivity() {
 
     // this method will be the building block for linking this activtiy to the camera activity
 
-    private fun saveData() {
+    /*private fun saveData() {
         categoryList.clear()
 
         val count = binding.parentLinearLayout.childCount
@@ -70,7 +70,7 @@ class DataCreationActivity : AppCompatActivity() {
            // val intent = Intent(this.context::class.java, DataManagementActivity::class.java)
 
         }
-    }
+    }*/
 
 
 
