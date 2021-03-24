@@ -18,7 +18,7 @@
         tools:layout="@layout/fragment_dataset_over_view_list" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/dataOverviewButton"
         android:layout_width="153dp"
         android:layout_height="36dp"
         android:layout_marginStart="128dp"
