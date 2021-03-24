@@ -14,7 +14,7 @@ class LearningAudioFeedback(private val applicationContext : Context) {
     }
 
     fun releaseMediaPlayers(){
-        // we release when the user pauses the so that we don't eat up resources uselessly
+        // we release when the user pauses the app so that we don't eat up resources uselessly
         correctMp.release()
         incorrectMp.release()
     }
@@ -42,4 +42,15 @@ class LearningAudioFeedback(private val applicationContext : Context) {
     fun startIncorrectFeedback(){
         incorrectMp.start()
     }
+
+    /**
+     * Gets the MediaPlayer that plays the 'correct' feedback (eg. 'bravo!')
+     * ONLY USE THIS FOR UNIT TESTING
+     */
+    fun __testing_getCorrectMP(): MediaPlayer = correctMp
+    /**
+     * Gets the MediaPlayer that plays the 'incorrect' feedback (eg. 'domamge!')
+     * ONLY USE THIS FOR UNIT TESTING
+     */
+    fun __testing_getIncorrectMP(): MediaPlayer = incorrectMp
 }
