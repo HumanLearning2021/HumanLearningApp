@@ -87,7 +87,7 @@ class FirestoreDatabaseService(
         TODO("Not yet implemented")
     }
 
-    override suspend fun putDataset(name: String, categories: MutableSet<Category>): Dataset {
+    override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
         TODO("Not yet implemented")
     }
 

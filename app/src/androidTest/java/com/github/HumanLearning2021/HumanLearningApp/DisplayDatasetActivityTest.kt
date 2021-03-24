@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
+import android.os.Parcelable
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -25,7 +26,6 @@ import org.hamcrest.CoreMatchers.anything
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.Serializable
 
 
 @RunWith(AndroidJUnit4::class)
@@ -77,7 +77,7 @@ class DisplayDatasetActivityTest {
             intended(
                 allOf(
                     hasComponent(DisplayImageActivity::class.java.name),
-                    hasExtra("display_image_image", (datasetImagesList[randomNb]) as Serializable)
+                    hasExtra("display_image_image", (datasetImagesList[randomNb]) as Parcelable)
                 )
             )
         }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +50,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
             findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { 
             adapterView, view, i, l ->
                 val intent = Intent(this@DisplayDatasetActivity, DisplayImageActivity::class.java)
-                intent.putExtra("display_image_image", (datasetImagesList[i]) as Serializable)
+                intent.putExtra("display_image_image", (datasetImagesList[i] as Parcelable))
                 startActivity(intent)
             }
         }

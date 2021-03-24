@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.app.Activity
 import android.net.Uri
+import android.os.Parcelable
 import android.widget.ImageView
 import java.io.Serializable
 
@@ -10,8 +11,7 @@ import java.io.Serializable
  * Interface representing a categorized picture
  */
 
-
-interface CategorizedPicture : Serializable{
+interface CategorizedPicture : Parcelable {
     val category: Category
 
     /**
