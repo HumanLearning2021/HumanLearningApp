@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class FirestoreDownloadAndDisplayPictureTest {
     private val pic = runBlocking {
-        val theInterface = FirestoreDatasetInterface("demo")
+        val theInterface = FirestoreDatabaseService("demo")
         val cats = theInterface.getCategories()
         theInterface.getPicture(cats.first())!!
     }

@@ -8,7 +8,7 @@ import java.io.Serializable
 /**
  * An interface representing the part of the model interacting with data sets
  */
-interface DatasetInterface {
+interface DatabaseService {
     /**
      * A function to retrieve a picture from the data set given a category
      *
@@ -36,7 +36,7 @@ interface DatasetInterface {
      * @param categoryName the name of the desired category
      * @return the desired category if present, null otherwise
      */
-    suspend fun getCategory(categoryName: String):Category?
+    suspend fun getCategory(categoryName: String): Category?
 
     /**
      * A function to add a category to the dataset. If the provided name matches that of category
@@ -45,7 +45,7 @@ interface DatasetInterface {
      * @param categoryName the name of the category to add
      * @return the Category that was inserted, or was already present
      */
-    suspend fun putCategory(categoryName: String):Category
+    suspend fun putCategory(categoryName: String): Category
 
     /**
      * A function to retrieve the set of categories present in the dataset
@@ -87,4 +87,21 @@ interface DatasetInterface {
      * @throws IllegalArgumentException if the dataset does not contain the specified picture
      */
     suspend fun removePicture(picture: CategorizedPicture)
+
+    /**
+     * Creates a dataset and puts it into the database
+     *
+     * @param name - the name of the dataset
+     * @param categories - the categories of the dataset
+     * @return the dataset which was created
+     */
+    suspend fun putDataset(name: String, categories: Set<Category>): Dataset
+
+    /**
+     * Gets a dataset from the database
+     *
+     * @param name - the name of the desired dataset
+     * @return the dataset
+     */
+    suspend fun getDataset(name: String): Dataset?
 }
