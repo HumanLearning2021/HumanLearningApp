@@ -8,9 +8,11 @@ import android.view.DragEvent
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.BuildConfig
+import com.github.HumanLearning2021.HumanLearningApp.EXTRA_LEARNING_MODE
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
@@ -21,10 +23,15 @@ class LearningActivity : AppCompatActivity() {
 
     private val dummyPres = DummyUIPresenter(DummyDatabaseService())
     private val learningPresenter = LearningPresenter(DummyDatabaseService())
+    private lateinit var learningMode: LearningMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
+
+        learningMode = intent.getSerializableExtra("EXTRA_LEARNING_MODE") as LearningMode
+
+
 
         lifecycleScope.launch {
             val cats = DummyDatabaseService().getCategories()
