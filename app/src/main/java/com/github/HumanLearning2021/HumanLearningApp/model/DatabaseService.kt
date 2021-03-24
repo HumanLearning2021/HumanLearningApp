@@ -61,7 +61,7 @@ interface DatabaseService {
      * @return the representative picture associated to the specified category
      * @throws IllegalArgumentException if the dataset does not contain the specified category
      */
-    suspend fun getRepresentativePicture(category: Category): CategorizedPicture
+    suspend fun getRepresentativePicture(category: Category): CategorizedPicture?
 
     /**
      * Retrieves all the pictures categorized with the specified category
@@ -75,10 +75,11 @@ interface DatabaseService {
     /**
      * Remove the category from the dataset
      *
+     * @param datasetName - the dataset from which to remove the category
      * @param category - the category to remove from the dataset
      * @throws IllegalArgumentException if the dataset does not contain the specified category
      */
-    suspend fun removeCategory(category: Category)
+    suspend fun removeCategory(datasetName: String, category: Category)
 
     /**
      * Removes the corresponding picture from the dataset

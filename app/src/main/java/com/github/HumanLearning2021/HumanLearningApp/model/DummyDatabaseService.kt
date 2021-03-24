@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import android.net.Uri
 import java.lang.IllegalArgumentException
 import java.util.*
 
@@ -7,9 +8,9 @@ import java.util.*
  * a class representing a dummy data set Interface
  */
 class DummyDatabaseService : DatabaseService {
-    private val fork = DummyCategory("Fork")
-    private val knife = DummyCategory("Knife")
-    private val spoon = DummyCategory("Spoon")
+    private val fork = DummyCategory("Fork", null)
+    private val knife = DummyCategory("Knife", null)
+    private val spoon = DummyCategory("Spoon", null)
 
     private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
 
@@ -50,7 +51,7 @@ class DummyDatabaseService : DatabaseService {
 
 
     override suspend fun putCategory(categoryName: String): Category {
-        val category = DummyCategory(categoryName)
+        val category = DummyCategory(categoryName, null)
         categories.add(category)
         return category
     }
@@ -59,15 +60,21 @@ class DummyDatabaseService : DatabaseService {
         return Collections.unmodifiableSet(categories)
     }
 
-    override suspend fun getRepresentativePicture(category: Category): CategorizedPicture {
-        TODO("Not yet implemented")
+    override suspend fun getRepresentativePicture(category: Category): CategorizedPicture? {
+        return category.representativePicture
     }
 
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
-        TODO("Not yet implemented")
+        val res: MutableSet<CategorizedPicture> = mutableSetOf()
+        for (p in pictures) {
+            if (p.category == category) {
+                res.add(p)
+            }
+        }
+        return res
     }
 
-    override suspend fun removeCategory(category: Category) {
+    override suspend fun removeCategory(datasetName: String, category: Category) {
         TODO("Not yet implemented")
     }
 
@@ -85,5 +92,25 @@ class DummyDatabaseService : DatabaseService {
         for(d in datasets)
             if(d.name == name) return d
         return null
+    }
+
+    override suspend fun deleteDataset(name: String) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getDatasetNames(): Set<String> {
+        TODO("Not yet implemented")
+    }
+
+    override fun editDatasetName(oldName: String, newName: String) {
+        TODO("Not yet implemented")
     }
 }

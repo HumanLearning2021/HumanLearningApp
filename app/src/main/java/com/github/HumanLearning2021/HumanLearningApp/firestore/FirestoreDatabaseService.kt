@@ -79,7 +79,7 @@ class FirestoreDatabaseService(
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeCategory(category: Category) {
+    override suspend fun removeCategory(datasetName: String, category: Category) {
         TODO("Not yet implemented")
     }
 

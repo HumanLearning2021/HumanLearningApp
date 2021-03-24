@@ -9,4 +9,6 @@ import java.io.Serializable
  * @param name the name of the category (case-sensitive)
  */
 
-data class DummyCategory(override val name: String): Category
+data class DummyCategory(override val name: String,
+                         override val representativePicture: CategorizedPicture?
+): Category

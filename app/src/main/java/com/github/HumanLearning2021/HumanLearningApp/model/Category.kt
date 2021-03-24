@@ -6,5 +6,6 @@ import java.io.Serializable
  * An interface representing a category to which a CategorizedPicture can belong
  */
 interface Category : Serializable{
-    val name:String
+    val name: String
+    val representativePicture: CategorizedPicture?
 }
