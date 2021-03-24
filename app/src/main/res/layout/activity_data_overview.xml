@@ -9,7 +9,20 @@
     <fragment
         android:id="@+id/dataOverview_fragment"
         class="com.github.HumanLearning2021.HumanLearningApp.DatasetOverViewFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_width="300dp"
+        android:layout_height="500dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_dataset_over_view_list" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/DataOverview_CreateButton"
+        tools:layout_editor_absoluteX="135dp"
+        tools:layout_editor_absoluteY="627dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

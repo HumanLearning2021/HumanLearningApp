@@ -20,4 +20,9 @@
     <string name="learning_cat_0_descr">red</string>
     <string name="learning_cat_1_descr">green</string>
     <string name="learning_cat_2_descr">blue</string>
+
+    <string name="DataOverview_CreateButton">Create dataset</string>
+
+
+
 </resources>
