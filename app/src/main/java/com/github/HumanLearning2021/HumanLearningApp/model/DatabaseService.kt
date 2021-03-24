@@ -14,19 +14,18 @@ interface DatabaseService {
      *
      * @param category the category of the image to be retrieved
      * @return a CategorizedPicture from the desired category. Null if no picture of the desired
-     * category is present in the dataset.
-     * @throws IllegalArgumentException if the provided category is not present in the dataset
+     * category is present in the database.
+     * @throws IllegalArgumentException if the provided category is not present in the database
      */
     suspend fun getPicture(category: Category): CategorizedPicture?
 
-
     /**
-     * A function that allows to put a picture in the dataset
+     * A function that allows to put a picture in the database
      *
-     * @param picture the picture to put in the dataset
+     * @param picture the picture to put in the database
      * @param category the category to which the picture belongs
      * @return a Categorized picture built using 'picture' and 'category'
-     * @throws IllegalArgumentException if the category provided is not present in the dataset
+     * @throws IllegalArgumentException if the category provided is not present in the database
      */
     suspend fun putPicture(picture: android.net.Uri, category: Category): CategorizedPicture
 
@@ -39,7 +38,7 @@ interface DatabaseService {
     suspend fun getCategory(categoryName: String): Category?
 
     /**
-     * A function to add a category to the dataset. If the provided name matches that of category
+     * A function to add a category to the database. If the provided name matches that of category
      * that is already present, nothing is done.
      *
      * @param categoryName the name of the category to add
@@ -48,9 +47,9 @@ interface DatabaseService {
     suspend fun putCategory(categoryName: String): Category
 
     /**
-     * A function to retrieve the set of categories present in the dataset
+     * A function to retrieve the set of categories present in the database
      *
-     * @return the set of categories present in the dataset
+     * @return the set of categories present in the database
      */
     suspend fun getCategories(): Set<Category>
 
@@ -59,7 +58,7 @@ interface DatabaseService {
      *
      * @param category - the category whose representative picture we want to retrieve
      * @return the representative picture associated to the specified category
-     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     * @throws IllegalArgumentException if the database does not contain the specified category
      */
     suspend fun getRepresentativePicture(category: Category): CategorizedPicture?
 
@@ -68,24 +67,23 @@ interface DatabaseService {
      *
      * @param category - the category whose pictures we want to retrieve
      * @return the pictures categorized with the specified category
-     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     * @throws IllegalArgumentException if the database does not contain the specified category
      */
     suspend fun getAllPictures(category: Category): Set<CategorizedPicture>
 
     /**
-     * Remove the category from the dataset
+     * Remove the category from the database
      *
-     * @param datasetName - the dataset from which to remove the category
-     * @param category - the category to remove from the dataset
-     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     * @param category - the category to remove from the database
+     * @throws IllegalArgumentException if the database does not contain the specified category
      */
-    suspend fun removeCategory(datasetName: String, category: Category)
+    suspend fun removeCategory(category: Category)
 
     /**
-     * Removes the corresponding picture from the dataset
+     * Removes the corresponding picture from the database
      *
-     * @param picture - the picture to remove from the dataset
-     * @throws IllegalArgumentException if the dataset does not contain the specified picture
+     * @param picture - the picture to remove from the database
+     * @throws IllegalArgumentException if the database does not contain the specified picture
      */
     suspend fun removePicture(picture: CategorizedPicture)
 
@@ -96,7 +94,7 @@ interface DatabaseService {
      * @param categories - the categories of the dataset
      * @return the dataset which was created
      */
-    suspend fun putDataset(name: String, categories: Set<Category>): Dataset
+    suspend fun putDataset(name: String, categories: MutableSet<Category>): Dataset
 
     /**
      * Gets a dataset from the database
@@ -119,7 +117,7 @@ interface DatabaseService {
      *
      * @param picture - the picture to put as a representative
      * @param category - the category whose representative picture we want to change
-     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     * @throws IllegalArgumentException if the database does not contain the specified category
      */
     suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
 
@@ -127,7 +125,7 @@ interface DatabaseService {
      * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
      *
      * @param picture - the picture to put as a representative
-     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     * @throws IllegalArgumentException if the database does not contain the specified category
      */
     suspend fun putRepresentativePicture(picture: CategorizedPicture)
 

@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
+import com.github.HumanLearning2021.HumanLearningApp.R
 import java.lang.IllegalArgumentException
 import java.util.*
 
@@ -14,9 +15,9 @@ class DummyDatabaseService : DatabaseService {
 
     private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
 
-    private val forkPic = DummyCategorizedPicture(fork)
-    private val knifePic = DummyCategorizedPicture(knife)
-    private val spoonPic = DummyCategorizedPicture(spoon)
+    private val forkPic = DummyCategorizedPicture(fork, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.fork))
+    private val knifePic = DummyCategorizedPicture(knife, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife))
+    private val spoonPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource:://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon))
 
     private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
 
@@ -27,8 +28,8 @@ class DummyDatabaseService : DatabaseService {
         if (!categories.contains(category)) throw IllegalArgumentException("The provided category" +
                 " is not present in the dataset")
 
-        for(p in pictures)
-            if(p == DummyCategorizedPicture(category)) return p
+        for (p in pictures)
+            if(p.category == category) return p
 
         return null
     }
@@ -37,7 +38,7 @@ class DummyDatabaseService : DatabaseService {
         if(!categories.contains(category)) throw IllegalArgumentException("The provided category" +
                 "is not present in the dataset")
 
-        val addedPicture = DummyCategorizedPicture(category)
+        val addedPicture = DummyCategorizedPicture(category, picture)
         pictures.add(addedPicture)
 
         return addedPicture
@@ -74,15 +75,33 @@ class DummyDatabaseService : DatabaseService {
         return res
     }
 
-    override suspend fun removeCategory(datasetName: String, category: Category) {
-        TODO("Not yet implemented")
+    override suspend fun removeCategory(category: Category) {
+        val found = false
+        for (c in categories) {
+            if (c == category) {
+                categories.remove(c)
+            }
+        }
+        if (found) {
+            for (d in datasets) {
+                d.categories.remove(category)
+            }
+        } else {
+            throw IllegalArgumentException("The category name ${category.name} is not present in the database")
+        }
     }
 
     override suspend fun removePicture(picture: CategorizedPicture) {
-        TODO("Not yet implemented")
+        for (p in pictures) {
+            if (p == picture) {
+                pictures.remove(p)
+                return
+            }
+        }
+        throw IllegalArgumentException("The specified picture is not present in the database")
     }
 
-    override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
+    override suspend fun putDataset(name: String, categories: MutableSet<Category>): Dataset {
         val dataset = DummyDataset(name, categories)
         datasets.add(dataset)
         return dataset
@@ -95,22 +114,44 @@ class DummyDatabaseService : DatabaseService {
     }
 
     override suspend fun deleteDataset(name: String) {
-        TODO("Not yet implemented")
+        for (d in datasets) {
+            if (d.name == name) {
+                datasets.remove(d)
+                return
+            }
+        }
+        throw IllegalArgumentException("The dataset named $name is not present in the database")
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
-        TODO("Not yet implemented")
+        for (c in categories) {
+            if (c == category) {
+                val newCategory = DummyCategory(c.name, DummyCategorizedPicture(category, picture))
+                categories.remove(c)
+                categories.add(newCategory)
+                return
+            }
+        }
+        throw IllegalArgumentException("The category name ${category.name} is not present in the database")
     }
 
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
-        TODO("Not yet implemented")
+        putRepresentativePicture((picture as DummyCategorizedPicture).picture, picture.category)
     }
 
     override fun getDatasetNames(): Set<String> {
-        TODO("Not yet implemented")
+        return datasets.toSet().map {d -> d.name}.toSet()
     }
 
     override fun editDatasetName(oldName: String, newName: String) {
-        TODO("Not yet implemented")
+        for (d in datasets) {
+            if (d.name == oldName) {
+                val newDataset = DummyDataset(newName, d.categories)
+                datasets.remove(d)
+                datasets.add(newDataset)
+                return
+            }
+        }
+        throw IllegalArgumentException("The dataset named $oldName is not present in the database")
     }
 }

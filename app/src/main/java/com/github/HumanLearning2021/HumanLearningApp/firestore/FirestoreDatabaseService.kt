@@ -40,7 +40,7 @@ class FirestoreDatabaseService(
             this.name = name
         }
 
-        fun toPublic() = FirestoreCategory(self.path, name)
+        fun toPublic() = FirestoreCategory(self.path, name, null)
     }
 
     private class PictureSchema() {
@@ -79,7 +79,7 @@ class FirestoreDatabaseService(
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeCategory(datasetName: String, category: Category) {
+    override suspend fun removeCategory(category: Category) {
         TODO("Not yet implemented")
     }
 
@@ -87,7 +87,7 @@ class FirestoreDatabaseService(
         TODO("Not yet implemented")
     }
 
-    override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
+    override suspend fun putDataset(name: String, categories: MutableSet<Category>): Dataset {
         TODO("Not yet implemented")
     }
 

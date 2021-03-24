@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.app.Activity
+import android.net.Uri
 import android.widget.ImageView
 import java.io.Serializable
 
@@ -11,7 +12,7 @@ import java.io.Serializable
 
 
 interface CategorizedPicture : Serializable{
-    val category:Category
+    val category: Category
 
     /**
      * A function that allows to display this image on an ImageView
