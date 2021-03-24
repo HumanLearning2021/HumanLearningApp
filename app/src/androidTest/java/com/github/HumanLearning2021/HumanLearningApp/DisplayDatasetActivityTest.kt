@@ -1,28 +1,25 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
-import androidx.test.espresso.Espresso.onData
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatasetInterface
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.anything
+import org.hamcrest.CoreMatchers.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,16 +36,16 @@ class DisplayDatasetActivityTest {
 
     val NUMBER_OF_CAT = 3
     val datasetImagesList = ArrayList<CategorizedPicture>()
-    val dummydsinterface = DummyDatasetInterface()
-    val dummyPresenter = DummyUIPresenter(DummyDatasetInterface())
-
+    val dummydsinterface = DummyDatabaseService()
+    val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
 
     /**
      * Check that the Grid with all the images of the dataset are displayed.
      */
     @Test
-    fun DatasetGridIsDisplayed() {
+    fun datasetGridAndNameAreDisplayed() {
         onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
+        onView(withId(R.id.display_dataset_name)).check(matches(isDisplayed()))
     }
 
     /**
@@ -56,13 +53,13 @@ class DisplayDatasetActivityTest {
      */
     @ExperimentalCoroutinesApi
     @Test
-    fun WhenClickOnImageDisplayImageActivityAndCorrectImage() {
+    fun whenClickOnCategoryImageDisplayImageSetActivity() {
 
         val randomNb = (0 until NUMBER_OF_CAT).random()
 
         runBlocking {
             val categories = dummydsinterface.getCategories()
-            for (cat in categories){
+            for (cat in categories) {
                 datasetImagesList.add(dummyPresenter.getPicture(cat.name)!!)
             }
 
@@ -74,10 +71,33 @@ class DisplayDatasetActivityTest {
             intended(
                 allOf(
                     hasComponent(DisplayImageSetActivity::class.java.name),
-                    hasExtra("display_image_set_images", (datasetImagesList[randomNb]) as Serializable)
+                    hasExtra(
+                        "display_image_set_images",
+                        (datasetImagesList[randomNb]) as Serializable
+                    )
                 )
             )
+
+
         }
+    }
+
+    @Test
+    fun modifyingDatasetNameWorks() {
+        onView(withId(R.id.display_dataset_name)).perform((typeText("Dataset Name\n")))
+        onView(withId(R.id.display_dataset_name)).check(matches(withText(containsString("Dataset Name"))))
+    }
+
+    @Test
+    fun clickOnMenuModifyCategoriesWorks() {
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText("Modify categories")).perform(click())
+
+        intended(
+            allOf(
+                hasComponent(DataCreationActivity::class.java.name),
+            )
+        )
     }
 
 }

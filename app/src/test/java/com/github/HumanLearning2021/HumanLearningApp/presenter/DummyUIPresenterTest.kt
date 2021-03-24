@@ -2,7 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatasetInterface
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -21,7 +21,7 @@ class DummyUIPresenterTest {
     private val spoonPic = DummyCategorizedPicture(spoon)
 
     val dummyUri = Mockito.mock(android.net.Uri::class.java)
-    val dummyPresenter = DummyUIPresenter(DummyDatasetInterface())
+    val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
 
     @Test
     fun getPictureTestEquals() = runBlockingTest {
@@ -41,7 +41,7 @@ class DummyUIPresenterTest {
 
     @Test
     fun getPictureCategoryEmpty() = runBlockingTest {
-        dummyPresenter.datasetInterface.putCategory("Plate")
+        dummyPresenter.databaseService.putCategory("Plate")
         assertThat(dummyPresenter.getPicture("Plate"), equalTo(null))
     }
 

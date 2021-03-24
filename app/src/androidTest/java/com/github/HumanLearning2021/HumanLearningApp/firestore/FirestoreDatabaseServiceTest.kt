@@ -14,13 +14,13 @@ import org.junit.Assert.assertThat
 import java.io.File
 
 
-class FirestoreDataSetInterfaceTest : TestCase() {
-    lateinit var demoInterface: FirestoreDatasetInterface
-    lateinit var scratchInterface: FirestoreDatasetInterface
+class FirestoreDatabaseServiceTest : TestCase() {
+    lateinit var demoInterface: FirestoreDatabaseService
+    lateinit var scratchInterface: FirestoreDatabaseService
 
     override fun setUp() {
-        demoInterface = FirestoreDatasetInterface("demo")
-        scratchInterface = FirestoreDatasetInterface("scratch")
+        demoInterface = FirestoreDatabaseService("demo")
+        scratchInterface = FirestoreDatabaseService("scratch")
     }
 
     fun test_getCategories() = runBlocking {
