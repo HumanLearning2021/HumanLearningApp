@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.net.Uri
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
@@ -70,11 +71,47 @@ class FirestoreDatabaseService(
         }
     }
 
+    override suspend fun getRepresentativePicture(category: Category): CategorizedPicture {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeCategory(category: Category) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removePicture(picture: CategorizedPicture) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
         TODO("Not yet implemented")
     }
 
     override suspend fun getDataset(name: String): Dataset? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteDataset(name: String) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getDatasetNames(): Set<String> {
+        TODO("Not yet implemented")
+    }
+
+    override fun editDatasetName(oldName: String, newName: String) {
         TODO("Not yet implemented")
     }
 

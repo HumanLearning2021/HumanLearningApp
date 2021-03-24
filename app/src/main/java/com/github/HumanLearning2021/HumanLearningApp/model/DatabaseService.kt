@@ -104,4 +104,45 @@ interface DatabaseService {
      * @return the dataset
      */
     suspend fun getDataset(name: String): Dataset?
+
+    /**
+     * Deletes the specified dataset from the database
+     *
+     * @param name - the name of the dataset to delete
+     * @throws IllegalArgumentException if there is no dataset of the specified name in the database
+     */
+    suspend fun deleteDataset(name: String)
+
+    /**
+     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
+     *
+     * @param picture - the picture to put as a representative
+     * @param category - the category whose representative picture we want to change
+     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     */
+    suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
+
+    /**
+     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
+     *
+     * @param picture - the picture to put as a representative
+     * @throws IllegalArgumentException if the dataset does not contain the specified category
+     */
+    suspend fun putRepresentativePicture(picture: CategorizedPicture)
+
+    /**
+     * Retrieves the names of all the datasets available
+     *
+     * @return a set containing the names off all the available datasets
+     */
+    fun getDatasetNames(): Set<String>
+
+    /**
+     * Changes the name of an existing dataset
+     *
+     * @param oldName - the name of the dataset to edit
+     * @param newName - the new name the dataset should take
+     * @throws IllegalArgumentException if there exists no dataset of the specified name
+     */
+    fun editDatasetName(oldName: String, newName: String)
 }
