@@ -1,5 +1,5 @@
-package com.github.HumanLearning2021.HumanLearningApp.model
 
+package com.github.HumanLearning2021.HumanLearningApp.model
 import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -11,9 +11,9 @@ import org.junit.Test
 import org.mockito.Mockito
 
 
+    val dummyDatabseService2 = DummyDatabaseService()
 class DummyDatabaseServiceTest {
     val dummyDatabaseService1 = DummyDatabaseService()
-    val dummyDatabseService2 = DummyDatabaseService()
 
 
     private val fork = DummyCategory("Fork", null)

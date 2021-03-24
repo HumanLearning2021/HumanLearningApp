@@ -94,7 +94,7 @@ interface DatabaseService {
      * @param categories - the categories of the dataset
      * @return the dataset which was created
      */
-    suspend fun putDataset(name: String, categories: MutableSet<Category>): Dataset
+    suspend fun putDataset(name: String, categories: Set<Category>): Dataset
 
     /**
      * Gets a dataset from the database

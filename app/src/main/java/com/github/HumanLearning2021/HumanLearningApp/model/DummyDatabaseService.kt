@@ -84,7 +84,13 @@ class DummyDatabaseService : DatabaseService {
         }
         if (found) {
             for (d in datasets) {
-                d.categories.remove(category)
+                if (d.categories.contains(category)) {
+                    val newDataset = d.removeCategory(category)
+                    datasets.apply {
+                        remove(d)
+                        add(newDataset)
+                    }
+                }
             }
         } else {
             throw IllegalArgumentException("The category name ${category.name} is not present in the database")
@@ -101,7 +107,7 @@ class DummyDatabaseService : DatabaseService {
         throw IllegalArgumentException("The specified picture is not present in the database")
     }
 
-    override suspend fun putDataset(name: String, categories: MutableSet<Category>): Dataset {
+    override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
         val dataset = DummyDataset(name, categories)
         datasets.add(dataset)
         return dataset
