@@ -62,6 +62,7 @@
             app:layout_constraintStart_toEndOf="@+id/learning_cat_1"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@color/blue" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--    TODO remove this useless tag-->

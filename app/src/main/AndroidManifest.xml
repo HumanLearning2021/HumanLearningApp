@@ -21,6 +21,7 @@
         <activity android:name=".AddPictureActivity" />
         <activity android:name=".view.DisplayImageActivity" />
         <activity android:name=".view.DisplayDatasetActivity" />
+        <activity android:name=".view.LearningSettingsActivity"/>
         <activity android:name=".view.LearningActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

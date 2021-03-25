@@ -9,6 +9,7 @@ import android.view.DragEvent
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.BuildConfig
@@ -22,12 +23,13 @@ class LearningActivity : AppCompatActivity() {
 
     private val dummyPres = DummyUIPresenter(DummyDatabaseService())
     private val learningPresenter = LearningPresenter(DummyDatabaseService())
+    private lateinit var learningMode: LearningMode
     private lateinit var audioFeedback : LearningAudioFeedback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
-
+        learningMode = intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
         initLearningViews()
         audioFeedback = LearningAudioFeedback(applicationContext)
     }
