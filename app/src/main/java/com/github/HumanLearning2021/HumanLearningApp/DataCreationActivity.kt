@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityDataCreationBinding
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 
 class DataCreationActivity : AppCompatActivity() {
 
@@ -13,7 +14,7 @@ class DataCreationActivity : AppCompatActivity() {
 
     // create an arraylist in which
     // we will store user data
-    private var categoryList = ArrayList<Category>()
+    private var categoryList = ArrayList<DummyCategory>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,11 +59,13 @@ class DataCreationActivity : AppCompatActivity() {
 
             val categoryName: EditText = v.findViewById(R.id.et_name)
 
-            val category = Category()
-            category.name = categoryName.text.toString()
+            val category = DummyCategory(categoryName.text.toString())
 
             // add the data to arraylist
             categoryList.add(category)
+
+           // val intent = Intent(this.context::class.java, DataManagementActivity::class.java)
+
         }
     }*/
 

@@ -25,4 +25,7 @@
     <string name="imagetobedisplayed">image to be displayed</string>
     <string name="buttontoremovepicturefromdataset">button to remove picture from dataset</string>
     <string name="picturehasbeenremoved">This Picture has been removed from this dataset.</string>
+    <string name="DataOverview_CreateButton">Create dataset</string>
+    <string name="DataOverview_Ttile">DataSet Overview</string>
+
 </resources>
