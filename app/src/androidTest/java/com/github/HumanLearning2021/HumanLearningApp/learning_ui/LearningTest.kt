@@ -1,6 +1,5 @@
-package com.github.HumanLearning2021.HumanLearningApp
+package com.github.HumanLearning2021.HumanLearningApp.learning_ui
 
-import android.widget.ImageView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -11,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
+import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
