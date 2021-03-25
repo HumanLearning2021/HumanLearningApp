@@ -85,7 +85,7 @@ connectedCheck {
 }
 dependencies {
 
-    apply plugin: 'kotlin-android-extensions'
+    apply plugin: 'kotlin-parcelize'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -116,6 +116,7 @@ dependencies {
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3'
     testImplementation "org.mockito:mockito-core:3.8.0"
     androidTestImplementation "org.mockito:mockito-android:3.8.0"
+    testImplementation 'org.mockito:mockito-inline:3.8.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation('com.schibsted.spain:barista:3.8.0') {
         exclude group: 'org.jetbrains.kotlin'

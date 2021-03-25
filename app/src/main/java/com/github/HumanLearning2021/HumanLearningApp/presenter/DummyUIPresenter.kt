@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import java.lang.Exception
 import java.lang.IllegalArgumentException
 
 
@@ -17,7 +18,13 @@ class DummyUIPresenter(val databaseService: DummyDatabaseService) {
      */
 
     suspend fun getPicture(categoryName: String): CategorizedPicture? {
-        return databaseService.getPicture(DummyCategory(categoryName, null))
+        val res: CategorizedPicture?
+        try {
+             res = databaseService.getPicture(DummyCategory(categoryName, null))
+        } catch (e: Exception) {
+            throw e
+        }
+        return res
     }
 
     suspend fun putPicture(picture: android.net.Uri, categoryName: String): CategorizedPicture {
