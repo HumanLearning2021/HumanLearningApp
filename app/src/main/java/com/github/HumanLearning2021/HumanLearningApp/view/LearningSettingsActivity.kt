@@ -10,9 +10,12 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
 
-const val EXTRA_LEARNING_MODE = "com.github.HumanLearning2021.HumanLearningApp.view.EXTRA_LEARNING_MODE"
 
 class LearningSettingsActivity : AppCompatActivity() {
+
+    companion object {
+        const val EXTRA_LEARNING_MODE = "com.github.HumanLearning2021.HumanLearningApp.view.EXTRA_LEARNING_MODE"
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -29,7 +32,7 @@ class LearningSettingsActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
             startActivity(intent)
         }
-        btPres.tooltipText = "@string/learning_settings_tooltip_presentation"
+        btPres.tooltipText = getString(R.string.learning_settings_tooltip_presentation)
 
         btRep.setOnClickListener {
             //TODO: use representative pictures

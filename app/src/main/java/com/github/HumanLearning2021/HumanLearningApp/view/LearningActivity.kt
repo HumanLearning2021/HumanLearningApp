@@ -28,7 +28,7 @@ class LearningActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
 
-        learningMode = intent.getSerializableExtra("com.github.HumanLearning2021.HumanLearningApp.view.EXTRA_LEARNING_MODE") as LearningMode
+        learningMode = intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
 
 
 
