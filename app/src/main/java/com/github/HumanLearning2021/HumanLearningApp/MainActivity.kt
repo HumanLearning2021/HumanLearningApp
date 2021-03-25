@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
             img.setImageDrawable(Drawable.createFromPath(result.second.path))
             val builder: AlertDialog.Builder =
                 AlertDialog.Builder(this).apply {
-                    setMessage(result.first)
+                    setMessage(result.first.name)
                     setPositiveButton("OK"
                     ) { dialog, which -> dialog.dismiss() }.setView(img)
                 }
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun launchToCameraActivity(view: View) {
-        addPicture.launch(arrayOf("window", "sofa", "television"))
+        addPicture.launch(arrayOf(DummyCategory("window"), DummyCategory("sofa"), DummyCategory("television")))
     }
 
     fun launchToDisplayDatasetActivity(view: View) {
