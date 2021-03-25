@@ -58,7 +58,7 @@ class LearningSettingsActivityTest {
     fun longClickOnPresentationButtonShowsTooltip() {
         longClickOn(R.id.learningSettings_btChoosePresentation)
 
-        //assertDisplayed("@string/learning_settings_tooltip_presentation")
+        assertDisplayed(R.string.learning_settings_tooltip_presentation)
 
     }
 
@@ -67,4 +67,3 @@ class LearningSettingsActivityTest {
          assertNotClickable(R.id.learningSettings_btChooseRepresentation)
     }
 }
-
