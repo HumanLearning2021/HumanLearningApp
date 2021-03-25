@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 
 /**
  * A fragment representing a list of Items.
@@ -58,6 +59,7 @@ class DatasetOverViewFragment : Fragment(), DatasetOverviewRecyclerViewAdapter.O
     override fun onItemClick(position: Int) {
         // link with the right activities later
         val intent_onClick = Intent(this.context, DataCreationActivity::class.java)
+        Toast.makeText(this.context, "Item $position clicked", Toast.LENGTH_SHORT).show()
         startActivity(intent_onClick)
 
     }
