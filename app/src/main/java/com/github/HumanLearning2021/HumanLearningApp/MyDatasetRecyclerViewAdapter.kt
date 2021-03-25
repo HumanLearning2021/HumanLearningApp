@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide.init
  */
 class MyDatasetRecyclerViewAdapter(
     // replace with DataSet Names sources internally  with getDatasetNames/keys
-    private val values: Array<String> = arrayOf("utensils", "house","animal","food","sport","cookies","the wild","Flags","School","e3","3e","kangaroo","foo","Longlist","VamosTime") ,
+    private val values: Array<String> = arrayOf("utensils") ,
     private val listener: OnItemClickListener
     )   : RecyclerView.Adapter<MyDatasetRecyclerViewAdapter.ViewHolder>() {
 

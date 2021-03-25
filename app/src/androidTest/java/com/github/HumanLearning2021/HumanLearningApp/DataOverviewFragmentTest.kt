@@ -53,19 +53,11 @@ class DataOverviewFragmentTest {
     @Test
     fun listItemInFragmentAreClickable() {
         onView(withId(R.id.dataOverview_fragment))
-            .perform(actionOnItemAtPosition<MyDatasetRecyclerViewAdapter.ViewHolder>(5, click()))
+            .perform(actionOnItemAtPosition<MyDatasetRecyclerViewAdapter.ViewHolder>(0, click()))
 
         // Confirm
         Intents.intended(IntentMatchers.hasComponent(DataCreationActivity::class.java.name))
     }
 
-    @Test
-    fun scrollListItemInFragmentIsReachable() {
-        onView(withId(R.id.dataOverview_fragment))
-            .perform(scrollToPosition<MyDatasetRecyclerViewAdapter.ViewHolder>(10))
-        onView(withId(R.id.dataOverview_fragment))
-            .perform(actionOnItemAtPosition<MyDatasetRecyclerViewAdapter.ViewHolder>(10, click()))
-        // Confirm
-        Intents.intended(IntentMatchers.hasComponent(DataCreationActivity::class.java.name))
-    }
+
 }
