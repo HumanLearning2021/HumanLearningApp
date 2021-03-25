@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.BuildConfig
-import com.github.HumanLearning2021.HumanLearningApp.EXTRA_LEARNING_MODE
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
@@ -29,7 +28,7 @@ class LearningActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
 
-        learningMode = intent.getSerializableExtra("EXTRA_LEARNING_MODE") as LearningMode
+        learningMode = intent.getSerializableExtra("com.github.HumanLearning2021.HumanLearningApp.view.EXTRA_LEARNING_MODE") as LearningMode
 
 
 

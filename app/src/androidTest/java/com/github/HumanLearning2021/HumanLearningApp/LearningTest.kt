@@ -13,6 +13,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
+import com.github.HumanLearning2021.HumanLearningApp.view.EXTRA_LEARNING_MODE
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
 import org.hamcrest.CoreMatchers.`is`

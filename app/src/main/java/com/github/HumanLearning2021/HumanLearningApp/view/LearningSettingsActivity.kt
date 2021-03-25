@@ -8,9 +8,10 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.github.HumanLearning2021.HumanLearningApp.EXTRA_LEARNING_MODE
 import com.github.HumanLearning2021.HumanLearningApp.R
 import kotlinx.android.synthetic.main.activity_learning_settings.*
+
+const val EXTRA_LEARNING_MODE = "com.github.HumanLearning2021.HumanLearningApp.view.EXTRA_LEARNING_MODE"
 
 class LearningSettingsActivity : AppCompatActivity() {
 
@@ -29,8 +30,7 @@ class LearningSettingsActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
             startActivity(intent)
         }
-        btPres.tooltipText = "Play the game in presentation mode: an image must be classified based " +
-                "on an exact copy"
+        btPres.tooltipText = "@string/learning_settings_tooltip_presentation"
 
         btRep.setOnClickListener {
             //TODO: use representative pictures

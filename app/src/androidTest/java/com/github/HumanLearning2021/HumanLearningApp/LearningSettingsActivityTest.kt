@@ -44,26 +44,24 @@ class LearningSettingsActivityTest {
         }
 
         @Test
-        fun bothButtonsAreDisplayed() {
+        fun bothButtonsAndTVAreDisplayed() {
             assertDisplayed(R.id.btChoosePresentation)
             assertDisplayed(R.id.btChooseRepresentation)
-        }
-
-        @Test
-        fun learningModeTextViewIsDisplayed() {
             assertDisplayed(R.id.tvMode)
+
         }
 
         @Test
         fun pressingPresentationButtonLaunchesLearningActivity() {
             clickOn(R.id.btChoosePresentation)
-            intended(hasComponent(LearningActivity::class.java.getName()))
+            intended(hasComponent(LearningActivity::class.java.name))
         }
 
         @Test
         fun longClickOnPresentationButtonShowsTooltip() {
             longClickOn(R.id.btChoosePresentation)
-            //TODO
+
+            //assertDisplayed("@string/learning_settings_tooltip_presentation")
 
         }
 
