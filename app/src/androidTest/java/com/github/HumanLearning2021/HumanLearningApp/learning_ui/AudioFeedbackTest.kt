@@ -1,10 +1,14 @@
 package com.github.HumanLearning2021.HumanLearningApp.learning_ui
 
+import android.content.Intent
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningAudioFeedback
+import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
+import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.Assert.assertThat
@@ -15,7 +19,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class AudioFeedbackTest {
     @get:Rule
-    val testRule = ActivityScenarioRule(LearningActivity::class.java)
+    val activityScenarioRule: ActivityScenarioRule<LearningActivity> = ActivityScenarioRule(
+        Intent(
+            ApplicationProvider.getApplicationContext(),
+            LearningActivity::class.java
+        ).putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION))
 
     fun makeLearningAudioFeedback(): LearningAudioFeedback {
         return LearningAudioFeedback(getInstrumentation().targetContext)
