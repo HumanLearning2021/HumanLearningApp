@@ -13,8 +13,8 @@ class DataOverviewActivity : AppCompatActivity() {
     }
 
     fun  create(view: View) {
-        val intent = Intent(this, DataCreationActivity::class.java)
-        startActivity(intent)
+        val intent_overview = Intent(this, DataCreationActivity::class.java)
+        startActivity(intent_overview)
 
     }
 }

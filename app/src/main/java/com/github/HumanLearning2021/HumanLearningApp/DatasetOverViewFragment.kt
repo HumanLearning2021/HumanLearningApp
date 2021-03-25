@@ -13,7 +13,7 @@ import android.view.ViewGroup
 /**
  * A fragment representing a list of Items.
  */
-class DatasetOverViewFragment : Fragment(), MyDatasetRecyclerViewAdapter.OnItemClickListener {
+class DatasetOverViewFragment : Fragment(), DatasetOverviewRecyclerViewAdapter.OnItemClickListener {
 
     private var columnCount = 1
 
@@ -40,7 +40,7 @@ class DatasetOverViewFragment : Fragment(), MyDatasetRecyclerViewAdapter.OnItemC
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = MyDatasetRecyclerViewAdapter(listener =  this@DatasetOverViewFragment)
+                adapter = DatasetOverviewRecyclerViewAdapter(listener =  this@DatasetOverViewFragment)
 
             }
         }
@@ -48,7 +48,6 @@ class DatasetOverViewFragment : Fragment(), MyDatasetRecyclerViewAdapter.OnItemC
     }
 
 
-    // customize later
     companion object {
 
         // TODO: Customize parameter argument names
@@ -57,10 +56,9 @@ class DatasetOverViewFragment : Fragment(), MyDatasetRecyclerViewAdapter.OnItemC
     }
 
     override fun onItemClick(position: Int) {
-       // for now let's show only a toast message to make sure the item is clicked
-        // link with activities later
-        val intent = Intent(this.context, DataCreationActivity::class.java)
-        startActivity(intent)
+        // link with the right activities later
+        val intent_onClick = Intent(this.context, DataCreationActivity::class.java)
+        startActivity(intent_onClick)
 
     }
 }

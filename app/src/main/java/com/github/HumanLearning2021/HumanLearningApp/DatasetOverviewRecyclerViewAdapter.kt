@@ -10,11 +10,11 @@ import android.widget.TextView
 /**
  *
  */
-class MyDatasetRecyclerViewAdapter(
+class DatasetOverviewRecyclerViewAdapter(
     // replace with DataSet Names sources internally  with getDatasetNames/keys
     private val values: Array<String> = arrayOf("utensils") ,
     private val listener: OnItemClickListener
-    )   : RecyclerView.Adapter<MyDatasetRecyclerViewAdapter.ViewHolder>() {
+    )   : RecyclerView.Adapter<DatasetOverviewRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)

@@ -1,17 +1,13 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
@@ -56,7 +52,7 @@ class DataOverviewFragmentTest {
     @Test
     fun listItemInFragmentAreClickable() {
         onView(withId(R.id.dataOverview_fragment))
-            .perform(actionOnItemAtPosition<MyDatasetRecyclerViewAdapter.ViewHolder>(0, click()))
+            .perform(actionOnItemAtPosition<DatasetOverviewRecyclerViewAdapter.ViewHolder>(0, click()))
 
         // Confirm
         Intents.intended(IntentMatchers.hasComponent(DataCreationActivity::class.java.name))
