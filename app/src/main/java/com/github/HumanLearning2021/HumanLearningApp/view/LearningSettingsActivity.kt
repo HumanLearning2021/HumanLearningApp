@@ -9,7 +9,6 @@ import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
-import kotlinx.android.synthetic.main.activity_learning_settings.*
 
 const val EXTRA_LEARNING_MODE = "com.github.HumanLearning2021.HumanLearningApp.view.EXTRA_LEARNING_MODE"
 
@@ -23,8 +22,8 @@ class LearningSettingsActivity : AppCompatActivity() {
 
         val intent = Intent(this, LearningActivity::class.java)
 
-        val btPres = findViewById<Button>(R.id.btChoosePresentation)
-        val btRep = findViewById<Button>(R.id.btChooseRepresentation)
+        val btPres = findViewById<Button>(R.id.learningSettings_btChoosePresentation)
+        val btRep = findViewById<Button>(R.id.learningSettings_btChooseRepresentation)
 
         btPres.setOnClickListener {
             intent.putExtra(EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)

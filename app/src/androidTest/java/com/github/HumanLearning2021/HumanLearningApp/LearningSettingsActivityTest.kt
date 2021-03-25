@@ -13,7 +13,6 @@ import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.longClickOn
 import org.junit.*
 import org.junit.runner.RunWith
-import org.junit.runners.MethodSorters
 
 @RunWith(AndroidJUnit4::class)
 class LearningSettingsActivityTest {
@@ -43,21 +42,21 @@ class LearningSettingsActivityTest {
 
     @Test
     fun bothButtonsAndTVAreDisplayed() {
-        assertDisplayed(R.id.btChoosePresentation)
-        assertDisplayed(R.id.btChooseRepresentation)
-        assertDisplayed(R.id.tvMode)
+        assertDisplayed(R.id.learningSettings_btChoosePresentation)
+        assertDisplayed(R.id.learningSettings_btChooseRepresentation)
+        assertDisplayed(R.id.learningSettings_tvMode)
 
     }
 
     @Test
     fun pressingPresentationButtonLaunchesLearningActivity() {
-        clickOn(R.id.btChoosePresentation)
+        clickOn(R.id.learningSettings_btChoosePresentation)
         intended(hasComponent(LearningActivity::class.java.name))
     }
 
     @Test
     fun longClickOnPresentationButtonShowsTooltip() {
-        longClickOn(R.id.btChoosePresentation)
+        longClickOn(R.id.learningSettings_btChoosePresentation)
 
         //assertDisplayed("@string/learning_settings_tooltip_presentation")
 
@@ -65,7 +64,7 @@ class LearningSettingsActivityTest {
 
     @Test
     fun pressingRepresentationButtonDoesNothing() {
-         assertNotClickable(R.id.btChooseRepresentation)
+         assertNotClickable(R.id.learningSettings_btChooseRepresentation)
     }
 }
 
