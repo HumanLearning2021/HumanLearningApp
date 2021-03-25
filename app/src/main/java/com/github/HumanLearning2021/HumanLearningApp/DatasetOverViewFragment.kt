@@ -69,7 +69,9 @@ class DatasetOverViewFragment : Fragment(), MyDatasetRecyclerViewAdapter.OnItemC
     override fun onItemClick(position: Int) {
        // for now let's show only a toast message to make sure the item is clicked
         // link with activities later
-        Toast.makeText(this.context, "Item $position clicked", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this.context, "Item $position clicked", Toast.LENGTH_LONG).show()
+        val intent = Intent(this.context, DataCreationActivity::class.java)
+        startActivity(intent)
 
     }
 }
