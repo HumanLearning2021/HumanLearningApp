@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
-
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 
 class MainActivity : AppCompatActivity() {
     val addPicture = registerForActivityResult(AddPictureActivity.AddPictureContract) { result ->
