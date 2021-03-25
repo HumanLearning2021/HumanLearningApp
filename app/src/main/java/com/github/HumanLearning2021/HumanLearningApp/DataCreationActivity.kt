@@ -1,15 +1,11 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityDataCreationBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
-
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
 
 class DataCreationActivity : AppCompatActivity() {
 
@@ -45,7 +41,7 @@ class DataCreationActivity : AppCompatActivity() {
 
     }
 
-    fun removeView(view:View){
+    fun removeView(view: View) {
         binding.parentLinearLayout.removeView(view.parent as View)
 
     }
@@ -72,9 +68,6 @@ class DataCreationActivity : AppCompatActivity() {
 
         }
     }*/
-
-
-
 
 
     override fun onDestroy() {
