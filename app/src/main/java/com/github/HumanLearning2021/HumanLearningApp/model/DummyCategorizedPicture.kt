@@ -17,9 +17,9 @@ data class DummyCategorizedPicture(override val category: Category) : Categorize
                 "to the class constructor")
 
         when(category.name){
-            "fork" -> imageView.setImageResource(R.drawable.fork)
-            "knife" -> imageView.setImageResource(R.drawable.knife)
-            "spoon" -> imageView.setImageResource(R.drawable.spoon)
+            "Fork" -> imageView.setImageResource(R.drawable.fork)
+            "Knife" -> imageView.setImageResource(R.drawable.knife)
+            "Spoon" -> imageView.setImageResource(R.drawable.spoon)
         }
     }
 }
