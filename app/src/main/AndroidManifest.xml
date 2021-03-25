@@ -16,6 +16,7 @@
         android:theme="@style/Theme.HumanLearning">
         <activity android:name=".view.DisplayImageSetActivity"/>
         <activity android:name=".DataOverviewActivity"/>
+        <activity android:name=".view.GoogleSignInActivity" />
         <activity android:name=".DataCreationActivity" />
         <activity android:name=".AddPictureActivity" />
         <activity android:name=".view.DisplayImageActivity" />

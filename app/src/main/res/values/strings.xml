@@ -39,4 +39,6 @@
     <string name="DataOverview_CreateButton">Create dataset</string>
     <string name="DataOverview_Ttile">DataSet Overview</string>
 
+    <string name="SignInFragment_loginStatusSuccessMessage">Welcome %1$s</string>
+    <string name="SignInFragment_loginStatusDefaultMessage">Not logged in</string>
 </resources>

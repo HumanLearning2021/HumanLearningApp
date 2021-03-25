@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view
 
 import android.content.ClipData
 import android.content.ClipDescription
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.DragEvent
@@ -23,15 +24,27 @@ class LearningActivity : AppCompatActivity() {
     private val dummyPres = DummyUIPresenter(DummyDatabaseService())
     private val learningPresenter = LearningPresenter(DummyDatabaseService())
     private lateinit var learningMode: LearningMode
+    private lateinit var audioFeedback : LearningAudioFeedback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
-
         learningMode = intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
+        initLearningViews()
+        audioFeedback = LearningAudioFeedback(applicationContext)
+    }
 
+    override fun onResume() {
+        super.onResume()
+        audioFeedback.initMediaPlayers()
+    }
 
+    override fun onPause() {
+        super.onPause()
+        audioFeedback.releaseMediaPlayers()
+    }
 
+    private fun initLearningViews() {
         lifecycleScope.launch {
             val cats = DummyDatabaseService().getCategories()
             if (BuildConfig.DEBUG && cats.size < 3) {
@@ -47,8 +60,6 @@ class LearningActivity : AppCompatActivity() {
 
             initImageToSort(R.id.learning_im_to_sort, cat0Name)
         }
-
-
     }
 
     private fun initImageView(catIvId: Int, catName: String): ImageView {
@@ -88,11 +99,17 @@ class LearningActivity : AppCompatActivity() {
         v.invalidate()
         Log.d("dropCallback", "${item.text} vs ${v.contentDescription}")
         val res = item.text == v.contentDescription
-        lifecycleScope.launch {
-            if(res) {
-                learningPresenter.displayNextPicture(this@LearningActivity,
-                    findViewById(R.id.learning_im_to_sort))
+        audioFeedback.stopAndPrepareMediaPlayers()
+        if (res) {
+            audioFeedback.startCorrectFeedback()
+            lifecycleScope.launch {
+                learningPresenter.displayNextPicture(
+                    this@LearningActivity,
+                    findViewById(R.id.learning_im_to_sort)
+                )
             }
+        } else {
+            audioFeedback.startIncorrectFeedback()
         }
         return res
     }
