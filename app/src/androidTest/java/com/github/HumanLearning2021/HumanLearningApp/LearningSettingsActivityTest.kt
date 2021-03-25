@@ -15,59 +15,57 @@ import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 
+@RunWith(AndroidJUnit4::class)
 class LearningSettingsActivityTest {
-    @RunWith(AndroidJUnit4::class)
-    @FixMethodOrder(MethodSorters.NAME_ASCENDING) // to enforce consistent order of tests
-    class AddPictureActivityTest {
 
-        @get:Rule
-        val testRule = ActivityScenarioRule(LearningSettingsActivity::class.java)
+    @get:Rule
+    val testRule = ActivityScenarioRule(LearningSettingsActivity::class.java)
 
 
-        @Before
-        fun setUp() {
-            Intents.init()
-            // By waiting before the test starts, it allows time for the app to startup to prevent the
-            // following error to appear on cirrus:
-            // `Waited for the root of the view hierarchy to have window focus and not request layout for 10 seconds.`
-            // This solution is not ideal because it slows down the tests, and it might not work
-            // every time. But there isn't a better solution that I (Niels Lachat) know of.
-            val delayBeforeTestStart: Long = 3000
-            TestUtils.waitFor(delayBeforeTestStart)
-        }
+    @Before
+    fun setUp() {
+        Intents.init()
+        // By waiting before the test starts, it allows time for the app to startup to prevent the
+        // following error to appear on cirrus:
+        // `Waited for the root of the view hierarchy to have window focus and not request layout for 10 seconds.`
+        // This solution is not ideal because it slows down the tests, and it might not work
+        // every time. But there isn't a better solution that I (Niels Lachat) know of.
+        val delayBeforeTestStart: Long = 3000
+        TestUtils.waitFor(delayBeforeTestStart)
+    }
 
 
-        @After
-        fun cleanUp() {
-            Intents.release()
-            testRule.scenario.close()
-        }
+    @After
+    fun cleanUp() {
+        Intents.release()
+        testRule.scenario.close()
+    }
 
-        @Test
-        fun bothButtonsAndTVAreDisplayed() {
-            assertDisplayed(R.id.btChoosePresentation)
-            assertDisplayed(R.id.btChooseRepresentation)
-            assertDisplayed(R.id.tvMode)
+    @Test
+    fun bothButtonsAndTVAreDisplayed() {
+        assertDisplayed(R.id.btChoosePresentation)
+        assertDisplayed(R.id.btChooseRepresentation)
+        assertDisplayed(R.id.tvMode)
 
-        }
+    }
 
-        @Test
-        fun pressingPresentationButtonLaunchesLearningActivity() {
-            clickOn(R.id.btChoosePresentation)
-            intended(hasComponent(LearningActivity::class.java.name))
-        }
+    @Test
+    fun pressingPresentationButtonLaunchesLearningActivity() {
+        clickOn(R.id.btChoosePresentation)
+        intended(hasComponent(LearningActivity::class.java.name))
+    }
 
-        @Test
-        fun longClickOnPresentationButtonShowsTooltip() {
-            longClickOn(R.id.btChoosePresentation)
+    @Test
+    fun longClickOnPresentationButtonShowsTooltip() {
+        longClickOn(R.id.btChoosePresentation)
 
-            //assertDisplayed("@string/learning_settings_tooltip_presentation")
+        //assertDisplayed("@string/learning_settings_tooltip_presentation")
 
-        }
+    }
 
-        @Test
-        fun pressingRepresentationButtonDoesNothing() {
-            assertNotClickable(R.id.btChooseRepresentation)
-        }
+    @Test
+    fun pressingRepresentationButtonDoesNothing() {
+         assertNotClickable(R.id.btChooseRepresentation)
     }
 }
+
