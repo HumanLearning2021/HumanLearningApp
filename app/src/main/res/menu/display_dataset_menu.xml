@@ -3,6 +3,6 @@
 
     <item
         android:id="@+id/display_dataset_menu_modify_categories"
-        android:title="Modify categories" />
+        android:title="@string/modify_categories" />
 
 </menu>

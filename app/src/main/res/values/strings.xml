@@ -20,4 +20,8 @@
     <string name="learning_cat_0_descr">red</string>
     <string name="learning_cat_1_descr">green</string>
     <string name="learning_cat_2_descr">blue</string>
+    <string name="modify_categories">Modify categories</string>
+    <string name="dataset_name">Dataset Name</string>
+    <string name="imagetobedisplayed">ImageToBeDisplayed</string>
+    <string name="buttontoremovepicturefromdataset">buttontoremovepicturefromdataset</string>
 </resources>
