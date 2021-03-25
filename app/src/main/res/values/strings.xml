@@ -20,7 +20,6 @@
     <string name="learning_cat_0_descr">red</string>
     <string name="learning_cat_1_descr">green</string>
     <string name="learning_cat_2_descr">blue</string>
-
     <string name="learning_settings_tooltip_presentation">Play the game in presentation mode: an image must be classified based on an exact copy</string>
     <string name="learning_settings_btPresentation">PRESENTATION</string>
     <string name="learning_settings_btRepresentation">REPRESENTATION</string>
@@ -31,4 +30,13 @@
     <string name="main_btLearning">LEARNING</string>
     <string name="main_btDisplayDataset">DISPLAY DATASET</string>
     <string name="main_btAddImage">ADD IMAGE TO THE DATASET</string>
+
+    <string name="modify_categories">Modify categories</string>
+    <string name="dataset_name">Dataset Name</string>
+    <string name="imagetobedisplayed">image to be displayed</string>
+    <string name="buttontoremovepicturefromdataset">button to remove picture from dataset</string>
+    <string name="picturehasbeenremoved">This Picture has been removed from this dataset.</string>
+    <string name="DataOverview_CreateButton">Create dataset</string>
+    <string name="DataOverview_Ttile">DataSet Overview</string>
+
 </resources>
