@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 
 /**
  * A fragment representing a list of Items.
@@ -55,20 +54,11 @@ class DatasetOverViewFragment : Fragment(), MyDatasetRecyclerViewAdapter.OnItemC
         // TODO: Customize parameter argument names
         const val ARG_COLUMN_COUNT = "column-count"
 
-        // TODO: Customize parameter initialization
-        @JvmStatic
-        fun newInstance(columnCount: Int) =
-            DatasetOverViewFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
-                }
-            }
     }
 
     override fun onItemClick(position: Int) {
        // for now let's show only a toast message to make sure the item is clicked
         // link with activities later
-        Toast.makeText(this.context, "Item $position clicked", Toast.LENGTH_LONG).show()
         val intent = Intent(this.context, DataCreationActivity::class.java)
         startActivity(intent)
 
