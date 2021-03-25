@@ -13,9 +13,9 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
-import com.github.HumanLearning2021.HumanLearningApp.view.EXTRA_LEARNING_MODE
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
+import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -31,7 +31,7 @@ class LearningTest {
         Intent(
             ApplicationProvider.getApplicationContext(),
             LearningActivity::class.java
-        ).putExtra(EXTRA_LEARNING_MODE, LearningMode.PRESENTATION))
+        ).putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION))
 
 
 
