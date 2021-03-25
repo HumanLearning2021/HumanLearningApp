@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
@@ -44,6 +45,11 @@ class MainActivity : AppCompatActivity() {
 
     fun launchToLearningActivity(view: View) {
         val intent = Intent(this, LearningActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun launchToLoginFragment(view: View) {
+        val intent = Intent(this, GoogleSignInActivity::class.java)
         startActivity(intent)
     }
 }

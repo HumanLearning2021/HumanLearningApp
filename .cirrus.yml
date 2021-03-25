@@ -5,6 +5,7 @@ check_android_task:
     TARGET: google_apis
     ARCH: x86
     CC_TEST_REPORTER_ID: ENCRYPTED[de4bf2175d1caa3fa7967460887811e99b14819ed833ce2783d6f6ff1c7d6dbb65bf29f3468f978306f753912e27e991]
+    KEYSTORE_PASSPHRASE: ENCRYPTED[8cf2af5735b5466ae45825e30c356f5aa95a363f57e5fc90529d27d27e71ce0f18bb995bf3a4f2cf801cd71b3fa552f0]
   container:
     image: reactivecircus/android-emulator-$API_LEVEL:latest
     kvm: true
@@ -14,6 +15,11 @@ check_android_task:
     echo no | avdmanager create avd --force --name test --abi "$TARGET/$ARCH" --package "system-images;android-$API_LEVEL;$TARGET;$ARCH"
   start_emulator_background_script:
     $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -no-audio -no-boot-anim -camera-back emulated
+  deploy_keystore_properties_script: |
+    cat >keystore.properties << END
+    storePassword=$KEYSTORE_PASSPHRASE
+    keyPassword=$KEYSTORE_PASSPHRASE
+    END
   build_script: |
     chmod +x gradlew
     ./gradlew assembleDebugAndroidTest
