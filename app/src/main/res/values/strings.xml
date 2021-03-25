@@ -24,4 +24,5 @@
     <string name="dataset_name">Dataset Name</string>
     <string name="imagetobedisplayed">image to be displayed</string>
     <string name="buttontoremovepicturefromdataset">button to remove picture from dataset</string>
+    <string name="picturehasbeenremoved">This Picture has been removed from this dataset.</string>
 </resources>

@@ -22,7 +22,7 @@ class DisplayImageActivity : AppCompatActivity() {
 
     fun removePicture(view: View) {
         //TODO: Implement : remove picture from the list and send intent to the previous activity with the updated list
-        Toast.makeText(this, "This Picture has been removed from this dataset.", Toast.LENGTH_SHORT)
+        Toast.makeText(this, getText(R.string.picturehasbeenremoved), Toast.LENGTH_SHORT)
             .show()
     }
 }
