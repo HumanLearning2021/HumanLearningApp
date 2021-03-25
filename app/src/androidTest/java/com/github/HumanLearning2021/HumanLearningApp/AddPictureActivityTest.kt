@@ -31,6 +31,8 @@ class AddPictureActivityTest {
     private fun grantCameraPermission() {
         PermissionGranter.allowPermissionOneTime(Manifest.permission.CAMERA)
     }
+    
+    private class testCat(override val name: String) : Category
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
