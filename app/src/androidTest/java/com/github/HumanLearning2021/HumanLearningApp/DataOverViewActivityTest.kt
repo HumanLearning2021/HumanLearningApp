@@ -45,7 +45,7 @@ class DataOverViewActivityTest {
     @Before
     fun setUp() {
         Intents.init()
-        val delayBeforeTestStart: Long = 5000
+        val delayBeforeTestStart: Long = 3000
         TestUtils.waitFor(delayBeforeTestStart)
     }
     @After
