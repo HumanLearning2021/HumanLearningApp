@@ -15,6 +15,7 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.hamcrest.Matchers.not
@@ -30,13 +31,15 @@ class AddPictureActivityTest {
     private fun grantCameraPermission() {
         PermissionGranter.allowPermissionOneTime(Manifest.permission.CAMERA)
     }
+    
+    private class testCat(override val name: String) : Category
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
         Intent(
             ApplicationProvider.getApplicationContext(),
             AddPictureActivity::class.java
-        ).putExtra("categories", arrayOf("cat1", "cat2", "cat3"))
+        ).putExtra("categories", arrayOf(testCat("cat1"), testCat("cat2"), testCat("cat3")))
     )
 
     @Before
@@ -202,22 +205,12 @@ class AddPictureActivityTest {
     @Test
     fun activityContractCorrectlyParsesResult() {
         val bundle = Bundle().apply {
-            putString("category", "some_category")
+            putSerializable("category", testCat("some_category"))
             putParcelable("image", Uri.EMPTY)
         }
         val intent = Intent().putExtra("result", bundle)
-        assert(
-            AddPictureActivity.AddPictureContract.parseResult(
-                Activity.RESULT_OK,
-                intent
-            )!!.first == "some_category"
-        )
-        assert(
-            AddPictureActivity.AddPictureContract.parseResult(
-                Activity.RESULT_CANCELED,
-                intent
-            ) == null
-        )
+        assert(AddPictureActivity.AddPictureContract.parseResult(Activity.RESULT_OK, intent)!!.first.name == "some_category")
+        assert(AddPictureActivity.AddPictureContract.parseResult(Activity.RESULT_CANCELED, intent) == null)
     }
 
 }

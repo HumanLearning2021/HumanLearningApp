@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityDataCreationBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
 
 class DataCreationActivity : AppCompatActivity() {
 
