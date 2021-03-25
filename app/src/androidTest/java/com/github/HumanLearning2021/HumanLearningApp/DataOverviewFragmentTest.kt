@@ -37,6 +37,7 @@ class DataOverviewFragmentTest {
         val delayBeforeTestStart: Long = 5000
         TestUtils.waitFor(delayBeforeTestStart)
     }
+
     @After
     fun cleanUp() {
         Intents.release()
@@ -52,11 +53,12 @@ class DataOverviewFragmentTest {
     @Test
     fun listItemInFragmentAreClickable() {
         onView(withId(R.id.dataOverview_fragment))
-            .perform(actionOnItemAtPosition<DatasetOverviewRecyclerViewAdapter.ViewHolder>(0, click()))
+            .perform(actionOnItemAtPosition<DataOverviewRecyclerViewAdapter.ViewHolder>(0, click()))
 
         // Confirm
         Intents.intended(IntentMatchers.hasComponent(DataCreationActivity::class.java.name))
     }
+
     @Test
     fun fragmentHasChildrenViews() {
         onView(withId(R.id.dataOverview_fragment)).check(
@@ -66,7 +68,6 @@ class DataOverviewFragmentTest {
         )
 
     }
-
 
 
 }

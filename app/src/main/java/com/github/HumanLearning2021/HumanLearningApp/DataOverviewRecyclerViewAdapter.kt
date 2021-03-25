@@ -10,11 +10,11 @@ import android.widget.TextView
 /**
  *
  */
-class DatasetOverviewRecyclerViewAdapter(
+class DataOverviewRecyclerViewAdapter(
     // replace with DataSet Names sources internally  with getDatasetNames/keys
-    private val values: Array<String> = arrayOf("utensils") ,
+    private val values: Array<String> = arrayOf("utensils"),
     private val listener: OnItemClickListener
-    )   : RecyclerView.Adapter<DatasetOverviewRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<DataOverviewRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -32,26 +32,27 @@ class DatasetOverviewRecyclerViewAdapter(
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
-            // One can Add Number of instances in the Datatset and/or a representative picture of the dataset
-            val contentView: TextView = view.findViewById(R.id.content)
+        // One can Add Number of instances in the Datatset and/or a representative picture of the dataset
+        val contentView: TextView = view.findViewById(R.id.content)
 
-            override fun toString(): String {
-                return super.toString() + " '" + contentView.text + "'"
-            }
-
-            // use lambdas for a cleaner version
-            init {
-                view.setOnClickListener(this)
-            }
-            override fun onClick(v: View){
-                val position = adapterPosition
-                //checking if position is still valid
-                if (position != RecyclerView.NO_POSITION) {
-                    listener.onItemClick(position)
-                }
-            }
-
+        override fun toString(): String {
+            return super.toString() + " '" + contentView.text + "'"
         }
+
+        // use lambdas for a cleaner version
+        init {
+            view.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View) {
+            val position = adapterPosition
+            //checking if position is still valid
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onItemClick(position)
+            }
+        }
+
+    }
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)

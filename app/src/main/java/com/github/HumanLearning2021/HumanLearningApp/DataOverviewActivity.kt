@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 
 class DataOverviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,9 +12,9 @@ class DataOverviewActivity : AppCompatActivity() {
 
     }
 
-    fun  create(view: View) {
-        val intent_overview = Intent(this, DataCreationActivity::class.java)
-        startActivity(intent_overview)
+    fun create(view: View) {
+        val intent = Intent(this, DataCreationActivity::class.java)
+        startActivity(intent)
 
     }
 }

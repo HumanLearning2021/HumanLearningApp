@@ -14,7 +14,7 @@ import android.widget.Toast
 /**
  * A fragment representing a list of Items.
  */
-class DatasetOverViewFragment : Fragment(), DatasetOverviewRecyclerViewAdapter.OnItemClickListener {
+class DataOverviewFragment : Fragment(), DataOverviewRecyclerViewAdapter.OnItemClickListener {
 
     private var columnCount = 1
 
@@ -41,7 +41,7 @@ class DatasetOverViewFragment : Fragment(), DatasetOverviewRecyclerViewAdapter.O
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = DatasetOverviewRecyclerViewAdapter(listener =  this@DatasetOverViewFragment)
+                adapter = DataOverviewRecyclerViewAdapter(listener = this@DataOverviewFragment)
 
             }
         }
@@ -58,9 +58,8 @@ class DatasetOverViewFragment : Fragment(), DatasetOverviewRecyclerViewAdapter.O
 
     override fun onItemClick(position: Int) {
         // link with the right activities later
-        val intent_onClick = Intent(this.context, DataCreationActivity::class.java)
-        Toast.makeText(this.context, "Item $position clicked", Toast.LENGTH_SHORT).show()
-        startActivity(intent_onClick)
+        val intentOnClick = Intent(this.context, DataCreationActivity::class.java)
+        startActivity(intentOnClick)
 
     }
 }
