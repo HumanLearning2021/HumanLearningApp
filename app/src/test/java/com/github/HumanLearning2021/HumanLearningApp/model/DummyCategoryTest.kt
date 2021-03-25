@@ -6,15 +6,15 @@ import org.junit.Test
 
 class DummyCategoryTest {
 
-    val spoon1 = DummyCategory("spoon")
+    val spoon1 = DummyCategory("Spoon")
     val spoon2 = DummyCategory("Spoon")
-    val spoon3 = DummyCategory("spoon")
-    val knife = DummyCategory("knife")
+    val spoon3 = DummyCategory("Spoon")
+    val knife = DummyCategory("Knife")
 
 
     @Test
     fun getName() {
-        assertEquals(spoon2.name, "spoon")
+        assertEquals(spoon2.name, "Spoon")
     }
 
     @Test

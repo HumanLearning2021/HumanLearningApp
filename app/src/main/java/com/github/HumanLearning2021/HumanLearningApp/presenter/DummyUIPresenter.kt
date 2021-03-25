@@ -7,17 +7,25 @@ import java.lang.IllegalArgumentException
 /**
  * a class representing a dummy UI presenter
  */
-class DummyUIPresenter: UIPresenter {
-    private val dataSetInterface: DummyDatasetInterface = DummyDatasetInterface()
-
-
+class DummyUIPresenter(val databaseService: DatabaseService) {
     /**
      * Allows to retrieve a picture fron the dummy dataset
      *
-     * @param categoryString the name of the category of the picture to retrieve. Can be "knife", "fork", or "spoon"
+     * @param categoryName the name of the category of the picture to retrieve. Can be "knife", "fork", or "spoon"
      * @throws IllegalArgumentException if the string provided doesn't match any of "knife", "fork", or "spoon"
      */
-    override suspend fun getPicture(categoryString: String): CategorizedPicture? {
-        return dataSetInterface.getPicture(DummyCategory(categoryString))
+
+    suspend fun getPicture(categoryName: String): CategorizedPicture? {
+        return databaseService.getPicture(DummyCategory(categoryName))
+    }
+
+    suspend fun putPicture(picture: android.net.Uri, categoryName: String): CategorizedPicture {
+        var category = databaseService.getCategory(categoryName)
+
+        if(category == null)
+            category = databaseService.putCategory(categoryName)
+
+        return databaseService.putPicture(picture, category)
     }
 }
+
