@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -15,6 +17,7 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.PermissionGranter
@@ -32,14 +35,41 @@ class AddPictureActivityTest {
         PermissionGranter.allowPermissionOneTime(Manifest.permission.CAMERA)
     }
     
-    private class testCat(override val name: String) : Category
+    private class testCat(override val name: String,
+                          override val representativePicture: CategorizedPicture?
+    ) : Category {
+        constructor(parcel: Parcel) : this(
+            parcel.readString()!!,
+            parcel.readParcelable(CategorizedPicture::class.java.classLoader)
+        ) {
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        override fun writeToParcel(dest: Parcel, flags: Int) {
+            dest.writeString(name)
+            dest.writeParcelable(representativePicture, flags)
+        }
+
+        companion object CREATOR : Parcelable.Creator<testCat> {
+            override fun createFromParcel(parcel: Parcel): testCat {
+                return testCat(parcel)
+            }
+
+            override fun newArray(size: Int): Array<testCat?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
         Intent(
             ApplicationProvider.getApplicationContext(),
             AddPictureActivity::class.java
-        ).putExtra("categories", arrayOf(testCat("cat1"), testCat("cat2"), testCat("cat3")))
+        ).putExtra("categories", arrayListOf(testCat("cat1", null), testCat("cat2", null), testCat("cat3", null)))
     )
 
     @Before
@@ -205,7 +235,7 @@ class AddPictureActivityTest {
     @Test
     fun activityContractCorrectlyParsesResult() {
         val bundle = Bundle().apply {
-            putSerializable("category", testCat("some_category"))
+            putParcelable("category", testCat("some_category", null))
             putParcelable("image", Uri.EMPTY)
         }
         val intent = Intent().putExtra("result", bundle)

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,7 @@ class DisplayImageSetActivity : AppCompatActivity() {
         setContentView(R.layout.activity_display_image_set)
 
         val image: CategorizedPicture =
-            intent.getSerializableExtra("display_image_set_images") as CategorizedPicture
+            intent.getParcelableExtra<CategorizedPicture>("display_image_set_images")!!
 
         findViewById<TextView>(R.id.display_image_set_name).text = image.category.name
         categoryImagesList.add(image)
@@ -41,7 +42,7 @@ class DisplayImageSetActivity : AppCompatActivity() {
 
         findViewById<GridView>(R.id.display_image_set_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
             val intent = Intent(this, DisplayImageActivity::class.java)
-            intent.putExtra("display_image_image", (categoryImagesList[i]) as Serializable)
+            intent.putExtra("display_image_image", (categoryImagesList[i]) as Parcelable)
             startActivity(intent)
         }
     }

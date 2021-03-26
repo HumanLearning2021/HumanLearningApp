@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -46,8 +47,8 @@ class AddPictureActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val extra = intent.extras
-        if (extra != null && extra["categories"] is Array<*>) {
-            categories += extra["categories"] as Array<Category>
+        if (extra != null && extra["categories"] is ArrayList<*>) {
+            categories += extra["categories"] as ArrayList<Category>
         }
         if (cameraIsAvailable()) {
             when {
@@ -74,9 +75,9 @@ class AddPictureActivity : AppCompatActivity() {
     The launch argument is an Array<String> containing the categories to select from.
     The return value is a Pair containing the selected category as a first element and the Uri pointing to the image as a second element
      */
-    object AddPictureContract : ActivityResultContract<Array<Category>, Pair<Category, Uri>?>() {
-        override fun createIntent(context: Context, input: Array<Category>?): Intent =
-            Intent(context, AddPictureActivity::class.java).putExtra("categories", input)
+    object AddPictureContract : ActivityResultContract<ArrayList<Category>, Pair<Category, Uri>?>() {
+        override fun createIntent(context: Context, input: ArrayList<Category>?): Intent =
+            Intent(context, AddPictureActivity::class.java).putParcelableArrayListExtra("categories", input)
 
         override fun parseResult(resultCode: Int, result: Intent?): Pair<Category, Uri>? {
             return if (resultCode != Activity.RESULT_OK) {

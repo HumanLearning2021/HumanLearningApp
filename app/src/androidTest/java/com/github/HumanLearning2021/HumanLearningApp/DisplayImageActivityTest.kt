@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
 import android.content.Intent
+import android.os.Parcelable
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -35,7 +36,7 @@ class DisplayImageActivityTest {
             val test = dummydsService.getPicture(dummydsService.getCategory("Fork")!!)
         }
         val intent = Intent()
-        intent.putExtra("display_image_image", (categoryImagesList[0]) as Serializable)
+        intent.putExtra("display_image_image", (categoryImagesList[0]) as Parcelable)
         activityRuleIntent.launchActivity(intent)
     }
 

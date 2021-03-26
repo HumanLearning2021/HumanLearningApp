@@ -22,6 +22,7 @@ import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.*
 import org.junit.Rule
 import org.junit.Test
