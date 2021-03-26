@@ -92,7 +92,7 @@ class AddPictureActivity : AppCompatActivity() {
     private fun onSave(view: View) {
         val returnIntent = Intent()
         val bundle = Bundle().apply {
-            putSerializable("category", chosenCategory)
+            putParcelable("category", chosenCategory)
             putParcelable("image", capturedImageUri)
         }
         returnIntent.putExtra("result", bundle)

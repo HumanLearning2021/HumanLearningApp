@@ -23,11 +23,8 @@ class LearningActivity : AppCompatActivity() {
 
     private val dummyPres = DummyUIPresenter(DummyDatabaseService())
     private val learningPresenter = LearningPresenter(DummyDatabaseService())
-<<<<<<< HEAD
-=======
     private lateinit var learningMode: LearningMode
     private lateinit var audioFeedback : LearningAudioFeedback
->>>>>>> main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

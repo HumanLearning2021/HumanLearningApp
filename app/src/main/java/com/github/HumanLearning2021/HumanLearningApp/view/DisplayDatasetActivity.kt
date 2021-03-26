@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-<<<<<<< HEAD
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +12,8 @@ import android.widget.BaseAdapter
 import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
-=======
 import android.view.*
 import android.widget.*
->>>>>>> main
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
@@ -53,18 +50,11 @@ class DisplayDatasetActivity : AppCompatActivity() {
             findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
                 displayDatasetAdapter
 
-<<<<<<< HEAD
-            findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { 
-            adapterView, view, i, l ->
-                val intent = Intent(this@DisplayDatasetActivity, DisplayImageActivity::class.java)
-                intent.putExtra("display_image_image", (datasetImagesList[i] as Parcelable))
-=======
             findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
                 val intent =
                     Intent(this@DisplayDatasetActivity, DisplayImageSetActivity::class.java)
                 //TODO: All the images that belong to the specified category will be sent to DisplayImageSetActivity
-                intent.putExtra("display_image_set_images", (datasetImagesList[i]) as Serializable)
->>>>>>> main
+                intent.putExtra("display_image_set_images", (datasetImagesList[i]) as Parcelable)
                 startActivity(intent)
             }
         }
