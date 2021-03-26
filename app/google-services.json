@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "511027907553-87tum1gjrhvuhu0uj40ij7rri72dlucg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.HumanLearning2021.HumanLearningApp",
+            "certificate_hash": "c3f4096667e5db460986876fb3f56cbfc09c7ec8"
+          }
+        },
+        {
           "client_id": "511027907553-p0sqbict6r6hh81bdrrp1v73idj2tshh.apps.googleusercontent.com",
           "client_type": 3
         }

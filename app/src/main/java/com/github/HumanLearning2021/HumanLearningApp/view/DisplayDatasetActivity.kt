@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+<<<<<<< HEAD
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +13,13 @@ import android.widget.BaseAdapter
 import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
+=======
+import android.view.*
+import android.widget.*
+>>>>>>> main
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
@@ -47,15 +53,43 @@ class DisplayDatasetActivity : AppCompatActivity() {
             findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
                 displayDatasetAdapter
 
+<<<<<<< HEAD
             findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { 
             adapterView, view, i, l ->
                 val intent = Intent(this@DisplayDatasetActivity, DisplayImageActivity::class.java)
                 intent.putExtra("display_image_image", (datasetImagesList[i] as Parcelable))
+=======
+            findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
+                val intent =
+                    Intent(this@DisplayDatasetActivity, DisplayImageSetActivity::class.java)
+                //TODO: All the images that belong to the specified category will be sent to DisplayImageSetActivity
+                intent.putExtra("display_image_set_images", (datasetImagesList[i]) as Serializable)
+>>>>>>> main
                 startActivity(intent)
             }
         }
 
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.display_dataset_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item?.itemId) {
+            R.id.display_dataset_menu_modify_categories -> {
+                val intent = Intent(this@DisplayDatasetActivity, DataCreationActivity::class.java)
+                //TODO: Give to the DataCreationActivity the list of the categories of the dataset
+                //intent.putExtra("dataset_categories", dummyPresenter.getCategories())
+                startActivity(intent)
+                true
+            }
+            else -> {
+                true
+            }
+        }
     }
 
     class DisplayDatasetAdapter(

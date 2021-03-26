@@ -13,7 +13,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/imagetobedisplayed" />
 
     <TextView
         android:id="@+id/display_image_viewCategory"
@@ -24,5 +25,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/display_image_viewImage" />
+
+    <ImageButton
+        android:id="@+id/display_image_delete_button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="#BF1D1D"
+        android:onClick="removePicture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_delete"
+        android:contentDescription="@string/buttontoremovepicturefromdataset" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

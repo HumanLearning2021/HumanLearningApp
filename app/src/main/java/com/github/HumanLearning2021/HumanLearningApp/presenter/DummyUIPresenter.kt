@@ -8,7 +8,7 @@ import java.lang.IllegalArgumentException
 /**
  * a class representing a dummy UI presenter
  */
-class DummyUIPresenter(val databaseService: DummyDatabaseService) {
+class DummyUIPresenter(val databaseService: DatabaseService) {
 
     /**
      * Allows to retrieve a picture fron the dummy dataset
