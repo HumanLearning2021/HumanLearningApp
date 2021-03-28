@@ -14,3 +14,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+projectFilesBackup
+keystore.properties
+.gitsecret/keys/random_seed
+.gitsecret/keys/pubring.kbx~
+!*.secret

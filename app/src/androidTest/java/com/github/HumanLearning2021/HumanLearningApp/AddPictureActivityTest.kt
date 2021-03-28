@@ -5,14 +5,10 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import androidx.activity.result.ActivityResultRegistry
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.core.app.ActivityOptionsCompat
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.repeatedlyUntil
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -21,16 +17,14 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.PermissionGranter
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 import java.lang.reflect.Method
 
 @RunWith(AndroidJUnit4::class)
@@ -40,29 +34,42 @@ class AddPictureActivityTest {
     private fun grantCameraPermission() {
         PermissionGranter.allowPermissionOneTime(Manifest.permission.CAMERA)
     }
+    
+    private class testCat(override val name: String,
+                          override val representativePicture: CategorizedPicture?
+    ) : Category {
+        constructor(parcel: Parcel) : this(
+            parcel.readString()!!,
+            parcel.readParcelable(CategorizedPicture::class.java.classLoader)
+        ) {
+        }
 
-    // inspired by : https://stackoverflow.com/a/35924943/7158887
-    private fun waitFor(millis: Long): ViewAction =
-        object : ViewAction {
-            override fun getConstraints(): Matcher<View> {
-                return Matchers.anyOf(isRoot(), withId(R.id.cameraImageView))
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        override fun writeToParcel(dest: Parcel, flags: Int) {
+            dest.writeString(name)
+            dest.writeParcelable(representativePicture, flags)
+        }
+
+        companion object CREATOR : Parcelable.Creator<testCat> {
+            override fun createFromParcel(parcel: Parcel): testCat {
+                return testCat(parcel)
             }
 
-            override fun getDescription(): String {
-                return "Wait for $millis milliseconds"
-            }
-
-            override fun perform(uiController: UiController?, view: View?) {
-                uiController?.loopMainThreadForAtLeast(millis)
+            override fun newArray(size: Int): Array<testCat?> {
+                return arrayOfNulls(size)
             }
         }
+    }
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
         Intent(
             ApplicationProvider.getApplicationContext(),
             AddPictureActivity::class.java
-        ).putExtra("categories", arrayOf("cat1", "cat2", "cat3"))
+        ).putExtra("categories", arrayListOf(testCat("cat1", null), testCat("cat2", null), testCat("cat3", null)))
     )
 
     @Before
@@ -74,8 +81,9 @@ class AddPictureActivityTest {
         // This solution is not ideal because it slows down the tests, and it might not work
         // every time. But there isn't a better solution that I (Niels Lachat) know of.
         val delayBeforeTestStart: Long = 3000
-        onView(isRoot()).perform(waitFor(delayBeforeTestStart))
+        TestUtils.waitFor(delayBeforeTestStart)
     }
+
 
     @After
     fun cleanUp() {
@@ -110,7 +118,7 @@ class AddPictureActivityTest {
         onView(withId(R.id.takePictureButton)).perform(click())
         onView(withId(R.id.cameraImageView)).perform(
             repeatedlyUntil(
-                waitFor(1000),
+                TestUtils.waitForAction(1000),
                 isDisplayed(),
                 10
             )
@@ -126,7 +134,7 @@ class AddPictureActivityTest {
         onView(withId(R.id.takePictureButton)).perform(click())
         onView(withId(R.id.cameraImageView)).perform(
             repeatedlyUntil(
-                waitFor(1000),
+                TestUtils.waitForAction(1000),
                 isDisplayed(),
                 10
             )
@@ -141,7 +149,7 @@ class AddPictureActivityTest {
         onView(withId(R.id.takePictureButton)).perform(click())
         onView(withId(R.id.cameraImageView)).perform(
             repeatedlyUntil(
-                waitFor(1000),
+                TestUtils.waitForAction(1000),
                 isDisplayed(),
                 10
             )
@@ -176,10 +184,13 @@ class AddPictureActivityTest {
         onView(withId(R.id.takePictureButton)).check(matches(isClickable()))
     }
 
+    private val delayAfterSelectCategoryBtn = 100L
+
     @Test
     fun selectingCategoryChangesButtonText() {
         grantCameraPermission()
         onView(withId(R.id.selectCategoryButton)).perform(click())
+        TestUtils.waitFor(delayAfterSelectCategoryBtn)
         onView(withText("cat1")).perform(click())
         onView(withId(R.id.selectCategoryButton)).check(matches(withText("cat1")))
     }
@@ -188,6 +199,7 @@ class AddPictureActivityTest {
     fun selectingCategoryChangesButtonTextColor() {
         grantCameraPermission()
         onView(withId(R.id.selectCategoryButton)).perform(click())
+        TestUtils.waitFor(delayAfterSelectCategoryBtn)
         onView(withText("cat1")).perform(click())
         onView(withId(R.id.selectCategoryButton)).check(matches(hasTextColor(R.color.black)))
     }
@@ -195,7 +207,8 @@ class AddPictureActivityTest {
     @Test
     fun permissionNeededDialogShowsCorrectDialog() {
         grantCameraPermission()
-        val method: Method = AddPictureActivity::class.java.getDeclaredMethod("permissionNeededDialog")
+        val method: Method =
+            AddPictureActivity::class.java.getDeclaredMethod("permissionNeededDialog")
         method.isAccessible = true
         activityScenarioRule.scenario.onActivity { activity ->
             method.invoke(activity)
@@ -210,7 +223,8 @@ class AddPictureActivityTest {
     @Test
     fun showCaptureErrorDialogShowsCorrectly() {
         grantCameraPermission()
-        val method: Method = AddPictureActivity::class.java.getDeclaredMethod("showCaptureErrorDialog")
+        val method: Method =
+            AddPictureActivity::class.java.getDeclaredMethod("showCaptureErrorDialog")
         method.isAccessible = true
         activityScenarioRule.scenario.onActivity { activity ->
             method.invoke(activity)
@@ -221,11 +235,11 @@ class AddPictureActivityTest {
     @Test
     fun activityContractCorrectlyParsesResult() {
         val bundle = Bundle().apply {
-            putString("category", "some_category")
+            putParcelable("category", testCat("some_category", null))
             putParcelable("image", Uri.EMPTY)
         }
         val intent = Intent().putExtra("result", bundle)
-        assert(AddPictureActivity.AddPictureContract.parseResult(Activity.RESULT_OK, intent)!!.first == "some_category")
+        assert(AddPictureActivity.AddPictureContract.parseResult(Activity.RESULT_OK, intent)!!.first.name == "some_category")
         assert(AddPictureActivity.AddPictureContract.parseResult(Activity.RESULT_CANCELED, intent) == null)
     }
 

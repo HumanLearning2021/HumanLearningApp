@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -26,27 +27,28 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import java.io.File
 import java.util.concurrent.Executors
 
 /*
 Activity where an administrator can take a picture to add it to a selected data set.
-Should be started using the ActivityResultContract provided by AddPictureContract object.
+Should be started using the ActivityResultContract provided by the AddPictureContract object.
  */
 class AddPictureActivity : AppCompatActivity() {
 
-    private var categories: Array<String> = arrayOf()
+    private var categories: Array<Category> = arrayOf()
     private lateinit var imageCapture: ImageCapture
     private lateinit var capturedImageUri: Uri
-    private lateinit var chosenCategory: String
+    private lateinit var chosenCategory: Category
     private var imageTaken: Boolean = false
     private var categorySet: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val extra = intent.getStringArrayExtra("categories")
-        if (extra != null) {
-            categories += extra
+        val extra = intent.extras
+        if (extra != null && extra["categories"] is ArrayList<*>) {
+            categories += extra["categories"] as ArrayList<Category>
         }
         if (cameraIsAvailable()) {
             when {
@@ -73,16 +75,16 @@ class AddPictureActivity : AppCompatActivity() {
     The launch argument is an Array<String> containing the categories to select from.
     The return value is a Pair containing the selected category as a first element and the Uri pointing to the image as a second element
      */
-    object AddPictureContract : ActivityResultContract<Array<String>, Pair<String, Uri>?>() {
-        override fun createIntent(context: Context, input: Array<String>?): Intent =
-            Intent(context, AddPictureActivity::class.java).putExtra("categories", input)
+    object AddPictureContract : ActivityResultContract<ArrayList<Category>, Pair<Category, Uri>?>() {
+        override fun createIntent(context: Context, input: ArrayList<Category>?): Intent =
+            Intent(context, AddPictureActivity::class.java).putParcelableArrayListExtra("categories", input)
 
-        override fun parseResult(resultCode: Int, result: Intent?): Pair<String, Uri>? {
+        override fun parseResult(resultCode: Int, result: Intent?): Pair<Category, Uri>? {
             return if (resultCode != Activity.RESULT_OK) {
                 null
             } else {
                 val bundle = result!!.extras!!.get("result") as Bundle
-                Pair(bundle["category"] as String, bundle["image"] as Uri)
+                Pair(bundle["category"] as Category, bundle["image"] as Uri)
             }
         }
     }
@@ -91,7 +93,7 @@ class AddPictureActivity : AppCompatActivity() {
     private fun onSave(view: View) {
         val returnIntent = Intent()
         val bundle = Bundle().apply {
-            putString("category", chosenCategory)
+            putParcelable("category", chosenCategory)
             putParcelable("image", capturedImageUri)
         }
         returnIntent.putExtra("result", bundle)
@@ -132,10 +134,10 @@ class AddPictureActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.apply {
             setTitle(getString(R.string.AddPicture_categorySelectionDialogTitle))
-            setItems(categories) { _, category_index ->
+            setItems(categories.copyOf().map {cat -> cat.name}.toTypedArray()) { _, category_index ->
                 val button = findViewById<Button>(R.id.selectCategoryButton)
                 chosenCategory = categories[category_index]
-                button.text = chosenCategory
+                button.text = chosenCategory.name
                 button.apply {
                     setBackgroundColor(getColor(R.color.button_set))
                     button.setTextColor(getColor(R.color.black))

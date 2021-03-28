@@ -10,7 +10,7 @@
         android:id="@+id/learning_im_to_sort"
         android:layout_width="@dimen/learning_image_size"
         android:layout_height="@dimen/learning_image_size"
-        android:layout_margin="64dp"
+        android:layout_margin="32dp"
         android:contentDescription="@string/learning_im_to_sort_descr"
         android:longClickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -62,6 +62,7 @@
             app:layout_constraintStart_toEndOf="@+id/learning_cat_1"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@color/blue" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--    TODO remove this useless tag-->

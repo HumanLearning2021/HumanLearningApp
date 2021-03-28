@@ -1,15 +1,15 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
-import android.graphics.drawable.Drawable
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import java.io.Serializable
+import java.lang.Exception
 import java.lang.IllegalArgumentException
 
 
 /**
  * a class representing a dummy UI presenter
  */
-class DummyUIPresenter(val datasetInterface: DatasetInterface) {
+class DummyUIPresenter(val databaseService: DatabaseService) {
+
     /**
      * Allows to retrieve a picture fron the dummy dataset
      *
@@ -18,16 +18,22 @@ class DummyUIPresenter(val datasetInterface: DatasetInterface) {
      */
 
     suspend fun getPicture(categoryName: String): CategorizedPicture? {
-        return datasetInterface.getPicture(DummyCategory(categoryName))
+        val res: CategorizedPicture?
+        try {
+             res = databaseService.getPicture(DummyCategory(categoryName, null))
+        } catch (e: Exception) {
+            throw e
+        }
+        return res
     }
 
     suspend fun putPicture(picture: android.net.Uri, categoryName: String): CategorizedPicture {
-        var category = datasetInterface.getCategory(categoryName)
+        var category = databaseService.getCategory(categoryName)
 
         if(category == null)
-            category = datasetInterface.putCategory(categoryName)
+            category = databaseService.putCategory(categoryName)
 
-        return datasetInterface.putPicture(picture, category)
+        return databaseService.putPicture(picture, category)
     }
 }
 
