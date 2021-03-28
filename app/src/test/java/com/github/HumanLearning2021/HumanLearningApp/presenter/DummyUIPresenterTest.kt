@@ -5,49 +5,44 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
-<<<<<<< HEAD
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-=======
->>>>>>> main
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.Test
-import org.mockito.Mock
+import org.junit.runner.RunWith
 import org.mockito.Mockito
+import org.robolectric.Robolectric
+import org.robolectric.RobolectricTestRunner
 
 
+@RunWith(RobolectricTestRunner::class)
 @ExperimentalCoroutinesApi
 class DummyUIPresenterTest {
     private val fork = DummyCategory("Fork", null)
     private val knife = DummyCategory("Knife", null)
     private val spoon = DummyCategory("Spoon", null)
 
-    val dummyUri = Mockito.mock(android.net.Uri::class.java)
-<<<<<<< HEAD
+    private val forkPic = DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork))
+    private val knifePic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.knife))
+    private val spoonPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.spoon))
 
-    private val forkPic = DummyCategorizedPicture(fork, dummyUri)
-    private val knifePic = DummyCategorizedPicture(knife, dummyUri)
-    private val spoonPic = DummyCategorizedPicture(spoon, dummyUri)
-
-    val dummyDatabaseService = Mockito.mock(DummyDatabaseService::class.java)
-    val dummyPresenter = DummyUIPresenter(dummyDatabaseService)
-=======
-    val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
->>>>>>> main
+    private val databaseService = DummyDatabaseService()
+    private val dummyPresenter = DummyUIPresenter(databaseService)
 
     @Test
     fun getPictureTestEquals() = runBlockingTest {
-        dummyDatabaseService.putCategory(fork.name)
-        dummyDatabaseService.putPicture(forkPic.picture, forkPic.category)
+        databaseService.putCategory(fork.name)
+        databaseService.putPicture(forkPic.picture, forkPic.category)
         assert(dummyPresenter.getPicture("Fork")!!.equals(forkPic))
     }
 
     @Test
     fun getPictureTestNotEqual() = runBlockingTest {
-        dummyDatabaseService.putCategory(fork.name)
-        dummyDatabaseService.putPicture(forkPic.picture, forkPic.category)
+        databaseService.putCategory(fork.name)
+        databaseService.putPicture(forkPic.picture, forkPic.category)
         assert(!dummyPresenter.getPicture("Fork")!!.equals(knifePic))
     }
 
@@ -65,16 +60,16 @@ class DummyUIPresenterTest {
 
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
-        dummyPresenter.putPicture(dummyUri, "Fork")
+        dummyPresenter.putPicture(Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork), "Fork")
         assertThat(
             dummyPresenter.getPicture("Fork"),
-            Matchers.equalTo(DummyCategorizedPicture(fork, dummyUri))
+            Matchers.equalTo(DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork)))
         )
     }
 
     @Test
     fun putPictureCategoryNotPresent() = runBlockingTest {
-        val tablePic = dummyPresenter.putPicture(dummyUri, "Table")
+        val tablePic = dummyPresenter.putPicture(Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork), "Table")
         assertThat(
             dummyPresenter.getPicture("Table"),
             Matchers.equalTo(tablePic)

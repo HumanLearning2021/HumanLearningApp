@@ -16,7 +16,6 @@ class DummyUIPresenter(val databaseService: DatabaseService) {
      * @param categoryName the name of the category of the picture to retrieve. Can be "knife", "fork", or "spoon"
      * @throws IllegalArgumentException if the string provided doesn't match any of "knife", "fork", or "spoon"
      */
-
     suspend fun getPicture(categoryName: String): CategorizedPicture? {
         val res: CategorizedPicture?
         try {
