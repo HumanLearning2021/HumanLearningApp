@@ -15,8 +15,7 @@ import kotlinx.parcelize.Parcelize
 data class DummyCategory(override val name: String,
                          override val representativePicture: CategorizedPicture?
 ): Category {
-    constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
-        parcel.readParcelable(CategorizedPicture::class.java.classLoader)
-    )
+    override fun equals(other: Any?): Boolean {
+        return (other is DummyCategory && other.name == this.name)
+    }
 }

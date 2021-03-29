@@ -71,10 +71,6 @@ class FirestoreDatabaseService(
         }
     }
 
-    override suspend fun getRepresentativePicture(category: Category): CategorizedPicture {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
         TODO("Not yet implemented")
     }
@@ -100,10 +96,6 @@ class FirestoreDatabaseService(
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         TODO("Not yet implemented")
     }
 

@@ -54,15 +54,6 @@ interface DatabaseService {
     suspend fun getCategories(): Set<Category>
 
     /**
-     * Retrieves the representative picture of the specified category
-     *
-     * @param category - the category whose representative picture we want to retrieve
-     * @return the representative picture associated to the specified category
-     * @throws IllegalArgumentException if the database does not contain the specified category
-     */
-    suspend fun getRepresentativePicture(category: Category): CategorizedPicture?
-
-    /**
      * Retrieves all the pictures categorized with the specified category
      *
      * @param category - the category whose pictures we want to retrieve
@@ -72,7 +63,7 @@ interface DatabaseService {
     suspend fun getAllPictures(category: Category): Set<CategorizedPicture>
 
     /**
-     * Remove the category from the database
+     * Remove the category from the database and from all the datasets contained in this database and using this category
      *
      * @param category - the category to remove from the database
      * @throws IllegalArgumentException if the database does not contain the specified category
@@ -120,14 +111,6 @@ interface DatabaseService {
      * @throws IllegalArgumentException if the database does not contain the specified category
      */
     suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
-
-    /**
-     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
-     *
-     * @param picture - the picture to put as a representative
-     * @throws IllegalArgumentException if the database does not contain the specified category
-     */
-    suspend fun putRepresentativePicture(picture: CategorizedPicture)
 
     /**
      * Retrieves the names of all the datasets available
