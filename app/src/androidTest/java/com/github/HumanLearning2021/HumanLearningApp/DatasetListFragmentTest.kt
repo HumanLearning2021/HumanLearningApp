@@ -13,6 +13,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListRecyclerViewAdapter
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -21,7 +22,7 @@ import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
-class DataOverviewFragmentTest {
+class DatasetListFragmentTest {
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
@@ -53,7 +54,7 @@ class DataOverviewFragmentTest {
     @Test
     fun listItemInFragmentAreClickable() {
         onView(withId(R.id.dataOverview_fragment))
-            .perform(actionOnItemAtPosition<DataOverviewRecyclerViewAdapter.ViewHolder>(0, click()))
+            .perform(actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ViewHolder>(0, click()))
 
         // Confirm
         Intents.intended(IntentMatchers.hasComponent(DataCreationActivity::class.java.name))

@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp
+package com.github.HumanLearning2021.HumanLearningApp.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,12 +9,20 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
+import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 
 /**
- * A fragment representing a list of Items.
+ * A fragment displaying a list of datasets.
  */
-class DataOverviewFragment : Fragment(), DataOverviewRecyclerViewAdapter.OnItemClickListener {
+class DatasetListFragment : Fragment(), DatasetListRecyclerViewAdapter.OnItemClickListener {
+
+    private val mutableSelectedDataset = MutableLiveData<Dataset>()
+    val selectedItem: LiveData<Dataset> get() = mutableSelectedDataset
+
 
     private var columnCount = 1
 
@@ -25,13 +33,12 @@ class DataOverviewFragment : Fragment(), DataOverviewRecyclerViewAdapter.OnItemC
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
     }
-
-    //
+    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_dataset_over_view_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_dataset_list, container, false)
 
         // Set the adapter
         if (view is RecyclerView) {
@@ -41,7 +48,7 @@ class DataOverviewFragment : Fragment(), DataOverviewRecyclerViewAdapter.OnItemC
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = DataOverviewRecyclerViewAdapter(listener = this@DataOverviewFragment)
+                adapter = DatasetListRecyclerViewAdapter(listener = this@DatasetListFragment)
 
             }
         }

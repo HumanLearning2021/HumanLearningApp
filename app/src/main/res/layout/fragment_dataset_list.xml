@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".DataOverviewFragment"
+    tools:context=".view.fragments.DatasetListFragment"
     tools:listitem="@layout/fragment_dataset_over_view" />

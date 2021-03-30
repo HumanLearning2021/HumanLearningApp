@@ -8,14 +8,14 @@
 
     <fragment
         android:id="@+id/dataOverview_fragment"
-        class="com.github.HumanLearning2021.HumanLearningApp.DataOverviewFragment"
+        class="com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListFragment"
         android:layout_width="300dp"
         android:layout_height="500dp"
         android:layout_marginStart="52dp"
         android:layout_marginTop="112dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_dataset_over_view_list" />
+        tools:layout="@layout/fragment_dataset_list" />
 
     <Button
         android:id="@+id/dataOverviewButton"

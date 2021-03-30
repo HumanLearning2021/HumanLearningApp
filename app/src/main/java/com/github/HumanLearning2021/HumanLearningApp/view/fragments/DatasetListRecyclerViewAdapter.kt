@@ -1,20 +1,17 @@
-package com.github.HumanLearning2021.HumanLearningApp
+package com.github.HumanLearning2021.HumanLearningApp.view.fragments
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.github.HumanLearning2021.HumanLearningApp.R
 
 
-/**
- *
- */
-class DataOverviewRecyclerViewAdapter(
-    // replace with DataSet Names sources internally  with getDatasetNames/keys
-    private val values: Array<String> = arrayOf("utensils"),
+class DatasetListRecyclerViewAdapter(
+    private val dbMgmt: DatabaseManagement,
     private val listener: OnItemClickListener
-) : RecyclerView.Adapter<DataOverviewRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<DatasetListRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
