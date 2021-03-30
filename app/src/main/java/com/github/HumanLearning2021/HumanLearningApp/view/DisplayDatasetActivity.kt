@@ -8,50 +8,77 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.github.HumanLearning2021.HumanLearningApp.AddPictureActivity
 import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import kotlinx.coroutines.launch
 import java.io.Serializable
 
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
-    private val fork = DummyCategory("Fork")
-    private val knife = DummyCategory("Knife")
-    private val spoon = DummyCategory("Spoon")
+    private val databaseService = DummyDatabaseService()
 
-    private val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
-
-    private val datasetImagesList = ArrayList<CategorizedPicture>()
+    private val addPictureContractRegistration =
+        registerForActivityResult(AddPictureActivity.AddPictureContract) { resultPair ->
+            if (resultPair == null) {
+                Toast.makeText(
+                    this,
+                    "The picture has not been saved in the dataset",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                val category = resultPair.first
+                val pictureUri = resultPair.second
+                lifecycleScope.launch {
+                    databaseService.putPicture(pictureUri, category)
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_dataset)
+
+        //TODO : Receive the intent from datasetOverview (contains the name of the dataset)
+        //val datasetName = intent.getStringExtra("dataset_overview_dataset_name")
+        val datasetName = "kitchen utensils"
+        val representativePictures = ArrayList<CategorizedPicture>()
+
         lifecycleScope.launch {
-            datasetImagesList.add(dummyPresenter.getPicture(fork.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(knife.name)!!)
-            datasetImagesList.add(dummyPresenter.getPicture(spoon.name)!!)
+            val dataset = databaseService.getDataset(datasetName!!)
+            val categories = databaseService.getCategories()
+            for (cat in categories) {
+                representativePictures.add(databaseService.getPicture(cat)!!)
+            }
+
 
             val displayDatasetAdapter =
-                DisplayDatasetAdapter(datasetImagesList, this@DisplayDatasetActivity)
+                DisplayDatasetAdapter(representativePictures, this@DisplayDatasetActivity)
 
             findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
                 displayDatasetAdapter
-
             findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
+                val cat = categories.elementAt(i)
+                val allPictures = databaseService.pictures
+                val catPictures: MutableSet<CategorizedPicture> = mutableSetOf()
+                for (p in allPictures) {
+                    if (p.category == cat) {
+                        catPictures.add(p)
+                    }
+                }
                 val intent =
                     Intent(this@DisplayDatasetActivity, DisplayImageSetActivity::class.java)
                 //TODO: All the images that belong to the specified category will be sent to DisplayImageSetActivity
-                intent.putExtra("display_image_set_images", (datasetImagesList[i]) as Serializable)
+                intent.putExtra(
+                    "display_image_set_images",
+                    (catPictures) as Serializable
+                )
                 startActivity(intent)
             }
         }
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -66,6 +93,13 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 //TODO: Give to the DataCreationActivity the list of the categories of the dataset
                 //intent.putExtra("dataset_categories", dummyPresenter.getCategories())
                 startActivity(intent)
+                true
+            }
+            R.id.display_dataset_menu_add_new_image -> {
+                lifecycleScope.launch {
+                    val categories = databaseService.getCategories()
+                    addPictureContractRegistration.launch(categories)
+                }
                 true
             }
             else -> {

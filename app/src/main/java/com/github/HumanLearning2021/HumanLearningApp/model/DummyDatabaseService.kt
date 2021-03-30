@@ -17,7 +17,7 @@ class DummyDatabaseService : DatabaseService {
     private val knifePic = DummyCategorizedPicture(knife)
     private val spoonPic = DummyCategorizedPicture(spoon)
 
-    private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
+    val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
 
     private val datasets: MutableSet<Dataset> = mutableSetOf(DummyDataset("kitchen utensils", categories))
 

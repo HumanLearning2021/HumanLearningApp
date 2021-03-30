@@ -32,6 +32,7 @@
     <string name="main_btAddImage">ADD IMAGE TO THE DATASET</string>
 
     <string name="modify_categories">Modify categories</string>
+    <string name="add_new_picture">Add new picture</string>
     <string name="dataset_name">Dataset Name</string>
     <string name="imagetobedisplayed">image to be displayed</string>
     <string name="buttontoremovepicturefromdataset">button to remove picture from dataset</string>

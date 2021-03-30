@@ -7,13 +7,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 
 class DisplayImageActivity : AppCompatActivity() {
+
+    private lateinit var image: CategorizedPicture
+    private val databaseService = DummyDatabaseService()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_image)
 
-        val image: CategorizedPicture =
+        image =
             intent.getSerializableExtra("display_image_image") as CategorizedPicture
 
         findViewById<TextView>(R.id.display_image_viewCategory).text = image.category.name

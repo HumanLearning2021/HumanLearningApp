@@ -24,11 +24,18 @@ class DisplayImageSetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_image_set)
 
-        val image: CategorizedPicture =
-            intent.getSerializableExtra("display_image_set_images") as CategorizedPicture
+        val pictures: Set<CategorizedPicture> =
+            intent.getSerializableExtra("display_image_set_images") as Set<CategorizedPicture>
+        //val pictures: CategorizedPicture =
+        //    intent.getSerializableExtra("display_image_set_images") as CategorizedPicture
 
-        findViewById<TextView>(R.id.display_image_set_name).text = image.category.name
-        categoryImagesList.add(image)
+        findViewById<TextView>(R.id.display_image_set_name).text =
+            (pictures.elementAt(0)).category.name
+        for (pic in pictures) {
+            categoryImagesList.add(pic)
+        }
+        //findViewById<TextView>(R.id.display_image_set_name).text = pictures.category.name
+        //categoryImagesList.add(pictures)
 
         val displayImageSetAdapter =
             DisplayImageSetActivity.DisplayImageSetAdapter(
