@@ -1,5 +1,8 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import com.google.firebase.auth.FirebaseUser
+
+
 /**
  * An interface representing the part of the model interacting with data sets
  */
@@ -122,4 +125,8 @@ interface DatabaseService {
      * @return a set containing all off the available datasets
      */
     fun getDatasets(): Set<Dataset>
+
+    suspend fun updateUser(firebaseUser: FirebaseUser): User
+
+    suspend fun getUser(type: User.Type, uid: String): User?
 }
