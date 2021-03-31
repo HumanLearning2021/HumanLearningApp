@@ -1,17 +1,19 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.uiautomator.UiDevice
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
@@ -36,7 +38,7 @@ class DisplayDatasetActivityTest {
 
     val NUMBER_OF_CAT = 3
     val datasetImagesList = ArrayList<CategorizedPicture>()
-    val dummydsinterface = DummyDatabaseService()
+    val databaseService = DummyDatabaseService()
     val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
 
     /**
@@ -58,7 +60,7 @@ class DisplayDatasetActivityTest {
         val randomNb = (0 until NUMBER_OF_CAT).random()
 
         runBlocking {
-            val categories = dummydsinterface.getCategories()
+            val categories = databaseService.getCategories()
             for (cat in categories) {
                 datasetImagesList.add(dummyPresenter.getPicture(cat.name)!!)
             }
@@ -67,13 +69,20 @@ class DisplayDatasetActivityTest {
                 .inAdapterView(withId(R.id.display_dataset_imagesGridView))
                 .atPosition(randomNb)
                 .perform(click())
+            val allPictures = databaseService.pictures
+            val catPictures: MutableSet<CategorizedPicture> = mutableSetOf()
+            for (p in allPictures) {
+                if (p.category == categories.elementAt(randomNb)) {
+                    catPictures.add(p)
+                }
+            }
 
             intended(
                 allOf(
                     hasComponent(DisplayImageSetActivity::class.java.name),
                     hasExtra(
                         "display_image_set_images",
-                        (datasetImagesList[randomNb]) as Serializable
+                        (catPictures) as Serializable
                     )
                 )
             )
@@ -96,8 +105,41 @@ class DisplayDatasetActivityTest {
         intended(
             allOf(
                 hasComponent(DataCreationActivity::class.java.name),
+                hasExtraWithKey("dataset_categories"),
             )
         )
+    }
+
+    @Test
+    fun clickOnMenuAddNewPictureWorks() {
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText(R.string.add_new_picture)).perform(click())
+
+        intended(
+            allOf(
+                hasComponent(AddPictureActivity::class.java.name),
+                hasExtraWithKey("categories"),
+            )
+        )
+
+        pressBack()
+
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText(R.string.add_new_picture)).perform(click())
+
+        onView(withId(R.id.takePictureButton)).perform(click())
+        onView(withId(R.id.selectCategoryButton)).perform(click())
+        onView(withText("Fork")).perform(click())
+        onView(withId(R.id.saveButton)).perform(click())
+
+        onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun clickOnMenuButNotOnButtonClosesMenu() {
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(0, 100)
+        onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
     }
 
 }

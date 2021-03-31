@@ -1,26 +1,43 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
+import android.content.Intent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.view.get
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
+import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
+import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
 import org.hamcrest.Matcher
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import com.schibsted.spain.barista.internal.performActionOnView
+import kotlinx.android.synthetic.main.row_add_category.view.*
+import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.junit.Test
-
-
-
+import java.io.Serializable
 
 
 @RunWith(AndroidJUnit4::class)
@@ -42,12 +59,22 @@ class DataCreationActivityTest {
                 }
             }
 
+    val dummydsService = DummyDatabaseService()
+    var categories = emptySet<Category>()
 
     @get:Rule
-    var testRule = ActivityTestRule(DataCreationActivity::class.java)
+    var activityRuleIntent = IntentsTestRule(DataCreationActivity::class.java, false, false)
 
     @Before
     fun setUp() {
+        runBlocking {
+            categories = dummydsService.getCategories()
+            categories = categories.minus(categories.elementAt(0))
+            categories = categories.minus(categories.elementAt(0))
+        }
+        val intent = Intent()
+        intent.putExtra("dataset_categories", (categories) as Serializable)
+        activityRuleIntent.launchActivity(intent)
         // By waiting before the test starts, it allows time for the app to startup to prevent the
         // following error to appear on cirrus:
         // `Waited for the root of the view hierarchy to have window focus and not request layout for 10 seconds.`
@@ -60,16 +87,14 @@ class DataCreationActivityTest {
 
 
     @Test
-    fun rowViewIsDsiplayedWhenAddButtonIsClicked() {
-        onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
-        onView(ViewMatchers.withHint("Enter Category")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-
+    fun rowViewIsDisplayedWhenAddButtonIsClicked() {
+        onView(withId(R.id.button_add)).perform(ViewActions.click())
+        onView(withText("Spoon")).check(ViewAssertions.matches(isDisplayed()))
     }
 
     @Test
-    fun rowButtonViewIsDsiplayedWhenAddButtonIsClicked(){
-        onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
+    fun rowButtonViewIsDisplayedWhenAddButtonIsClicked(){
+        onView(withId(R.id.button_add)).perform(ViewActions.click())
         onView(ViewMatchers.withId(R.id.button_add)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
 
@@ -80,7 +105,7 @@ class DataCreationActivityTest {
         onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
         onView(ViewMatchers.withId(R.id.parent_linear_layout)).check(
             ViewAssertions.matches(
-                ViewMatchers.hasChildCount(1)
+                ViewMatchers.hasChildCount(categories.size + 1)
             )
         )
 
@@ -89,13 +114,23 @@ class DataCreationActivityTest {
 
     @Test
     fun rowViewIsRemovedWhenRemoveButtonIsClicked(){
-        onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
         val delayBeforeTestStart: Long = 100
         onView(isRoot()).perform(waitFor(delayBeforeTestStart))
-        onView(ViewMatchers.withId(R.id.button_remove)).perform(ViewActions.click())
-        onView(ViewMatchers.withId(R.id.parent_linear_layout)).check(ViewAssertions.matches(
-            ViewMatchers.hasChildCount(0)))
+        onView(withId(R.id.button_remove)).perform(click())
+        onView(withId(R.id.parent_linear_layout)).check(ViewAssertions.matches(
+            hasChildCount(0)))
+    }
 
+    @Test
+    fun SaveButtonGoesToDisplayDatasetActivity(){
+        onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
+        onView(withId(R.id.button_submit_list)).perform(click())
+
+        Intents.intended(
+            CoreMatchers.allOf(
+                IntentMatchers.hasComponent(DisplayDatasetActivity::class.java.name),
+            )
+        )
     }
 
 

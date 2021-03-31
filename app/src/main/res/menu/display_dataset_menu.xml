@@ -5,7 +5,7 @@
         android:id="@+id/display_dataset_menu_modify_categories"
         android:title="@string/modify_categories" />
     <item
-        android:id="@+id/display_dataset_menu_add_new_image"
+        android:id="@+id/display_dataset_menu_add_new_picture"
         android:title="@string/add_new_picture" />
 
 </menu>

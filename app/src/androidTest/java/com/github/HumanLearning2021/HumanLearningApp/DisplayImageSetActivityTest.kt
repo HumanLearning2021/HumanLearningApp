@@ -29,18 +29,18 @@ class DisplayImageSetActivityTest {
     @get:Rule
     var activityRuleIntent = IntentsTestRule(DisplayImageSetActivity::class.java, false, false)
 
-    val categoryImagesList = ArrayList<CategorizedPicture>()
-    val dummydsinterface = DummyDatabaseService()
+    var categoryImagesList = emptySet<CategorizedPicture>()
+    val dummydsService = DummyDatabaseService()
     val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
 
     @Before
     fun setUp() {
         runBlocking {
-            val categories = dummydsinterface.getCategories().toList()
-            categoryImagesList.add(dummyPresenter.getPicture(categories[0].name)!!)
+            val categories = dummydsService.getCategories().toList()
+            categoryImagesList = categoryImagesList.plus(dummydsService.getPicture(categories[0])!!)
         }
         val intent = Intent()
-        intent.putExtra("display_image_set_images", (categoryImagesList[0]) as Serializable)
+        intent.putExtra("display_image_set_images", (categoryImagesList) as Serializable)
         activityRuleIntent.launchActivity(intent)
     }
 
@@ -57,9 +57,15 @@ class DisplayImageSetActivityTest {
     @Test
     fun imageIsDisplayedOnClick() {
         runBlocking {
-            val categories = dummydsinterface.getCategories().toList()
-            categoryImagesList.add(dummyPresenter.getPicture(categories[0].name)!!)
+            val categories = dummydsService.getCategories()
+            categoryImagesList = categoryImagesList.plus(dummyPresenter.getPicture((categories.elementAt(0)).name)!!)
         }
+
+        onView(withId(R.id.display_image_set_imagesGridView)).check(
+            ViewAssertions.matches(
+                ViewMatchers.isDisplayed()
+            )
+        )
 
         onData(CoreMatchers.anything())
             .inAdapterView(withId(R.id.display_image_set_imagesGridView))
@@ -71,7 +77,7 @@ class DisplayImageSetActivityTest {
                 IntentMatchers.hasComponent(DisplayImageActivity::class.java.name),
                 IntentMatchers.hasExtra(
                     "display_image_image",
-                    (categoryImagesList[0]) as Serializable
+                    (categoryImagesList.elementAt(0)) as Serializable
                 )
             )
         )

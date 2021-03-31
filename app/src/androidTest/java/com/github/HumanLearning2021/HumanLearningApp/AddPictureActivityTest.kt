@@ -22,6 +22,7 @@ import org.hamcrest.Matchers.not
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
+import java.io.Serializable
 import java.lang.reflect.Method
 
 @RunWith(AndroidJUnit4::class)
@@ -39,7 +40,7 @@ class AddPictureActivityTest {
         Intent(
             ApplicationProvider.getApplicationContext(),
             AddPictureActivity::class.java
-        ).putExtra("categories", arrayOf(testCat("cat1"), testCat("cat2"), testCat("cat3")))
+        ).putExtra("categories", setOf<Category>(testCat("cat1"), testCat("cat2"), testCat("cat3")) as Serializable)
     )
 
     @Before

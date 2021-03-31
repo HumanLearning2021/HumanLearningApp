@@ -12,6 +12,7 @@ import com.github.HumanLearning2021.HumanLearningApp.AddPictureActivity
 import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import kotlinx.coroutines.launch
 import java.io.Serializable
@@ -20,6 +21,7 @@ import java.io.Serializable
 class DisplayDatasetActivity : AppCompatActivity() {
 
     private val databaseService = DummyDatabaseService()
+    private lateinit var datasetName : String
 
     private val addPictureContractRegistration =
         registerForActivityResult(AddPictureActivity.AddPictureContract) { resultPair ->
@@ -42,9 +44,13 @@ class DisplayDatasetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_dataset)
 
-        //TODO : Receive the intent from datasetOverview (contains the name of the dataset)
-        //val datasetName = intent.getStringExtra("dataset_overview_dataset_name")
-        val datasetName = "kitchen utensils"
+        val extra = intent.extras
+        if(extra != null && extra["dataset_overview_dataset_name"] is String){
+            datasetName = intent.getStringExtra("dataset_overview_dataset_name")!!
+        }else {
+            datasetName = "kitchen utensils"
+        }
+
         val representativePictures = ArrayList<CategorizedPicture>()
 
         lifecycleScope.launch {
@@ -54,7 +60,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 representativePictures.add(databaseService.getPicture(cat)!!)
             }
 
-
             val displayDatasetAdapter =
                 DisplayDatasetAdapter(representativePictures, this@DisplayDatasetActivity)
 
@@ -62,6 +67,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 displayDatasetAdapter
             findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
                 val cat = categories.elementAt(i)
+                //TODO: REPLACE BY getAllPictures WHEN AVAILABLE
                 val allPictures = databaseService.pictures
                 val catPictures: MutableSet<CategorizedPicture> = mutableSetOf()
                 for (p in allPictures) {
@@ -71,7 +77,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 }
                 val intent =
                     Intent(this@DisplayDatasetActivity, DisplayImageSetActivity::class.java)
-                //TODO: All the images that belong to the specified category will be sent to DisplayImageSetActivity
                 intent.putExtra(
                     "display_image_set_images",
                     (catPictures) as Serializable
@@ -90,19 +95,18 @@ class DisplayDatasetActivity : AppCompatActivity() {
         return when (item?.itemId) {
             R.id.display_dataset_menu_modify_categories -> {
                 val intent = Intent(this@DisplayDatasetActivity, DataCreationActivity::class.java)
-                //TODO: Give to the DataCreationActivity the list of the categories of the dataset
-                //intent.putExtra("dataset_categories", dummyPresenter.getCategories())
+                lifecycleScope.launch {
+                    intent.putExtra("dataset_categories", databaseService.getCategories() as Serializable)
+                }
                 startActivity(intent)
                 true
             }
-            R.id.display_dataset_menu_add_new_image -> {
+            //Clicked on Add new Picture button
+            else -> {
                 lifecycleScope.launch {
                     val categories = databaseService.getCategories()
                     addPictureContractRegistration.launch(categories)
                 }
-                true
-            }
-            else -> {
                 true
             }
         }
@@ -118,7 +122,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
         override fun getView(position: Int, view: View?, viewGroup: ViewGroup?): View {
             val view =
-                view ?: layoutInflater.inflate(R.layout.image_and_category_item, viewGroup, false)
+                view ?: layoutInflater.inflate(R.layout.image_and_category_item, viewGroup!!, false)
 
             val imageCat = view?.findViewById<TextView>(R.id.image_and_category_item_imageCategory)
             val imageView = view?.findViewById<ImageView>(R.id.image_and_category_item_imageView)
