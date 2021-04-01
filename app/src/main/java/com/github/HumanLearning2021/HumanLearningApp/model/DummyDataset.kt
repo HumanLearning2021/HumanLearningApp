@@ -1,9 +1,11 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import kotlinx.parcelize.Parcelize
 import java.lang.IllegalArgumentException
-import java.util.*
 
-data class DummyDataset(override val name: String, override val categories: Set<Category>) : Dataset {
+@Parcelize
+data class DummyDataset(override val id: String, override val name: String, override val categories: Set<Category>
+) : Dataset {
 
     override suspend fun removeCategory(category: Category): DummyDataset {
         for (c in categories) {
@@ -13,9 +15,13 @@ data class DummyDataset(override val name: String, override val categories: Set<
                     addAll(categories)
                     remove(c)
                 }
-                return DummyDataset(name, newCategories as Set<Category>)
+                return DummyDataset(id, name, newCategories as Set<Category>)
             }
         }
-        throw IllegalArgumentException("The category name ${category.name} is not present in the dataset")
+        throw IllegalArgumentException("The category ${category.id} named ${category.name}is not present in the dataset")
+    }
+
+    override fun editDatasetName(newName: String): Dataset {
+        return DummyDataset(id, newName, categories)
     }
 }

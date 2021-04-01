@@ -6,10 +6,10 @@ import org.junit.Test
 
 class DummyCategoryTest {
 
-    val spoon1 = DummyCategory("Spoon", null)
-    val spoon2 = DummyCategory("Spoon", null)
-    val spoon3 = DummyCategory("Spoon", null)
-    val knife = DummyCategory("Knife", null)
+    private val spoon1 = DummyCategory("Spoon", "Spoon", null)
+    private val spoon2 = DummyCategory("Spoon", "Spoon", null)
+    private val spoon3 = DummyCategory("Spoon", "Spoon",null)
+    private val knife = DummyCategory("Knife", "Knife",null)
 
 
     @Test

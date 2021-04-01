@@ -9,9 +9,9 @@ import java.util.*
  * a class representing a dummy data set Interface
  */
 class DummyDatabaseService : DatabaseService {
-    private val fork = DummyCategory("Fork", null)
-    private val knife = DummyCategory("Knife", null)
-    private val spoon = DummyCategory("Spoon", null)
+    private val fork = DummyCategory("Fork", "Fork", null)
+    private val knife = DummyCategory("Knife", "Fork", null)
+    private val spoon = DummyCategory("Spoon", "Fork", null)
 
     private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
 
@@ -21,7 +21,7 @@ class DummyDatabaseService : DatabaseService {
 
     private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
 
-    private val datasets: MutableSet<Dataset> = mutableSetOf(DummyDataset("kitchen utensils", categories))
+    private val datasets: MutableSet<Dataset> = mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
 
 
     override suspend fun getPicture(category: Category): CategorizedPicture?{
@@ -29,11 +29,11 @@ class DummyDatabaseService : DatabaseService {
                 " is not present in the dataset")
 
         for (p in pictures)
-            if(p.category == category) return p
+            if (p.category == category) return p
         return null
     }
 
-    override suspend fun putPicture(picture: android.net.Uri, category: Category): CategorizedPicture {
+    override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
         if(!categories.contains(category)) throw IllegalArgumentException("The provided category" +
                 "is not present in the dataset")
 
@@ -43,15 +43,14 @@ class DummyDatabaseService : DatabaseService {
         return addedPicture
     }
 
-    override suspend fun getCategory(categoryName: String): Category? {
-        for(c in categories)
-            if(c.name == categoryName) return c
+    override suspend fun getCategory(categoryId: Any): Category? {
+        for (c in categories)
+            if (c.id == categoryId as String) return c
         return null
     }
 
-
     override suspend fun putCategory(categoryName: String): Category {
-        val category = DummyCategory(categoryName, null)
+        val category = DummyCategory(categoryName, categoryName, null)
         categories.add(category)
         return category
     }
@@ -107,31 +106,31 @@ class DummyDatabaseService : DatabaseService {
     }
 
     override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
-        val dataset = DummyDataset(name, categories)
+        val dataset = DummyDataset(name, name, categories)
         datasets.add(dataset)
         return dataset
     }
 
-    override suspend fun getDataset(name: String): Dataset? {
+    override suspend fun getDataset(id: Any): Dataset? {
         for(d in datasets)
-            if(d.name == name) return d
+            if(d.name == id as String) return d
         return null
     }
 
-    override suspend fun deleteDataset(name: String) {
+    override suspend fun deleteDataset(id: Any) {
         for (d in datasets) {
-            if (d.name == name) {
+            if (d.name == id as String) {
                 datasets.remove(d)
                 return
             }
         }
-        throw IllegalArgumentException("The dataset named $name is not present in the database")
+        throw IllegalArgumentException("The dataset named $id is not present in the database")
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
         for (c in categories) {
             if (c == category) {
-                val newCategory = DummyCategory(c.name, DummyCategorizedPicture(category, picture))
+                val newCategory = DummyCategory(c.name, c.name, DummyCategorizedPicture(category, picture))
                 categories.remove(c)
                 categories.add(newCategory)
                 return
@@ -140,23 +139,7 @@ class DummyDatabaseService : DatabaseService {
         throw IllegalArgumentException("The category name ${category.name} is not present in the database")
     }
 
-    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
-        putRepresentativePicture((picture as DummyCategorizedPicture).picture, picture.category)
-    }
-
-    override fun getDatasetNames(): Set<String> {
-        return datasets.toSet().map {d -> d.name}.toSet()
-    }
-
-    override fun editDatasetName(oldName: String, newName: String) {
-        for (d in datasets) {
-            if (d.name == oldName) {
-                val newDataset = DummyDataset(newName, d.categories)
-                datasets.remove(d)
-                datasets.add(newDataset)
-                return
-            }
-        }
-        throw IllegalArgumentException("The dataset named $oldName is not present in the database")
+    override fun getDatasets(): Set<Dataset> {
+        return datasets
     }
 }

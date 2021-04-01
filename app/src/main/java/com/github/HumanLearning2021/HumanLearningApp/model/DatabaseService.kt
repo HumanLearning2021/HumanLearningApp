@@ -1,16 +1,12 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
-import android.graphics.drawable.Drawable
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategorizedPicture
-import java.io.Serializable
-
-
 /**
  * An interface representing the part of the model interacting with data sets
  */
 interface DatabaseService {
+
     /**
-     * A function to retrieve a picture from the data set given a category
+     * A function to retrieve a picture from the database given a category
      *
      * @param category the category of the image to be retrieved
      * @return a CategorizedPicture from the desired category. Null if no picture of the desired
@@ -30,19 +26,18 @@ interface DatabaseService {
     suspend fun putPicture(picture: android.net.Uri, category: Category): CategorizedPicture
 
     /**
-     * A function to retrieve a category
+     * A function to retrieve a category from the database
      *
-     * @param categoryName the name of the desired category
+     * @param categoryId the id of the desired category
      * @return the desired category if present, null otherwise
      */
-    suspend fun getCategory(categoryName: String): Category?
+    suspend fun getCategory(categoryId: Any): Category?
 
     /**
-     * A function to add a category to the database. If the provided name matches that of category
-     * that is already present, nothing is done.
+     * A function to add a category to the database
      *
-     * @param categoryName the name of the category to add
-     * @return the Category that was inserted, or was already present
+     * @param categoryName the id of the category to add
+     * @return the Category that was inserted
      */
     suspend fun putCategory(categoryName: String): Category
 
@@ -90,6 +85,7 @@ interface DatabaseService {
     /**
      * Creates a dataset and puts it into the database
      *
+     *
      * @param name - the name of the dataset
      * @param categories - the categories of the dataset
      * @return the dataset which was created
@@ -99,18 +95,18 @@ interface DatabaseService {
     /**
      * Gets a dataset from the database
      *
-     * @param name - the name of the desired dataset
+     * @param id - the name of the desired dataset
      * @return the dataset
      */
-    suspend fun getDataset(name: String): Dataset?
+    suspend fun getDataset(id: Any): Dataset?
 
     /**
      * Deletes the specified dataset from the database
      *
-     * @param name - the name of the dataset to delete
-     * @throws IllegalArgumentException if there is no dataset of the specified name in the database
+     * @param id - the name of the dataset to delete
+     * @throws IllegalArgumentException if there is no dataset of the specified id in the database
      */
-    suspend fun deleteDataset(name: String)
+    suspend fun deleteDataset(id: Any)
 
     /**
      * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
@@ -122,26 +118,9 @@ interface DatabaseService {
     suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
 
     /**
-     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
+     * Retrieves all of the available datasets
      *
-     * @param picture - the picture to put as a representative
-     * @throws IllegalArgumentException if the database does not contain the specified category
+     * @return a set containing all off the available datasets
      */
-    suspend fun putRepresentativePicture(picture: CategorizedPicture)
-
-    /**
-     * Retrieves the names of all the datasets available
-     *
-     * @return a set containing the names off all the available datasets
-     */
-    fun getDatasetNames(): Set<String>
-
-    /**
-     * Changes the name of an existing dataset
-     *
-     * @param oldName - the name of the dataset to edit
-     * @param newName - the new name the dataset should take
-     * @throws IllegalArgumentException if there exists no dataset of the specified name
-     */
-    fun editDatasetName(oldName: String, newName: String)
+    fun getDatasets(): Set<Dataset>
 }

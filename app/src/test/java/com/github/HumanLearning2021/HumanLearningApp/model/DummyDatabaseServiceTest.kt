@@ -9,8 +9,6 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -19,10 +17,10 @@ class DummyDatabaseServiceTest {
     val dummyDatabseService2 = DummyDatabaseService()
 
 
-    private val fork = DummyCategory("Fork", null)
-    private val knife = DummyCategory("Knife", null)
-    private val spoon = DummyCategory("Spoon", null)
-    private val table = DummyCategory("Table", null)
+    private val fork = DummyCategory("Fork", "Fork",null)
+    private val knife = DummyCategory("Knife", "Knife",null)
+    private val spoon = DummyCategory("Spoon", "Spoon",null)
+    private val table = DummyCategory("Table", "Table",null)
 
     val categories: Set<Category> = mutableSetOf(fork, knife, spoon)
 
@@ -42,7 +40,7 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test(expected = IllegalArgumentException::class)
     fun getPictureCategoryNotPresentThrows() = runBlockingTest {
-        DummyDatabaseService().getPicture(DummyCategory("Plate", null))
+        DummyDatabaseService().getPicture(DummyCategory("Plate", "Plate",null))
     }
 
     @ExperimentalCoroutinesApi
@@ -80,7 +78,7 @@ class DummyDatabaseServiceTest {
     @Test
     fun getCategoryPresent() = runBlockingTest {
         dummyDatabseService2.putCategory("Table")
-        assertThat(dummyDatabseService2.getCategory("Table"), equalTo(DummyCategory("Table", null)))
+        assertThat(dummyDatabseService2.getCategory("Table"), equalTo(DummyCategory("Table", "Table",null)))
     }
 
     @ExperimentalCoroutinesApi
@@ -92,14 +90,14 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test
     fun putCategoryNotPresent() = runBlockingTest {
-        assertThat(dummyDatabaseService1.putCategory("Table"), equalTo(DummyCategory("Table", null)))
+        assertThat(dummyDatabaseService1.putCategory("Table"), equalTo(DummyCategory("Table", "Table",null)))
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun putCategoryAlreadyPresentChangesNothing() = runBlockingTest {
         dummyDatabaseService1.putCategory("Table")
-        assertThat(dummyDatabaseService1.putCategory("Table"), equalTo(DummyCategory("Table", null)))
+        assertThat(dummyDatabaseService1.putCategory("Table"), equalTo(DummyCategory("Table", "Table",null)))
     }
 
     @ExperimentalCoroutinesApi
@@ -117,7 +115,7 @@ class DummyDatabaseServiceTest {
     fun putDatasetWorks() = runBlockingTest {
         assertThat(
             dummyDatabaseService1.putDataset("Utensils", setOf(knife, spoon)),
-            equalTo(DummyDataset("Utensils", setOf(knife, spoon)))
+            equalTo(DummyDataset("Utensils", "Utensils", setOf(knife, spoon)))
         )
     }
 
