@@ -13,8 +13,8 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class DummyDatabaseServiceTest {
-    val dummyDatabaseService1 = DummyDatabaseService()
-    val dummyDatabseService2 = DummyDatabaseService()
+    private val dummyDatabaseService1 = DummyDatabaseService()
+    private val dummyDatabseService2 = DummyDatabaseService()
 
 
     private val fork = DummyCategory("Fork", "Fork",null)

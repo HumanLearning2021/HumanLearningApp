@@ -124,7 +124,8 @@ class FirestoreDatabaseService(
     }
 
     override suspend fun getCategory(categoryId: Any): Category? {
-        val query = categories.whereEqualTo("id", categoryId).limit(1)
+        //TODO("Update to use id")
+        val query = categories.whereEqualTo("name", categoryId as String).limit(1)
         val cat = query.get().await().toObjects(CategorySchema::class.java).getOrNull(0)
         return cat?.toPublic()
     }

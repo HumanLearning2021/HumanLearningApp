@@ -19,7 +19,7 @@ class DummyUIPresenter(val databaseService: DatabaseService) {
     suspend fun getPicture(categoryName: String): CategorizedPicture? {
         val res: CategorizedPicture?
         try {
-             res = databaseService.getPicture(DummyCategory(categoryName, null))
+             res = databaseService.getPicture(DummyCategory(categoryName, categoryName,null))
         } catch (e: Exception) {
             throw e
         }

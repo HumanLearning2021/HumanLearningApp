@@ -21,9 +21,9 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 @ExperimentalCoroutinesApi
 class DummyUIPresenterTest {
-    private val fork = DummyCategory("Fork", null)
-    private val knife = DummyCategory("Knife", null)
-    private val spoon = DummyCategory("Spoon", null)
+    private val fork = DummyCategory("Fork",  "Fork",null)
+    private val knife = DummyCategory("Knife","Knife", null)
+    private val spoon = DummyCategory("Spoon", "Spoon",null)
 
     private val forkPic = DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork))
     private val knifePic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.knife))

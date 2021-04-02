@@ -24,9 +24,5 @@ interface Dataset: Parcelable {
      *
      * @param newName - the new name the dataset should take
      */
-    fun editDatasetName(newName: String): Dataset
-
-    override fun equals(other: Any?): Boolean {
-        return other is Dataset && other.id == this.id
-    }
+    suspend fun editDatasetName(newName: String): Dataset
 }

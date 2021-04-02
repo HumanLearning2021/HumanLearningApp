@@ -21,7 +21,7 @@ data class DummyDataset(override val id: String, override val name: String, over
         throw IllegalArgumentException("The category ${category.id} named ${category.name}is not present in the dataset")
     }
 
-    override fun editDatasetName(newName: String): Dataset {
+    override suspend fun editDatasetName(newName: String): Dataset {
         return DummyDataset(id, newName, categories)
     }
 }

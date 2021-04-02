@@ -10,8 +10,8 @@ import java.util.*
  */
 class DummyDatabaseService : DatabaseService {
     private val fork = DummyCategory("Fork", "Fork", null)
-    private val knife = DummyCategory("Knife", "Fork", null)
-    private val spoon = DummyCategory("Spoon", "Fork", null)
+    private val knife = DummyCategory("Knife", "Knife", null)
+    private val spoon = DummyCategory("Spoon", "Spoon", null)
 
     private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
 
