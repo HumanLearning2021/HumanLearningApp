@@ -6,23 +6,21 @@ import java.lang.IllegalArgumentException
 import java.util.*
 
 /**
- * a class representing a dummy data set Interface
+ * A class representing a dummy data set Interface
+ * Categories are uniquely defined by their name
  */
 class DummyDatabaseService : DatabaseService {
     private val fork = DummyCategory("Fork", "Fork", null)
     private val knife = DummyCategory("Knife", "Knife", null)
     private val spoon = DummyCategory("Spoon", "Spoon", null)
 
-    private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
-
     private val forkPic = DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.fork))
     private val knifePic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife))
     private val spoonPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon))
 
     private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
-
+    private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
     private val datasets: MutableSet<Dataset> = mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
-
 
     override suspend fun getPicture(category: Category): CategorizedPicture?{
         if (!categories.contains(category)) throw IllegalArgumentException("The provided category" +
@@ -59,11 +57,10 @@ class DummyDatabaseService : DatabaseService {
         return Collections.unmodifiableSet(categories)
     }
 
-    override suspend fun getRepresentativePicture(category: Category): CategorizedPicture? {
-        return category.representativePicture
-    }
-
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
+        if (!categories.contains(category)) {
+            throw IllegalArgumentException("The category ${category.name} is not present in the database")
+        }
         val res: MutableSet<CategorizedPicture> = mutableSetOf()
         for (p in pictures) {
             if (p.category == category) {
@@ -74,13 +71,8 @@ class DummyDatabaseService : DatabaseService {
     }
 
     override suspend fun removeCategory(category: Category) {
-        val found = false
-        for (c in categories) {
-            if (c == category) {
-                categories.remove(c)
-            }
-        }
-        if (found) {
+        if (categories.contains(category)) {
+            categories.remove(category)
             for (d in datasets) {
                 if (d.categories.contains(category)) {
                     val newDataset = d.removeCategory(category)
@@ -89,6 +81,7 @@ class DummyDatabaseService : DatabaseService {
                         add(newDataset)
                     }
                 }
+
             }
         } else {
             throw IllegalArgumentException("The category name ${category.name} is not present in the database")
@@ -138,6 +131,7 @@ class DummyDatabaseService : DatabaseService {
         }
         throw IllegalArgumentException("The category name ${category.name} is not present in the database")
     }
+
 
     override fun getDatasets(): Set<Dataset> {
         return datasets

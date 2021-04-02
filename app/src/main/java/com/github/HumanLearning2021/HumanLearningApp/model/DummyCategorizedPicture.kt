@@ -3,8 +3,6 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Parcel
-import android.os.Parcelable
 import android.widget.ImageView
 import kotlinx.parcelize.Parcelize
 import java.lang.IllegalArgumentException
