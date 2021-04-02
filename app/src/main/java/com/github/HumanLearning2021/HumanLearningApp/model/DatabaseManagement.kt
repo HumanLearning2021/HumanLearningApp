@@ -57,15 +57,6 @@ interface DatabaseManagement {
     suspend fun getCategories(): Set<Category>
 
     /**
-     * Retrieves the representative picture of the specified category
-     *
-     * @param category - the category whose representative picture we want to retrieve
-     * @return the representative picture associated to the specified category
-     * @throws IllegalArgumentException if the underlying database does not contain the specified category
-     */
-    suspend fun getRepresentativePicture(category: Category): CategorizedPicture?
-
-    /**
      * Retrieves all the pictures categorized with the specified category
      *
      * @param category - the category whose pictures we want to retrieve
@@ -113,7 +104,7 @@ interface DatabaseManagement {
      * @param name - the name of the desired dataset
      * @return all the matching datasets
      */
-    suspend fun getDatasetByName(datasetName: String): Collection<Dataset>?
+    suspend fun getDatasetByName(datasetName: String): Collection<Dataset>
 
     /**
      * Deletes the specified dataset from the underlying database

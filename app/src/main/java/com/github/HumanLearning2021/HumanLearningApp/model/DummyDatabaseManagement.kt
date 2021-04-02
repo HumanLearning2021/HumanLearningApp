@@ -54,14 +54,6 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService): D
         return databaseService.getCategories()
     }
 
-    override suspend fun getRepresentativePicture(category: Category): CategorizedPicture? {
-        return try {
-            getRepresentativePicture(category)
-        } catch (e: IllegalArgumentException) {
-            throw e
-        }
-    }
-
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
         return try {
             databaseService.getAllPictures(category)
@@ -94,7 +86,7 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService): D
         return databaseService.getDataset(id)
     }
 
-    override suspend fun getDatasetByName(datasetName: String): Collection<Dataset>? {
+    override suspend fun getDatasetByName(datasetName: String): Collection<Dataset> {
         val datasets = databaseService.getDatasets()
         val res: MutableSet<Dataset> = mutableSetOf()
         for (d in datasets) {

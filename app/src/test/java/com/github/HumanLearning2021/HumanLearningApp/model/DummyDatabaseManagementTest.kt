@@ -3,14 +3,10 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
-import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -51,9 +47,8 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
-        val mockTestDatabaseManagement = mock(DummyDatabaseManagement::class.java)
-        val newCat = mockTestDatabaseManagement.putCategory("Table")
-        val newPic = mockTestDatabaseManagement.putPicture(knifeUri, newCat)
+        val newCat = testDatabaseManagement.putCategory("Table")
+        val newPic = testDatabaseManagement.putPicture(knifeUri, newCat)
         assert(testDatabaseManagement.getPicture(newCat) != null)
     }
 
@@ -90,9 +85,8 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun putCategoryNotPresent() = runBlockingTest {
-        val mockTestDatabaseManagement = mock(DummyDatabaseManagement::class.java)
-        val cat = mockTestDatabaseManagement.putCategory("Table")
-        assert(mockTestDatabaseManagement.getCategories().contains(cat))
+        val cat = testDatabaseManagement.putCategory("Table")
+        assert(testDatabaseManagement.getCategories().contains(cat))
     }
 
     @ExperimentalCoroutinesApi
@@ -105,18 +99,6 @@ class DummyDatabaseManagementTest {
     @Test
     fun getCategoriesWorks() = runBlockingTest {
         assert(testDatabaseManagement.getCategories().containsAll(setOf(fork, spoon, knife)))
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test(expected = java.lang.IllegalArgumentException::class)
-    fun getRepresentativePictureThrowsIllegalArgumentException() = runBlockingTest {
-        testDatabaseManagement.getRepresentativePicture(table)
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test
-    fun getRepresentativePictureWorks() = runBlockingTest {
-        assert(testDatabaseManagement.getRepresentativePicture(fork) == null)
     }
 
     @ExperimentalCoroutinesApi
@@ -175,7 +157,8 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     fun getDatasetByNameWorks() = runBlockingTest {
         val ds = testDatabaseManagement.putDataset("ds", setOf())
-        assert(testDatabaseManagement.getDatasetById(ds.name) == ds)
+        val res = testDatabaseManagement.getDatasetByName(ds.name)
+        assert(res.contains(ds) && res.size == 1)
     }
 
     @ExperimentalCoroutinesApi
@@ -187,10 +170,8 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun deleteDatasetWorks() = runBlockingTest {
-        val mockedTestDatabaseManagement = mock(DummyDatabaseManagement::class.java)
         val dummyDatabaseService = DummyDatabaseService()
-        Mockito.`when`(mockedTestDatabaseManagement.deleteDataset("kitchen utensils")).then{ runBlocking{dummyDatabaseService.deleteDataset("kitchen utensils")}}
-        mockedTestDatabaseManagement.deleteDataset("kitchen utensils")
+        testDatabaseManagement.deleteDataset("kitchen utensils")
         assert(!dummyDatabaseService.getDatasets().contains("kitchen utensils"))
     }
 
@@ -204,8 +185,9 @@ class DummyDatabaseManagementTest {
     @Test
     fun putRepresentativePictureWorks() = runBlockingTest {
         testDatabaseManagement.putRepresentativePicture(Uri.EMPTY, fork)
-        assert(testDatabaseManagement.getRepresentativePicture(fork) != null)
+        assert(testDatabaseManagement.getCategoryById(fork.id)!!.representativePicture != null)
     }
+
     @ExperimentalCoroutinesApi
     @Test(expected = java.lang.IllegalArgumentException::class)
     fun putRepresentativePictureOverloadThrowsExpectedException() = runBlockingTest {
@@ -215,8 +197,8 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun putRepresentativePictureOverloadWorks() = runBlockingTest {
-        testDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture(table, Uri.EMPTY))
-        assert(testDatabaseManagement.getRepresentativePicture(fork) != null)
+        testDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture(fork, Uri.EMPTY))
+        assert(testDatabaseManagement.getCategoryById(fork.id)!!.representativePicture != null)
     }
 
     @ExperimentalCoroutinesApi
