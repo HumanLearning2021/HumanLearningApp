@@ -3,16 +3,25 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class DummyDatabaseManagementTest {
 
-    private val testDatabaseManagement = DummyDatabaseManagement
+    var testDatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+
+    @Before
+    fun bef() {
+        testDatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    }
 
     private val fork = DummyCategory("Fork", "Fork",null)
     private val knife = DummyCategory("Knife", "Knife",null)
@@ -132,9 +141,8 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun removeCategoryWorks() = runBlockingTest {
-        val mockedTestDatabaseManagement = mock(DummyDatabaseManagement::class.java)
-        mockedTestDatabaseManagement.removeCategory(fork)
-        assert(!mockedTestDatabaseManagement.getCategories().contains(fork))
+        testDatabaseManagement.removeCategory(fork)
+        assert(!testDatabaseManagement.getCategories().contains(fork))
     }
 
     @ExperimentalCoroutinesApi
@@ -146,31 +154,27 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun removePictureRemovesPicture() = runBlockingTest {
-        val mockedTestDatabaseManagement = mock(DummyDatabaseManagement::class.java)
-        mockedTestDatabaseManagement.removePicture(forkPic)
-        assert(mockedTestDatabaseManagement.getAllPictures(fork).isEmpty())
+        testDatabaseManagement.removePicture(forkPic)
+        assert(testDatabaseManagement.getAllPictures(fork).isEmpty())
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun putDatasetWorks() = runBlockingTest {
-        val mockedTestDatabaseManagement = mock(DummyDatabaseManagement::class.java)
-        val newDs = mockedTestDatabaseManagement.putDataset("NewDs", setOf())
-        assert(mockedTestDatabaseManagement.getDatasetById(newDs.id) == newDs)
+        val newDs = testDatabaseManagement.putDataset("NewDs", setOf())
+        assert(testDatabaseManagement.getDatasetById(newDs.id) == newDs)
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun getDatasetByIdWorks() = runBlockingTest {
-        val mockedTestDatabaseManagement = mock(DummyDatabaseManagement::class.java)
-        val ds = mockedTestDatabaseManagement.putDataset("ds", setOf())
+        val ds = testDatabaseManagement.putDataset("ds", setOf())
         assert(testDatabaseManagement.getDatasetById(ds.id) == ds)
     }
 
     @ExperimentalCoroutinesApi
     fun getDatasetByNameWorks() = runBlockingTest {
-        val mockedTestDatabaseManagement = mock(DummyDatabaseManagement::class.java)
-        val ds = mockedTestDatabaseManagement.putDataset("ds", setOf())
+        val ds = testDatabaseManagement.putDataset("ds", setOf())
         assert(testDatabaseManagement.getDatasetById(ds.name) == ds)
     }
 
@@ -184,9 +188,10 @@ class DummyDatabaseManagementTest {
     @Test
     fun deleteDatasetWorks() = runBlockingTest {
         val mockedTestDatabaseManagement = mock(DummyDatabaseManagement::class.java)
-        val ds = mockedTestDatabaseManagement.putDataset("someDs", setOf())
-        mockedTestDatabaseManagement.deleteDataset(ds.id)
-        assert(!mockedTestDatabaseManagement.getDatasets().contains(ds))
+        val dummyDatabaseService = DummyDatabaseService()
+        Mockito.`when`(mockedTestDatabaseManagement.deleteDataset("kitchen utensils")).then{ runBlocking{dummyDatabaseService.deleteDataset("kitchen utensils")}}
+        mockedTestDatabaseManagement.deleteDataset("kitchen utensils")
+        assert(!dummyDatabaseService.getDatasets().contains("kitchen utensils"))
     }
 
     @ExperimentalCoroutinesApi
@@ -198,9 +203,8 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun putRepresentativePictureWorks() = runBlockingTest {
-        val mockedTestDatabaseManagement = mock(DummyDatabaseManagement::class.java)
-        mockedTestDatabaseManagement.putRepresentativePicture(Uri.EMPTY, fork)
-        assert(mockedTestDatabaseManagement.getRepresentativePicture(fork) != null)
+        testDatabaseManagement.putRepresentativePicture(Uri.EMPTY, fork)
+        assert(testDatabaseManagement.getRepresentativePicture(fork) != null)
     }
     @ExperimentalCoroutinesApi
     @Test(expected = java.lang.IllegalArgumentException::class)
@@ -211,9 +215,8 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun putRepresentativePictureOverloadWorks() = runBlockingTest {
-        val mockedTestDatabaseManagement = mock(DummyDatabaseManagement::class.java)
-        mockedTestDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture(table, Uri.EMPTY))
-        assert(mockedTestDatabaseManagement.getRepresentativePicture(fork) != null)
+        testDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture(table, Uri.EMPTY))
+        assert(testDatabaseManagement.getRepresentativePicture(fork) != null)
     }
 
     @ExperimentalCoroutinesApi
