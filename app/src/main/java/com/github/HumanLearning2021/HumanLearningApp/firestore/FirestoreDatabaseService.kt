@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.net.Uri
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
@@ -39,7 +40,7 @@ class FirestoreDatabaseService(
             this.name = name
         }
 
-        fun toPublic() = FirestoreCategory(self.path, name)
+        fun toPublic() = FirestoreCategory(self.path, name, name,null)
     }
 
     private class PictureSchema() {
@@ -70,11 +71,36 @@ class FirestoreDatabaseService(
         }
     }
 
+    override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeCategory(category: Category) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removePicture(picture: CategorizedPicture) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getDataset(name: String): Dataset? {
+    override suspend fun getDataset(id: Any): Dataset? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteDataset(id: Any) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
+        TODO("Not yet implemented")
+    }
+
+
+    override fun getDatasets(): Set<Dataset> {
         TODO("Not yet implemented")
     }
 
@@ -92,11 +118,11 @@ class FirestoreDatabaseService(
         val data = PictureSchema(db.document(category.path), "gs://${ref.bucket}/${ref.path}")
         val documentRef = pictures.add(data).await()
         return documentRef.get().await().toObject(PictureSchema::class.java)!!.toPublic()
-
     }
 
-    override suspend fun getCategory(categoryName: String): FirestoreCategory? {
-        val query = categories.whereEqualTo("name", categoryName).limit(1)
+    override suspend fun getCategory(categoryId: Any): Category? {
+        //TODO("Update to use id")
+        val query = categories.whereEqualTo("name", categoryId as String).limit(1)
         val cat = query.get().await().toObjects(CategorySchema::class.java).getOrNull(0)
         return cat?.toPublic()
     }

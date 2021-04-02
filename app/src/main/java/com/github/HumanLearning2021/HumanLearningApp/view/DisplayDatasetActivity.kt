@@ -4,6 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.GridView
+import android.widget.ImageView
+import android.widget.TextView
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -20,9 +28,9 @@ import java.io.Serializable
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
-    private val fork = DummyCategory("Fork")
-    private val knife = DummyCategory("Knife")
-    private val spoon = DummyCategory("Spoon")
+    private val fork = DummyCategory("Fork", "Fork",null)
+    private val knife = DummyCategory("Knife","Knife",null)
+    private val spoon = DummyCategory("Spoon","Spoon", null)
 
     private val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
 
@@ -46,7 +54,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 val intent =
                     Intent(this@DisplayDatasetActivity, DisplayImageSetActivity::class.java)
                 //TODO: All the images that belong to the specified category will be sent to DisplayImageSetActivity
-                intent.putExtra("display_image_set_images", (datasetImagesList[i]) as Serializable)
+                intent.putExtra("display_image_set_images", (datasetImagesList[i]) as Parcelable)
                 startActivity(intent)
             }
         }

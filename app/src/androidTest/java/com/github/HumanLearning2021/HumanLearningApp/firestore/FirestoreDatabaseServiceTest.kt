@@ -63,5 +63,15 @@ class FirestoreDatabaseServiceTest : TestCase() {
         }
         assertThat(pic, hasCategory(equalTo(cat)))
     }
+
+    //TODO()
+    fun test_putDataset() = runBlocking {
+        assert(true)
+    }
+
+    //TODO()
+    fun test_getDataset() = runBlocking {
+        assert(true)
+    }
 }
 

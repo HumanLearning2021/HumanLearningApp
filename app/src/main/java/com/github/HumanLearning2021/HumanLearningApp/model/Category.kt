@@ -1,10 +1,13 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
-import java.io.Serializable
+import android.os.Parcelable
 
 /**
  * An interface representing a category to which a CategorizedPicture can belong
+ * id is used to uniquely identify a Category
  */
-interface Category : Serializable{
-    val name:String
+interface Category : Parcelable {
+    val id: Any
+    val name: String
+    val representativePicture: CategorizedPicture?
 }

@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
 import android.content.Intent
+import android.os.Parcelable
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -40,7 +41,7 @@ class DisplayImageSetActivityTest {
             categoryImagesList.add(dummyPresenter.getPicture(categories[0].name)!!)
         }
         val intent = Intent()
-        intent.putExtra("display_image_set_images", (categoryImagesList[0]) as Serializable)
+        intent.putExtra("display_image_set_images", (categoryImagesList[0]) as Parcelable)
         activityRuleIntent.launchActivity(intent)
     }
 
@@ -71,7 +72,7 @@ class DisplayImageSetActivityTest {
                 IntentMatchers.hasComponent(DisplayImageActivity::class.java.name),
                 IntentMatchers.hasExtra(
                     "display_image_image",
-                    (categoryImagesList[0]) as Serializable
+                    (categoryImagesList[0]) as Parcelable
                 )
             )
         )

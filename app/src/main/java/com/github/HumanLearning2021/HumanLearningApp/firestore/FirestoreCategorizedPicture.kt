@@ -7,12 +7,15 @@ import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class FirestoreCategorizedPicture internal constructor(
     override val path: String,
     override val category: Category,
     val url: String,
 ) : CategorizedPicture, FirestoreDocument {
+
     override fun displayOn(activity: Activity, imageView: ImageView) {
         Glide.with(activity)
             .load(Firebase.storage.getReferenceFromUrl(url))

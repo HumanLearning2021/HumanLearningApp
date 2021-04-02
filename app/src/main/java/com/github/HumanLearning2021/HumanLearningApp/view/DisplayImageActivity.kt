@@ -14,7 +14,7 @@ class DisplayImageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_display_image)
 
         val image: CategorizedPicture =
-            intent.getSerializableExtra("display_image_image") as CategorizedPicture
+            intent.getParcelableExtra("display_image_image")!!
 
         findViewById<TextView>(R.id.display_image_viewCategory).text = image.category.name
         image.displayOn(this, findViewById(R.id.display_image_viewImage))

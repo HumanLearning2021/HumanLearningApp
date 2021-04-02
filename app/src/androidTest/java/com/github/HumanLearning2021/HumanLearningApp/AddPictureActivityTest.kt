@@ -15,9 +15,11 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.PermissionGranter
+import kotlinx.parcelize.Parcelize
 import org.hamcrest.Matchers.not
 import org.junit.*
 import org.junit.runner.RunWith
@@ -31,15 +33,18 @@ class AddPictureActivityTest {
     private fun grantCameraPermission() {
         PermissionGranter.allowPermissionOneTime(Manifest.permission.CAMERA)
     }
-    
-    private class testCat(override val name: String) : Category
+
+    @Parcelize
+    private class testCat(override val id: String, override val name: String,
+                          override val representativePicture: CategorizedPicture?
+    ) : Category
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
         Intent(
             ApplicationProvider.getApplicationContext(),
             AddPictureActivity::class.java
-        ).putExtra("categories", arrayOf(testCat("cat1"), testCat("cat2"), testCat("cat3")))
+        ).putExtra("categories", arrayListOf(testCat("cat1", "cat1",null), testCat("cat2", "cat2",null), testCat("cat3", "cat3",null)))
     )
 
     @Before
@@ -205,7 +210,7 @@ class AddPictureActivityTest {
     @Test
     fun activityContractCorrectlyParsesResult() {
         val bundle = Bundle().apply {
-            putSerializable("category", testCat("some_category"))
+            putParcelable("category", testCat("some_category", "some_category",null))
             putParcelable("image", Uri.EMPTY)
         }
         val intent = Intent().putExtra("result", bundle)
