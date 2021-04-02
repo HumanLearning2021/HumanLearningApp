@@ -12,7 +12,7 @@ class FirestoreDataset(override val id: String, override val name: String, overr
         TODO("Not yet implemented")
     }
 
-    override fun editDatasetName(newName: String): FirestoreDataset {
+    override suspend fun editDatasetName(newName: String): Dataset {
         TODO("Not yet implemented")
     }
 }

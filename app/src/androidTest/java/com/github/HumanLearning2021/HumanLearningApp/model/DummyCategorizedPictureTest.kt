@@ -6,7 +6,6 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.get
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -16,7 +15,6 @@ import kotlinx.parcelize.Parcelize
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.junit.runner.JUnitCore
 import org.junit.runner.RunWith
 import java.lang.IllegalArgumentException
 
@@ -31,6 +29,7 @@ class DummyCategorizedPictureTest {
 
     @Parcelize
     class testCat(
+        override val id: String,
         override val name: String,
         override val representativePicture: CategorizedPicture?
     ) : Category
@@ -38,7 +37,7 @@ class DummyCategorizedPictureTest {
     @Test
     fun displayOnWorksAsExpected() {
         val pictureUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork)
-        val dummyCategory = DummyCategory("Fork", null)
+        val dummyCategory = DummyCategory("Fork", "Fork",null)
         val dummyCategorizedPicture = DummyCategorizedPicture(dummyCategory, pictureUri)
         val drawable = AppCompatResources.getDrawable(ApplicationProvider.getApplicationContext(), R.drawable.fork)
         val imageView = ImageView(ApplicationProvider.getApplicationContext())
@@ -59,7 +58,7 @@ class DummyCategorizedPictureTest {
     @Test
     fun displayOnThrowsExpectedException() {
         val pictureUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork)
-        val testCategory = testCat("Fork", null)
+        val testCategory = testCat("Fork","Fork", null)
         val dummyCategorizedPicture = DummyCategorizedPicture(testCategory, pictureUri)
         activityScenario.scenario.onActivity { activity ->
             try {

@@ -229,28 +229,16 @@ class DummyDatabaseServiceTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun getDatasetNamesReturnsEmptySetIfNoDatasetsPresent() = runBlockingTest {
-        val dummyDatabaseServiceMock = mock(DummyDatabaseService::class.java)
-        assert(dummyDatabaseServiceMock.getDatasetNames().isEmpty())
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test
-    fun getDatasetNamesReturnsAllNames() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        dummyDatabaseService.apply {
-            putDataset("Fork", setOf())
-            putDataset("Spoon", setOf())
-        }
-        val dNames = dummyDatabaseService.getDatasetNames()
-        assert(dNames.containsAll(setOf("Fork", "Spoon")))
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test
     fun getDatasetReturnsNullIfThereIsNone() = runBlockingTest {
         val dummyDatabaseService = DummyDatabaseService()
         assert(dummyDatabaseService.getDataset("Fork") == null)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun getDatasetsWorks() = runBlockingTest {
+        val dummyDatabaseService = DummyDatabaseService()
+        assert(dummyDatabaseService.getDatasets().contains(DummyDataset("kitchen utensils", "kitchen utensils", dummyDatabaseService.getCategories())))
     }
 }
 
