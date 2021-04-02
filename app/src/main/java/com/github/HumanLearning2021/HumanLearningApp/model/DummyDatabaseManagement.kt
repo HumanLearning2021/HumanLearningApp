@@ -2,26 +2,36 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
 import com.google.common.collect.ImmutableSet
+import java.lang.IllegalArgumentException
 
 /**
  * Dummy implementation of a database manager
+ * Dataset & category names and ids are equivalent
  */
-class DummyDatabaseManagement: DatabaseManagement {
+object DummyDatabaseManagement: DatabaseManagement {
     private val databaseService: DummyDatabaseService = DummyDatabaseService()
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
-        return databaseService.getPicture(category)
+        return try {
+            databaseService.getPicture(category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
-       return databaseService.putPicture(picture, category)
+       return try {
+           databaseService.putPicture(picture, category)
+       } catch (e: IllegalArgumentException) {
+           throw e
+       }
     }
 
-    override suspend fun getCategory(categoryId: Any): Category? {
+    override suspend fun getCategoryById(categoryId: Any): Category? {
         return databaseService.getCategory(categoryId)
     }
 
-    override suspend fun getCategory(categoryName: String): Collection<Category> {
+    override suspend fun getCategoryByName(categoryName: String): Collection<Category> {
         val categories = databaseService.getCategories()
         val res: MutableSet<Category> = mutableSetOf()
         for (c in categories) {
@@ -41,30 +51,46 @@ class DummyDatabaseManagement: DatabaseManagement {
     }
 
     override suspend fun getRepresentativePicture(category: Category): CategorizedPicture? {
-        return getRepresentativePicture(category)
+        return try {
+            getRepresentativePicture(category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
     }
 
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
-        return databaseService.getAllPictures(category)
+        return try {
+            databaseService.getAllPictures(category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
     }
 
     override suspend fun removeCategory(category: Category) {
-        databaseService.removeCategory(category)
+        try {
+            databaseService.removeCategory(category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
     }
 
     override suspend fun removePicture(picture: CategorizedPicture) {
-        databaseService.removePicture(picture)
+        try {
+            databaseService.removePicture(picture)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
     }
 
     override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
         return databaseService.putDataset(name, categories)
     }
 
-    override suspend fun getDataset(id: Any): Dataset? {
+    override suspend fun getDatasetById(id: Any): Dataset? {
         return databaseService.getDataset(id)
     }
 
-    override suspend fun getDataset(datasetName: String): Collection<Dataset>? {
+    override suspend fun getDatasetByName(datasetName: String): Collection<Dataset>? {
         val datasets = databaseService.getDatasets()
         val res: MutableSet<Dataset> = mutableSetOf()
         for (d in datasets) {
@@ -76,19 +102,31 @@ class DummyDatabaseManagement: DatabaseManagement {
     }
 
     override suspend fun deleteDataset(id: Any) {
-        databaseService.deleteDataset(id)
+        try {
+            databaseService.deleteDataset(id)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
-        databaseService.putRepresentativePicture(picture, category)
+        try {
+            databaseService.putRepresentativePicture(picture, category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
+    }
+
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+        try {
+            databaseService.putRepresentativePicture((picture as DummyCategorizedPicture).picture, picture.category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
     }
 
     override suspend fun getDatasets(): Set<Dataset> {
         return databaseService.getDatasets()
-    }
-
-    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
-        databaseService.putRepresentativePicture((picture as DummyCategorizedPicture).picture, picture.category)
     }
 
     override suspend fun getDatasetNames(): Collection<String> {

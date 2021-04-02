@@ -11,7 +11,7 @@ interface DatabaseManagement {
      * @param category the category of the image to be retrieved
      * @return a CategorizedPicture from the desired category. Null if no picture of the desired
      * category is present in the underlying database.
-     * @throws IllegalArgumentException if the provided category is not present in the underlying
+     * @throws IllegalArgumentException if the provided category is not present in the underlying database
      */
     suspend fun getPicture(category: Category): CategorizedPicture?
 
@@ -31,7 +31,7 @@ interface DatabaseManagement {
      * @param categoryId the id of the desired category
      * @return the desired category if present, null otherwise
      */
-    suspend fun getCategory(categoryId: Any): Category?
+    suspend fun getCategoryById(categoryId: Any): Category?
 
     /**
      * A function to retrieve a category from the underlying database
@@ -39,7 +39,7 @@ interface DatabaseManagement {
      * @param categoryName the name of the desired category
      * @return the categories of the specified name, can be empty
      */
-    suspend fun getCategory(categoryName: String): Collection<Category>
+    suspend fun getCategoryByName(categoryName: String): Collection<Category>
 
     /**
      * A function to add a category to the underlying database
@@ -96,7 +96,6 @@ interface DatabaseManagement {
      * @param name - the name of the dataset
      * @param categories - the categories of the dataset
      * @return the dataset which was created
-     * @throws IllegalArgumentException if there is already a dataset with this id in the underlying database
      */
     suspend fun putDataset(name: String, categories: Set<Category>): Dataset
 
@@ -106,7 +105,7 @@ interface DatabaseManagement {
      * @param id - the name of the desired dataset
      * @return the dataset
      */
-    suspend fun getDataset(id: Any): Dataset?
+    suspend fun getDatasetById(id: Any): Dataset?
 
     /**
      * Get the dataset of the specified name from the underlying database
@@ -114,7 +113,7 @@ interface DatabaseManagement {
      * @param name - the name of the desired dataset
      * @return all the matching datasets
      */
-    suspend fun getDataset(datasetName: String): Collection<Dataset>?
+    suspend fun getDatasetByName(datasetName: String): Collection<Dataset>?
 
     /**
      * Deletes the specified dataset from the underlying database
