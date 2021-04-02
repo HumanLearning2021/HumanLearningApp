@@ -117,7 +117,7 @@ class DummyDatabaseService : DatabaseService {
                 return
             }
         }
-        throw IllegalArgumentException("The dataset named $id is not present in the database")
+        throw IllegalArgumentException("The dataset with id $id is not present in the database")
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
