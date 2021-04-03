@@ -1,72 +1,71 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.fragments
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import kotlinx.coroutines.launch
 
 /**
  * A fragment displaying a list of datasets.
  */
-class DatasetListFragment : Fragment(), DatasetListRecyclerViewAdapter.OnItemClickListener {
+class DatasetListFragment : Fragment() {
 
     private val mutableSelectedDataset = MutableLiveData<Dataset>()
-    val selectedItem: LiveData<Dataset> get() = mutableSelectedDataset
 
+    /**
+     * LiveData representing the Dataset that has been clicked last
+     * Add yourself as observer to get notified when the value changes
+     * (use `observe` method of LiveData)
+     */
+    val selectedDataset: LiveData<Dataset> get() = mutableSelectedDataset
 
-    private var columnCount = 1
+    private val mutableDatasetList = MutableLiveData<List<Dataset>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
+        // TODO replace with real database
+        val db = DummyDatabaseManagement.staticDummyDatabaseManagement
+        lifecycleScope.launch {
+            mutableDatasetList.value = db.getDatasets().toList()
         }
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_dataset_list, container, false)
 
-        // Set the adapter
         if (view is RecyclerView) {
             with(view) {
-                // this creates a vertical scrolling list
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
+                layoutManager = LinearLayoutManager(context)
+                adapter = activity?.let { fragActivity ->
+                    DatasetListRecyclerViewAdapter(
+                        lifecycleScope = lifecycleScope,
+                        hostActivity = fragActivity
+                    ) {
+                        mutableSelectedDataset.value = it
+                    }
                 }
-                adapter = DatasetListRecyclerViewAdapter(listener = this@DatasetListFragment)
-
+            }
+            // allows RecyclerView to be updated when the dataset list has been loaded
+            mutableDatasetList.observe(viewLifecycleOwner) {
+                Log.d("DatasetListFragment", "new ds : $it")
+                view.adapter?.notifyDataSetChanged()
             }
         }
         return view
-    }
-
-
-    companion object {
-
-        // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
-
-    }
-
-    override fun onItemClick(position: Int) {
-        // link with the right activities later
-        val intentOnClick = Intent(this.context, DataCreationActivity::class.java)
-        startActivity(intentOnClick)
-
     }
 }

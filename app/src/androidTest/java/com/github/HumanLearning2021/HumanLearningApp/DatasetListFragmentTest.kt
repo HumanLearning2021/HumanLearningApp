@@ -1,74 +1,67 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
-import android.content.Intent
-import androidx.test.core.app.ApplicationProvider
+import androidx.fragment.app.testing.FragmentScenario
+import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.fragment.app.testing.withFragment
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListFragment
 import com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListRecyclerViewAdapter
-import org.junit.After
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
 class DatasetListFragmentTest {
-
-    @get:Rule
-    val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
-        Intent(
-            ApplicationProvider.getApplicationContext(),
-            DataOverviewActivity::class.java
-        )
-    )
+    private lateinit var dummyDatasets: Set<Dataset>
+    private lateinit var scenario: FragmentScenario<DatasetListFragment>
 
     @Before
     fun setUp() {
-        Intents.init()
-        val delayBeforeTestStart: Long = 5000
+        runBlocking {
+            dummyDatasets = DummyDatabaseManagement.staticDummyDatabaseManagement.getDatasets()
+        }
+
+        scenario = launchFragmentInContainer()
+
+        val delayBeforeTestStart: Long = 1000
         TestUtils.waitFor(delayBeforeTestStart)
-    }
-
-    @After
-    fun cleanUp() {
-        Intents.release()
-        activityScenarioRule.scenario.close()
-    }
-
-    @Test
-    fun test_isListFragmentVisible_onAppLaunch() {
-        onView(withId(R.id.dataOverview_fragment)).check(matches(isDisplayed()))
-
     }
 
     @Test
     fun listItemInFragmentAreClickable() {
-        onView(withId(R.id.dataOverview_fragment))
-            .perform(actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ViewHolder>(0, click()))
-
-        // Confirm
-        Intents.intended(IntentMatchers.hasComponent(DataCreationActivity::class.java.name))
+        scenario?.withFragment {
+            this.selectedDataset.observe(this) {
+                // tests that the clicked dataset is in the dummy datasets
+                assert(dummyDatasets!!.contains(it))
+            }
+        }
+        onView(withId(R.id.DatasetList_list))
+            .perform(
+                actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
+                    0,
+                    click()
+                )
+            )
     }
 
     @Test
     fun fragmentHasChildrenViews() {
-        onView(withId(R.id.dataOverview_fragment)).check(
+        onView(withId(R.id.DatasetList_list)).check(
             matches(
-                ViewMatchers.hasChildCount(1)
+                ViewMatchers.hasChildCount(dummyDatasets!!.size)
             )
         )
-
     }
 
-
+    // TODO test that category representative are correctly displayed on each item
 }

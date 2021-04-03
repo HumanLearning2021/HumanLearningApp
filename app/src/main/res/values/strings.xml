@@ -26,7 +26,6 @@
     <string name="learning_settings_tvLearningMode">LEARNING MODE</string>
 
 
-
     <string name="main_btLearning">LEARNING</string>
     <string name="main_btDisplayDataset">DISPLAY DATASET</string>
     <string name="main_btAddImage">ADD IMAGE TO THE DATASET</string>
@@ -42,4 +41,7 @@
 
     <string name="SignInFragment_loginStatusSuccessMessage">Welcome %1$s</string>
     <string name="SignInFragment_loginStatusDefaultMessage">Not logged in</string>
+
+    <string name="DatasetList_default_ds_name">Dataset name</string>
+    <string name="DatasetList_im_content_description">Category representative of the dataset</string>
 </resources>
