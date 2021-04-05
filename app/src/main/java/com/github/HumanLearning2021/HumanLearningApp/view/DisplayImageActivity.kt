@@ -42,20 +42,28 @@ class DisplayImageActivity : AppCompatActivity() {
         Toast.makeText(this, getText(R.string.picturehasbeenremoved), Toast.LENGTH_SHORT)
             .show()
         if(noMorePicturesInThisCategory){
-            lifecycleScope.launch {
-                staticDBManagement.removeCategory(picture.category)
-            }
-            val intent = Intent(this, DisplayDatasetActivity::class.java)
-            intent.putExtra("dataset_id", datasetId)
-            startActivity(intent)
+            launchDisplayDatasetActivity()
         } else {
-            val intent = Intent(this, DisplayImageSetActivity::class.java)
-            intent.putExtra(
-                "category_of_pictures",
-                picture.category
-            )
-            intent.putExtra("dataset_id", datasetId)
-            startActivity(intent)
+            launchDisplayImageSetActivity()
         }
+    }
+
+    private fun launchDisplayDatasetActivity() {
+        lifecycleScope.launch {
+            staticDBManagement.removeCategory(picture.category)
+        }
+        val intent = Intent(this, DisplayDatasetActivity::class.java)
+        intent.putExtra("dataset_id", datasetId)
+        startActivity(intent)
+    }
+
+    private fun launchDisplayImageSetActivity(){
+        val intent = Intent(this, DisplayImageSetActivity::class.java)
+        intent.putExtra(
+            "category_of_pictures",
+            picture.category
+        )
+        intent.putExtra("dataset_id", datasetId)
+        startActivity(intent)
     }
 }
