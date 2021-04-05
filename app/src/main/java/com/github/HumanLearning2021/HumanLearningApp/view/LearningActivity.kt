@@ -21,8 +21,7 @@ import kotlinx.coroutines.launch
 
 class LearningActivity : AppCompatActivity() {
 
-    private val dummyPres = DummyUIPresenter(DummyDatabaseService())
-    private val learningPresenter = LearningPresenter(DummyDatabaseService())
+    private lateinit var learningPresenter: LearningPresenter
     private lateinit var learningMode: LearningMode
     private lateinit var audioFeedback : LearningAudioFeedback
 
@@ -30,6 +29,7 @@ class LearningActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
         learningMode = intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
+        learningPresenter = LearningPresenter(DummyDatabaseService(), learningMode)
         initLearningViews()
         audioFeedback = LearningAudioFeedback(applicationContext)
     }
@@ -66,7 +66,7 @@ class LearningActivity : AppCompatActivity() {
         val catIv = findViewById<ImageView>(catIvId)
         catIv.contentDescription = catName
         lifecycleScope.launch {
-            dummyPres.getPicture(catName)?.displayOn(this@LearningActivity, catIv)
+            learningPresenter.displayTargetPicture(this@LearningActivity, catIv, catName)
         }
         return catIv
     }
@@ -105,7 +105,7 @@ class LearningActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 learningPresenter.displayNextPicture(
                     this@LearningActivity,
-                    findViewById(R.id.learning_im_to_sort)
+                    findViewById(R.id.learning_im_to_sort),
                 )
             }
         } else {

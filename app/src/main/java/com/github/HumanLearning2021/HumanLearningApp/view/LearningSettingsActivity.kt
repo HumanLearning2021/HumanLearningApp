@@ -32,21 +32,13 @@ class LearningSettingsActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
             startActivity(intent)
         }
-        btPres.tooltipText = getString(R.string.learning_settings_tooltip_presentation)
-
         btRep.setOnClickListener {
-            //TODO: use representative pictures
-            null
-            /*
             intent.putExtra(EXTRA_LEARNING_MODE, LearningMode.REPRESENTATION)
             startActivity(intent)
-
-             */
         }
 
-        btRep.isClickable = false
-        btRep.alpha = .5f;
-
+        btPres.tooltipText = getString(R.string.learning_settings_tooltip_presentation)
+        btPres.tooltipText = getString(R.string.learning_settings_tooltip_representation)
     }
 }
 

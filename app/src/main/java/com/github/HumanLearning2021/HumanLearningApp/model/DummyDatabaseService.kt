@@ -18,6 +18,8 @@ class DummyDatabaseService : DatabaseService {
     private val knifePic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife))
     private val spoonPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon))
 
+
+
     private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
     private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
     private val datasets: MutableSet<Dataset> = mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
