@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.net.Uri
+import android.util.Log
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
@@ -30,7 +31,6 @@ class FirestoreDatabaseService(
     private val storage = Firebase.storage(this.app)
     private val imagesDir = storage.reference.child("$dbName/images")
 
-
     private class CategorySchema() {
         @DocumentId
         lateinit var self: DocumentReference
@@ -40,7 +40,7 @@ class FirestoreDatabaseService(
             this.name = name
         }
 
-        fun toPublic() = FirestoreCategory(self.path, name, name,null)
+        fun toPublic() = FirestoreCategory(self.path, self.id, name, null)
     }
 
     private class PictureSchema() {
@@ -61,6 +61,30 @@ class FirestoreDatabaseService(
         }
     }
 
+    private class DatasetSchema() {
+        @DocumentId
+        lateinit var self: DocumentReference
+        lateinit var name: String
+        lateinit var categories: List<DocumentReference>
+
+        constructor(name: String, categories: List<DocumentReference>) : this() {
+            this.name = name
+            this.categories = categories.toList()
+        }
+
+        @OptIn(ExperimentalStdlibApi::class)
+        suspend fun toPublic(): FirestoreDataset {
+            val cats: Set<FirestoreCategory> = buildSet(categories.size) {
+                for (cat in categories) {
+                    val catRef = cat.get()
+                    requireNotNull(catRef, { "at least one of the categories was not found" })
+                    add(catRef.await().toObject(CategorySchema::class.java)!!.toPublic())
+                }
+            }
+            return FirestoreDataset(self.path, self.id, name, cats.toSet())
+        }
+    }
+
     @OptIn(ExperimentalStdlibApi::class)
     override suspend fun getCategories(): Set<FirestoreCategory> {
         val query = categories
@@ -71,37 +95,146 @@ class FirestoreDatabaseService(
         }
     }
 
-    override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
-        TODO("Not yet implemented")
+    @OptIn(ExperimentalStdlibApi::class)
+    override suspend fun getAllPictures(category: Category): Set<FirestoreCategorizedPicture> {
+        require(category is FirestoreCategory)
+        categories.document(category.id).get().addOnCompleteListener {
+            if (!it.isSuccessful) {
+                throw java.lang.IllegalArgumentException("Category with id ${category.id} is not present in the database")
+            }
+        }
+        val query = pictures.whereEqualTo("category", db.document(category.path))
+        val pics = query.get().await().toObjects(PictureSchema::class.java)
+        return pics.map{pic -> pic.toPublic()}.toSet()
     }
 
     override suspend fun removeCategory(category: Category) {
-        TODO("Not yet implemented")
+        require(category is FirestoreCategory)
+        val ref = categories.document(category.id)
+        ref.get()
+            .addOnFailureListener { throw IllegalArgumentException("The database ${this.db} does not contain the category ${category.id}") }
+        ref.delete().addOnFailureListener {
+            Log.w(
+                this.toString(),
+                "Removing category ${category.id} from ${this.db} failed"
+            )
+        }
     }
 
     override suspend fun removePicture(picture: CategorizedPicture) {
-        TODO("Not yet implemented")
+        require(picture is FirestoreCategorizedPicture)
+        db.document(picture.path).delete()
+//        val ref = db.document(picture.path)
+//        ref.get().addOnFailureListener { throw IllegalArgumentException("The database ${this.db} does not contain the picture ${picture.url}") }
+//        ref.delete().addOnFailureListener {
+//            Log.w(
+//                this.toString(),
+//                "Removing picture ${picture.url} from ${this.db} failed"
+//            )
+//        }
     }
 
-    override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
-        TODO("Not yet implemented")
+    override suspend fun putDataset(name: String, categories: Set<Category>): FirestoreDataset {
+        val catRefs: MutableSet<DocumentReference> = mutableSetOf()
+        for (cat in categories) {
+            require(cat is FirestoreCategory)
+            catRefs.add(db.document(cat.path))
+        }
+        val data = DatasetSchema(name, catRefs.toList())
+        val documentRef = datasets.add(data).await()
+        return documentRef.get().await().toObject(DatasetSchema::class.java)!!.toPublic()
     }
 
-    override suspend fun getDataset(id: Any): Dataset? {
-        TODO("Not yet implemented")
+    override suspend fun getDataset(id: Any): FirestoreDataset? {
+        val ds = datasets.document(id as String).get().await().toObject(DatasetSchema::class.java)
+        return ds?.toPublic()
     }
 
     override suspend fun deleteDataset(id: Any) {
-        TODO("Not yet implemented")
+        datasets.document(id as String).get().addOnCompleteListener {
+            if (!it.isSuccessful) {
+                throw java.lang.IllegalArgumentException("Dataset with id $id is not contained in the databse")
+            }
+        }
+        datasets.document(id as String).delete().addOnFailureListener { Log.w(this.toString(), "Deleting dataset ${datasets.id} from ${this.db} failed") }
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
-        TODO("Not yet implemented")
+        require(category is FirestoreCategory)
+        val categoryRef = categories.document(category.id)
+        categoryRef.get()
+            .addOnFailureListener { throw java.lang.IllegalArgumentException("The database ${this.db} does not contain the category with ${category.id}") }
+        val imageRef = imagesDir.child("${UUID.randomUUID()}")
+        imageRef.putFile(picture).await()
+        val data =
+            PictureSchema(categories.document(category.id), "gs://${imageRef.bucket}/${imageRef.path}")
+        categoryRef.update("representativePicture", data.url).addOnFailureListener {
+            Log.w(
+                this.toString(),
+                "Setting representative picture of category ${category.id} to picture at ${data.url} failed"
+            )
+        }
     }
 
 
-    override fun getDatasets(): Set<Dataset> {
-        TODO("Not yet implemented")
+    @OptIn(ExperimentalStdlibApi::class)
+    override suspend fun getDatasets(): Set<FirestoreDataset> {
+        val ds = datasets.get().await().documents
+        return buildSet {
+            for (d in ds) {
+                val obj = d.toObject(DatasetSchema::class.java)
+                if (obj == null) {
+                    Log.w(this.toString(), "Failed to load dataset ${d.id}")
+                } else {
+                    add(obj.toPublic())
+                }
+            }
+        }
+    }
+
+    override suspend fun removeCategoryFromDataset(
+        dataset: Dataset,
+        category: Category
+    ): FirestoreDataset {
+        require(dataset is FirestoreDataset)
+        require(category is FirestoreCategory)
+
+        val dsCategories = dataset.categories
+        if (!dsCategories.contains(category))
+            throw IllegalArgumentException("The category ${category.id} is not contained in the dataset ${dataset.id}")
+
+        var res = dataset as FirestoreDataset
+        val newCats: MutableSet<FirestoreCategory> = mutableSetOf()
+        newCats.apply {
+            addAll(dsCategories)
+            remove(category)
+            toSet()
+        }
+        this.datasets.document(dataset.id).update("categories", newCats.toList()).addOnSuccessListener {
+            res = FirestoreDataset(dataset.path, dataset.id, dataset.name, newCats)
+        }.addOnFailureListener {
+            Log.w(
+                this.toString(),
+                "Removing category ${category.id} from dataset ${dataset.id} failed"
+            )
+        }
+        return res
+    }
+
+    override suspend fun editDatasetName(dataset: Dataset, newName: String): FirestoreDataset {
+        require(dataset is FirestoreDataset)
+        var res = dataset as FirestoreDataset
+        this.datasets.document(dataset.id).update("name", newName)
+            .addOnSuccessListener {
+                res = FirestoreDataset(dataset.path, dataset.id, newName, dataset.categories)
+            }
+            .addOnFailureListener {
+                Log.w(
+                    this.toString(),
+                    "Changing name of dataset ${dataset.id} to $newName failed"
+                )
+            }
+        return res
     }
 
     override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
@@ -120,10 +253,8 @@ class FirestoreDatabaseService(
         return documentRef.get().await().toObject(PictureSchema::class.java)!!.toPublic()
     }
 
-    override suspend fun getCategory(categoryId: Any): Category? {
-        //TODO("Update to use id")
-        val query = categories.whereEqualTo("name", categoryId as String).limit(1)
-        val cat = query.get().await().toObjects(CategorySchema::class.java).getOrNull(0)
+    override suspend fun getCategory(categoryId: Any): FirestoreCategory? {
+        val cat = categories.document(categoryId as String).get().await().toObject(CategorySchema::class.java)
         return cat?.toPublic()
     }
 

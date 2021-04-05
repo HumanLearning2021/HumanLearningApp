@@ -151,4 +151,23 @@ interface DatabaseManagement {
      * @return a set containing the ids off all the available datasets
      */
     suspend fun getDatasetIds(): Set<Any>
+
+    /**
+     * Remove the category from a dataset
+     *
+     * @param dataset - the dataset from which to remove the category
+     * @param category - the category to remove from the dataset
+     * @return the dataset with the category removed
+     * @throws IllegalArgumentException if the database does not contain the specified category
+     */
+    suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): Dataset
+
+    /**
+     * Changes the name of a dataset
+     *
+     * @param dataset - the dataset whose name to change
+     * @param newName - the new name the dataset should take
+     * @return the dataset with its name changed
+     */
+    suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset
 }

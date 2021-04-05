@@ -7,7 +7,9 @@ import java.lang.IllegalArgumentException
 data class DummyDataset(override val id: String, override val name: String, override val categories: Set<Category>
 ) : Dataset {
 
-    override suspend fun removeCategory(category: Category): DummyDataset {
+    @Deprecated("This method should no longer be used because it won't be available outside of the dummy implementation",
+    ReplaceWith("DummyDatabaseService.removeCategoryFromDataset", "com.github.HumanLearning2021.HumanLearningApp.model"))
+    fun removeCategory(category: Category): DummyDataset {
         for (c in categories) {
             if (c == category) {
                 val newCategories: MutableSet<Category> = mutableSetOf()
@@ -18,10 +20,12 @@ data class DummyDataset(override val id: String, override val name: String, over
                 return DummyDataset(id, name, newCategories as Set<Category>)
             }
         }
-        throw IllegalArgumentException("The category ${category.id} named ${category.name}is not present in the dataset")
+        throw IllegalArgumentException("The category ${category.id} named ${category.name} is not present in the dataset")
     }
 
-    override suspend fun editDatasetName(newName: String): Dataset {
+    @Deprecated("This method should no longer be used because it won't be available outside of the dummy implementation",
+        ReplaceWith("DummyDatabaseService.editDatasetName", "com.github.HumanLearning2021.HumanLearningApp.model.removeCategory"))
+    fun editDatasetName(newName: String): Dataset {
         return DummyDataset(id, newName, categories)
     }
 }
