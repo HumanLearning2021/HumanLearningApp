@@ -42,7 +42,6 @@ class DisplayImageActivity : AppCompatActivity() {
         Toast.makeText(this, getText(R.string.picturehasbeenremoved), Toast.LENGTH_SHORT)
             .show()
         if(noMorePicturesInThisCategory){
-            Toast.makeText(this, "IS EMPTY", Toast.LENGTH_SHORT).show()
             lifecycleScope.launch {
                 staticDBManagement.removeCategory(picture.category)
             }
@@ -50,7 +49,6 @@ class DisplayImageActivity : AppCompatActivity() {
             intent.putExtra("dataset_id", datasetId)
             startActivity(intent)
         } else {
-            Toast.makeText(this, "NOT EMPTY", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, DisplayImageSetActivity::class.java)
             intent.putExtra(
                 "category_of_pictures",
