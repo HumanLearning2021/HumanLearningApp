@@ -1,12 +1,18 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
-import java.io.Serializable
-
+import kotlinx.parcelize.Parcelize
 
 /**
  * Class representing a dummy implementation of the category interface
  *
  * @param name the name of the category (case-sensitive)
+ * @param id uniquely identifies the category
+ * @param representativePicture a categorized picture, can be null
  */
-
-data class DummyCategory(override val name: String): Category
+@Parcelize
+data class DummyCategory(override val id: String, override val name: String, override val representativePicture: CategorizedPicture?
+): Category {
+    override fun equals(other: Any?): Boolean {
+        return (other is DummyCategory) && other.id == this.id
+    }
+}

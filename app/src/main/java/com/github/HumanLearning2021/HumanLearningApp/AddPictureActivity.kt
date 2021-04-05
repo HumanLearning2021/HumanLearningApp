@@ -46,11 +46,13 @@ class AddPictureActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val extra = intent.extras
-        if (extra != null && extra["categories"] is Set<*>) {
-            val givenCategories = extra["categories"] as Set<Category>
+        if (extra != null && extra["categories"] is ArrayList<*>) {
+            val givenCategories = extra["categories"] as ArrayList<Category>
             categories = categories.plus(givenCategories)
         }
+
         if (cameraIsAvailable()) {
             when {
                 ContextCompat.checkSelfPermission(
@@ -76,11 +78,11 @@ class AddPictureActivity : AppCompatActivity() {
     The launch argument is an Array<String> containing the categories to select from.
     The return value is a Pair containing the selected category as a first element and the Uri pointing to the image as a second element
      */
-    object AddPictureContract : ActivityResultContract<Set<Category>, Pair<Category, Uri>?>() {
-        override fun createIntent(context: Context, input: Set<Category>?): Intent =
-            Intent(context, AddPictureActivity::class.java).putExtra(
+    object AddPictureContract : ActivityResultContract<ArrayList<Category>, Pair<Category, Uri>?>() {
+        override fun createIntent(context: Context, input: ArrayList<Category>?): Intent =
+            Intent(context, AddPictureActivity::class.java).putParcelableArrayListExtra(
                 "categories",
-                input as Serializable
+                input
             )
 
         override fun parseResult(resultCode: Int, result: Intent?): Pair<Category, Uri>? {
@@ -97,7 +99,7 @@ class AddPictureActivity : AppCompatActivity() {
     private fun onSave(view: View) {
         val returnIntent = Intent()
         val bundle = Bundle().apply {
-            putSerializable("category", chosenCategory)
+            putParcelable("category", chosenCategory)
             putParcelable("image", capturedImageUri)
         }
         returnIntent.putExtra("result", bundle)

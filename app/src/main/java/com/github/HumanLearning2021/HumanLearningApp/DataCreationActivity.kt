@@ -6,14 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityDataCreationBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
-import kotlinx.android.synthetic.main.activity_data_overview.view.*
 import kotlinx.coroutines.launch
-import java.io.Serializable
 
 class DataCreationActivity : AppCompatActivity() {
 
@@ -21,17 +20,19 @@ class DataCreationActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private var categories = emptySet<Category>()
-    private val databaseService = DummyDatabaseService()
+    private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityDataCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if(intent.extras != null) {
-            categories =
-                intent.getSerializableExtra("dataset_categories") as Set<Category>
+        val extra = intent.extras
+        if(extra != null && extra["dataset_categories"] is ArrayList<*>){
+            val givenCategories = extra["dataset_categories"] as ArrayList<Category>
+            categories = categories.plus(givenCategories)
         }
+
         val count = categories.size
         var v: View?
 
@@ -65,10 +66,12 @@ class DataCreationActivity : AppCompatActivity() {
 
     fun removeView(view: View) {
         val categoryName: EditText = (view.parent as View).findViewById(R.id.data_creation_category_name)
-        val cat = DummyCategory(categoryName.text.toString())
+        val cat = DummyCategory(categoryName.text.toString(), categoryName.text.toString(), null)
         if (categories.contains(cat)) {
             categories = categories.minus(cat)
-            //TODO: REMOVE CATEGORY FROM THE DATASET
+            lifecycleScope.launch {
+                staticDBManagement.removeCategory(cat)
+            }
         }
         binding.parentLinearLayout.removeView(view.parent as View)
 
@@ -81,10 +84,11 @@ class DataCreationActivity : AppCompatActivity() {
         for (i in categories.size until count) {
             v = binding.parentLinearLayout.getChildAt(i)
             val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
-            val category = DummyCategory(categoryName.text.toString())
+            val category = DummyCategory(categoryName.text.toString(), categoryName.text.toString(), null)
             lifecycleScope.launch {
                 if (!categories.contains(category)) {
-                    databaseService.putCategory(categoryName.text.toString())
+                    //TODO: Uncomment when solution about Representative Picture is found
+                    //staticDBManagement.putCategory(categoryName.text.toString())
                 }
             }
         }

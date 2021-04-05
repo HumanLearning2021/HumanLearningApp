@@ -2,41 +2,30 @@ package com.github.HumanLearning2021.HumanLearningApp
 
 import android.content.Intent
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import androidx.core.view.get
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
-import org.hamcrest.Matcher
-import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
-import com.schibsted.spain.barista.internal.performActionOnView
-import kotlinx.android.synthetic.main.row_add_category.view.*
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
+import org.hamcrest.Matcher
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.junit.runner.RunWith
 import org.junit.Test
+import org.junit.runner.RunWith
 import java.io.Serializable
 
 
@@ -59,8 +48,8 @@ class DataCreationActivityTest {
                 }
             }
 
-    val dummydsService = DummyDatabaseService()
-    var categories = emptySet<Category>()
+    private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
+    private lateinit var categories : Set<Category>
 
     @get:Rule
     var activityRuleIntent = IntentsTestRule(DataCreationActivity::class.java, false, false)
@@ -68,12 +57,13 @@ class DataCreationActivityTest {
     @Before
     fun setUp() {
         runBlocking {
-            categories = dummydsService.getCategories()
+            categories = staticDBManagement.getCategories()
             categories = categories.minus(categories.elementAt(0))
             categories = categories.minus(categories.elementAt(0))
         }
+        val categoriesArray = ArrayList<Category>(categories)
         val intent = Intent()
-        intent.putExtra("dataset_categories", (categories) as Serializable)
+        intent.putParcelableArrayListExtra("dataset_categories", categoriesArray)
         activityRuleIntent.launchActivity(intent)
         // By waiting before the test starts, it allows time for the app to startup to prevent the
         // following error to appear on cirrus:
@@ -83,8 +73,6 @@ class DataCreationActivityTest {
         val delayBeforeTestStart: Long = 3000
         onView(isRoot()).perform(waitFor(delayBeforeTestStart))
     }
-
-
 
     @Test
     fun rowViewIsDisplayedWhenAddButtonIsClicked() {
@@ -108,8 +96,6 @@ class DataCreationActivityTest {
                 ViewMatchers.hasChildCount(categories.size + 1)
             )
         )
-
-
     }
 
     @Test

@@ -1,10 +1,12 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
 import androidx.test.espresso.Espresso
+import android.os.Parcelable
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -15,31 +17,35 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
+import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.*
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.Serializable
-
 
 @RunWith(AndroidJUnit4::class)
 class DisplayDatasetActivityTest {
     @get:Rule
-    val activityRule = ActivityScenarioRule(DisplayDatasetActivity::class.java)
-
-    @get:Rule
     var activityRuleIntent = IntentsTestRule(DisplayDatasetActivity::class.java)
 
-    val NUMBER_OF_CAT = 3
-    val datasetImagesList = ArrayList<CategorizedPicture>()
-    val databaseService = DummyDatabaseService()
-    val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
+    private val NUMBER_OF_CAT = 3
+    private val datasetImagesList = ArrayList<CategorizedPicture>()
+    private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
+    private val datasetId = "kitchen utensils"
+
+
+    private val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
 
     /**
      * Check that the Grid with all the images of the dataset are displayed.
@@ -57,10 +63,10 @@ class DisplayDatasetActivityTest {
     @Test
     fun whenClickOnCategoryImageDisplayImageSetActivity() {
 
-        val randomNb = (0 until NUMBER_OF_CAT).random()
+        val randomNb = (0 until NUMBER_OF_CAT-1).random()
 
         runBlocking {
-            val categories = databaseService.getCategories()
+            val categories = staticDBManagement.getCategories()
             for (cat in categories) {
                 datasetImagesList.add(dummyPresenter.getPicture(cat.name)!!)
             }
@@ -69,25 +75,17 @@ class DisplayDatasetActivityTest {
                 .inAdapterView(withId(R.id.display_dataset_imagesGridView))
                 .atPosition(randomNb)
                 .perform(click())
-            val allPictures = databaseService.pictures
-            val catPictures: MutableSet<CategorizedPicture> = mutableSetOf()
-            for (p in allPictures) {
-                if (p.category == categories.elementAt(randomNb)) {
-                    catPictures.add(p)
-                }
-            }
 
             intended(
                 allOf(
                     hasComponent(DisplayImageSetActivity::class.java.name),
                     hasExtra(
-                        "display_image_set_images",
-                        (catPictures) as Serializable
-                    )
+                        "category_of_pictures",
+                        categories.elementAt(randomNb)
+                    ),
+                    hasExtra("dataset_id", datasetId)
                 )
             )
-
-
         }
     }
 
@@ -105,7 +103,7 @@ class DisplayDatasetActivityTest {
         intended(
             allOf(
                 hasComponent(DataCreationActivity::class.java.name),
-                hasExtraWithKey("dataset_categories"),
+                hasExtraWithKey("dataset_id"),
             )
         )
     }
@@ -133,6 +131,10 @@ class DisplayDatasetActivityTest {
         onView(withId(R.id.saveButton)).perform(click())
 
         onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
+        val forkCat = DummyCategory("Fork", "Fork", null)
+        runBlocking {
+            assert(staticDBManagement.getAllPictures(forkCat).size == 2)
+        }
     }
 
     @Test

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -15,6 +16,7 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.PermissionGranter
@@ -22,8 +24,8 @@ import org.hamcrest.Matchers.not
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
-import java.io.Serializable
 import java.lang.reflect.Method
+import kotlinx.parcelize.Parcelize
 
 @RunWith(AndroidJUnit4::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // to enforce consistent order of tests
@@ -32,15 +34,20 @@ class AddPictureActivityTest {
     private fun grantCameraPermission() {
         PermissionGranter.allowPermissionOneTime(Manifest.permission.CAMERA)
     }
-    
-    private class testCat(override val name: String) : Category
+
+    @Parcelize
+    private class TestCat(override val id: String, override val name: String,
+                          override val representativePicture: CategorizedPicture?
+    ) : Category
+
+    val catSet = setOf<Category>(TestCat("cat1", "cat1",null), TestCat("cat2", "cat2",null), TestCat("cat3", "cat3",null))
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
         Intent(
             ApplicationProvider.getApplicationContext(),
             AddPictureActivity::class.java
-        ).putExtra("categories", setOf<Category>(testCat("cat1"), testCat("cat2"), testCat("cat3")) as Serializable)
+        ).putExtra("categories", ArrayList<Category>(catSet))
     )
 
     @Before
@@ -206,7 +213,7 @@ class AddPictureActivityTest {
     @Test
     fun activityContractCorrectlyParsesResult() {
         val bundle = Bundle().apply {
-            putSerializable("category", testCat("some_category"))
+            putParcelable("category", TestCat("some_category", "some_category",null))
             putParcelable("image", Uri.EMPTY)
         }
         val intent = Intent().putExtra("result", bundle)

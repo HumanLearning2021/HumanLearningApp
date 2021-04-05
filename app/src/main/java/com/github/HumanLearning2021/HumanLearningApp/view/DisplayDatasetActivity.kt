@@ -4,24 +4,36 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.GridView
+import android.widget.ImageView
+import android.widget.TextView
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.AddPictureActivity
 import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import kotlinx.coroutines.launch
 import java.io.Serializable
 
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
-    private val databaseService = DummyDatabaseService()
-    private lateinit var datasetName : String
+    private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
+    private lateinit var categories : Set<Category>
+    private lateinit var datasetId : String
+    private lateinit var dataset : Dataset
 
     private val addPictureContractRegistration =
         registerForActivityResult(AddPictureActivity.AddPictureContract) { resultPair ->
@@ -35,7 +47,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 val category = resultPair.first
                 val pictureUri = resultPair.second
                 lifecycleScope.launch {
-                    databaseService.putPicture(pictureUri, category)
+                    staticDBManagement.putPicture(pictureUri, category)
                 }
             }
         }
@@ -45,45 +57,47 @@ class DisplayDatasetActivity : AppCompatActivity() {
         setContentView(R.layout.activity_display_dataset)
 
         val extra = intent.extras
-        if(extra != null && extra["dataset_overview_dataset_name"] is String){
-            datasetName = intent.getStringExtra("dataset_overview_dataset_name")!!
+        if(extra != null && extra["dataset_id"] is String){
+            datasetId = intent.getStringExtra("dataset_id")!!
         }else {
-            datasetName = "kitchen utensils"
+            datasetId = "kitchen utensils"
         }
 
-        val representativePictures = ArrayList<CategorizedPicture>()
+        var representativePictures = setOf<CategorizedPicture>()
 
         lifecycleScope.launch {
-            val dataset = databaseService.getDataset(datasetName!!)
-            val categories = databaseService.getCategories()
+            dataset = staticDBManagement.getDatasetById(datasetId)!!
+            categories = staticDBManagement.getCategories()
             for (cat in categories) {
-                representativePictures.add(databaseService.getPicture(cat)!!)
-            }
-
-            val displayDatasetAdapter =
-                DisplayDatasetAdapter(representativePictures, this@DisplayDatasetActivity)
-
-            findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
-                displayDatasetAdapter
-            findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
-                val cat = categories.elementAt(i)
-                //TODO: REPLACE BY getAllPictures WHEN AVAILABLE
-                val allPictures = databaseService.pictures
-                val catPictures: MutableSet<CategorizedPicture> = mutableSetOf()
-                for (p in allPictures) {
-                    if (p.category == cat) {
-                        catPictures.add(p)
-                    }
-                }
-                val intent =
-                    Intent(this@DisplayDatasetActivity, DisplayImageSetActivity::class.java)
-                intent.putExtra(
-                    "display_image_set_images",
-                    (catPictures) as Serializable
-                )
-                startActivity(intent)
+                representativePictures =
+                    representativePictures.plus(staticDBManagement.getPicture(cat)!!)
             }
         }
+
+        val displayDatasetAdapter =
+            DisplayDatasetAdapter(representativePictures, this@DisplayDatasetActivity)
+
+        findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
+            displayDatasetAdapter
+        findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
+            val cat = categories.elementAt(i)
+            val intent =
+                Intent(this@DisplayDatasetActivity, DisplayImageSetActivity::class.java)
+            intent.putExtra(
+                "category_of_pictures",
+                cat
+            )
+            intent.putExtra("dataset_id", datasetId)
+            startActivity(intent)
+        }
+
+        findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
+            lifecycleScope.launch {
+                dataset.editDatasetName(findViewById<EditText>(R.id.display_dataset_name).text.toString())
+            }
+        }
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -92,28 +106,25 @@ class DisplayDatasetActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item?.itemId) {
+        val categoriesArray = ArrayList<Category>(categories)
+        return when (item.itemId) {
             R.id.display_dataset_menu_modify_categories -> {
                 val intent = Intent(this@DisplayDatasetActivity, DataCreationActivity::class.java)
-                lifecycleScope.launch {
-                    intent.putExtra("dataset_categories", databaseService.getCategories() as Serializable)
-                }
+                intent.putParcelableArrayListExtra("dataset_categories", categoriesArray)
+                intent.putExtra("dataset_id", datasetId)
                 startActivity(intent)
                 true
             }
             //Clicked on Add new Picture button
             else -> {
-                lifecycleScope.launch {
-                    val categories = databaseService.getCategories()
-                    addPictureContractRegistration.launch(categories)
-                }
+                addPictureContractRegistration.launch(categoriesArray)
                 true
             }
         }
     }
 
     class DisplayDatasetAdapter(
-        private val images: ArrayList<CategorizedPicture>,
+        private val images: Set<CategorizedPicture>,
         private val context: Activity
     ) : BaseAdapter() {
 
@@ -127,14 +138,14 @@ class DisplayDatasetActivity : AppCompatActivity() {
             val imageCat = view?.findViewById<TextView>(R.id.image_and_category_item_imageCategory)
             val imageView = view?.findViewById<ImageView>(R.id.image_and_category_item_imageView)
 
-            imageCat?.text = images[position].category.name
-            images[position].displayOn(context, imageView as ImageView)
+            imageCat?.text = images.elementAt(position).category.name
+            images.elementAt(position).displayOn(context, imageView as ImageView)
 
             return view
         }
 
         override fun getItem(position: Int): Any {
-            return images[position]
+            return images.elementAt(position)
         }
 
         override fun getItemId(position: Int): Long {
