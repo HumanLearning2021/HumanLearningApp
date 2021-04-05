@@ -11,7 +11,7 @@ import kotlinx.parcelize.Parcelize
  * @param representativePicture a categorized picture, can be null
  */
 @Parcelize
-data class DummyCategory(override val id: String, override val name: String, override val representativePicture: CategorizedPicture?
+class DummyCategory(override val id: String, override val name: String, override var representativePicture: CategorizedPicture?
 ): Category {
     override fun equals(other: Any?): Boolean {
         return (other is DummyCategory) && other.id == this.id

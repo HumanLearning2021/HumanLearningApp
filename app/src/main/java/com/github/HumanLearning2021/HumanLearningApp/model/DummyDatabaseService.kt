@@ -18,11 +18,19 @@ class DummyDatabaseService : DatabaseService {
     private val knifePic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife))
     private val spoonPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon))
 
+    private val forkRepPic = DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.fork_rep))
+    private val knifeRepPic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife_rep))
+    private val spoonRepPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon_rep))
 
-
-    private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
+    private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic, forkRepPic, knifeRepPic, spoonRepPic)
     private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
     private val datasets: MutableSet<Dataset> = mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
+
+    init {
+        fork.representativePicture = forkRepPic
+        knife.representativePicture = knifeRepPic
+        spoon.representativePicture = spoonRepPic
+    }
 
     override suspend fun getPicture(category: Category): CategorizedPicture?{
         if (!categories.contains(category)) throw IllegalArgumentException("The provided category" +

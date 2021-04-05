@@ -16,20 +16,21 @@ import com.github.HumanLearning2021.HumanLearningApp.BuildConfig
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
-import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
+import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyLearningPresenter
 import kotlinx.coroutines.launch
 
 class LearningActivity : AppCompatActivity() {
 
-    private lateinit var learningPresenter: LearningPresenter
+    private lateinit var learningPresenter: DummyLearningPresenter
     private lateinit var learningMode: LearningMode
-    private lateinit var audioFeedback : LearningAudioFeedback
+    private lateinit var audioFeedback: LearningAudioFeedback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
-        learningMode = intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
-        learningPresenter = LearningPresenter(DummyDatabaseService(), learningMode)
+        learningMode =
+            intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
+        learningPresenter = DummyLearningPresenter(learningMode)
         initLearningViews()
         audioFeedback = LearningAudioFeedback(applicationContext)
     }
@@ -65,17 +66,29 @@ class LearningActivity : AppCompatActivity() {
     private fun initImageView(catIvId: Int, catName: String): ImageView {
         val catIv = findViewById<ImageView>(catIvId)
         catIv.contentDescription = catName
-        lifecycleScope.launch {
-            learningPresenter.displayTargetPicture(this@LearningActivity, catIv, catName)
+
+        if (catIvId == R.id.learning_im_to_sort) {
+            lifecycleScope.launch {
+                learningPresenter.displayNextPicture(this@LearningActivity, catIv)
+            }
         }
+
+        else {
+            lifecycleScope.launch {
+                learningPresenter.displayTargetPicture(this@LearningActivity, catIv, catName)
+            }
+        }
+
         return catIv
     }
 
     private fun initImageToSort(catIvId: Int, catName: String) {
+
         initImageView(catIvId, catName).setOnTouchListener(LearningActivity::onImageToSortTouched)
     }
 
     private fun initTargetCategory(catIvId: Int, catName: String) {
+
         initImageView(catIvId, catName).setOnDragListener(targetOnDragListener)
     }
 
