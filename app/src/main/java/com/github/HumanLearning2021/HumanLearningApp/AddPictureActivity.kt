@@ -28,7 +28,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import java.io.File
-import java.io.Serializable
 import java.util.concurrent.Executors
 
 /*
@@ -77,7 +76,8 @@ class AddPictureActivity : AppCompatActivity() {
     The launch argument is an Array<String> containing the categories to select from.
     The return value is a Pair containing the selected category as a first element and the Uri pointing to the image as a second element
      */
-    object AddPictureContract : ActivityResultContract<ArrayList<Category>, Pair<Category, Uri>?>() {
+    object AddPictureContract :
+        ActivityResultContract<ArrayList<Category>, Pair<Category, Uri>?>() {
         override fun createIntent(context: Context, input: ArrayList<Category>?): Intent =
             Intent(context, AddPictureActivity::class.java).putParcelableArrayListExtra(
                 "categories",

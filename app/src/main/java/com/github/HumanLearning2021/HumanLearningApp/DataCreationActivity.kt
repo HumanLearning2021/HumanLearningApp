@@ -6,11 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityDataCreationBinding
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import kotlinx.coroutines.launch
 
@@ -28,7 +29,7 @@ class DataCreationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val extra = intent.extras
-        if(extra != null && extra["dataset_categories"] is ArrayList<*>){
+        if (extra != null && extra["dataset_categories"] is ArrayList<*>) {
             val givenCategories = extra["dataset_categories"] as ArrayList<Category>
             categories = categories.plus(givenCategories)
         }
@@ -65,7 +66,8 @@ class DataCreationActivity : AppCompatActivity() {
     }
 
     fun removeView(view: View) {
-        val categoryName: EditText = (view.parent as View).findViewById(R.id.data_creation_category_name)
+        val categoryName: EditText =
+            (view.parent as View).findViewById(R.id.data_creation_category_name)
         val cat = DummyCategory(categoryName.text.toString(), categoryName.text.toString(), null)
         if (categories.contains(cat)) {
             categories = categories.minus(cat)
@@ -84,7 +86,8 @@ class DataCreationActivity : AppCompatActivity() {
         for (i in categories.size until count) {
             v = binding.parentLinearLayout.getChildAt(i)
             val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
-            val category = DummyCategory(categoryName.text.toString(), categoryName.text.toString(), null)
+            val category =
+                DummyCategory(categoryName.text.toString(), categoryName.text.toString(), null)
             lifecycleScope.launch {
                 if (!categories.contains(category)) {
                     //TODO: Uncomment when solution about Representative Picture is found

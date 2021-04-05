@@ -24,13 +24,13 @@ class DisplayImageSetActivity : AppCompatActivity() {
 
     private var categorizedPicturesList = setOf<CategorizedPicture>()
     private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
-    private lateinit var datasetId : String
+    private lateinit var datasetId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_image_set)
 
-        val category : Category =
+        val category: Category =
             intent.getParcelableExtra<Category>("category_of_pictures") as Category
         datasetId = intent.getStringExtra("dataset_id")!!
         lifecycleScope.launch {

@@ -1,17 +1,13 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
-import androidx.test.espresso.Espresso
-import android.os.Parcelable
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -22,14 +18,10 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManageme
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.*
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -63,7 +55,7 @@ class DisplayDatasetActivityTest {
     @Test
     fun whenClickOnCategoryImageDisplayImageSetActivity() {
 
-        val randomNb = (0 until NUMBER_OF_CAT-1).random()
+        val randomNb = (0 until NUMBER_OF_CAT - 1).random()
 
         runBlocking {
             val categories = staticDBManagement.getCategories()

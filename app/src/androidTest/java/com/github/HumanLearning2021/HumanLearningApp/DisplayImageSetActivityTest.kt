@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
 import android.content.Intent
-import android.os.Parcelable
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -15,18 +14,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.Serializable
 
 @RunWith(AndroidJUnit4::class)
 class DisplayImageSetActivityTest {
@@ -34,7 +29,7 @@ class DisplayImageSetActivityTest {
     @get:Rule
     var activityRuleIntent = IntentsTestRule(DisplayImageSetActivity::class.java, false, false)
 
-    private lateinit var categories : Set<Category>
+    private lateinit var categories: Set<Category>
     var categoryImagesList = emptySet<CategorizedPicture>()
     val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
 
@@ -42,7 +37,8 @@ class DisplayImageSetActivityTest {
     fun setUp() {
         runBlocking {
             categories = staticDBManagement.getCategories()
-            categoryImagesList = categoryImagesList.plus(staticDBManagement.getPicture(categories.elementAt(0))!!)
+            categoryImagesList =
+                categoryImagesList.plus(staticDBManagement.getPicture(categories.elementAt(0))!!)
         }
         val intent = Intent()
         intent.putExtra("category_of_pictures", (categories.elementAt(0)))
@@ -63,7 +59,8 @@ class DisplayImageSetActivityTest {
     @Test
     fun imageIsDisplayedOnClick() {
         runBlocking {
-            categoryImagesList = categoryImagesList.plus(staticDBManagement.getPicture(categories.elementAt(0))!!)
+            categoryImagesList =
+                categoryImagesList.plus(staticDBManagement.getPicture(categories.elementAt(0))!!)
         }
 
         onView(withId(R.id.display_image_set_imagesGridView)).check(

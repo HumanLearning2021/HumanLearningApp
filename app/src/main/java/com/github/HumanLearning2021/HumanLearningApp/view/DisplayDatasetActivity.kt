@@ -4,14 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.GridView
-import android.widget.ImageView
-import android.widget.TextView
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -25,15 +17,14 @@ import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import kotlinx.coroutines.launch
-import java.io.Serializable
 
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
     private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
-    private lateinit var categories : Set<Category>
-    private lateinit var datasetId : String
-    private lateinit var dataset : Dataset
+    private lateinit var categories: Set<Category>
+    private lateinit var datasetId: String
+    private lateinit var dataset: Dataset
 
     private val addPictureContractRegistration =
         registerForActivityResult(AddPictureActivity.AddPictureContract) { resultPair ->
@@ -57,9 +48,9 @@ class DisplayDatasetActivity : AppCompatActivity() {
         setContentView(R.layout.activity_display_dataset)
 
         val extra = intent.extras
-        if(extra != null && extra["dataset_id"] is String){
+        if (extra != null && extra["dataset_id"] is String) {
             datasetId = intent.getStringExtra("dataset_id")!!
-        }else {
+        } else {
             datasetId = "kitchen utensils"
         }
 

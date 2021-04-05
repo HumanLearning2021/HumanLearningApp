@@ -16,17 +16,14 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.Serializable
 
 
 @RunWith(AndroidJUnit4::class)
@@ -34,22 +31,22 @@ class DataCreationActivityTest {
 
     // inspired by : https://stackoverflow.com/a/35924943/7158887
     private fun waitFor(millis: Long): ViewAction =
-            object : ViewAction {
-                override fun getConstraints(): Matcher<View> {
-                    return isRoot()
-                }
-
-                override fun getDescription(): String {
-                    return "Wait for $millis milliseconds"
-                }
-
-                override fun perform(uiController: UiController?, view: View?) {
-                    uiController?.loopMainThreadForAtLeast(millis)
-                }
+        object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return isRoot()
             }
 
+            override fun getDescription(): String {
+                return "Wait for $millis milliseconds"
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                uiController?.loopMainThreadForAtLeast(millis)
+            }
+        }
+
     private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
-    private lateinit var categories : Set<Category>
+    private lateinit var categories: Set<Category>
 
     @get:Rule
     var activityRuleIntent = IntentsTestRule(DataCreationActivity::class.java, false, false)
@@ -81,7 +78,7 @@ class DataCreationActivityTest {
     }
 
     @Test
-    fun rowButtonViewIsDisplayedWhenAddButtonIsClicked(){
+    fun rowButtonViewIsDisplayedWhenAddButtonIsClicked() {
         onView(withId(R.id.button_add)).perform(ViewActions.click())
         onView(ViewMatchers.withId(R.id.button_add)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
@@ -89,7 +86,7 @@ class DataCreationActivityTest {
     }
 
     @Test
-    fun rowViewIsAddedWhenAddButtonIsClicked(){
+    fun rowViewIsAddedWhenAddButtonIsClicked() {
         onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
         onView(ViewMatchers.withId(R.id.parent_linear_layout)).check(
             ViewAssertions.matches(
@@ -99,16 +96,19 @@ class DataCreationActivityTest {
     }
 
     @Test
-    fun rowViewIsRemovedWhenRemoveButtonIsClicked(){
+    fun rowViewIsRemovedWhenRemoveButtonIsClicked() {
         val delayBeforeTestStart: Long = 100
         onView(isRoot()).perform(waitFor(delayBeforeTestStart))
         onView(withId(R.id.button_remove)).perform(click())
-        onView(withId(R.id.parent_linear_layout)).check(ViewAssertions.matches(
-            hasChildCount(0)))
+        onView(withId(R.id.parent_linear_layout)).check(
+            ViewAssertions.matches(
+                hasChildCount(0)
+            )
+        )
     }
 
     @Test
-    fun SaveButtonGoesToDisplayDatasetActivity(){
+    fun SaveButtonGoesToDisplayDatasetActivity() {
         onView(ViewMatchers.withId(R.id.button_add)).perform(ViewActions.click())
         onView(withId(R.id.button_submit_list)).perform(click())
 
@@ -118,7 +118,6 @@ class DataCreationActivityTest {
             )
         )
     }
-
 
 
 }

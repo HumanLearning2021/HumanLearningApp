@@ -9,15 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import kotlinx.coroutines.launch
 
 class DisplayImageActivity : AppCompatActivity() {
 
     private lateinit var picture: CategorizedPicture
-    private lateinit var datasetId : String
+    private lateinit var datasetId: String
     private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,13 +33,13 @@ class DisplayImageActivity : AppCompatActivity() {
         var noMorePicturesInThisCategory = false
         lifecycleScope.launch {
             staticDBManagement.removePicture(picture)
-            if(staticDBManagement.getAllPictures(picture.category).isEmpty()){
+            if (staticDBManagement.getAllPictures(picture.category).isEmpty()) {
                 noMorePicturesInThisCategory = true
             }
         }
         Toast.makeText(this, getText(R.string.picturehasbeenremoved), Toast.LENGTH_SHORT)
             .show()
-        if(noMorePicturesInThisCategory){
+        if (noMorePicturesInThisCategory) {
             launchDisplayDatasetActivity()
         } else {
             launchDisplayImageSetActivity()
@@ -57,7 +55,7 @@ class DisplayImageActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun launchDisplayImageSetActivity(){
+    private fun launchDisplayImageSetActivity() {
         val intent = Intent(this, DisplayImageSetActivity::class.java)
         intent.putExtra(
             "category_of_pictures",

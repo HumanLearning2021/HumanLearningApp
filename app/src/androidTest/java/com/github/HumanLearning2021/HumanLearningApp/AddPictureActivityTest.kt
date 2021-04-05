@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -20,12 +19,12 @@ import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.PermissionGranter
+import kotlinx.parcelize.Parcelize
 import org.hamcrest.Matchers.not
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.lang.reflect.Method
-import kotlinx.parcelize.Parcelize
 
 @RunWith(AndroidJUnit4::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // to enforce consistent order of tests
@@ -36,11 +35,16 @@ class AddPictureActivityTest {
     }
 
     @Parcelize
-    private class TestCat(override val id: String, override val name: String,
-                          override val representativePicture: CategorizedPicture?
+    private class TestCat(
+        override val id: String, override val name: String,
+        override val representativePicture: CategorizedPicture?
     ) : Category
 
-    val catSet = setOf<Category>(TestCat("cat1", "cat1",null), TestCat("cat2", "cat2",null), TestCat("cat3", "cat3",null))
+    val catSet = setOf<Category>(
+        TestCat("cat1", "cat1", null),
+        TestCat("cat2", "cat2", null),
+        TestCat("cat3", "cat3", null)
+    )
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
@@ -213,12 +217,22 @@ class AddPictureActivityTest {
     @Test
     fun activityContractCorrectlyParsesResult() {
         val bundle = Bundle().apply {
-            putParcelable("category", TestCat("some_category", "some_category",null))
+            putParcelable("category", TestCat("some_category", "some_category", null))
             putParcelable("image", Uri.EMPTY)
         }
         val intent = Intent().putExtra("result", bundle)
-        assert(AddPictureActivity.AddPictureContract.parseResult(Activity.RESULT_OK, intent)!!.first.name == "some_category")
-        assert(AddPictureActivity.AddPictureContract.parseResult(Activity.RESULT_CANCELED, intent) == null)
+        assert(
+            AddPictureActivity.AddPictureContract.parseResult(
+                Activity.RESULT_OK,
+                intent
+            )!!.first.name == "some_category"
+        )
+        assert(
+            AddPictureActivity.AddPictureContract.parseResult(
+                Activity.RESULT_CANCELED,
+                intent
+            ) == null
+        )
     }
 
 }
