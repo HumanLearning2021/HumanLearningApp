@@ -247,7 +247,7 @@ class FirestoreDatabaseServiceTest : TestCase() {
     fun test_editDatasetName_throwsIfDatasetNotPresent(): Unit = runBlocking {
         try {
             demoInterface.editDatasetName(fakeDataset, "Some name")
-        } catch (e: IllegalArgumentException) {
+        } catch (e: Exception) {
             assert(true)
         }
     }
