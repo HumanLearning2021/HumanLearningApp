@@ -66,7 +66,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
         findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
             displayDatasetAdapter
 
-        gridViewItemListener()
+        setGridViewItemListener()
 
         findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
             lifecycleScope.launch {
@@ -143,7 +143,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
         }
     }
 
-    private fun gridViewItemListener(){
+    private fun setGridViewItemListener(){
         findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
             val cat = categories.elementAt(i)
             val intent =

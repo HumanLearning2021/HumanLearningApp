@@ -36,13 +36,13 @@ class DisplayImageActivity : AppCompatActivity() {
             if (staticDBManagement.getAllPictures(picture.category).isEmpty()) {
                 noMorePicturesInThisCategory = true
             }
-        }
-        Toast.makeText(this, getText(R.string.picturehasbeenremoved), Toast.LENGTH_SHORT)
-            .show()
-        if (noMorePicturesInThisCategory) {
-            launchDisplayDatasetActivity()
-        } else {
-            launchDisplayImageSetActivity()
+            Toast.makeText(this@DisplayImageActivity, getText(R.string.picturehasbeenremoved), Toast.LENGTH_SHORT)
+                .show()
+            if (noMorePicturesInThisCategory) {
+                launchDisplayDatasetActivity()
+            } else {
+                launchDisplayImageSetActivity()
+            }
         }
     }
 
