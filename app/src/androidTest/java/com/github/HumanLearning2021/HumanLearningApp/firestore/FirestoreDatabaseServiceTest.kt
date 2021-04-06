@@ -235,4 +235,3 @@ class FirestoreDatabaseServiceTest : TestCase() {
         assertThat(scratchInterface.getDataset(ds.id)!!.name, equalTo(newDsName))
     }
 }
-
