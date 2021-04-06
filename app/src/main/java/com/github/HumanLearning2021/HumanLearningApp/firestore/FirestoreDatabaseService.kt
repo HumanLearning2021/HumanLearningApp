@@ -117,12 +117,9 @@ class FirestoreDatabaseService(
             throw java.lang.IllegalArgumentException("The database ${this.db} does not contain the category ${category.id}")
         }
         try {
-            ref.delete()
-        } catch (e: Exception) {
-            Log.w(
-                this.toString(),
-                "Removing category ${category.id} from ${this.db} failed"
-            )
+            ref.delete().await()
+        } catch (e: IllegalArgumentException) {
+            Log.w(this.toString(), "Removing category ${category.id} from ${this.db} failed", e)
         }
     }
 
@@ -130,8 +127,8 @@ class FirestoreDatabaseService(
         require(picture is FirestoreCategorizedPicture)
         val ref = db.document(picture.path)
         try {
-            ref.delete()
-        } catch (e: Exception) {
+            ref.delete().await()
+        } catch (e: IllegalArgumentException) {
             throw IllegalArgumentException("The database ${this.db} does not contain the picture ${picture.url}")
         }
 
@@ -159,12 +156,9 @@ class FirestoreDatabaseService(
             throw java.lang.IllegalArgumentException("Dataset with id $id is not contained in the databse")
         }
         try {
-            datasets.document(id as String).delete()
-        } catch(e: Exception) {
-            Log.w(
-                this.toString(),
-                "Deleting dataset ${datasets.id} from ${this.db} failed"
-            )
+            datasets.document(id as String).delete().await()
+        } catch(e: IllegalArgumentException) {
+            Log.w(this.toString(),"Deleting dataset ${datasets.id} from ${this.db} failed", e)
         }
     }
 
@@ -180,8 +174,8 @@ class FirestoreDatabaseService(
         val data = PictureSchema(categoryRef, url)
         try {
             representativePictures.add(data).await()
-        } catch (e: Exception) {
-            Log.w(this.toString(), "Setting representative picture of category ${category.id} to picture at $url failed")
+        } catch (e: IllegalArgumentException) {
+            Log.w(this.toString(), "Setting representative picture of category ${category.id} to picture at $url failed", e)
         }
     }
 
@@ -214,12 +208,9 @@ class FirestoreDatabaseService(
         var res = FirestoreDataset(dataset.path, dataset.id, dataset.name, newCats)
         try {
             datasets.document(dataset.id).update("categories", newCats.toList()).await()
-        } catch (e: Exception) {
+        } catch (e: java.lang.IllegalArgumentException) {
             res = dataset
-            Log.w(
-                this.toString(),
-                "Removing category ${category.id} from dataset ${dataset.id} failed"
-            )
+            Log.w(this.toString(), "Removing category ${category.id} from dataset ${dataset.id} failed", e)
             throw java.lang.IllegalArgumentException("The category ${category.id} is not contained in the dataset ${dataset.id} or said dataset is not contained in this database")
         }
         return res
@@ -231,7 +222,7 @@ class FirestoreDatabaseService(
         val documentRef = this.datasets.document(dataset.id)
         try {
             documentRef.update("name", newName).await()
-        } catch (e: Exception) {
+        } catch (e: IllegalArgumentException) {
             throw java.lang.IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database $this")
         }
         if (documentRef.get().await().getField<String>("name") == newName) {
