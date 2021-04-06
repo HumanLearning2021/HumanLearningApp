@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import java.lang.IllegalArgumentException
 

@@ -31,7 +31,6 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:background="#BF1D1D"
-        android:onClick="removePicture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_delete"
