@@ -48,6 +48,6 @@ class DummyLearningPresenter(
         if(learningMode == LearningMode.PRESENTATION)
             databaseService.getPicture(databaseService.getCategory(categoryName)!!)?.displayOn(activity, view)
         else
-           databaseService.getCategory(categoryName)?.representativePicture?.displayOn(activity, view)
+           databaseService.getRepresentativePicture(categoryName)!!.displayOn(activity, view)
     }
 }

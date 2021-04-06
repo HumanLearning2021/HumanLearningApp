@@ -27,11 +27,7 @@ class DummyDatabaseService() : DatabaseService {
     private val datasets: MutableSet<Dataset> = mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
     private val representativePictures: MutableMap<String, CategorizedPicture> = mutableMapOf()
 
-    init {
-        fork.representativePicture = forkRepPic
-        knife.representativePicture = knifeRepPic
-        spoon.representativePicture = spoonRepPic
-    }
+
 
     override suspend fun getPicture(category: Category): CategorizedPicture?{
         if (!categories.contains(category)) throw IllegalArgumentException("The provided category" +

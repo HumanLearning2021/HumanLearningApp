@@ -25,7 +25,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class LearningTest {
+class LearningTestPresentation {
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<LearningActivity> = ActivityScenarioRule(
