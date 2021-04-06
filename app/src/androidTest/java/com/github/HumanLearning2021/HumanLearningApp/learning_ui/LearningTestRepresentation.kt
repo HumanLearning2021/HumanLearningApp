@@ -4,8 +4,7 @@ import android.widget.ImageView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -16,7 +15,8 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
-import org.hamcrest.CoreMatchers.`is`
+import com.schibsted.spain.barista.assertion.BaristaImageViewAssertions.assertHasDrawable
+import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -47,12 +47,12 @@ class LearningTestRepresentation {
 
     @Test
     fun imageToClassifyIsNotRepresentativePicture(){
-
+        // TODO: couldn't yet find a way to test whether the picture held by the view was part of one set and not another
     }
 
     @Test
     fun targetImagesAreRepresentativePictures(){
-
+        // TODO: couldn't yet find a way to test whether the picture held by the view was part of one set and not another
     }
 
     @Test
@@ -64,7 +64,6 @@ class LearningTestRepresentation {
     }
 
     private fun viewWithIdisDisplayed(id: Int) = onView(withId(id)).check(matches(isDisplayed()))
-
 
 }
 

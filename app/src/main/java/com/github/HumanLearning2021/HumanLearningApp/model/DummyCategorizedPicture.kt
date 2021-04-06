@@ -18,7 +18,9 @@ class DummyCategorizedPicture(override val category: Category, val picture: Uri)
         if (category !is DummyCategory) throw IllegalArgumentException("provide a dummy category " +
                 "to the class constructor")
         val inputStream = activity.contentResolver.openInputStream(picture)
-        imageView.setImageDrawable(Drawable.createFromStream(inputStream, picture.toString()))
+        val drawable = Drawable.createFromStream(inputStream, picture.toString())
+        imageView.setImageDrawable(drawable)
+        imageView.setTag(drawable)
     }
 
     // Have to override these 2 and not make it a data class because of DummyDatabaseService's initialization:
