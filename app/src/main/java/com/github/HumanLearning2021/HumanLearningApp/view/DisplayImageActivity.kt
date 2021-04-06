@@ -3,6 +3,8 @@ package com.github.HumanLearning2021.HumanLearningApp.view
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -25,11 +27,16 @@ class DisplayImageActivity : AppCompatActivity() {
         picture =
             intent.getParcelableExtra("single_picture")!!
         datasetId = intent.getStringExtra("dataset_id")!!
+
         findViewById<TextView>(R.id.display_image_viewCategory).text = picture.category.name
         picture.displayOn(this, findViewById(R.id.display_image_viewImage))
+
+        findViewById<ImageButton>(R.id.display_image_delete_button).setOnClickListener{
+            removePicture()
+        }
     }
 
-    fun removePicture(view: View) {
+    private fun removePicture() {
         var noMorePicturesInThisCategory = false
         lifecycleScope.launch {
             staticDBManagement.removePicture(picture)
