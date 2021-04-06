@@ -1,6 +1,7 @@
 # Week 4 sprint retrospective
 
 ## Bettens, Louis
+During this sprint I continued implementing support for user accounts by letting the app store user information in the database. The task was relatively straightforward and involved little coordination as it is currently self-contained, but involved work at the model, view, and presenter layers. I worked about 5 hours on that, but spent some hours doing code review.
 
 
 ## Jaakik, Marouane
