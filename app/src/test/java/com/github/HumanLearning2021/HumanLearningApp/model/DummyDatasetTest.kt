@@ -9,9 +9,9 @@ class DummyDatasetTest {
 
     @Test
     fun datasetCreatesCorrectly() {
-        val fork = DummyCategory("Fork", "Fork",null)
-        val knife = DummyCategory("Knife", "Knife", null)
-        val spoon = DummyCategory("Spoon", "Spoon",null)
+        val fork = DummyCategory("Fork", "Fork")
+        val knife = DummyCategory("Knife", "Knife")
+        val spoon = DummyCategory("Spoon", "Spoon")
         val name = "Utensils"
         val dataset = DummyDataset(name, name, setOf(fork, knife, spoon))
 
@@ -24,7 +24,7 @@ class DummyDatasetTest {
     @Test(expected = IllegalArgumentException::class)
     fun removeCategoryThrowsIllegalArgumentException() = runBlockingTest {
         val name = "Utensils"
-        val fork = DummyCategory("Fork", "Fork",null)
+        val fork = DummyCategory("Fork", "Fork")
         val dataset = DummyDataset(name, name, setOf())
 
         dataset.removeCategory(fork)
@@ -33,9 +33,9 @@ class DummyDatasetTest {
     @ExperimentalCoroutinesApi
     @Test
     fun removeCategoryWorks() = runBlockingTest {
-        val fork = DummyCategory("Fork", "Fork",null)
-        val knife = DummyCategory("Knife", "Knife", null)
-        val spoon = DummyCategory("Spoon", "Spoon",null)
+        val fork = DummyCategory("Fork", "Fork")
+        val knife = DummyCategory("Knife", "Knife")
+        val spoon = DummyCategory("Spoon", "Spoon")
         val name = "Utensils"
         val dataset = DummyDataset(name, name, setOf(fork, knife, spoon))
 
@@ -47,9 +47,9 @@ class DummyDatasetTest {
     @ExperimentalCoroutinesApi
     @Test
     fun editDatasetNameWorks() = runBlockingTest {
-        val fork = DummyCategory("Fork", "Fork",null)
-        val knife = DummyCategory("Knife", "Knife", null)
-        val spoon = DummyCategory("Spoon", "Spoon",null)
+        val fork = DummyCategory("Fork", "Fork")
+        val knife = DummyCategory("Knife", "Knife")
+        val spoon = DummyCategory("Spoon", "Spoon")
         val name = "Utensils"
         val newName = "NoLongerUtensils"
         val dataset = DummyDataset(name, name, setOf(fork, knife, spoon))
