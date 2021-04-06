@@ -15,6 +15,7 @@ import com.google.firebase.ktx.app
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 import java.util.*
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategory as FirestoreCategory1
 
 class FirestoreDatabaseService(
     /**
@@ -35,12 +36,14 @@ class FirestoreDatabaseService(
         @DocumentId
         lateinit var self: DocumentReference
         lateinit var name: String
+        var representativePicture: String? = null
 
-        constructor(name: String) : this() {
+        constructor(name: String, representativePicture: String?) : this() {
             this.name = name
+            this.representativePicture = representativePicture
         }
 
-        fun toPublic() = FirestoreCategory(self.path, self.id, name, null)
+        fun toPublic() = FirestoreCategory1(self.path, self.id, name, representativePicture)
     }
 
     private class PictureSchema() {
@@ -74,7 +77,7 @@ class FirestoreDatabaseService(
 
         @OptIn(ExperimentalStdlibApi::class)
         suspend fun toPublic(): FirestoreDataset {
-            val cats: Set<FirestoreCategory> = buildSet(categories.size) {
+            val cats: Set<FirestoreCategory1> = buildSet(categories.size) {
                 for (cat in categories) {
                     val catRef = cat.get()
                     requireNotNull(catRef, { "at least one of the categories was not found" })
@@ -86,7 +89,7 @@ class FirestoreDatabaseService(
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    override suspend fun getCategories(): Set<FirestoreCategory> {
+    override suspend fun getCategories(): Set<FirestoreCategory1> {
         val query = categories
         val cats = query.get().await().toObjects(CategorySchema::class.java)
         return buildSet(cats.size) {
@@ -97,7 +100,7 @@ class FirestoreDatabaseService(
 
     @OptIn(ExperimentalStdlibApi::class)
     override suspend fun getAllPictures(category: Category): Set<FirestoreCategorizedPicture> {
-        require(category is FirestoreCategory)
+        require(category is FirestoreCategory1)
         categories.document(category.id).get().addOnCompleteListener {
             if (!it.isSuccessful || it.result == null) {
                 throw java.lang.IllegalArgumentException("Category with id ${category.id} is not present in the database")
@@ -109,7 +112,7 @@ class FirestoreDatabaseService(
     }
 
     override suspend fun removeCategory(category: Category) {
-        require(category is FirestoreCategory)
+        require(category is FirestoreCategory1)
         val ref = categories.document(category.id)
         ref.get().addOnCompleteListener {
             if (!it.isSuccessful || it.result == null) {
@@ -143,7 +146,7 @@ class FirestoreDatabaseService(
     override suspend fun putDataset(name: String, categories: Set<Category>): FirestoreDataset {
         val catRefs: MutableSet<DocumentReference> = mutableSetOf()
         for (cat in categories) {
-            require(cat is FirestoreCategory)
+            require(cat is FirestoreCategory1)
             catRefs.add(db.document(cat.path))
         }
         val data = DatasetSchema(name, catRefs.toList())
@@ -171,7 +174,7 @@ class FirestoreDatabaseService(
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
-        require(category is FirestoreCategory)
+        require(category is FirestoreCategory1)
         val categoryRef = categories.document(category.id)
         categoryRef.get()
             .addOnCompleteListener {
@@ -183,19 +186,14 @@ class FirestoreDatabaseService(
             }
         val imageRef = imagesDir.child("${UUID.randomUUID()}")
         imageRef.putFile(picture).await()
-        val data =
-            PictureSchema(
-                categories.document(category.id),
-                "gs://${imageRef.bucket}/${imageRef.path}"
-            )
-        categoryRef.update("representativePicture", data.url).addOnFailureListener {
+        val url = "gs://${imageRef.bucket}/${imageRef.path}"
+        categoryRef.update("representativePicture", url).addOnFailureListener {
             Log.w(
                 this.toString(),
-                "Setting representative picture of category ${category.id} to picture at ${data.url} failed"
+                "Setting representative picture of category ${category.id} to picture at $url failed"
             )
         }
     }
-
 
     @OptIn(ExperimentalStdlibApi::class)
     override suspend fun getDatasets(): Set<FirestoreDataset> {
@@ -217,7 +215,7 @@ class FirestoreDatabaseService(
         category: Category
     ): FirestoreDataset {
         require(dataset is FirestoreDataset)
-        require(category is FirestoreCategory)
+        require(category is FirestoreCategory1)
 
         val ds = datasets.document(dataset.id)
         ds.get().addOnCompleteListener {
@@ -232,7 +230,7 @@ class FirestoreDatabaseService(
         }
 
         var res = dataset as FirestoreDataset
-        val newCats: MutableSet<FirestoreCategory> = mutableSetOf()
+        val newCats: MutableSet<FirestoreCategory1> = mutableSetOf()
         newCats.apply {
             addAll(dsCategories)
             remove(category)
@@ -267,14 +265,14 @@ class FirestoreDatabaseService(
     }
 
     override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
-        require(category is FirestoreCategory)
+        require(category is FirestoreCategory1)
         val query = pictures.whereEqualTo("category", db.document(category.path)).limit(1)
         val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
         return pic?.toPublic()
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): FirestoreCategorizedPicture {
-        require(category is FirestoreCategory)
+        require(category is FirestoreCategory1)
         val ref = imagesDir.child("${UUID.randomUUID()}")
         ref.putFile(picture).await()
         val data = PictureSchema(db.document(category.path), "gs://${ref.bucket}/${ref.path}")
@@ -282,14 +280,14 @@ class FirestoreDatabaseService(
         return documentRef.get().await().toObject(PictureSchema::class.java)!!.toPublic()
     }
 
-    override suspend fun getCategory(categoryId: Any): FirestoreCategory? {
+    override suspend fun getCategory(categoryId: Any): FirestoreCategory1? {
         val cat = categories.document(categoryId as String).get().await()
             .toObject(CategorySchema::class.java)
         return cat?.toPublic()
     }
 
-    override suspend fun putCategory(categoryName: String): FirestoreCategory {
-        val data = CategorySchema(categoryName)
+    override suspend fun putCategory(categoryName: String): FirestoreCategory1 {
+        val data = CategorySchema(categoryName, null)
         val documentRef = categories.add(data).await()
         return documentRef.get().await().toObject(CategorySchema::class.java)!!.toPublic()
     }
