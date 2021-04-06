@@ -28,6 +28,11 @@ class DummyDatabaseService() : DatabaseService {
     private val representativePictures: MutableMap<String, CategorizedPicture> = mutableMapOf()
 
 
+    init {
+        representativePictures["Fork"] = forkRepPic
+        representativePictures["Knife"] = knifeRepPic
+        representativePictures["Spoon"] = spoonRepPic
+    }
 
     override suspend fun getPicture(category: Category): CategorizedPicture?{
         if (!categories.contains(category)) throw IllegalArgumentException("The provided category" +
