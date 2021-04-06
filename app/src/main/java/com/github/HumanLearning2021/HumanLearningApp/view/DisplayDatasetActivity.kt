@@ -47,12 +47,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_dataset)
 
-        val extra = intent.extras
-        if (extra != null && extra["dataset_id"] is String) {
-            datasetId = intent.getStringExtra("dataset_id")!!
-        } else {
-            datasetId = "kitchen utensils"
-        }
+        checkIntentExtras(intent.extras)
 
         var representativePictures = setOf<CategorizedPicture>()
 
@@ -70,17 +65,8 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
         findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
             displayDatasetAdapter
-        findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
-            val cat = categories.elementAt(i)
-            val intent =
-                Intent(this@DisplayDatasetActivity, DisplayImageSetActivity::class.java)
-            intent.putExtra(
-                "category_of_pictures",
-                cat
-            )
-            intent.putExtra("dataset_id", datasetId)
-            startActivity(intent)
-        }
+
+        gridViewItemListener()
 
         findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
             lifecycleScope.launch {
@@ -147,5 +133,27 @@ class DisplayDatasetActivity : AppCompatActivity() {
             return images.size
         }
 
+    }
+
+    private fun checkIntentExtras(extras : Bundle?){
+        datasetId = if (extras != null && extras["dataset_id"] is String) {
+            intent.getStringExtra("dataset_id")!!
+        } else {
+            "kitchen utensils"
+        }
+    }
+
+    private fun gridViewItemListener(){
+        findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
+            val cat = categories.elementAt(i)
+            val intent =
+                Intent(this@DisplayDatasetActivity, DisplayImageSetActivity::class.java)
+            intent.putExtra(
+                "category_of_pictures",
+                cat
+            )
+            intent.putExtra("dataset_id", datasetId)
+            startActivity(intent)
+        }
     }
 }

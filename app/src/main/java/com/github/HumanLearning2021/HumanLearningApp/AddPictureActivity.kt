@@ -45,11 +45,8 @@ class AddPictureActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val extra = intent.extras
-        if (extra != null && extra["categories"] is ArrayList<*>) {
-            val givenCategories = extra["categories"] as ArrayList<Category>
-            categories = categories.plus(givenCategories)
-        }
+
+        checkIntentExtras(intent.extras)
 
         if (cameraIsAvailable()) {
             when {
@@ -68,6 +65,13 @@ class AddPictureActivity : AppCompatActivity() {
             }
         } else {
             permissionNeededDialog()
+        }
+    }
+
+    private fun checkIntentExtras(extras : Bundle?){
+        if (extras != null && extras["categories"] is ArrayList<*>) {
+            val givenCategories = extras["categories"] as ArrayList<Category>
+            categories = categories.plus(givenCategories)
         }
     }
 
