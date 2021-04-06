@@ -247,7 +247,7 @@ class FirestoreDatabaseService(
         return pic?.toPublic()
     }
 
-    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
+    override suspend fun getRepresentativePicture(categoryId: Any): FirestoreCategorizedPicture? {
         require(categoryId is String)
         val query = representativePictures.whereEqualTo("category", categories.document(categoryId))
             .limit(1)

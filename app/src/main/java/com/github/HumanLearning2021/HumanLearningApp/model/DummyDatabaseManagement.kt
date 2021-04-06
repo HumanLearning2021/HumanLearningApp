@@ -10,7 +10,7 @@ import java.lang.IllegalArgumentException
  * Dummy implementation of a database manager
  * Dataset & category names and ids are equivalent
  */
-data class DummyDatabaseManagement(val databaseService: DummyDatabaseService): DatabaseManagement {
+data class DummyDatabaseManagement(private val databaseService: DummyDatabaseService): DatabaseManagement {
     companion object {
         val staticDummyDatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
     }
@@ -122,7 +122,7 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService): D
         }
     }
 
-    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+    suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         require(picture is DummyCategorizedPicture)
         try {
             databaseService.putRepresentativePicture((picture as DummyCategorizedPicture).picture, picture.category)

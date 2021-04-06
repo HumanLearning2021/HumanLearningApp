@@ -132,14 +132,6 @@ interface DatabaseManagement {
     suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
 
     /**
-     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
-     *
-     * @param picture - the picture to put as a representative
-     * @throws IllegalArgumentException if the underlying database does not contain the category of the picture
-     */
-    suspend fun putRepresentativePicture(picture: CategorizedPicture)
-
-    /**
      * Retrieves all of the available datasets
      *
      * @return a set containing all off the available datasets
