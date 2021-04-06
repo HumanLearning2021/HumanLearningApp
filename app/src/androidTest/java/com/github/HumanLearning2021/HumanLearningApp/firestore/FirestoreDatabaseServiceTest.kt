@@ -19,6 +19,7 @@ class FirestoreDatabaseServiceTest : TestCase() {
     lateinit var demoInterface: FirestoreDatabaseService
     lateinit var scratchInterface: FirestoreDatabaseService
     lateinit var appleCategoryId: String
+    lateinit var pearCategoryId: String
     lateinit var fakeCategory: FirestoreCategory
     lateinit var fakeDataset: FirestoreDataset
 
@@ -26,6 +27,7 @@ class FirestoreDatabaseServiceTest : TestCase() {
         demoInterface = FirestoreDatabaseService("demo")
         scratchInterface = FirestoreDatabaseService("scratch")
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
+        pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")
         fakeDataset = FirestoreDataset("oopsy/oopsy", "oopsy", "oopsy", setOf())
     }
@@ -73,7 +75,7 @@ class FirestoreDatabaseServiceTest : TestCase() {
 
     fun test_getAllPictures() = runBlocking {
         val appleCategory = demoInterface.getCategory(appleCategoryId)
-        requireNotNull(appleCategory, {"fruit category not found in demo database"})
+        requireNotNull(appleCategory, {"apple category not found in demo database"})
         val pics = demoInterface.getAllPictures(appleCategory)
         assertThat(pics.size, equalTo(2))
         for (p in pics) {
@@ -233,5 +235,13 @@ class FirestoreDatabaseServiceTest : TestCase() {
         require(scratchInterface.getDataset(ds.id)!!.name == randomDatasetName) { "dataset has incorrect name" }
         scratchInterface.editDatasetName(ds, newDsName)
         assertThat(scratchInterface.getDataset(ds.id)!!.name, equalTo(newDsName))
+    }
+
+    fun test_getRepresentativePicture_null() = runBlocking {
+        assertThat(demoInterface.getRepresentativePicture(pearCategoryId), equalTo(null))
+    }
+
+    fun test_getRepresentativePicture() = runBlocking {
+        assertThat(demoInterface.getRepresentativePicture(appleCategoryId), not(equalTo(null)))
     }
 }
