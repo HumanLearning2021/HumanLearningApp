@@ -15,6 +15,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
+import java.lang.Exception
 import java.util.*
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategory as FirestoreCategory1
 
@@ -126,15 +127,12 @@ class FirestoreDatabaseService(
     override suspend fun removePicture(picture: CategorizedPicture) {
         require(picture is FirestoreCategorizedPicture)
         val ref = db.document(picture.path)
-        if(!ref.get().await().exists()) {
+        try {
+            ref.delete()
+        } catch (e: Exception) {
             throw IllegalArgumentException("The database ${this.db} does not contain the picture ${picture.url}")
         }
-        ref.delete().addOnFailureListener {
-            Log.w(
-                this.toString(),
-                "Removing picture ${picture.url} from ${this.db} failed"
-            )
-        }
+
     }
 
     override suspend fun putDataset(name: String, categories: Set<Category>): FirestoreDataset {
