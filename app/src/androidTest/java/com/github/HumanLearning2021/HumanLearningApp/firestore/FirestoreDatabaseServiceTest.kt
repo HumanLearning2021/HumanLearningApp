@@ -12,6 +12,7 @@ import org.hamcrest.Matchers.*
 import org.junit.Assert.assertThat
 import org.junit.Test
 import java.io.File
+import java.lang.Exception
 import java.lang.IllegalArgumentException
 import java.util.*
 
@@ -83,14 +84,20 @@ class FirestoreDatabaseServiceTest : TestCase() {
         }
     }
 
-    @Test(expected = IllegalArgumentException::class)
     fun test_getAllPictures_throwsIfCategoryNotPresent(): Unit = runBlocking {
-        demoInterface.getAllPictures(fakeCategory)
+        try {
+            demoInterface.getAllPictures(fakeCategory)
+        } catch (e: IllegalArgumentException) {
+            assert(true)
+        }
     }
 
-    @Test(expected = IllegalArgumentException::class)
     fun test_removeCategory_throws(): Unit = runBlocking {
-        demoInterface.removeCategory(fakeCategory)
+        try {
+            demoInterface.removeCategory(fakeCategory)
+        } catch (e: IllegalArgumentException) {
+            assert(true)
+        }
     }
 
     fun test_putThenRemoveCategory() = runBlocking {
@@ -101,16 +108,19 @@ class FirestoreDatabaseServiceTest : TestCase() {
         assertThat(scratchInterface.getCategory(testCategory.id), equalTo(null))
     }
 
-    @Test(expected = IllegalArgumentException::class)
     fun test_removePicture_throwsIfPictureNotPresent(): Unit = runBlocking {
-        demoInterface.removePicture(FirestoreCategorizedPicture("some_Path/continued_by", fakeCategory, "some url"))
+        try {
+            demoInterface.removePicture(FirestoreCategorizedPicture("some_Path/continued_by", fakeCategory, "some url"))
+        } catch (e: IllegalArgumentException) {
+            assert(true)
+        }
     }
 
     fun test_removePicture() = runBlocking {
         val randomCategoryName = "${UUID.randomUUID()}"
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val aThing = scratchInterface.putCategory(randomCategoryName)
-        val tmp = File.createTempFile("nobodyexpectsthespanishinquisition", ".png")
+        val tmp = File.createTempFile("droid", ".png")
         val pic = try {
             ctx.resources.openRawResource(R.drawable.fork).use { img ->
                 tmp.outputStream().use {
@@ -154,10 +164,13 @@ class FirestoreDatabaseServiceTest : TestCase() {
         assertThat(demoInterface.getDataset(randomDatasetName), equalTo(null))
     }
 
-    @Test(expected = IllegalArgumentException::class)
     fun test_deleteDataset_throwsIfDatasetNotPresent(): Unit = runBlocking {
         val randomDatasetName = "${UUID.randomUUID()}"
-        demoInterface.deleteDataset(randomDatasetName)
+        try {
+            demoInterface.deleteDataset(randomDatasetName)
+        } catch (e: IllegalArgumentException) {
+            assert(true)
+        }
     }
 
     fun test_deleteDataset() = runBlocking {
@@ -168,9 +181,12 @@ class FirestoreDatabaseServiceTest : TestCase() {
         assertThat(scratchInterface.getDataset(ds.id), equalTo(null))
     }
 
-    @Test(expected = IllegalArgumentException::class)
     fun test_putRepresentativePicture_throwsIfCategoryNotPresent() = runBlocking {
-        demoInterface.putRepresentativePicture(Uri.EMPTY, fakeCategory)
+        try {
+            demoInterface.putRepresentativePicture(Uri.EMPTY, fakeCategory)
+        } catch (e: IllegalArgumentException) {
+            assert(true)
+        }
     }
 
     fun test_putRepresentativePicture() = runBlocking {
@@ -197,16 +213,22 @@ class FirestoreDatabaseServiceTest : TestCase() {
         assertThat(demoInterface.getDatasets().first().name, equalTo("Fruit"))
     }
 
-    @Test(expected = IllegalArgumentException::class)
     fun test_removeCategoryFromDataset_throwsIfDatasetNotContained(): Unit = runBlocking {
         val cat = demoInterface.getCategories().first()
-        demoInterface.removeCategoryFromDataset(fakeDataset, cat)
+        try {
+            demoInterface.removeCategoryFromDataset(fakeDataset, cat)
+        } catch (e: IllegalArgumentException) {
+            assert(true)
+        }
     }
 
-    @Test(expected = IllegalArgumentException::class)
     fun test_removeCategoryFromDataset_throwsIfCategoryNotContained(): Unit = runBlocking {
         val ds = demoInterface.getDatasets().first()
-        demoInterface.removeCategoryFromDataset(ds, fakeCategory)
+        try {
+            demoInterface.removeCategoryFromDataset(ds, fakeCategory)
+        } catch (e: IllegalArgumentException) {
+            assert(true)
+        }
     }
 
     fun test_removeCategoryFromDataset() = runBlocking {
@@ -222,9 +244,12 @@ class FirestoreDatabaseServiceTest : TestCase() {
         assertThat(scratchInterface.getCategory(cat.id), not(equalTo(null)))
     }
 
-    @Test(expected = IllegalArgumentException::class)
     fun test_editDatasetName_throwsIfDatasetNotPresent(): Unit = runBlocking {
-        demoInterface.editDatasetName(fakeDataset, "Some name")
+        try {
+            demoInterface.editDatasetName(fakeDataset, "Some name")
+        } catch (e: IllegalArgumentException) {
+            assert(true)
+        }
     }
 
     fun test_editDatasetName() = runBlocking {
