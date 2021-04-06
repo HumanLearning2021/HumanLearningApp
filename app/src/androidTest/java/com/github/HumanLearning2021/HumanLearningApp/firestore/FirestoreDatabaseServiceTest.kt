@@ -26,8 +26,8 @@ class FirestoreDatabaseServiceTest : TestCase() {
         demoInterface = FirestoreDatabaseService("demo")
         scratchInterface = FirestoreDatabaseService("scratch")
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
-        fakeCategory =  FirestoreCategory("oopsy", "oopsy", "oopsy", null)
-        fakeDataset = FirestoreDataset("oopsy", "oopsy", "oopsy", setOf())
+        fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy", null)
+        fakeDataset = FirestoreDataset("oopsy/oopsy", "oopsy", "oopsy", setOf())
     }
 
     fun test_getCategories() = runBlocking {
@@ -72,12 +72,12 @@ class FirestoreDatabaseServiceTest : TestCase() {
     }
 
     fun test_getAllPictures() = runBlocking {
-        val fruitCategory = demoInterface.getCategory(appleCategoryId)
-        requireNotNull(fruitCategory, {"fruit category not found in demo database"})
-        val pics = demoInterface.getAllPictures(fruitCategory)
+        val appleCategory = demoInterface.getCategory(appleCategoryId)
+        requireNotNull(appleCategory, {"fruit category not found in demo database"})
+        val pics = demoInterface.getAllPictures(appleCategory)
         assertThat(pics.size, equalTo(2))
         for (p in pics) {
-            assertThat(p, hasCategory(equalTo(fruitCategory)))
+            assertThat(p, hasCategory(equalTo(appleCategory)))
         }
     }
 
@@ -100,8 +100,8 @@ class FirestoreDatabaseServiceTest : TestCase() {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun test_removePicture_throwsIfCategoryNotPresent(): Unit = runBlocking {
-        demoInterface.removePicture(FirestoreCategorizedPicture("some_Path", fakeCategory, "some url"))
+    fun test_removePicture_throwsIfPictureNotPresent(): Unit = runBlocking {
+        demoInterface.removePicture(FirestoreCategorizedPicture("some_Path/continued_by", fakeCategory, "some url"))
     }
 
     fun test_removePicture() = runBlocking {
@@ -174,22 +174,21 @@ class FirestoreDatabaseServiceTest : TestCase() {
     fun test_putRepresentativePicture() = runBlocking {
         val randomCategoryName = "${UUID.randomUUID()}"
         val ctx = ApplicationProvider.getApplicationContext<Context>()
-        val aThing = scratchInterface.putCategory(randomCategoryName)
-        val tmp = File.createTempFile("nobodyExpectsTheSpanishInquisition", ".png")
-        val pic = try {
+        val cat = scratchInterface.putCategory(randomCategoryName)
+        val tmp = File.createTempFile("droid", ".png")
+        try {
             ctx.resources.openRawResource(R.drawable.fork).use { img ->
                 tmp.outputStream().use {
                     img.copyTo(it)
                 }
             }
             val uri = Uri.fromFile(tmp)
-
-            scratchInterface.putRepresentativePicture(uri, aThing)
+            scratchInterface.putRepresentativePicture(uri, cat)
         } finally {
             tmp.delete()
         }
 
-        assertThat(scratchInterface.getCategory(aThing.id)!!.representativePicture, equalTo(pic))
+        assertThat(scratchInterface.getCategory(cat.id)!!.representativePicture, not(equalTo(null)))
     }
 
     fun test_getDatasets() = runBlocking {
@@ -218,7 +217,7 @@ class FirestoreDatabaseServiceTest : TestCase() {
         ds = scratchInterface.removeCategoryFromDataset(ds, cat)
         assertThat(scratchInterface.getDataset(ds.id), not(equalTo(null)))
         assertThat(scratchInterface.getDataset(ds.id)!!.categories, not(hasItem(hasName(cat.name))))
-        assertThat(scratchInterface.getCategory(ds.id), not(equalTo(null)))
+        assertThat(scratchInterface.getCategory(cat.id), not(equalTo(null)))
     }
 
     @Test(expected = IllegalArgumentException::class)
