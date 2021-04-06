@@ -15,9 +15,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
-import java.lang.Exception
 import java.util.*
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategory
 import com.google.firebase.firestore.FirebaseFirestoreException
 
 class FirestoreDatabaseService(
@@ -200,14 +198,14 @@ class FirestoreDatabaseService(
         require(category is FirestoreCategory)
 
         val dsCategories = dataset.categories
-        val newCats: MutableSet<FirestoreCategory> = mutableSetOf()
+        val newCats: MutableList<FirestoreCategory> = mutableListOf()
         newCats.apply {
             addAll(dsCategories)
             remove(category)
-            toSet()
         }
+        val newCatRefs: List<DocumentReference> = newCats.map { cat -> categories.document(cat.id) }
         try {
-            datasets.document(dataset.id).update("categories", newCats.toList()).await()
+            datasets.document(dataset.id).update("categories", newCatRefs).await()
         } catch (e: FirebaseFirestoreException) {
             Log.w(this.toString(), "Removing category ${category.id} from dataset ${dataset.id} failed", e)
             throw java.lang.IllegalArgumentException("The category ${category.id} is not contained in the dataset ${dataset.id} or said dataset is not contained in this database")
