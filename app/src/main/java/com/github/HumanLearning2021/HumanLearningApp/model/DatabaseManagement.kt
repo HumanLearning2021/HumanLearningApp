@@ -16,6 +16,14 @@ interface DatabaseManagement {
     suspend fun getPicture(category: Category): CategorizedPicture?
 
     /**
+     * Retrieves the picture associated to the specified category as its representative picture
+     *
+     * @param categoryId - the id of the category whose representative picture we want to retrieve
+     * @return the representative picture as a categorizedPicture, can be null
+     */
+    suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture?
+
+    /**
      * A function that allows to put a picture in the underlying database
      *
      * @param picture the picture to put in the underlying database

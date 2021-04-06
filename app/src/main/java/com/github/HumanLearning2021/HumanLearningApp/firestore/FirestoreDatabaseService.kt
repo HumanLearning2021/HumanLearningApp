@@ -43,7 +43,7 @@ class FirestoreDatabaseService(
             this.representativePicture = representativePicture
         }
 
-        fun toPublic() = FirestoreCategory1(self.path, self.id, name, representativePicture)
+        fun toPublic() = FirestoreCategory(self.path, name, name)
     }
 
     private class PictureSchema() {
@@ -269,6 +269,10 @@ class FirestoreDatabaseService(
         val query = pictures.whereEqualTo("category", db.document(category.path)).limit(1)
         val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
         return pic?.toPublic()
+    }
+
+    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
+        TODO("Not yet implemented")
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): FirestoreCategorizedPicture {

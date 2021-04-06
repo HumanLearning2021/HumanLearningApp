@@ -26,7 +26,7 @@ class FirestoreDatabaseServiceTest : TestCase() {
         demoInterface = FirestoreDatabaseService("demo")
         scratchInterface = FirestoreDatabaseService("scratch")
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
-        fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy", null)
+        fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")
         fakeDataset = FirestoreDataset("oopsy/oopsy", "oopsy", "oopsy", setOf())
     }
 
@@ -188,7 +188,7 @@ class FirestoreDatabaseServiceTest : TestCase() {
             tmp.delete()
         }
 
-        assertThat(scratchInterface.getCategory(cat.id)!!.representativePicture, not(equalTo(null)))
+        assertThat(scratchInterface.getRepresentativePicture(cat.id), not(equalTo(null)))
     }
 
     fun test_getDatasets() = runBlocking {

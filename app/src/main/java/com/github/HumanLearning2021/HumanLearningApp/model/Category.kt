@@ -9,5 +9,4 @@ import android.os.Parcelable
 interface Category : Parcelable {
     val id: Any
     val name: String
-    val representativePicture: Any?
 }

@@ -9,10 +9,10 @@ import java.util.*
  * A class representing a dummy data set Interface
  * Categories are uniquely defined by their name
  */
-class DummyDatabaseService : DatabaseService {
-    private val fork = DummyCategory("Fork", "Fork", null)
-    private val knife = DummyCategory("Knife", "Knife", null)
-    private val spoon = DummyCategory("Spoon", "Spoon", null)
+class DummyDatabaseService() : DatabaseService {
+    private val fork = DummyCategory("Fork", "Fork")
+    private val knife = DummyCategory("Knife", "Knife")
+    private val spoon = DummyCategory("Spoon", "Spoon")
 
     private val forkPic = DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.fork))
     private val knifePic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife))
@@ -21,6 +21,7 @@ class DummyDatabaseService : DatabaseService {
     private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
     private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
     private val datasets: MutableSet<Dataset> = mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
+    private val representativePictures: MutableMap<String, CategorizedPicture> = mutableMapOf()
 
     override suspend fun getPicture(category: Category): CategorizedPicture?{
         require(category is DummyCategory)
@@ -30,6 +31,10 @@ class DummyDatabaseService : DatabaseService {
         for (p in pictures)
             if (p.category == category) return p
         return null
+    }
+
+    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
+        return representativePictures[categoryId]
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
@@ -50,7 +55,7 @@ class DummyDatabaseService : DatabaseService {
     }
 
     override suspend fun putCategory(categoryName: String): Category {
-        val category = DummyCategory(categoryName, categoryName, null)
+        val category = DummyCategory(categoryName, categoryName)
         categories.add(category)
         return category
     }
@@ -126,16 +131,10 @@ class DummyDatabaseService : DatabaseService {
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
-        require(category is DummyCategory)
-        for (c in categories) {
-            if (c == category) {
-                val newCategory = DummyCategory(c.name, c.name, DummyCategorizedPicture(category, picture))
-                categories.remove(c)
-                categories.add(newCategory)
-                return
-            }
+        if (!categories.contains(category)) {
+            throw IllegalArgumentException("The category name ${category.name} is not present in the database")
         }
-        throw IllegalArgumentException("The category name ${category.name} is not present in the database")
+        representativePictures[category.id as String] = DummyCategorizedPicture(category, picture)
     }
 
 
