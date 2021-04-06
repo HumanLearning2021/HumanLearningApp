@@ -21,6 +21,10 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService): D
         }
     }
 
+    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
+        return databaseService.getRepresentativePicture(categoryId)
+    }
+
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
        return try {
            databaseService.putPicture(picture, category)

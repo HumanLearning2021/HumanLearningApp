@@ -36,7 +36,6 @@ class DisplayDatasetActivityTest {
     private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
     private val datasetId = "kitchen utensils"
 
-
     private val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
 
     /**
@@ -123,7 +122,7 @@ class DisplayDatasetActivityTest {
         onView(withId(R.id.saveButton)).perform(click())
 
         onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
-        val forkCat = DummyCategory("Fork", "Fork", null)
+        val forkCat = DummyCategory("Fork", "Fork")
         runBlocking {
             assert(staticDBManagement.getAllPictures(forkCat).size == 2)
         }

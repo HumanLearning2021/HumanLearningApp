@@ -36,14 +36,13 @@ class AddPictureActivityTest {
 
     @Parcelize
     private class TestCat(
-        override val id: String, override val name: String,
-        override val representativePicture: CategorizedPicture?
+        override val id: String, override val name: String
     ) : Category
 
-    val catSet = setOf<Category>(
-        TestCat("cat1", "cat1", null),
-        TestCat("cat2", "cat2", null),
-        TestCat("cat3", "cat3", null)
+    private val catSet = setOf<Category>(
+        TestCat("cat1", "cat1"),
+        TestCat("cat2", "cat2"),
+        TestCat("cat3", "cat3")
     )
 
     @get:Rule
@@ -217,7 +216,7 @@ class AddPictureActivityTest {
     @Test
     fun activityContractCorrectlyParsesResult() {
         val bundle = Bundle().apply {
-            putParcelable("category", TestCat("some_category", "some_category", null))
+            putParcelable("category", TestCat("some_category", "some_category"))
             putParcelable("image", Uri.EMPTY)
         }
         val intent = Intent().putExtra("result", bundle)

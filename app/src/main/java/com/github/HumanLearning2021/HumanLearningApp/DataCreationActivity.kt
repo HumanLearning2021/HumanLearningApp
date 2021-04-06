@@ -68,7 +68,7 @@ class DataCreationActivity : AppCompatActivity() {
     fun removeView(view: View) {
         val categoryName: EditText =
             (view.parent as View).findViewById(R.id.data_creation_category_name)
-        val cat = DummyCategory(categoryName.text.toString(), categoryName.text.toString(), null)
+        val cat = DummyCategory(categoryName.text.toString(), categoryName.text.toString())
         if (categories.contains(cat)) {
             categories = categories.minus(cat)
             lifecycleScope.launch {
@@ -87,7 +87,7 @@ class DataCreationActivity : AppCompatActivity() {
             v = binding.parentLinearLayout.getChildAt(i)
             val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
             val category =
-                DummyCategory(categoryName.text.toString(), categoryName.text.toString(), null)
+                DummyCategory(categoryName.text.toString(), categoryName.text.toString())
             lifecycleScope.launch {
                 if (!categories.contains(category)) {
                     //TODO: Uncomment when solution about Representative Picture is found
