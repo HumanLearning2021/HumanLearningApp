@@ -28,9 +28,9 @@ import java.io.Serializable
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
-    private val fork = DummyCategory("Fork", "Fork",null)
-    private val knife = DummyCategory("Knife","Knife",null)
-    private val spoon = DummyCategory("Spoon","Spoon", null)
+    private val fork = DummyCategory("Fork", "Fork")
+    private val knife = DummyCategory("Knife","Knife")
+    private val spoon = DummyCategory("Spoon","Spoon")
 
     private val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
 
