@@ -10,6 +10,7 @@
 
 
 ## Lachat, Niels Marco
+This sprint I refactored and redesigned the DataOverviewFragment (now callled DatasetListFragment). Initially my task was to use the already existing fragment in an activity allowing to select the dataset on which to learn, but it turned out that the DatasetListFragment needed to be reworked to be able to indicate which dataset is selected to the host activity. I also decided to add the representative pictures of the categories in the list. This took more time than expected because I also needed to integrate the fragment with the new DatabaseManagement API. But in the end I managed to adapt the fragment to suit my needs, which means that it will be easy to make the activity which I was supposed to make this sprint. (I still need to test the displaying of representative pictures in the fragment, because I didn't have time to test it this sprint).
 
 
 ## Lenweiter, Martin
