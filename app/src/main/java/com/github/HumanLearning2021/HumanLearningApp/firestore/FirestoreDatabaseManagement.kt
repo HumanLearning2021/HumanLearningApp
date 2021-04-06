@@ -22,8 +22,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         return try {
             databaseService.getPicture(category)
         } catch (e: IllegalArgumentException) {
-            val cat = databaseService.putCategory(category.name)
-            getPicture(cat)
+            throw e
         }
     }
 
@@ -37,8 +36,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         return try {
             databaseService.putPicture(picture, category)
         } catch (e: IllegalArgumentException) {
-            val cat = databaseService.putCategory(category.name)
-            putPicture(picture, cat)
+           throw e
         }
     }
 
@@ -71,8 +69,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         return try {
             databaseService.getAllPictures(category)
         } catch (e: IllegalArgumentException) {
-            databaseService.putCategory(category.name)
-            getAllPictures(category)
+            throw e
         }
     }
 
@@ -128,8 +125,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         try {
             databaseService.putRepresentativePicture(picture, category)
         } catch (e: IllegalArgumentException) {
-            databaseService.putCategory(category.name)
-            putRepresentativePicture(picture, category)
+            throw e
         }
     }
 
@@ -161,9 +157,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         return try {
             databaseService.removeCategoryFromDataset(dataset, category)
         } catch (e: IllegalArgumentException) {
-            val cats = dataset.categories.toMutableSet()
-            cats.remove(category)
-            databaseService.putDataset(dataset.name, cats.toSet())
+            throw e
         }
     }
 
@@ -172,7 +166,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         return try {
             databaseService.editDatasetName(dataset, newName)
         } catch (e: IllegalArgumentException) {
-            databaseService.putDataset(newName, dataset.categories)
+            throw e
         }
     }
 }
