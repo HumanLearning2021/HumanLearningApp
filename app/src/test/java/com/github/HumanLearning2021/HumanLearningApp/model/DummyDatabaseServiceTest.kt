@@ -172,10 +172,10 @@ class DummyDatabaseServiceTest {
     @Test
     fun putRepresentativePictureWorks() = runBlockingTest {
         val dummyDatabaseService = DummyDatabaseService()
-        dummyDatabaseService.putCategory("Fork")
-        assert(dummyDatabaseService.getRepresentativePicture("Fork") == null)
-        dummyDatabaseService.putRepresentativePicture(Uri.EMPTY, fork)
-        assert(dummyDatabaseService.getRepresentativePicture("Fork") == DummyCategorizedPicture(fork, Uri.EMPTY))
+        val table = dummyDatabaseService.putCategory("Table")
+        assert(dummyDatabaseService.getRepresentativePicture("Table") == null)
+        dummyDatabaseService.putRepresentativePicture(Uri.EMPTY, table)
+        assert(dummyDatabaseService.getRepresentativePicture("Table") == DummyCategorizedPicture(table, Uri.EMPTY))
     }
 
     @ExperimentalCoroutinesApi
