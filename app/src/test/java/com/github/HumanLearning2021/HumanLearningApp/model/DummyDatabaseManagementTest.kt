@@ -19,10 +19,10 @@ class DummyDatabaseManagementTest {
         testDatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
     }
 
-    private val fork = DummyCategory("Fork", "Fork",null)
-    private val knife = DummyCategory("Knife", "Knife",null)
-    private val spoon = DummyCategory("Spoon", "Spoon",null)
-    private val table = DummyCategory("Table", "Table",null)
+    private val fork = DummyCategory("Fork", "Fork")
+    private val knife = DummyCategory("Knife", "Knife")
+    private val spoon = DummyCategory("Spoon", "Spoon")
+    private val table = DummyCategory("Table", "Table")
 
     private val forkUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork)
     private val knifeUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.knife)
@@ -185,7 +185,7 @@ class DummyDatabaseManagementTest {
     @Test
     fun putRepresentativePictureWorks() = runBlockingTest {
         testDatabaseManagement.putRepresentativePicture(Uri.EMPTY, fork)
-        assert(testDatabaseManagement.getCategoryById(fork.id)!!.representativePicture != null)
+        assert(testDatabaseManagement.getRepresentativePicture(fork.id) != null)
     }
 
     @ExperimentalCoroutinesApi
@@ -198,7 +198,7 @@ class DummyDatabaseManagementTest {
     @Test
     fun putRepresentativePictureOverloadWorks() = runBlockingTest {
         testDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture(fork, Uri.EMPTY))
-        assert(testDatabaseManagement.getCategoryById(fork.id)!!.representativePicture != null)
+        assert(testDatabaseManagement.getRepresentativePicture(fork.id) != null)
     }
 
     @ExperimentalCoroutinesApi
