@@ -15,8 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HumanLearning">
         <activity android:name=".view.DisplayImageSetActivity" />
-        <activity android:name=".DataOverviewActivity"
-            android:exported="true"/><!-- TODO : remove, only for testing -->
+        <activity android:name=".DataOverviewActivity" />
         <activity android:name=".view.GoogleSignInActivity" />
         <activity android:name=".DataCreationActivity" />
         <activity android:name=".AddPictureActivity" />
