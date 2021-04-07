@@ -131,6 +131,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.firebaseui:firebase-ui-storage:6.4.0'
     implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
     // Test frameworks
     testImplementation 'junit:junit:4.13.2'
