@@ -125,12 +125,14 @@ class FirestoreDatabaseService(
     override suspend fun removePicture(picture: CategorizedPicture) {
         require(picture is FirestoreCategorizedPicture)
         val ref = db.document(picture.path)
+        if (!ref.get().await().exists()) {
+            throw java.lang.IllegalArgumentException("The database ${this.db} does not contain the picture ${picture.url}")
+        }
         try {
             ref.delete().await()
         } catch (e: FirebaseFirestoreException) {
             Log.w(this.toString(), "Removing picture ${picture.url} form ${this.db} failed", e)
         }
-
     }
 
     override suspend fun putDataset(name: String, categories: Set<Category>): FirestoreDataset {
