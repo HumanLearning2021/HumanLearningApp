@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.google.firebase.auth.FirebaseUser
 import java.util.*
 
 /**
@@ -31,11 +32,11 @@ class DummyDatabaseService : DatabaseService {
     private val datasets: MutableSet<Dataset> =
         mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
     private val representativePictures: MutableMap<String, CategorizedPicture> = mutableMapOf()
+    private val users = mutableMapOf<Pair<User.Type, String>, User>()
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         if (!categories.contains(category)) throw IllegalArgumentException(
-            "The provided category" +
-                    " is not present in the dataset"
+            "The provided category is not present in the dataset"
         )
 
         for (p in pictures)
@@ -49,8 +50,7 @@ class DummyDatabaseService : DatabaseService {
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
         if (!categories.contains(category)) throw IllegalArgumentException(
-            "The provided category" +
-                    "is not present in the dataset"
+            "The provided category is not present in the dataset"
         )
 
         val addedPicture = DummyCategorizedPicture(category, picture)
@@ -150,4 +150,17 @@ class DummyDatabaseService : DatabaseService {
     override fun getDatasets(): Set<Dataset> {
         return datasets
     }
+
+    override suspend fun updateUser(firebaseUser: FirebaseUser): User {
+        val type = User.Type.FIREBASE
+        val uid = firebaseUser.uid
+        return DummyUser(
+            type = type,
+            uid = uid,
+            email = firebaseUser.email,
+            displayName = firebaseUser.displayName,
+        ).also { users[Pair(type, uid)] = it }
+    }
+
+    override suspend fun getUser(type: User.Type, uid: String) = users[Pair(type, uid)]
 }
