@@ -6,19 +6,20 @@ import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.User
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.getField
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 import java.util.*
 import com.google.firebase.firestore.FirebaseFirestoreException
-import java.lang.Exception
+import com.google.firebase.firestore.ktx.getField
 
 class FirestoreDatabaseService(
     /**
@@ -33,6 +34,7 @@ class FirestoreDatabaseService(
     private val pictures = db.collection("/databases/$dbName/pictures")
     private val datasets = db.collection("/databases/$dbName/datasets")
     private val representativePictures = db.collection("/databases/$dbName/representativePictures")
+    private val users = db.collection("/databases/$dbName/users")
     private val storage = Firebase.storage(this.app)
     private val imagesDir = storage.reference.child("$dbName/images")
 
@@ -88,6 +90,20 @@ class FirestoreDatabaseService(
             }
             return FirestoreDataset(self.path, self.id, name, cats)
         }
+    }
+
+    private class UserSchema {
+        @DocumentId
+        lateinit var self: DocumentReference
+        var displayName: String? = null
+        var email: String? = null
+        fun toPublic() = FirestoreUser(
+            path = self.path,
+            displayName = displayName,
+            email = email,
+            uid = self.id.takeWhile { it != '@' },
+            type = User.Type.valueOf(self.id.takeLastWhile { it != '@' }),
+        )
     }
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -235,6 +251,24 @@ class FirestoreDatabaseService(
             res = FirestoreDataset(dataset.path, dataset.id, newName, dataset.categories)
         }
         return res
+    }
+
+    override suspend fun updateUser(firebaseUser: FirebaseUser): FirestoreUser {
+        val uid = firebaseUser.uid
+        val type = User.Type.FIREBASE
+        val documentRef = users.document("$uid@$type")
+        val data = UserSchema().apply {
+            email = firebaseUser.email
+            displayName = firebaseUser.displayName
+        }
+        documentRef.set(data).await()
+        return documentRef.get().await().toObject(UserSchema::class.java)!!.toPublic()
+    }
+
+    override suspend fun getUser(type: User.Type, uid: String): FirestoreUser? {
+        val documentRef = users.document("$uid@$type")
+        val user = documentRef.get().await().toObject(UserSchema::class.java)
+        return user?.toPublic()
     }
 
     override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {

@@ -14,14 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HumanLearning">
-        <activity android:name=".view.DisplayImageSetActivity"/>
-        <activity android:name=".DataOverviewActivity"/>
-        <activity android:name=".view.GoogleSignInActivity" />
+        <activity android:name=".view.DisplayImageSetActivity" />
+        <activity android:name=".DataOverviewActivity" />
         <activity android:name=".DataCreationActivity" />
         <activity android:name=".AddPictureActivity" />
         <activity android:name=".view.DisplayImageActivity" />
         <activity android:name=".view.DisplayDatasetActivity" />
-        <activity android:name=".view.LearningSettingsActivity"/>
+        <activity android:name=".view.LearningSettingsActivity" />
         <activity android:name=".view.LearningActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -39,17 +39,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/goToLoginFragment"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/MainActivitySignInFragment"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        android:onClick="launchToLoginFragment"
-        android:text="Login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/goToCameraButton"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/goToCameraButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
