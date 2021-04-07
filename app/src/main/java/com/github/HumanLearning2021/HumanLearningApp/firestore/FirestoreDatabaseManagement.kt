@@ -146,7 +146,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         val datasets = databaseService.getDatasets()
         val res: MutableSet<String> = mutableSetOf()
         for (d in datasets) {
-            res.add(d.id as String)
+            res.add(d.id)
         }
         return res.toSet()
     }

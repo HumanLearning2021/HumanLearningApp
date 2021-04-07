@@ -12,10 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.AddPictureActivity
 import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import kotlinx.coroutines.launch
 
 
@@ -70,11 +67,9 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
         findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
             lifecycleScope.launch {
-                dataset.editDatasetName(findViewById<EditText>(R.id.display_dataset_name).text.toString())
+                (dataset as DummyDataset).editDatasetName(findViewById<EditText>(R.id.display_dataset_name).text.toString())
             }
         }
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
