@@ -2,21 +2,29 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.R
-import java.lang.IllegalArgumentException
 import java.util.*
 
 /**
  * A class representing a dummy data set Interface
  * Categories are uniquely defined by their name
  */
-class DummyDatabaseService() : DatabaseService {
+class DummyDatabaseService : DatabaseService {
     private val fork = DummyCategory("Fork", "Fork")
     private val knife = DummyCategory("Knife", "Knife")
     private val spoon = DummyCategory("Spoon", "Spoon")
 
-    private val forkPic = DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.fork))
-    private val knifePic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife))
-    private val spoonPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon))
+    private val forkPic = DummyCategorizedPicture(
+        fork,
+        Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
+    )
+    private val knifePic = DummyCategorizedPicture(
+        knife,
+        Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
+    )
+    private val spoonPic = DummyCategorizedPicture(
+        spoon,
+        Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.spoon)
+    )
 
     private val forkRepPic = DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.fork_rep))
     private val knifeRepPic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife_rep))
@@ -24,9 +32,9 @@ class DummyDatabaseService() : DatabaseService {
 
     private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
     private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
-    private val datasets: MutableSet<Dataset> = mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
+    private val datasets: MutableSet<Dataset> =
+        mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
     private val representativePictures: MutableMap<String, CategorizedPicture> = mutableMapOf()
-
 
     init {
         representativePictures["Fork"] = forkRepPic
@@ -34,9 +42,13 @@ class DummyDatabaseService() : DatabaseService {
         representativePictures["Spoon"] = spoonRepPic
     }
 
-    override suspend fun getPicture(category: Category): CategorizedPicture?{
-        if (!categories.contains(category)) throw IllegalArgumentException("The provided category" +
-                " is not present in the dataset")
+
+    override suspend fun getPicture(category: Category): CategorizedPicture? {
+        if (!categories.contains(category)) throw IllegalArgumentException(
+            "The provided category" +
+                    " is not present in the dataset"
+        )
+
 
         for (p in pictures)
             if (p.category == category) return p
@@ -48,8 +60,10 @@ class DummyDatabaseService() : DatabaseService {
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
-        if(!categories.contains(category)) throw IllegalArgumentException("The provided category" +
-                "is not present in the dataset")
+        if (!categories.contains(category)) throw IllegalArgumentException(
+            "The provided category" +
+                    "is not present in the dataset"
+        )
 
         val addedPicture = DummyCategorizedPicture(category, picture)
         pictures.add(addedPicture)
@@ -121,8 +135,8 @@ class DummyDatabaseService() : DatabaseService {
     }
 
     override suspend fun getDataset(id: Any): Dataset? {
-        for(d in datasets)
-            if(d.name == id as String) return d
+        for (d in datasets)
+            if (d.name == id as String) return d
         return null
     }
 
@@ -139,6 +153,7 @@ class DummyDatabaseService() : DatabaseService {
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
         if (!categories.contains(category)) {
             throw IllegalArgumentException("The category name ${category.name} is not present in the database")
+
         }
         representativePictures[category.id as String] = DummyCategorizedPicture(category, picture)
     }

@@ -1,9 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
-import android.os.Parcelable
 import com.google.common.collect.ImmutableSet
-import kotlinx.parcelize.Parcelize
 import java.lang.IllegalArgumentException
 
 /**

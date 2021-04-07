@@ -27,12 +27,12 @@
     <string name="learning_settings_tvLearningMode">LEARNING MODE</string>
 
 
-
     <string name="main_btLearning">LEARNING</string>
     <string name="main_btDisplayDataset">DISPLAY DATASET</string>
     <string name="main_btAddImage">ADD IMAGE TO THE DATASET</string>
 
     <string name="modify_categories">Modify categories</string>
+    <string name="add_new_picture">Add new picture</string>
     <string name="dataset_name">Dataset Name</string>
     <string name="imagetobedisplayed">image to be displayed</string>
     <string name="buttontoremovepicturefromdataset">button to remove picture from dataset</string>
@@ -42,4 +42,7 @@
 
     <string name="SignInFragment_loginStatusSuccessMessage">Welcome %1$s</string>
     <string name="SignInFragment_loginStatusDefaultMessage">Not logged in</string>
+
+    <string name="DatasetList_default_ds_name">Dataset name</string>
+    <string name="DatasetList_im_content_description">Category representative of the dataset</string>
 </resources>

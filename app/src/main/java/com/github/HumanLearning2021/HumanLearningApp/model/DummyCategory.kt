@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import kotlinx.parcelize.Parcelize
 
-
 /**
  * Class representing a dummy implementation of the category interface
  *
