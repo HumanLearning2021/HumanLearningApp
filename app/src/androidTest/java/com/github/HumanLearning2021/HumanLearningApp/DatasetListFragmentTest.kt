@@ -39,10 +39,11 @@ class DatasetListFragmentTest {
 
     @Test
     fun listItemInFragmentAreClickable() {
-        scenario?.withFragment {
+        scenario.withFragment {
             this.selectedDataset.observe(this) {
                 // tests that the clicked dataset is in the dummy datasets
-                assert(dummyDatasets!!.contains(it))
+                assert(dummyDatasets.find { ds -> ds == it } != null
+                ) { "clicked dataset $it was not in $dummyDatasets" }
             }
         }
         onView(withId(R.id.DatasetList_list))
