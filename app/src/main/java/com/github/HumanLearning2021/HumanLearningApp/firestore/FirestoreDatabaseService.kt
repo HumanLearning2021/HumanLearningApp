@@ -7,6 +7,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseException
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
@@ -17,6 +18,7 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 import java.util.*
 import com.google.firebase.firestore.FirebaseFirestoreException
+import java.lang.Exception
 
 class FirestoreDatabaseService(
     /**
@@ -131,7 +133,12 @@ class FirestoreDatabaseService(
         try {
             ref.delete().await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w(this.toString(), "Removing picture ${picture.url} form ${this.db} failed", e)
+            Log.w(this.toString(), "Removing picture ${picture.url} from ${this.db} failed", e)
+        }
+        try {
+            storage.getReferenceFromUrl(picture.url).delete().await()
+        } catch (e: FirebaseException) {
+            Log.w(this.toString(), "Removing the image ${picture.url} from storage failed", e)
         }
     }
 
