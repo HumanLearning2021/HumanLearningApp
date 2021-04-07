@@ -36,7 +36,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
 
     fun test_getPicture_categoryNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.getPicture(FirestoreCategory("fake/path", getRandomString(), name))
+            scratchManagement.getPicture(FirestoreCategory("path", getRandomString(), name))
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -62,7 +62,10 @@ class FirestoreDatabaseManagementTest : TestCase() {
 
     fun test_putPicture_categoryNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.putPicture(Uri.EMPTY, FirestoreCategory("fake/path", getRandomString(), name))
+            val tmp = File.createTempFile("meow", ".png")
+            val uri = Uri.fromFile(tmp)
+            scratchManagement.putPicture(uri, FirestoreCategory("path", getRandomString(), name))
+            tmp.delete()
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -114,7 +117,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
 
     fun test_getAllPictures_categoryNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.getCategoryByName(name).size
+            scratchManagement.getAllPictures(fakeCategory)
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -129,32 +132,11 @@ class FirestoreDatabaseManagementTest : TestCase() {
         assertThat(pics, hasItems(hasCategory(equalTo(cat))))
     }
 
-    fun test_removeCategory_notPresent() = runBlocking {
-        val name = getRandomString()
-        runCatching {
-            scratchManagement.getCategoryByName(name).isEmpty()
-        }.fold({
-            fail("unexpected successful completion")
-        }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
-        })
-    }
-
     fun test_removeCategory() = runBlocking {
         val cat = scratchManagement.putCategory(getRandomString())
         requireNotNull(scratchManagement.getCategoryById(cat.id), {"category was not put into database"})
         scratchManagement.removeCategory(cat)
         assertThat(scratchManagement.getCategoryById(cat.id), equalTo(null))
-    }
-
-    fun test_removePicture_notPresent() = runBlocking {
-        runCatching {
-            scratchManagement.getPicture(fakeCategory)
-        }.fold({
-            fail("unexpected successful completion")
-        }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
-        })
     }
 
     fun test_removePicture() = runBlocking {
@@ -247,7 +229,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
     fun test_removeCategoryFromDataset_datasetNotPresent() = runBlocking {
         val cat1 = scratchManagement.putCategory(getRandomString())
         val cat2 = scratchManagement.putCategory(getRandomString())
-        val fakeDs = FirestoreDataset("fake/path", getRandomString(), getRandomString(), setOf(cat1, cat2))
+        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf(cat1, cat2))
         runCatching {
             scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
         }.fold({
@@ -260,7 +242,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
     fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
         val cat1 = scratchManagement.putCategory(getRandomString())
         val cat2 = fakeCategory
-        val fakeDs = FirestoreDataset("fake/path", getRandomString(), getRandomString(), setOf(cat1, cat2))
+        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf(cat1, cat2))
         runCatching {
             scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
         }.fold({
@@ -282,7 +264,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
     }
 
     fun test_editDatasetName_datasetNotPresent() = runBlocking {
-        val fakeDs = FirestoreDataset("fake/path", getRandomString(), getRandomString(), setOf())
+        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
         runCatching {
             scratchManagement.editDatasetName(fakeDs, getRandomString())
         }.fold({
