@@ -35,11 +35,13 @@ class FirestoreDatabaseManagementTest : TestCase() {
     private fun getRandomString() = "${UUID.randomUUID()}"
 
     fun test_getPicture_categoryNotPresent() = runBlocking {
-        try {
+        runCatching {
             scratchManagement.getPicture(FirestoreCategory("fake/path", getRandomString(), name))
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_getPicture() = runBlocking {
@@ -59,11 +61,13 @@ class FirestoreDatabaseManagementTest : TestCase() {
     }
 
     fun test_putPicture_categoryNotPresent() = runBlocking {
-        try {
+        runCatching {
             scratchManagement.putPicture(Uri.EMPTY, FirestoreCategory("fake/path", getRandomString(), name))
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_putPicture() = runBlocking {
@@ -109,11 +113,13 @@ class FirestoreDatabaseManagementTest : TestCase() {
     }
 
     fun test_getAllPictures_categoryNotPresent() = runBlocking {
-        try {
+        runCatching {
             scratchManagement.getCategoryByName(name).size
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_getAllPictures() = runBlocking {
@@ -125,11 +131,13 @@ class FirestoreDatabaseManagementTest : TestCase() {
 
     fun test_removeCategory_notPresent() = runBlocking {
         val name = getRandomString()
-        try {
+        runCatching {
             scratchManagement.getCategoryByName(name).isEmpty()
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_removeCategory() = runBlocking {
@@ -140,11 +148,13 @@ class FirestoreDatabaseManagementTest : TestCase() {
     }
 
     fun test_removePicture_notPresent() = runBlocking {
-        try {
+        runCatching {
             scratchManagement.getPicture(fakeCategory)
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_removePicture() = runBlocking {
@@ -190,11 +200,13 @@ class FirestoreDatabaseManagementTest : TestCase() {
     }
 
     fun test_putRepresentativePicture_categoryNotPresent() = runBlocking {
-        try {
+        runCatching {
             scratchManagement.getRepresentativePicture(fakeCategory)
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_putRepresentativePicture() = runBlocking {
@@ -236,22 +248,26 @@ class FirestoreDatabaseManagementTest : TestCase() {
         val cat1 = scratchManagement.putCategory(getRandomString())
         val cat2 = scratchManagement.putCategory(getRandomString())
         val fakeDs = FirestoreDataset("fake/path", getRandomString(), getRandomString(), setOf(cat1, cat2))
-        try {
+        runCatching {
             scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
         val cat1 = scratchManagement.putCategory(getRandomString())
         val cat2 = fakeCategory
         val fakeDs = FirestoreDataset("fake/path", getRandomString(), getRandomString(), setOf(cat1, cat2))
-        try {
+        runCatching {
             scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_removeCategoryFromDataset() = runBlocking {
@@ -267,11 +283,13 @@ class FirestoreDatabaseManagementTest : TestCase() {
 
     fun test_editDatasetName_datasetNotPresent() = runBlocking {
         val fakeDs = FirestoreDataset("fake/path", getRandomString(), getRandomString(), setOf())
-        try {
+        runCatching {
             scratchManagement.editDatasetName(fakeDs, getRandomString())
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_editDatasetName() = runBlocking {

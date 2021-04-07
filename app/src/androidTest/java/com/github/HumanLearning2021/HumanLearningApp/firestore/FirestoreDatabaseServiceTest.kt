@@ -85,19 +85,23 @@ class FirestoreDatabaseServiceTest : TestCase() {
     }
 
     fun test_getAllPictures_throwsIfCategoryNotPresent(): Unit = runBlocking {
-        try {
+        runCatching {
             demoInterface.getAllPictures(fakeCategory)
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_removeCategory_throws(): Unit = runBlocking {
-        try {
+        runCatching {
             demoInterface.removeCategory(fakeCategory)
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_putThenRemoveCategory() = runBlocking {
@@ -109,11 +113,13 @@ class FirestoreDatabaseServiceTest : TestCase() {
     }
 
     fun test_removePicture_throwsIfPictureNotPresent(): Unit = runBlocking {
-        try {
+        runCatching {
             demoInterface.removePicture(FirestoreCategorizedPicture("some_Path/continued_by", fakeCategory, "some url"))
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_removePicture() = runBlocking {
@@ -166,11 +172,13 @@ class FirestoreDatabaseServiceTest : TestCase() {
 
     fun test_deleteDataset_throwsIfDatasetNotPresent(): Unit = runBlocking {
         val randomDatasetName = "${UUID.randomUUID()}"
-        try {
+        runCatching {
             demoInterface.deleteDataset(randomDatasetName)
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_deleteDataset() = runBlocking {
@@ -182,11 +190,13 @@ class FirestoreDatabaseServiceTest : TestCase() {
     }
 
     fun test_putRepresentativePicture_throwsIfCategoryNotPresent() = runBlocking {
-        try {
+        runCatching {
             demoInterface.putRepresentativePicture(Uri.EMPTY, fakeCategory)
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_putRepresentativePicture() = runBlocking {
@@ -215,20 +225,24 @@ class FirestoreDatabaseServiceTest : TestCase() {
 
     fun test_removeCategoryFromDataset_throwsIfDatasetNotContained(): Unit = runBlocking {
         val cat = demoInterface.getCategories().first()
-        try {
+        runCatching {
             demoInterface.removeCategoryFromDataset(fakeDataset, cat)
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_removeCategoryFromDataset_throwsIfCategoryNotContained(): Unit = runBlocking {
         val ds = demoInterface.getDatasets().first()
-        try {
+        runCatching {
             demoInterface.removeCategoryFromDataset(ds, fakeCategory)
-        } catch (e: IllegalArgumentException) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_removeCategoryFromDataset() = runBlocking {
@@ -245,11 +259,13 @@ class FirestoreDatabaseServiceTest : TestCase() {
     }
 
     fun test_editDatasetName_throwsIfDatasetNotPresent(): Unit = runBlocking {
-        try {
+        runCatching {
             demoInterface.editDatasetName(fakeDataset, "Some name")
-        } catch (e: Exception) {
-            assert(true)
-        }
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 
     fun test_editDatasetName() = runBlocking {
