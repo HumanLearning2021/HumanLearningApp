@@ -30,18 +30,6 @@ class DatasetListFragment : Fragment() {
      */
     val selectedDataset: LiveData<Dataset> get() = mutableSelectedDataset
 
-    private val mutableDatasetList = MutableLiveData<List<Dataset>>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // TODO replace with real database
-        val db = DummyDatabaseManagement.staticDummyDatabaseManagement
-        lifecycleScope.launch {
-            mutableDatasetList.value = db.getDatasets().toList()
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,11 +47,6 @@ class DatasetListFragment : Fragment() {
                         mutableSelectedDataset.value = it
                     }
                 }
-            }
-            // allows RecyclerView to be updated when the dataset list has been loaded
-            mutableDatasetList.observe(viewLifecycleOwner) {
-                Log.d("DatasetListFragment", "new ds : $it")
-                view.adapter?.notifyDataSetChanged()
             }
         }
         return view

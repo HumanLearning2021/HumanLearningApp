@@ -59,7 +59,7 @@ class DatasetListFragmentTest {
     fun fragmentHasChildrenViews() {
         onView(withId(R.id.DatasetList_list)).check(
             matches(
-                ViewMatchers.hasChildCount(dummyDatasets!!.size)
+                ViewMatchers.hasChildCount(dummyDatasets.size)
             )
         )
     }
