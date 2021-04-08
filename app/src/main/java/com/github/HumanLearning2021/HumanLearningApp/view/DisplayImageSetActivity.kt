@@ -15,28 +15,30 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategory
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DisplayImageSetActivity : AppCompatActivity() {
+    @Inject
+    @Demo2Database
+    lateinit var dBManagement: DatabaseManagement
 
     private var categorizedPicturesList = setOf<CategorizedPicture>()
-    private lateinit var dBManagement: FirestoreDatabaseManagement
-    private lateinit var dbName: String
     private lateinit var datasetId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_image_set)
 
-        val category: Category =
-            intent.getParcelableExtra<Category>("category_of_pictures") as FirestoreCategory
+        val category =
+            intent.getParcelableExtra<Category>("category_of_pictures") as Category
         datasetId = intent.getStringExtra("dataset_id")!!
-        dbName = intent.getStringExtra("database_name")!!
-        dBManagement = FirestoreDatabaseManagement(dbName)
 
         lifecycleScope.launch {
             categorizedPicturesList = dBManagement.getAllPictures(category)
@@ -60,7 +62,6 @@ class DisplayImageSetActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val intent = Intent(this, DisplayDatasetActivity::class.java)
         intent.putExtra("dataset_id", datasetId)
-        intent.putExtra("database_name", dbName)
         startActivity(intent)
     }
 
@@ -106,7 +107,6 @@ class DisplayImageSetActivity : AppCompatActivity() {
                 (categorizedPicturesList.elementAt(i)) as Parcelable
             )
             intent.putExtra("dataset_id", datasetId)
-            intent.putExtra("database_name", dbName)
             startActivity(intent)
         }
     }

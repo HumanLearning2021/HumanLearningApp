@@ -12,14 +12,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * A fragment displaying a list of datasets.
  */
+@AndroidEntryPoint
 class DatasetListFragment : Fragment() {
+
+    @Inject
+    @DummyDatabase
+    lateinit var dbMgt: DatabaseManagement
 
     private val mutableSelectedDataset = MutableLiveData<Dataset>()
 
@@ -42,7 +50,8 @@ class DatasetListFragment : Fragment() {
                 adapter = activity?.let { fragActivity ->
                     DatasetListRecyclerViewAdapter(
                         lifecycleScope = lifecycleScope,
-                        hostActivity = fragActivity
+                        hostActivity = fragActivity,
+                        dbMgt = dbMgt,
                     ) {
                         mutableSelectedDataset.value = it
                     }

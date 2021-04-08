@@ -10,20 +10,26 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityDataCreationBinding
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DataCreationActivity : AppCompatActivity() {
+
+    @Inject
+    @Demo2Database
+    lateinit var dBManagement: DatabaseManagement
 
     private var _binding: ActivityDataCreationBinding? = null
     private val binding get() = _binding!!
 
     private var dsCategories = emptySet<Category>()
-    private lateinit var dbName: String
-    private lateinit var dBManagement: FirestoreDatabaseManagement
     private lateinit var datasetId: String
     private lateinit var dataset: Dataset
     private lateinit var removedCategory: Category
@@ -37,8 +43,6 @@ class DataCreationActivity : AppCompatActivity() {
             val extras = intent.extras
             if (extras != null) {
                 datasetId = extras["dataset_id"] as String
-                dbName = extras["database_name"] as String
-                dBManagement = FirestoreDatabaseManagement(dbName)
                 dataset = dBManagement.getDatasetById(datasetId)!!
                 dsCategories = dataset.categories
                 val count = dsCategories.size
@@ -87,7 +91,6 @@ class DataCreationActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
-
         lifecycleScope.launch {
             val count = binding.parentLinearLayout.childCount
             var v: View?
@@ -108,7 +111,6 @@ class DataCreationActivity : AppCompatActivity() {
 
             val intent = Intent(this@DataCreationActivity, DisplayDatasetActivity::class.java)
             intent.putExtra("dataset_id", datasetId)
-            intent.putExtra("database_name", dbName)
             startActivity(intent)
         }
     }

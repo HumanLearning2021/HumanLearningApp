@@ -1,21 +1,14 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.net.Uri
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.google.firebase.FirebaseApp
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 
-class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): DatabaseManagement {
-
-    private val databaseService: FirestoreDatabaseService = FirestoreDatabaseService(dbName, app)
-
-    companion object {
-        val scratchFirestoreDatabase = FirestoreDatabaseManagement("scratch")
-    }
+class FirestoreDatabaseManagement internal constructor(
+    private val databaseService: FirestoreDatabaseService
+): DatabaseManagement {
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         require(category is FirestoreCategory)

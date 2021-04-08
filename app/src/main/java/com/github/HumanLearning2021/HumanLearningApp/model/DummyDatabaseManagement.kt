@@ -1,17 +1,18 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.google.common.collect.ImmutableSet
 import java.lang.IllegalArgumentException
+import javax.inject.Inject
 
 /**
  * Dummy implementation of a database manager
  * Dataset & category names and ids are equivalent
  */
-data class DummyDatabaseManagement(private val databaseService: DummyDatabaseService): DatabaseManagement {
-    companion object {
-        val staticDummyDatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
-    }
+data class DummyDatabaseManagement internal constructor(
+    private val databaseService: DatabaseService
+    ): DatabaseManagement {
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         return databaseService.getPicture(category)

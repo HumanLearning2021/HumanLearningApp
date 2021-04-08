@@ -14,13 +14,17 @@ import androidx.lifecycle.lifecycleScope
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class GoogleSignInFragment : Fragment() {
-
-    private val presenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
+    @Inject
+    lateinit var presenter: AuthenticationPresenter
 
     override fun onCreateView(
         inflater: LayoutInflater,

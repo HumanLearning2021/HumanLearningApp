@@ -11,13 +11,14 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class DatasetListRecyclerViewAdapter(
     private val hostActivity: Activity,
     private val lifecycleScope: LifecycleCoroutineScope,
+    private val dbMgt: DatabaseManagement,
     private val itemClickedCallback: (Dataset) -> Unit
 ) : RecyclerView.Adapter<DatasetListRecyclerViewAdapter.ListItemViewHolder>() {
 
@@ -25,9 +26,6 @@ class DatasetListRecyclerViewAdapter(
      * Defines the number of categories shown on one ListItemViewHolder
      */
     private val NB_REPRESENTATIVES_SHOWN = 3
-
-    // TODO Use injection with Hilt!
-    private val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     private lateinit var datasetList: List<Dataset>
 

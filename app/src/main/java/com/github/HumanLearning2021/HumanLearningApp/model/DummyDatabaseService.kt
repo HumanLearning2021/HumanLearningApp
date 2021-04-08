@@ -9,7 +9,7 @@ import java.util.*
  * A class representing a dummy data set Interface
  * Categories are uniquely defined by their name
  */
-class DummyDatabaseService : DatabaseService {
+class DummyDatabaseService internal constructor() : DatabaseService {
     private val fork = DummyCategory("Fork", "Fork")
     private val knife = DummyCategory("Knife", "Knife")
     private val spoon = DummyCategory("Spoon", "Spoon")
