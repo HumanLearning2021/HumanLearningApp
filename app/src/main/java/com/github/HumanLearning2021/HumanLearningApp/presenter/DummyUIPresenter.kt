@@ -1,8 +1,10 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import java.lang.Exception
 import java.lang.IllegalArgumentException
+import javax.inject.Inject
 
 
 /**
@@ -10,7 +12,9 @@ import java.lang.IllegalArgumentException
  * TODO : DELETE this file
  * a class representing a dummy UI presenter
  */
-class DummyUIPresenter(val databaseService: DatabaseService) {
+class DummyUIPresenter @Inject constructor(
+    @DummyDatabase val databaseService: DatabaseService,
+) {
 
     /**
      * Allows to retrieve a picture fron the dummy dataset

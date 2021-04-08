@@ -17,7 +17,7 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
-class FirestoreDatabaseService(
+class FirestoreDatabaseService internal constructor(
     /**
      * name of a database within the Firebase App
      */

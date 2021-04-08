@@ -4,6 +4,7 @@ plugins {
     id 'jacoco'
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 // load keystore password from secret file
@@ -30,7 +31,6 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArgument "notAnnotation", "androidx.test.filters.FlakyTest"
 
         // Fix Room incremental processing
@@ -139,6 +139,10 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:6.4.0'
     implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
     implementation 'com.google.firebase:firebase-auth-ktx'
+
+    // Hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     // Test frameworks
     testImplementation 'junit:junit:4.13.2'

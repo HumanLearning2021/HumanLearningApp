@@ -12,18 +12,21 @@ import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.AddPictureActivity
 import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class DisplayDatasetActivity : AppCompatActivity() {
+    @Inject
+    @Demo2Database
+    lateinit var dbManagement: DatabaseManagement
 
-    private lateinit var dbManagement: FirestoreDatabaseManagement
     private lateinit var categories: Set<Category>
     private lateinit var datasetId: String
     private lateinit var dataset: Dataset
-    private lateinit var dbName: String
 
     private val addPictureContractRegistration =
         registerForActivityResult(AddPictureActivity.AddPictureContract) { resultPair ->
@@ -84,7 +87,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
             R.id.display_dataset_menu_modify_categories -> {
                 val intent = Intent(this@DisplayDatasetActivity, DataCreationActivity::class.java)
                 intent.putExtra("dataset_id", datasetId)
-                intent.putExtra("database_name", dbName)
                 startActivity(intent)
                 true
             }
@@ -138,13 +140,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
             } else {
                 "uEwDkGoGADW4hEJoJ6BA"
             }
-            dbManagement = if (extras != null && extras["database_name"] is String) {
-                dbName = intent.getStringExtra("database_name")!!
-                FirestoreDatabaseManagement(dbName)
-            } else {
-                dbName = "demo2"
-                FirestoreDatabaseManagement("demo2")
-            }
         }
     }
 
@@ -158,7 +153,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 cat
             )
             intent.putExtra("dataset_id", datasetId)
-            intent.putExtra("database_name", dbName)
             startActivity(intent)
         }
     }

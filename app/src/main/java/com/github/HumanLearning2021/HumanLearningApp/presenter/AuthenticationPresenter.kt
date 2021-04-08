@@ -2,13 +2,21 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.content.Intent
 import com.firebase.ui.auth.AuthUI
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.User
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthenticationPresenter(private val authUI: AuthUI, private val db: DatabaseService) {
+@Singleton  // need to persist currentUser across activities
+class AuthenticationPresenter @Inject constructor(
+    private val authUI: AuthUI,
+    @DummyDatabase
+    private val db: DatabaseService,
+) {
     /**
      * Create an Intent that can be used to perform authentication via startActivityForResult
      */

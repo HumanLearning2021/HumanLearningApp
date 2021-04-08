@@ -7,7 +7,9 @@ import android.util.Log
 import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LearningDatasetSelectionActivity : AppCompatActivity() {
     companion object{
         const val EXTRA_SELECTED_DATASET = "com.github.HumanLearning2021.HumanLearningApp.view.SELECTED_DATASET"

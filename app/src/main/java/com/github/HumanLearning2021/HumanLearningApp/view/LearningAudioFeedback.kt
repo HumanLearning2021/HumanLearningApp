@@ -3,8 +3,9 @@ package com.github.HumanLearning2021.HumanLearningApp.view
 import android.content.Context
 import android.media.MediaPlayer
 import com.github.HumanLearning2021.HumanLearningApp.R
+import javax.inject.Inject
 
-class LearningAudioFeedback(private val applicationContext : Context) {
+class LearningAudioFeedback (val applicationContext: Context) {
     private lateinit var correctMp: MediaPlayer
     private lateinit var incorrectMp: MediaPlayer
 

@@ -14,20 +14,25 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LearningActivity : AppCompatActivity() {
-
-    private lateinit var learningPresenter: LearningPresenter
-    private lateinit var learningMode: LearningMode
     private lateinit var audioFeedback: LearningAudioFeedback
     private lateinit var dataset: Dataset
+
+    @Inject lateinit var learningPresenter: LearningPresenter
+
+    @Inject
+    @DummyDatabase lateinit var dbMgt: DatabaseManagement
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
-        learningMode =
-            intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
 
         val maybeDataset =
             intent.getParcelableExtra<Dataset>(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET)
@@ -39,7 +44,9 @@ class LearningActivity : AppCompatActivity() {
                         " a Dataset", IllegalStateException()
             )
         }
-        learningPresenter = LearningPresenter(this, learningMode, dataset)
+        learningPresenter.learningMode =
+            intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
+        learningPresenter.dataset = dataset
         initLearningViews()
         audioFeedback = LearningAudioFeedback(applicationContext)
     }
@@ -79,14 +86,15 @@ class LearningActivity : AppCompatActivity() {
     private fun initImageView(catIvId: Int, cat: Category): ImageView {
         val catIv = findViewById<ImageView>(catIvId)
         catIv.contentDescription = cat.name
+        val self = this
 
         if (catIvId == R.id.learning_im_to_sort) {
             lifecycleScope.launch {
-                learningPresenter.displayNextPicture(catIv)
+                learningPresenter.displayNextPicture(self, catIv)
             }
         } else {
             lifecycleScope.launch {
-                learningPresenter.displayTargetPicture(catIv, cat)
+                learningPresenter.displayTargetPicture(self, catIv, cat)
             }
         }
 
@@ -121,11 +129,13 @@ class LearningActivity : AppCompatActivity() {
         v.invalidate()
         Log.d("dropCallback", "${item.text} vs ${v.contentDescription}")
         val res = item.text == v.contentDescription
+        val self = this
         audioFeedback.stopAndPrepareMediaPlayers()
         if (res) {
             audioFeedback.startCorrectFeedback()
             lifecycleScope.launch {
                 learningPresenter.displayNextPicture(
+                    self,
                     findViewById(R.id.learning_im_to_sort),
                 )
             }
