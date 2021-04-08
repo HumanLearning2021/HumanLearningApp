@@ -184,7 +184,7 @@ class DummyDatabaseService : DatabaseService {
         if (!datasets.contains(dataset)) {
             throw IllegalArgumentException("The underlying database does not contain the dataset ${dataset.name}")
         }
-        val newDs = DummyDataset(newName as String, newName, dataset.categories)
+        val newDs = DummyDataset(dataset.id, newName, dataset.categories)
         this.datasets.apply {
             add(newDs)
             remove(dataset)
