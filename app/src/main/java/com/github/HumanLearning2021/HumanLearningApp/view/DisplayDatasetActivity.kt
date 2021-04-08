@@ -67,7 +67,8 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
         findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
             lifecycleScope.launch {
-                (dataset as DummyDataset).editDatasetName(findViewById<EditText>(R.id.display_dataset_name).text.toString())
+                dataset = staticDBManagement.editDatasetName(dataset, findViewById<EditText>(R.id.display_dataset_name).text.toString())
+                datasetId = dataset.id as String
             }
         }
     }
