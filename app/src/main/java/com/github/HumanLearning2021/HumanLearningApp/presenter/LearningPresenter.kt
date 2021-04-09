@@ -24,7 +24,7 @@ class DummyLearningPresenter(
         /*
         TODO: should the activity be a property of the class instead? Since the presenter and the activity have a 1-1 relationship
          */
-        val cats = databaseService.getCategories()
+        val cats = databaseManagement.getCategories()
         var rndCat: Category?
         do {
             rndCat = cats.random()
@@ -34,7 +34,7 @@ class DummyLearningPresenter(
 
         val nextPicture = when(learningMode){
             LearningMode.REPRESENTATION -> databaseManagement.getPicture(rndCat!!)
-            LearningMode.PRESENTATION -> databaseService.getRepresentativePicture(rndCat!!.name)
+            LearningMode.PRESENTATION -> databaseManagement.getRepresentativePicture(rndCat!!.name)
         }
         nextPicture!!.displayOn(activity, view)
         view.contentDescription = rndCat!!.name
@@ -43,7 +43,7 @@ class DummyLearningPresenter(
 
 
     suspend fun displayTargetPicture(activity: Activity, view: ImageView, categoryName: String){
-        databaseService.getPicture(databaseService.getCategory(categoryName)!!)?.displayOn(activity, view)
+        databaseService.getPicture(databaseManagement.getCategoryById(categoryName)!!)?.displayOn(activity, view)
     }
 }
 
