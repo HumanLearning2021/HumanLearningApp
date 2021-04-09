@@ -55,17 +55,9 @@ class LearningSettingsActivityTest {
     }
 
     @Test
-    fun pressingrepresentationButtonLaunchesLearningActivity() {
+    fun pressingRepresentationButtonLaunchesLearningActivity() {
         clickOn(R.id.learningSettings_btChoosePresentation)
         intended(hasComponent(LearningActivity::class.java.name))
-    }
-
-    @Test
-    fun longClickOnPresentationButtonShowsTooltip() {
-        longClickOn(R.id.learningSettings_btChoosePresentation)
-
-        //assertDisplayed(R.string.learning_settings_tooltip_presentation)
-
     }
 
     @Test

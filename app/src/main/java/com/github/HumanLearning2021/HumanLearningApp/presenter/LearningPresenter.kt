@@ -16,20 +16,14 @@ class DummyLearningPresenter(
     private val learningMode: LearningMode
 ) {
     private var previousCategory : Category? = null
-    private val databaseService = DummyDatabaseService()
+    private val databaseManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
 
-    init {
-        runBlocking {
-            //allows to call displayNextPicture on initialization
-            previousCategory = databaseService.getCategory("Spoon")
-        }
-    }
 
     suspend fun displayNextPicture(activity: Activity, view: ImageView) {
         /*
         TODO: should the activity be a property of the class instead? Since the presenter and the activity have a 1-1 relationship
          */
-        val cats = databaseService.getCategories()
+        val cats = databaseManagement.getCategories()
         var rndCat: Category?
         do {
             rndCat = cats.random()
@@ -37,7 +31,11 @@ class DummyLearningPresenter(
         Log.d("displayNextPicture", "previous : $previousCategory, curr : $rndCat")
         previousCategory = rndCat
 
-        val nextPicture = databaseService.getPicture(rndCat!!)
+        val nextPicture = when(learningMode){
+            LearningMode.REPRESENTATION -> databaseManagement.getPicture(rndCat!!)
+            LearningMode.PRESENTATION -> databaseManagement.getRepresentativePicture(rndCat!!.name)
+        }
+
         nextPicture!!.displayOn(activity, view)
         view.contentDescription = rndCat!!.name
         view.invalidate()
@@ -45,9 +43,6 @@ class DummyLearningPresenter(
 
 
     suspend fun displayTargetPicture(activity: Activity, view: ImageView, categoryName: String){
-        if(learningMode == LearningMode.PRESENTATION)
-            databaseService.getPicture(databaseService.getCategory(categoryName)!!)?.displayOn(activity, view)
-        else
-           databaseService.getRepresentativePicture(categoryName)?.displayOn(activity, view)
+        databaseManagement.getRepresentativePicture(categoryName)?.displayOn(activity, view)
     }
 }
