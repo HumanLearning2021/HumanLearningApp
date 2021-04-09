@@ -33,7 +33,7 @@ class DummyLearningPresenter(
         previousCategory = rndCat
 
         val nextPicture = when(learningMode){
-            LearningMode.REPRESENTATION -> databaseManagement.getPicture(rndCat!!)
+            LearningMode.REPRESENTATION -> databaseService.getPicture(rndCat!!)
             LearningMode.PRESENTATION -> databaseManagement.getRepresentativePicture(rndCat!!.name)
         }
         nextPicture!!.displayOn(activity, view)
