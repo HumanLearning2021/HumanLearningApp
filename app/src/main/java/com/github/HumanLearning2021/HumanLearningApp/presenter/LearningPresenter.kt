@@ -43,7 +43,7 @@ class DummyLearningPresenter(
 
 
     suspend fun displayTargetPicture(activity: Activity, view: ImageView, categoryName: String){
-        databaseManagement.getPicture(databaseService.getCategory(categoryName)!!)?.displayOn(activity, view)
+        databaseService.getPicture(databaseService.getCategory(categoryName)!!)?.displayOn(activity, view)
     }
 }
 
