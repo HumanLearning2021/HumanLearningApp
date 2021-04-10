@@ -17,7 +17,7 @@ class DummyLearningPresenter(
 ) {
     private var previousCategory : Category? = null
     private val databaseService = DummyDatabaseService()
-    private val databaseManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
+    private val databaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
 
     suspend fun displayNextPicture(activity: Activity, view: ImageView) {
@@ -33,7 +33,7 @@ class DummyLearningPresenter(
         previousCategory = rndCat
 
         val nextPicture = when(learningMode){
-            LearningMode.REPRESENTATION -> databaseService.getPicture(rndCat!!)
+            LearningMode.REPRESENTATION -> databaseManagement.getPicture(rndCat!!)
             LearningMode.PRESENTATION -> databaseManagement.getRepresentativePicture(rndCat!!.name)
         }
         nextPicture!!.displayOn(activity, view)
@@ -43,7 +43,7 @@ class DummyLearningPresenter(
 
 
     suspend fun displayTargetPicture(activity: Activity, view: ImageView, categoryName: String){
-        databaseService.getPicture(databaseManagement.getCategoryById(categoryName)!!)?.displayOn(activity, view)
+        databaseManagement.getPicture(databaseManagement.getCategoryById(categoryName)!!)?.displayOn(activity, view)
     }
 }
 
