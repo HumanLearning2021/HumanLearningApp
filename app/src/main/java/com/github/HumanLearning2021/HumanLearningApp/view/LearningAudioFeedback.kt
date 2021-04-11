@@ -49,7 +49,7 @@ class LearningAudioFeedback(private val applicationContext : Context) {
      */
     fun __testing_getCorrectMP(): MediaPlayer = correctMp
     /**
-     * Gets the MediaPlayer that plays the 'incorrect' feedback (eg. 'domamge!')
+     * Gets the MediaPlayer that plays the 'incorrect' feedback (eg. 'dommage!')
      * ONLY USE THIS FOR UNIT TESTING
      */
     fun __testing_getIncorrectMP(): MediaPlayer = incorrectMp

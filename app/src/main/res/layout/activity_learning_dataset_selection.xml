@@ -8,9 +8,9 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/LearningDatasetSelection_dataset_list"
-        android:name="com.github.HumanLearning2021.HumanLearningApp.DataOverviewFragment"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="500dp"
+        class="com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListFragment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
