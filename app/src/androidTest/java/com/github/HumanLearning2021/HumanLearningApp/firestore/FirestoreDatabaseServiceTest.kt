@@ -43,7 +43,7 @@ class FirestoreDatabaseServiceTest : TestCase() {
 
     fun test_getPicture() = runBlocking {
         val appleCategory = demoInterface.getCategories().find { it.name == "Pomme" }
-        requireNotNull(appleCategory, { "category of apples no found in demo database" })
+        requireNotNull(appleCategory, { "category of apples not found in demo database" })
         val pic = demoInterface.getPicture(appleCategory)
         assertThat(pic, hasCategory(equalTo(appleCategory)))
     }
