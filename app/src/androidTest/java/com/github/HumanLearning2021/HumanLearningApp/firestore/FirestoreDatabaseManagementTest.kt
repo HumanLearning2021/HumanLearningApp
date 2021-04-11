@@ -230,26 +230,16 @@ class FirestoreDatabaseManagementTest : TestCase() {
         val cat1 = scratchManagement.putCategory(getRandomString())
         val cat2 = scratchManagement.putCategory(getRandomString())
         val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf(cat1, cat2))
-        runCatching {
-            scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
-        }.fold({
-            fail("unexpected successful completion")
-        }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
-        })
+        val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
+        assertEquals(setOf(cat1), res)
     }
 
     fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
         val cat1 = scratchManagement.putCategory(getRandomString())
         val cat2 = fakeCategory
         val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf(cat1, cat2))
-        runCatching {
-            scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
-        }.fold({
-            fail("unexpected successful completion")
-        }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
-        })
+        val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
+        assertEquals(setOf(cat1), res.categories)
     }
 
     fun test_removeCategoryFromDataset() = runBlocking {

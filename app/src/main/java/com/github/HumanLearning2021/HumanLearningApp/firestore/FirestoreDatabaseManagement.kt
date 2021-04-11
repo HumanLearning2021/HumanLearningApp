@@ -157,8 +157,10 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         return try {
             databaseService.removeCategoryFromDataset(dataset, category)
         } catch (e: IllegalArgumentException) {
-            //do nothing since this means that the category is not in the dataset which is the same as having it removed
-            return dataset
+            val newCats = mutableListOf<FirestoreCategory>()
+            newCats.addAll(dataset.categories)
+            newCats.remove(category)
+            return FirestoreDataset(dataset.path, dataset.id, dataset.name, newCats.toSet())
         }
     }
 
