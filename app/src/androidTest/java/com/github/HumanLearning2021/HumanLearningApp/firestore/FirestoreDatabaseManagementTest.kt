@@ -183,7 +183,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
 
     fun test_putRepresentativePicture_categoryNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.getRepresentativePicture(fakeCategory)
+            scratchManagement.putRepresentativePicture(Uri.EMPTY, fakeCategory)
         }.fold({
             fail("unexpected successful completion")
         }, {

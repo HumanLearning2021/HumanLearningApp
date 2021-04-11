@@ -87,7 +87,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         try {
             databaseService.removePicture(picture)
         } catch (e: Exception) {
-            //do nothing since this means that the category is not in the database which is the same as having it removed
+            //do nothing since this means that the picture is not in the database which is the same as having it removed
         }
     }
 
@@ -116,7 +116,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         try {
             databaseService.deleteDataset(id)
         } catch (e: IllegalArgumentException) {
-            //do nothing since this means that the category is not in the database which is the same as having it removed
+            //do nothing since this means that the dataset is not in the database which is the same as having it removed
         }
     }
 
@@ -157,7 +157,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         return try {
             databaseService.removeCategoryFromDataset(dataset, category)
         } catch (e: IllegalArgumentException) {
-            throw e
+            //do nothing since this means that the category is not in the dataset which is the same as having it removed
         }
     }
 
