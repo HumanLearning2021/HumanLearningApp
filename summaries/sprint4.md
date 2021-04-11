@@ -5,6 +5,7 @@ During this sprint I continued implementing support for user accounts by letting
 
 
 ## Jaakik, Marouane
+This week, I have worked on redesegning the Main Activity to accomodate Both User and Learner Mode. I had a little emrgency during this week So I had to miss the sprint retrospective. But everyone was kind to update me on everything. The demo is based on the redesigned version of the Main activity that will be further enhanced during the coming sprints.
 
 
 ## Konrad, Jonas Franz
