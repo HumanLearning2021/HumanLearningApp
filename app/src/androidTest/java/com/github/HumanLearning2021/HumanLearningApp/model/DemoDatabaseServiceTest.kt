@@ -23,7 +23,7 @@ abstract class DemoDatabaseServiceTest : TestCase() {
     }
 
     fun test_getCategory() = runBlocking {
-        val cat = db.getCategory("Pomme")
+        val cat = db.getCategory("LbaIwsl1kizvTod4q1TG")
         assertThat(cat, hasName("Pomme"))
     }
 

@@ -46,10 +46,10 @@ class DummyDatabaseService : DatabaseService {
 
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
+      require(category is DummyCategory)
         if (!categories.contains(category)) throw IllegalArgumentException(
             "The provided category is not present in the dataset"
         )
-
 
         for (p in pictures)
             if (p.category == category) return p
@@ -61,9 +61,9 @@ class DummyDatabaseService : DatabaseService {
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
-        if (!categories.contains(category)) throw IllegalArgumentException(
-            "The provided category is not present in the dataset"
-        )
+        require(category is DummyCategory)
+        if(!categories.contains(category)) throw IllegalArgumentException("The provided category" +
+                "is not present in the dataset")
 
         val addedPicture = DummyCategorizedPicture(category, picture)
         pictures.add(addedPicture)
@@ -88,6 +88,7 @@ class DummyDatabaseService : DatabaseService {
     }
 
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
+        require(category is DummyCategory)
         if (!categories.contains(category)) {
             throw IllegalArgumentException("The category ${category.name} is not present in the database")
         }
@@ -101,11 +102,12 @@ class DummyDatabaseService : DatabaseService {
     }
 
     override suspend fun removeCategory(category: Category) {
+        require(category is DummyCategory)
         if (categories.contains(category)) {
             categories.remove(category)
             for (d in datasets) {
                 if (d.categories.contains(category)) {
-                    val newDataset = d.removeCategory(category)
+                    val newDataset = removeCategoryFromDataset(d, category)
                     datasets.apply {
                         remove(d)
                         add(newDataset)
@@ -119,6 +121,7 @@ class DummyDatabaseService : DatabaseService {
     }
 
     override suspend fun removePicture(picture: CategorizedPicture) {
+        require(picture is DummyCategorizedPicture)
         for (p in pictures) {
             if (p == picture) {
                 pictures.remove(p)
@@ -159,8 +162,46 @@ class DummyDatabaseService : DatabaseService {
     }
 
 
-    override fun getDatasets(): Set<Dataset> {
+    override suspend fun getDatasets(): Set<Dataset> {
         return datasets
+    }
+
+    override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): Dataset {
+        require(dataset is DummyDataset)
+        require(category is DummyCategory)
+        if (!datasets.contains(dataset)) {
+            throw IllegalArgumentException("The underlying database does not contain the dataset ${dataset.id}")
+        }
+        val dsCategories = dataset.categories
+        for (c in dsCategories) {
+            if (c == category) {
+                val newCategories: MutableSet<Category> = mutableSetOf()
+                newCategories.apply{
+                    addAll(categories)
+                    remove(c)
+                }
+                val newDs = DummyDataset(dataset.id as String, dataset.name, newCategories as Set<Category>)
+                this.datasets.apply {
+                    add(newDs)
+                    remove(dataset)
+                }
+                return newDs
+            }
+        }
+        throw IllegalArgumentException("The category ${category.id} named ${category.name} is not present in the dataset")
+    }
+
+    override suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset {
+        require(dataset is DummyDataset)
+        if (!datasets.contains(dataset)) {
+            throw IllegalArgumentException("The underlying database does not contain the dataset ${dataset.name}")
+        }
+        val newDs = DummyDataset(dataset.id, newName, dataset.categories)
+        this.datasets.apply {
+            add(newDs)
+            remove(dataset)
+        }
+        return newDs
     }
 
     override suspend fun updateUser(firebaseUser: FirebaseUser): User {

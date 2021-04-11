@@ -8,7 +8,7 @@ import java.lang.IllegalArgumentException
  * Dummy implementation of a database manager
  * Dataset & category names and ids are equivalent
  */
-data class DummyDatabaseManagement(val databaseService: DummyDatabaseService) : DatabaseManagement {
+data class DummyDatabaseManagement(private val databaseService: DummyDatabaseService): DatabaseManagement {
     companion object {
         val staticDummyDatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
     }
@@ -22,12 +22,12 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService) : 
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
+        require(category is DummyCategory)
         return try {
-            databaseService.putPicture(picture, category)
+           databaseService.putPicture(picture, category)
         } catch (e: IllegalArgumentException) {
-            throw e
+           throw e
         }
-
     }
 
     override suspend fun getCategoryById(categoryId: Any): Category? {
@@ -54,6 +54,7 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService) : 
     }
 
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
+        require(category is DummyCategory)
         return try {
             databaseService.getAllPictures(category)
         } catch (e: IllegalArgumentException) {
@@ -62,6 +63,7 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService) : 
     }
 
     override suspend fun removeCategory(category: Category) {
+        require(category is DummyCategory)
         try {
             databaseService.removeCategory(category)
         } catch (e: IllegalArgumentException) {
@@ -70,6 +72,7 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService) : 
     }
 
     override suspend fun removePicture(picture: CategorizedPicture) {
+        require(picture is DummyCategorizedPicture)
         try {
             databaseService.removePicture(picture)
         } catch (e: IllegalArgumentException) {
@@ -105,6 +108,7 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService) : 
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
+        require(category is DummyCategory)
         try {
             databaseService.putRepresentativePicture(picture, category)
         } catch (e: IllegalArgumentException) {
@@ -112,7 +116,8 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService) : 
         }
     }
 
-    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+    suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+        require(picture is DummyCategorizedPicture)
         try {
             databaseService.putRepresentativePicture(
                 (picture as DummyCategorizedPicture).picture,
@@ -143,5 +148,24 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService) : 
             res.add(d.id as String)
         }
         return ImmutableSet.copyOf(res)
+    }
+
+    override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): Dataset {
+        require(dataset is DummyDataset)
+        require(category is DummyCategory)
+        return try {
+            databaseService.removeCategoryFromDataset(dataset, category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
+    }
+
+    override suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset {
+        require(dataset is DummyDataset)
+        return try {
+            databaseService.editDatasetName(dataset, newName)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
     }
 }
