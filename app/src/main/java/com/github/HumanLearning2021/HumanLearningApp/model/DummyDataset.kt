@@ -6,7 +6,6 @@ import java.lang.IllegalArgumentException
 @Parcelize
 data class DummyDataset(override val id: String, override val name: String, override val categories: Set<Category>
 ) : Dataset {
-
     override suspend fun removeCategory(category: Category): DummyDataset {
         for (c in categories) {
             if (c == category) {

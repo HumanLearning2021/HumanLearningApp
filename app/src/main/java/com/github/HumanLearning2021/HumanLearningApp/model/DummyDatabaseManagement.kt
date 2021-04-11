@@ -8,17 +8,13 @@ import java.lang.IllegalArgumentException
  * Dummy implementation of a database manager
  * Dataset & category names and ids are equivalent
  */
-data class DummyDatabaseManagement(val databaseService: DummyDatabaseService): DatabaseManagement {
+data class DummyDatabaseManagement(val databaseService: DummyDatabaseService) : DatabaseManagement {
     companion object {
         val staticDummyDatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
     }
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
-        return try {
-            databaseService.getPicture(category)
-        } catch (e: IllegalArgumentException) {
-            throw e
-        }
+        return databaseService.getPicture(category)
     }
 
     override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
@@ -26,11 +22,12 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService): D
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
-       return try {
-           databaseService.putPicture(picture, category)
-       } catch (e: IllegalArgumentException) {
-           throw e
-       }
+        return try {
+            databaseService.putPicture(picture, category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
+
     }
 
     override suspend fun getCategoryById(categoryId: Any): Category? {
@@ -117,7 +114,10 @@ data class DummyDatabaseManagement(val databaseService: DummyDatabaseService): D
 
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         try {
-            databaseService.putRepresentativePicture((picture as DummyCategorizedPicture).picture, picture.category)
+            databaseService.putRepresentativePicture(
+                (picture as DummyCategorizedPicture).picture,
+                picture.category
+            )
         } catch (e: IllegalArgumentException) {
             throw e
         }

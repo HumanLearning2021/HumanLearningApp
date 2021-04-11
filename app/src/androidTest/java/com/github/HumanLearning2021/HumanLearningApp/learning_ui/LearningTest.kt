@@ -60,7 +60,7 @@ class LearningTest {
     fun dragImageOnCorrectCategory() {
         val imToSort = getImageToSort()
         val startDescr = imToSort.contentDescription
-        val NUMBER_OF_ATTEMPTS = 100
+        val NUMBER_OF_ATTEMPTS = 50
         var foundImageChange = false
         // tries drag and drop NUMBER_OF_ATTEMPTS times until there is a change in the image to sort
         // (change in description)

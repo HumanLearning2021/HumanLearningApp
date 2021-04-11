@@ -11,7 +11,4 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class DummyCategory(override val id: String, override val name: String): Category {
-    override fun equals(other: Any?): Boolean {
-        return (other is DummyCategory) && other.id == this.id
-    }
 }
