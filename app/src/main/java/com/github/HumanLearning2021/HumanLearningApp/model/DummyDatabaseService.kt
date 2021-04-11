@@ -27,6 +27,10 @@ class DummyDatabaseService : DatabaseService {
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.spoon)
     )
 
+    private val forkRepPic = DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.fork_rep))
+    private val knifeRepPic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife_rep))
+    private val spoonRepPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon_rep))
+
     private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
     private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
     private val datasets: MutableSet<Dataset> =
@@ -34,10 +38,18 @@ class DummyDatabaseService : DatabaseService {
     private val representativePictures: MutableMap<String, CategorizedPicture> = mutableMapOf()
     private val users = mutableMapOf<Pair<User.Type, String>, User>()
 
-    override suspend fun getPicture(category: Category): CategorizedPicture?{
-        require(category is DummyCategory)
-        if (!categories.contains(category)) throw IllegalArgumentException("The provided category" +
-                " is not present in the dataset")
+    init {
+        representativePictures["Fork"] = forkRepPic
+        representativePictures["Knife"] = knifeRepPic
+        representativePictures["Spoon"] = spoonRepPic
+    }
+
+
+    override suspend fun getPicture(category: Category): CategorizedPicture? {
+      require(category is DummyCategory)
+        if (!categories.contains(category)) throw IllegalArgumentException(
+            "The provided category is not present in the dataset"
+        )
 
         for (p in pictures)
             if (p.category == category) return p
