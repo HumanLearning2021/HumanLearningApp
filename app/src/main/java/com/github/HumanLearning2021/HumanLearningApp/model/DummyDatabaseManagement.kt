@@ -14,11 +14,7 @@ data class DummyDatabaseManagement(private val databaseService: DummyDatabaseSer
     }
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
-        return try {
-            databaseService.getPicture(category)
-        } catch (e: IllegalArgumentException) {
-            throw e
-        }
+        return databaseService.getPicture(category)
     }
 
     override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
@@ -123,7 +119,10 @@ data class DummyDatabaseManagement(private val databaseService: DummyDatabaseSer
     suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         require(picture is DummyCategorizedPicture)
         try {
-            databaseService.putRepresentativePicture((picture as DummyCategorizedPicture).picture, picture.category)
+            databaseService.putRepresentativePicture(
+                (picture as DummyCategorizedPicture).picture,
+                picture.category
+            )
         } catch (e: IllegalArgumentException) {
             throw e
         }
