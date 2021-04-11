@@ -35,16 +35,22 @@ class AddPictureActivityTest {
     }
 
     @Parcelize
-    private class testCat(override val id: String, override val name: String,
-                          override val representativePicture: CategorizedPicture?
+    private class TestCat(
+        override val id: String, override val name: String
     ) : Category
+
+    private val catSet = setOf<Category>(
+        TestCat("cat1", "cat1"),
+        TestCat("cat2", "cat2"),
+        TestCat("cat3", "cat3")
+    )
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
         Intent(
             ApplicationProvider.getApplicationContext(),
             AddPictureActivity::class.java
-        ).putExtra("categories", arrayListOf(testCat("cat1", "cat1",null), testCat("cat2", "cat2",null), testCat("cat3", "cat3",null)))
+        ).putExtra("categories", ArrayList<Category>(catSet))
     )
 
     @Before
@@ -210,12 +216,22 @@ class AddPictureActivityTest {
     @Test
     fun activityContractCorrectlyParsesResult() {
         val bundle = Bundle().apply {
-            putParcelable("category", testCat("some_category", "some_category",null))
+            putParcelable("category", TestCat("some_category", "some_category"))
             putParcelable("image", Uri.EMPTY)
         }
         val intent = Intent().putExtra("result", bundle)
-        assert(AddPictureActivity.AddPictureContract.parseResult(Activity.RESULT_OK, intent)!!.first.name == "some_category")
-        assert(AddPictureActivity.AddPictureContract.parseResult(Activity.RESULT_CANCELED, intent) == null)
+        assert(
+            AddPictureActivity.AddPictureContract.parseResult(
+                Activity.RESULT_OK,
+                intent
+            )!!.first.name == "some_category"
+        )
+        assert(
+            AddPictureActivity.AddPictureContract.parseResult(
+                Activity.RESULT_CANCELED,
+                intent
+            ) == null
+        )
     }
 
 }

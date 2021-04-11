@@ -5,7 +5,9 @@ import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.User
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
@@ -27,6 +29,7 @@ class FirestoreDatabaseService(
     private val categories = db.collection("/databases/$dbName/categories")
     private val pictures = db.collection("/databases/$dbName/pictures")
     private val datasets = db.collection("/databases/$dbName/datasets")
+    private val users = db.collection("/databases/$dbName/users")
     private val storage = Firebase.storage(this.app)
     private val imagesDir = storage.reference.child("$dbName/images")
 
@@ -40,7 +43,7 @@ class FirestoreDatabaseService(
             this.name = name
         }
 
-        fun toPublic() = FirestoreCategory(self.path, name, name,null)
+        fun toPublic() = FirestoreCategory(self.path, name, name)
     }
 
     private class PictureSchema() {
@@ -59,6 +62,20 @@ class FirestoreDatabaseService(
             requireNotNull(cat, { "category not found" })
             return FirestoreCategorizedPicture(self.path, cat.toPublic(), url)
         }
+    }
+
+    private class UserSchema {
+        @DocumentId
+        lateinit var self: DocumentReference
+        var displayName: String? = null
+        var email: String? = null
+        fun toPublic() = FirestoreUser(
+            path = self.path,
+            displayName = displayName,
+            email = email,
+            uid = self.id.takeWhile { it != '@' },
+            type = User.Type.valueOf(self.id.takeLastWhile { it != '@' }),
+        )
     }
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -104,11 +121,33 @@ class FirestoreDatabaseService(
         TODO("Not yet implemented")
     }
 
+    override suspend fun updateUser(firebaseUser: FirebaseUser): FirestoreUser {
+        val uid = firebaseUser.uid
+        val type = User.Type.FIREBASE
+        val documentRef = users.document("$uid@$type")
+        val data = UserSchema().apply {
+            email = firebaseUser.email
+            displayName = firebaseUser.displayName
+        }
+        documentRef.set(data).await()
+        return documentRef.get().await().toObject(UserSchema::class.java)!!.toPublic()
+    }
+
+    override suspend fun getUser(type: User.Type, uid: String): FirestoreUser? {
+        val documentRef = users.document("$uid@$type")
+        val user = documentRef.get().await().toObject(UserSchema::class.java)
+        return user?.toPublic()
+    }
+
     override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
         require(category is FirestoreCategory)
         val query = pictures.whereEqualTo("category", db.document(category.path)).limit(1)
         val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
         return pic?.toPublic()
+    }
+
+    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
+        TODO("Not yet implemented")
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): FirestoreCategorizedPicture {

@@ -1,5 +1,8 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import com.google.firebase.auth.FirebaseUser
+
+
 /**
  * An interface representing the part of the model interacting with data sets
  */
@@ -14,6 +17,14 @@ interface DatabaseService {
      * @throws IllegalArgumentException if the provided category is not present in the database
      */
     suspend fun getPicture(category: Category): CategorizedPicture?
+
+    /**
+     * Retrieves the picture associated to the specified category as its representative picture
+     *
+     * @param categoryId - the id of the category whose representative picture we want to retrieve
+     * @return the representative picture as a categorizedPicture, can be null
+     */
+    suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture?
 
     /**
      * A function that allows to put a picture in the database
@@ -114,4 +125,8 @@ interface DatabaseService {
      * @return a set containing all off the available datasets
      */
     fun getDatasets(): Set<Dataset>
+
+    suspend fun updateUser(firebaseUser: FirebaseUser): User
+
+    suspend fun getUser(type: User.Type, uid: String): User?
 }

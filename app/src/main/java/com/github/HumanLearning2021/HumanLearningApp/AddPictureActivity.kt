@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -37,7 +36,7 @@ Should be started using the ActivityResultContract provided by the AddPictureCon
  */
 class AddPictureActivity : AppCompatActivity() {
 
-    private var categories: Array<Category> = arrayOf()
+    private var categories = setOf<Category>()
     private lateinit var imageCapture: ImageCapture
     private lateinit var capturedImageUri: Uri
     private lateinit var chosenCategory: Category
@@ -46,10 +45,9 @@ class AddPictureActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val extra = intent.extras
-        if (extra != null && extra["categories"] is ArrayList<*>) {
-            categories += extra["categories"] as ArrayList<Category>
-        }
+
+        checkIntentExtras(intent.extras)
+
         if (cameraIsAvailable()) {
             when {
                 ContextCompat.checkSelfPermission(
@@ -70,14 +68,25 @@ class AddPictureActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkIntentExtras(extras : Bundle?){
+        if (extras != null && extras["categories"] is ArrayList<*>) {
+            val givenCategories = extras["categories"] as ArrayList<Category>
+            categories = categories.plus(givenCategories)
+        }
+    }
+
     /**
     The ActivityResultContract which should be used when launching this activity.
     The launch argument is an Array<String> containing the categories to select from.
     The return value is a Pair containing the selected category as a first element and the Uri pointing to the image as a second element
      */
-    object AddPictureContract : ActivityResultContract<ArrayList<Category>, Pair<Category, Uri>?>() {
+    object AddPictureContract :
+        ActivityResultContract<ArrayList<Category>, Pair<Category, Uri>?>() {
         override fun createIntent(context: Context, input: ArrayList<Category>?): Intent =
-            Intent(context, AddPictureActivity::class.java).putParcelableArrayListExtra("categories", input)
+            Intent(context, AddPictureActivity::class.java).putParcelableArrayListExtra(
+                "categories",
+                input
+            )
 
         override fun parseResult(resultCode: Int, result: Intent?): Pair<Category, Uri>? {
             return if (resultCode != Activity.RESULT_OK) {
@@ -134,9 +143,11 @@ class AddPictureActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.apply {
             setTitle(getString(R.string.AddPicture_categorySelectionDialogTitle))
-            setItems(categories.copyOf().map {cat -> cat.name}.toTypedArray()) { _, category_index ->
+            var catCopy = emptySet<Category>()
+            catCopy = catCopy.plus(categories)
+            setItems(catCopy.map { cat -> cat.name }.toTypedArray()) { _, category_index ->
                 val button = findViewById<Button>(R.id.selectCategoryButton)
-                chosenCategory = categories[category_index]
+                chosenCategory = categories.elementAt(category_index)
                 button.text = chosenCategory.name
                 button.apply {
                     setBackgroundColor(getColor(R.color.button_set))
@@ -226,7 +237,12 @@ class AddPictureActivity : AppCompatActivity() {
     @Suppress("UNUSED_PARAMETER")
     private fun resetCaptureButton(view: View) {
         val button = findViewById<Button>(R.id.takePictureButton)
-        updateButton(button, R.string.AddPicture_takePictureButtonText, R.color.white,  R.color.button_default)
+        updateButton(
+            button,
+            R.string.AddPicture_takePictureButtonText,
+            R.color.white,
+            R.color.button_default
+        )
         findViewById<PreviewView>(R.id.cameraPreviewView).isVisible = true
         findViewById<ImageView>(R.id.cameraImageView).isVisible = false
         imageTaken = false
@@ -236,7 +252,12 @@ class AddPictureActivity : AppCompatActivity() {
 
     private fun setCaptureButton() {
         val button = findViewById<Button>(R.id.takePictureButton)
-        updateButton(button, R.string.AddPicture_takePictureButtonTextWhenImageTaken, R.color.black, R.color.button_set)
+        updateButton(
+            button,
+            R.string.AddPicture_takePictureButtonTextWhenImageTaken,
+            R.color.black,
+            R.color.button_set
+        )
         findViewById<PreviewView>(R.id.cameraPreviewView).isVisible = false
         val imageView = findViewById<ImageView>(R.id.cameraImageView)
         imageView.isVisible = true
@@ -244,8 +265,13 @@ class AddPictureActivity : AppCompatActivity() {
         button.setOnClickListener(this::resetCaptureButton)
     }
 
-    private fun updateButton(button: Button, text: Int, textColorCode: Int, backgroundColorCode: Int) {
-        button.apply{
+    private fun updateButton(
+        button: Button,
+        text: Int,
+        textColorCode: Int,
+        backgroundColorCode: Int
+    ) {
+        button.apply {
             setBackgroundColor(getColor(backgroundColorCode))
             setTextColor(getColor(textColorCode))
             setText(text)
