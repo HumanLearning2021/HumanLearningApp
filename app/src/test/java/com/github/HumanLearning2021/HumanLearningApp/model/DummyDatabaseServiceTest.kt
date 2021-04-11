@@ -239,5 +239,44 @@ class DummyDatabaseServiceTest {
         val dummyDatabaseService = DummyDatabaseService()
         assert(dummyDatabaseService.getDatasets().contains(DummyDataset("kitchen utensils", "kitchen utensils", dummyDatabaseService.getCategories())))
     }
+
+    @ExperimentalCoroutinesApi
+    @Test(expected = java.lang.IllegalArgumentException::class)
+    fun removeCategoryFromDatasetThrowsIllegalArgumentException() = runBlockingTest {
+        val dummyDatabaseService = DummyDatabaseService()
+        val name = "Utensils"
+        val fork = DummyCategory("Fork", "Fork")
+        val dataset = DummyDataset(name, name, setOf())
+        dummyDatabaseService.removeCategoryFromDataset(dataset, fork)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun removeCategoryFromDatasetWorks() = runBlockingTest {
+        val dummyDatabaseService = DummyDatabaseService()
+        val fork = DummyCategory("Fork", "Fork")
+        val knife = DummyCategory("Knife", "Knife")
+        val spoon = DummyCategory("Spoon", "Spoon")
+        val name = "Utensils"
+        val dataset = dummyDatabaseService.putDataset(name, setOf(fork, knife, spoon))
+        val newDataset = dummyDatabaseService.removeCategoryFromDataset(dataset, fork)
+        assert(newDataset.categories.containsAll(setOf(knife, spoon)))
+        assert(!newDataset.categories.contains(fork))
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun editDatasetNameWorks() = runBlockingTest {
+        val dummyDatabaseService = DummyDatabaseService()
+        val fork = DummyCategory("Fork", "Fork")
+        val knife = DummyCategory("Knife", "Knife")
+        val spoon = DummyCategory("Spoon", "Spoon")
+        val name = "Utensils"
+        val newName = "NoLongerUtensils"
+        val dataset = dummyDatabaseService.putDataset(name, setOf(fork, knife, spoon))
+        val newDataset = dummyDatabaseService.editDatasetName(dataset, newName)
+        assert(newDataset.categories.containsAll(dataset.categories))
+        assert(newDataset.name == newName)
+    }
 }
 

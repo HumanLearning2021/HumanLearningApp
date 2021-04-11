@@ -97,7 +97,7 @@ interface DatabaseService {
     /**
      * Gets a dataset from the database
      *
-     * @param id - the name of the desired dataset
+     * @param id - the id of the desired dataset
      * @return the dataset
      */
     suspend fun getDataset(id: Any): Dataset?
@@ -124,9 +124,31 @@ interface DatabaseService {
      *
      * @return a set containing all off the available datasets
      */
-    fun getDatasets(): Set<Dataset>
+    suspend fun getDatasets(): Set<Dataset>
+
+    /**
+     * Remove the category from a dataset
+     *
+     * @param dataset - the dataset from which to remove the category
+     * @param category - the category to remove from the dataset
+     * @return the dataset with the category removed
+     * @throws IllegalArgumentException if the database does not contain the specified category
+     * @throws IllegalArgumentException if the database does not contain the specified dataset
+     */
+    suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): Dataset
+
+    /**
+     * Changes the name of a dataset
+     *
+     * @param dataset - the dataset whose name to change
+     * @param newName - the new name the dataset should take
+     * @return the dataset with its name changed
+     * @throws IllegalArgumentException if the database does not contain the specified dataset
+     */
+    suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset
 
     suspend fun updateUser(firebaseUser: FirebaseUser): User
 
     suspend fun getUser(type: User.Type, uid: String): User?
 }
+
