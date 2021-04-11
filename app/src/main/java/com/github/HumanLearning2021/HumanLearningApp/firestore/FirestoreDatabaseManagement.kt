@@ -157,7 +157,8 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         return try {
             databaseService.removeCategoryFromDataset(dataset, category)
         } catch (e: IllegalArgumentException) {
-            throw e
+            //do nothing since this means that the category is not in the dataset which is the same as having it removed
+            return dataset
         }
     }
 
