@@ -231,7 +231,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
         val cat2 = scratchManagement.putCategory(getRandomString())
         val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf(cat1, cat2))
         val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
-        assertEquals(setOf(cat1), res)
+        assertEquals(setOf(cat1), res.categories)
     }
 
     fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
