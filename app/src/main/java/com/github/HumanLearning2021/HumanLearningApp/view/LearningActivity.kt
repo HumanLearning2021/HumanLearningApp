@@ -10,35 +10,35 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.github.HumanLearning2021.HumanLearningApp.BuildConfig
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
 import kotlinx.coroutines.launch
-import java.lang.IllegalStateException
 
 class LearningActivity : AppCompatActivity() {
 
     private lateinit var learningPresenter: LearningPresenter
     private lateinit var learningMode: LearningMode
     private lateinit var audioFeedback: LearningAudioFeedback
+    private lateinit var dataset: Dataset
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
         learningMode =
             intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
-        val maybeDataset = intent.getParcelableExtra<Dataset>(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET)
-        var dataset: Dataset? = null
-        if (maybeDataset != null){
+        val maybeDataset =
+            intent.getParcelableExtra<Dataset>(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET)
+        if (maybeDataset != null) {
             dataset = maybeDataset
-        }else{
-            Log.e(this.localClassName, "The intent launching the LearningActivity didn't contain" +
-                    " a Dataset", IllegalStateException())
+        } else {
+            Log.e(
+                this.localClassName, "The intent launching the LearningActivity didn't contain" +
+                        " a Dataset", IllegalStateException()
+            )
         }
-        learningPresenter = LearningPresenter(this, learningMode, dataset!!)
+        learningPresenter = LearningPresenter(this, learningMode, dataset)
         initLearningViews()
         audioFeedback = LearningAudioFeedback(applicationContext)
     }
@@ -55,11 +55,13 @@ class LearningActivity : AppCompatActivity() {
 
     private fun initLearningViews() {
         lifecycleScope.launch {
-            val cats = DummyDatabaseService().getCategories()
+            val cats = dataset.categories
             if (cats.size < 3) {
                 // TODO : maybe allow fewer categories in the future
-                Log.e(this.javaClass.name, "There are fewer than 3 categories in the dataset",
-                    IllegalStateException())
+                Log.e(
+                    this.javaClass.name, "There are fewer than 3 categories in the dataset",
+                    IllegalStateException()
+                )
             }
 
             val cat0 = cats.elementAt(0)

@@ -6,6 +6,8 @@ import java.lang.IllegalArgumentException
 
 
 /**
+ * DEPRECATED
+ * TODO : DELETE this file
  * a class representing a dummy UI presenter
  */
 class DummyUIPresenter(val databaseService: DatabaseService) {
