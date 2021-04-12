@@ -1,10 +1,12 @@
-package com.github.HumanLearning2021.HumanLearningApp.room
+package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.net.Uri
-import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.google.firebase.auth.FirebaseUser
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 
-class OfflineDatabaseService: DatabaseService {
+class OfflineDatabaseManagement: DatabaseManagement {
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         TODO("Not yet implemented")
     }
@@ -17,7 +19,11 @@ class OfflineDatabaseService: DatabaseService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCategory(categoryId: Any): Category? {
+    override suspend fun getCategoryById(categoryId: Any): Category? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getCategoryByName(categoryName: String): Collection<Category> {
         TODO("Not yet implemented")
     }
 
@@ -45,7 +51,11 @@ class OfflineDatabaseService: DatabaseService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getDataset(id: Any): Dataset? {
+    override suspend fun getDatasetById(id: Any): Dataset? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getDatasetByName(datasetName: String): Collection<Dataset> {
         TODO("Not yet implemented")
     }
 
@@ -61,19 +71,19 @@ class OfflineDatabaseService: DatabaseService {
         TODO("Not yet implemented")
     }
 
+    override suspend fun getDatasetNames(): Collection<String> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getDatasetIds(): Set<Any> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): Dataset {
         TODO("Not yet implemented")
     }
 
     override suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updateUser(firebaseUser: FirebaseUser): User {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getUser(type: User.Type, uid: String): User? {
         TODO("Not yet implemented")
     }
 }

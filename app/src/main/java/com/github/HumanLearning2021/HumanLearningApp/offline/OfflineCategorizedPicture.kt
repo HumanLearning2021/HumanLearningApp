@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.room
+package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.app.Activity
 import android.widget.ImageView
