@@ -14,7 +14,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
     private val databaseService: FirestoreDatabaseService = FirestoreDatabaseService(dbName, app)
 
     companion object {
-        val scratchFirestoreDatabase = FirestoreDatabaseService("scratch")
+        val scratchFirestoreDatabase = FirestoreDatabaseManagement("scratch")
     }
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {

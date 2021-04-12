@@ -12,13 +12,14 @@ import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.AddPictureActivity
 import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import kotlinx.coroutines.launch
 
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
-    private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
+    private val dBManagement = FirestoreDatabaseManagement("demo2")
     private lateinit var categories: Set<Category>
     private lateinit var datasetId: String
     private lateinit var dataset: Dataset
@@ -35,7 +36,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 val category = resultPair.first
                 val pictureUri = resultPair.second
                 lifecycleScope.launch {
-                    staticDBManagement.putPicture(pictureUri, category)
+                    dBManagement.putPicture(pictureUri, category)
                 }
             }
         }
@@ -49,11 +50,12 @@ class DisplayDatasetActivity : AppCompatActivity() {
         var representativePictures = setOf<CategorizedPicture>()
 
         lifecycleScope.launch {
-            dataset = staticDBManagement.getDatasetById(datasetId)!!
-            categories = staticDBManagement.getCategories()
+            dataset = dBManagement.getDatasetById(datasetId)!!
+            findViewById<EditText>(R.id.display_dataset_name).setText(dataset.name)
+            categories = dBManagement.getCategories()
             for (cat in categories) {
-                representativePictures =
-                    representativePictures.plus(staticDBManagement.getPicture(cat)!!)
+                //representativePictures =
+                //    representativePictures.plus(dBManagement.getRepresentativePicture(cat.id)!!)
             }
         }
 
@@ -67,7 +69,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
         findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
             lifecycleScope.launch {
-                dataset = staticDBManagement.editDatasetName(dataset, findViewById<EditText>(R.id.display_dataset_name).text.toString())
+                dataset = dBManagement.editDatasetName(dataset, findViewById<EditText>(R.id.display_dataset_name).text.toString())
                 datasetId = dataset.id as String
             }
         }
@@ -83,7 +85,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.display_dataset_menu_modify_categories -> {
                 val intent = Intent(this@DisplayDatasetActivity, DataCreationActivity::class.java)
-                intent.putParcelableArrayListExtra("dataset_categories", categoriesArray)
                 intent.putExtra("dataset_id", datasetId)
                 startActivity(intent)
                 true
@@ -135,7 +136,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
         datasetId = if (extras != null && extras["dataset_id"] is String) {
             intent.getStringExtra("dataset_id")!!
         } else {
-            "kitchen utensils"
+            "uEwDkGoGADW4hEJoJ6BA"
         }
     }
 

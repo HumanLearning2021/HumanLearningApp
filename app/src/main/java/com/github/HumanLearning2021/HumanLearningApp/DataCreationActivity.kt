@@ -1,15 +1,19 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityDataCreationBinding
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
@@ -20,8 +24,10 @@ class DataCreationActivity : AppCompatActivity() {
     private var _binding: ActivityDataCreationBinding? = null
     private val binding get() = _binding!!
 
-    private var categories = emptySet<Category>()
-    private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
+    private var dScategories = emptySet<Category>()
+    private val dBManagement = FirestoreDatabaseManagement("demo2")
+    private lateinit var datasetId : String
+    private lateinit var dataset : Dataset
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,12 +35,15 @@ class DataCreationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val extra = intent.extras
-        if (extra != null && extra["dataset_categories"] is ArrayList<*>) {
-            val givenCategories = extra["dataset_categories"] as ArrayList<Category>
-            categories = categories.plus(givenCategories)
+        if (extra != null && extra["dataset_id"] is String) {
+            datasetId = extra["dataset_id"] as String
+            lifecycleScope.launch {
+                dataset = dBManagement.getDatasetById(datasetId)!!
+                dScategories = dataset.categories
+            }
         }
 
-        val count = categories.size
+        val count = dScategories.size
         var v: View?
 
         for (i in 0 until count) {
@@ -42,7 +51,7 @@ class DataCreationActivity : AppCompatActivity() {
             v = binding.parentLinearLayout.getChildAt(i)
 
             val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
-            categoryName.setText(categories.elementAt(i).name, TextView.BufferType.EDITABLE)
+            categoryName.setText(dScategories.elementAt(i).name, TextView.BufferType.EDITABLE)
         }
 
         binding.buttonAdd.setOnClickListener {
@@ -68,34 +77,37 @@ class DataCreationActivity : AppCompatActivity() {
     fun removeView(view: View) {
         val categoryName: EditText =
             (view.parent as View).findViewById(R.id.data_creation_category_name)
-        val cat = DummyCategory(categoryName.text.toString(), categoryName.text.toString())
-        if (categories.contains(cat)) {
-            categories = categories.minus(cat)
-            lifecycleScope.launch {
-                staticDBManagement.removeCategory(cat)
+        lifecycleScope.launch {
+            val cat = dBManagement.getCategoryByName(categoryName.text.toString())
+            if (dScategories.contains(cat.first())) {
+                dScategories = dScategories.minus(cat)
+                dBManagement.removeCategoryFromDataset(dataset, cat.first())
             }
+            binding.parentLinearLayout.removeView(view.parent as View)
         }
-        binding.parentLinearLayout.removeView(view.parent as View)
-
     }
 
     private fun saveData() {
         val count = binding.parentLinearLayout.childCount
         var v: View?
+        val newCategories = dScategories
 
-        for (i in categories.size until count) {
+        for (i in dScategories.size until count) {
             v = binding.parentLinearLayout.getChildAt(i)
             val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
-            val category =
-                DummyCategory(categoryName.text.toString(), categoryName.text.toString())
             lifecycleScope.launch {
-                if (!categories.contains(category)) {
-                    //TODO: Uncomment when solution about Representative Picture is found
-                    //staticDBManagement.putCategory(categoryName.text.toString())
-                }
+                dBManagement.putCategory(categoryName.text.toString())
+                val cat = dBManagement.getCategories().last()
+                //TODO: Put the generic representative picture
+
+                newCategories.plus(cat)
             }
         }
+
+        //TODO: put new categories in the dataset
+
         val intent = Intent(this, DisplayDatasetActivity::class.java)
+        intent.putExtra("dataset_id", datasetId)
         startActivity(intent)
     }
 
