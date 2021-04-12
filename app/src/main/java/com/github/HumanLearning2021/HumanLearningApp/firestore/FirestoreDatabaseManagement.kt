@@ -172,4 +172,14 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
             throw e
         }
     }
+
+    override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset {
+        require(dataset is FirestoreDataset)
+        require(category is FirestoreCategory)
+        return try {
+            databaseService.addCategoryToDataset(dataset, category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
+    }
 }

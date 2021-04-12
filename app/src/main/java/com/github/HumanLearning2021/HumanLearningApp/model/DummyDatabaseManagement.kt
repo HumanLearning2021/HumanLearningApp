@@ -168,4 +168,14 @@ data class DummyDatabaseManagement(private val databaseService: DummyDatabaseSer
             throw e
         }
     }
+
+    override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset {
+        require(dataset is DummyDataset)
+        require(category is DummyCategory)
+        return try {
+            databaseService.addCategoryToDataset(dataset, category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
+    }
 }

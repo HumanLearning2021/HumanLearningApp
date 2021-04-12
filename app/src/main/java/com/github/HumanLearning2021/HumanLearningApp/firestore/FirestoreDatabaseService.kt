@@ -12,6 +12,7 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
@@ -221,16 +222,8 @@ class FirestoreDatabaseService(
     override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): FirestoreDataset {
         require(dataset is FirestoreDataset)
         require(category is FirestoreCategory)
-
-        val dsCategories = dataset.categories
-        val newCats: MutableList<FirestoreCategory> = mutableListOf()
-        newCats.apply {
-            addAll(dsCategories)
-            remove(category)
-        }
-        val newCatRefs: List<DocumentReference> = newCats.map { cat -> categories.document(cat.id) }
         try {
-            datasets.document(dataset.id).update("categories", newCatRefs).await()
+            datasets.document(dataset.id).update("categories", FieldValue.arrayRemove(categories.document(category.id))).await()
         } catch (e: FirebaseFirestoreException) {
             Log.w(this.toString(), "Removing category ${category.id} from dataset ${dataset.id} failed", e)
             throw java.lang.IllegalArgumentException("The category ${category.id} is not contained in the dataset ${dataset.id} or said dataset is not contained in this database")
@@ -240,17 +233,24 @@ class FirestoreDatabaseService(
 
     override suspend fun editDatasetName(dataset: Dataset, newName: String): FirestoreDataset {
         require(dataset is FirestoreDataset)
-        var res = dataset as FirestoreDataset
-        val documentRef = this.datasets.document(dataset.id)
         try {
-            documentRef.update("name", newName).await()
+            datasets.document(dataset.id).update("name", newName).await()
         } catch (e: FirebaseFirestoreException) {
             throw java.lang.IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database $this")
         }
-        if (documentRef.get().await().getField<String>("name") == newName) {
-            res = FirestoreDataset(dataset.path, dataset.id, newName, dataset.categories)
+        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!.toPublic()
+    }
+
+    override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset {
+        require(dataset is FirestoreDataset)
+        require(category is FirestoreCategory)
+        try {
+            datasets.document(dataset.id).update("categories", FieldValue.arrayUnion(categories.document(category.id))).await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.w(this.toString(), "Adding category ${category.id} to dataset ${dataset.id} failed", e)
+            throw java.lang.IllegalArgumentException("The category ${category.id} is not contained in the dataset ${dataset.id} or said dataset is not contained in this database")
         }
-        return res
+        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!.toPublic()
     }
 
     override suspend fun updateUser(firebaseUser: FirebaseUser): FirestoreUser {

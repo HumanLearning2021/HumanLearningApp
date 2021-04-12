@@ -204,6 +204,32 @@ class DummyDatabaseService : DatabaseService {
         return newDs
     }
 
+    override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset {
+        require(dataset is DummyDataset)
+        require(category is DummyCategory)
+        if (!categories.contains(category)) {
+            throw java.lang.IllegalArgumentException("The underlying database does not contain the category ${category.name}")
+        }
+        if (!datasets.contains(dataset)) {
+            throw IllegalArgumentException("The underlying database does not contain the dataset ${dataset.name}")
+        }
+        return if (dataset.categories.contains(category)) {
+            dataset
+        } else {
+            val newCats = mutableSetOf<Category>()
+            newCats.apply{
+                addAll(dataset.categories)
+                add(category)
+            }
+            val newDs = DummyDataset(dataset.id, dataset.name, newCats)
+            datasets.apply {
+                remove(dataset)
+                add(newDs)
+            }
+            newDs
+        }
+    }
+
     override suspend fun updateUser(firebaseUser: FirebaseUser): User {
         val type = User.Type.FIREBASE
         val uid = firebaseUser.uid
