@@ -37,11 +37,6 @@ abstract class ScratchDatabaseServiceTest : TestCase() {
         assertThat(pic, hasCategory(equalTo(cat)))
     }
 
-    //TODO()
-    fun test_putDataset() = runBlocking {
-        assert(true)
-    }
-
     fun test_updateUser() = runBlocking {
         val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
         val user = db.updateUser(firebaseUser)
