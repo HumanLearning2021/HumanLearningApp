@@ -9,4 +9,5 @@ abstract class RoomDatabaseDefinition : RoomDatabase() {
     abstract fun categorizedPictureDao(): CategorizedPictureDao
     abstract fun datasetDao(): DatasetDao
     abstract fun userDao(): UserDao
+    abstract fun imageDao(): ImageDao
 }

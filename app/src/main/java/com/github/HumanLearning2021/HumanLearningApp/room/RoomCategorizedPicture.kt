@@ -1,9 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.room
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Entity
-import androidx.room.Insert
+import androidx.room.*
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 
 @Entity(tableName = "categorizedPicture")
