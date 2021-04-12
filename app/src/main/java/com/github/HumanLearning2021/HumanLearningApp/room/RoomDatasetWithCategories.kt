@@ -7,6 +7,6 @@ data class RoomDatasetWithCategories(
     @Embedded val dataset: RoomDataset,
     @Relation(
         parentColumn = "datasetId",
-        entityColumn = "name"
+        entityColumn = "categoryId",
     ) val categories: List<RoomCategory>
 )

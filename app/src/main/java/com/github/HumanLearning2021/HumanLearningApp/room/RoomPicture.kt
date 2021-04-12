@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.room.*
 
 @Entity(
-    tableName = "picture",
     foreignKeys = [ForeignKey(
         entity = RoomCategory::class,
         parentColumns = ["categoryId"],
@@ -17,26 +16,12 @@ data class RoomPicture(
     @PrimaryKey val uri: Uri
 )
 
-@Dao
-interface CategorizedPictureDao {
-    @Query("SELECT * FROM picture WHERE ")
-    fun getPicture(categoryId: String)
+data class RoomCategorizedPicture(
+    @Embedded val category: RoomCategory,
+    @Relation(parentColumn = "categoryId", entityColumn = "categorizedPictureCategoryId") val pictures: List<RoomPicture>
+)
 
-    @Insert
-    fun insert(uri: Uri)
-
-    @Delete
-    fun delete(uri: Uri)
-}
-
-@Dao
-interface RepresentativePictureDao {
-    @Query("SELECT * FROM picture WHERE ")
-    fun getRepresentativePicture(categoryId: String)
-
-    @Insert
-    fun insert(uri: Uri)
-
-    @Delete
-    fun delete(uri: Uri)
-}
+data class RoomRepresentativePicture(
+    @Embedded val category: RoomCategory,
+    @Relation(parentColumn = "categoryId", entityColumn = "representativePictureCategoryId") val picture: RoomPicture
+)

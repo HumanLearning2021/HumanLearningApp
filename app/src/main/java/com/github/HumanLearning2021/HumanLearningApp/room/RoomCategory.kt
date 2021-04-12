@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.room
 
+import android.net.Uri
 import androidx.room.*
 
 @Entity(tableName = "category")
@@ -11,18 +12,32 @@ data class RoomCategory(
 
 @Dao
 interface CategoryDao {
-    @Query("SELECT * FROM dataset")
+    @Query("SELECT * FROM category")
     fun loadAll(): List<RoomCategory>
 
-    @Query("SELECT * FROM dataset WHERE datasetId = :id")
+    @Query("SELECT * FROM category WHERE categoryId = :id")
     fun loadById(id: String): RoomCategory
 
-    @Query("SELECT * FROM dataset WHERE name = :name")
+    @Query("SELECT * FROM category WHERE name = :name")
     fun loadByName(name: String): List<RoomCategory>
+
+    @Transaction
+    @Query("SELECT * FROM category WHERE categoryId = :categoryId")
+    fun getPicture(categoryId: String): RoomCategorizedPicture
+
+    @Transaction
+    @Query("SELECT * FROM category WHERE categoryId = :categoryId LIMIT 1")
+    fun getRepresentativePicture(categoryId: String): RoomRepresentativePicture
 
     @Insert
     fun insertAll(vararg categories: RoomCategory)
 
     @Delete
     fun delete(category: RoomCategory)
+
+    @Insert
+    fun insert(uri: Uri)
+
+    @Delete
+    fun delete(uri: Uri)
 }
