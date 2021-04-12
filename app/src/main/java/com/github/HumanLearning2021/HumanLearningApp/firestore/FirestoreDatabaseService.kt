@@ -241,7 +241,7 @@ class FirestoreDatabaseService(
         return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!.toPublic()
     }
 
-    override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset {
+    override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): FirestoreDataset {
         require(dataset is FirestoreDataset)
         require(category is FirestoreCategory)
         try {

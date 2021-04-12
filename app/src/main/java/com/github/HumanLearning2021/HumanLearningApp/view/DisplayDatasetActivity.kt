@@ -52,25 +52,28 @@ class DisplayDatasetActivity : AppCompatActivity() {
         lifecycleScope.launch {
             dataset = dBManagement.getDatasetById(datasetId)!!
             findViewById<EditText>(R.id.display_dataset_name).setText(dataset.name)
-            categories = dBManagement.getCategories()
+            categories = dataset.categories
             for (cat in categories) {
-                //representativePictures =
-                //    representativePictures.plus(dBManagement.getRepresentativePicture(cat.id)!!)
+                representativePictures =
+                    representativePictures.plus(dBManagement.getPicture(cat)!!)
             }
-        }
 
-        val displayDatasetAdapter =
-            DisplayDatasetAdapter(representativePictures, this@DisplayDatasetActivity)
 
-        findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
-            displayDatasetAdapter
+            val displayDatasetAdapter =
+                DisplayDatasetAdapter(representativePictures, this@DisplayDatasetActivity)
 
-        setGridViewItemListener()
+            findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
+                displayDatasetAdapter
 
-        findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
-            lifecycleScope.launch {
-                dataset = dBManagement.editDatasetName(dataset, findViewById<EditText>(R.id.display_dataset_name).text.toString())
-                datasetId = dataset.id as String
+            setGridViewItemListener()
+
+            findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
+                lifecycleScope.launch {
+                    dataset = dBManagement.editDatasetName(
+                        dataset,
+                        findViewById<EditText>(R.id.display_dataset_name).text.toString()
+                    )
+                }
             }
         }
     }
@@ -133,10 +136,12 @@ class DisplayDatasetActivity : AppCompatActivity() {
     }
 
     private fun checkIntentExtras(extras : Bundle?){
-        datasetId = if (extras != null && extras["dataset_id"] is String) {
-            intent.getStringExtra("dataset_id")!!
-        } else {
-            "uEwDkGoGADW4hEJoJ6BA"
+        lifecycleScope.launch {
+            datasetId = if (extras != null && extras["dataset_id"] is String) {
+                intent.getStringExtra("dataset_id")!!
+            } else {
+                "uEwDkGoGADW4hEJoJ6BA"
+            }
         }
     }
 

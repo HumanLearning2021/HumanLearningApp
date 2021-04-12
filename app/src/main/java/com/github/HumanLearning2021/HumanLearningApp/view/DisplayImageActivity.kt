@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import kotlinx.coroutines.launch
@@ -18,7 +19,7 @@ class DisplayImageActivity : AppCompatActivity() {
 
     private lateinit var picture: CategorizedPicture
     private lateinit var datasetId: String
-    private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
+    private val dBManagement = FirestoreDatabaseManagement("demo2")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +40,8 @@ class DisplayImageActivity : AppCompatActivity() {
     private fun removePicture() {
         var noMorePicturesInThisCategory = false
         lifecycleScope.launch {
-            staticDBManagement.removePicture(picture)
-            if (staticDBManagement.getAllPictures(picture.category).isEmpty()) {
+            dBManagement.removePicture(picture)
+            if (dBManagement.getAllPictures(picture.category).isEmpty()) {
                 noMorePicturesInThisCategory = true
             }
             Toast.makeText(this@DisplayImageActivity, getText(R.string.picturehasbeenremoved), Toast.LENGTH_SHORT)
@@ -55,7 +56,7 @@ class DisplayImageActivity : AppCompatActivity() {
 
     private fun launchDisplayDatasetActivity() {
         lifecycleScope.launch {
-            staticDBManagement.removeCategory(picture.category)
+            dBManagement.removeCategory(picture.category)
         }
         val intent = Intent(this, DisplayDatasetActivity::class.java)
         intent.putExtra("dataset_id", datasetId)

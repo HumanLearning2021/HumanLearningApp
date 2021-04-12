@@ -15,6 +15,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategory
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
@@ -23,7 +25,7 @@ import kotlinx.coroutines.launch
 class DisplayImageSetActivity : AppCompatActivity() {
 
     private var categorizedPicturesList = setOf<CategorizedPicture>()
-    private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
+    private val dBManagement = FirestoreDatabaseManagement("demo2")
     private lateinit var datasetId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,28 +33,32 @@ class DisplayImageSetActivity : AppCompatActivity() {
         setContentView(R.layout.activity_display_image_set)
 
         val category: Category =
-            intent.getParcelableExtra<Category>("category_of_pictures") as Category
+            intent.getParcelableExtra<Category>("category_of_pictures") as FirestoreCategory
         datasetId = intent.getStringExtra("dataset_id")!!
         lifecycleScope.launch {
-            categorizedPicturesList = staticDBManagement.getAllPictures(category)
-        }
-        findViewById<TextView>(R.id.display_image_set_name).text =
-            (categorizedPicturesList.elementAt(0)).category.name
+            categorizedPicturesList = dBManagement.getAllPictures(category)
 
-        val displayImageSetAdapter =
-            DisplayImageSetAdapter(
-                categorizedPicturesList,
-                this
-            )
+            findViewById<TextView>(R.id.display_image_set_name).text =
+                (categorizedPicturesList.elementAt(0)).category.name
 
-        findViewById<GridView>(R.id.display_image_set_imagesGridView).adapter =
-            displayImageSetAdapter
+            val displayImageSetAdapter =
+                DisplayImageSetAdapter(
+                    categorizedPicturesList,
+                    this@DisplayImageSetActivity
+                )
 
-        findViewById<GridView>(R.id.display_image_set_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
-            val intent = Intent(this, DisplayImageActivity::class.java)
-            intent.putExtra("single_picture", (categorizedPicturesList.elementAt(i)) as Parcelable)
-            intent.putExtra("dataset_id", datasetId)
-            startActivity(intent)
+            findViewById<GridView>(R.id.display_image_set_imagesGridView).adapter =
+                displayImageSetAdapter
+
+            findViewById<GridView>(R.id.display_image_set_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
+                val intent = Intent(this@DisplayImageSetActivity, DisplayImageActivity::class.java)
+                intent.putExtra(
+                    "single_picture",
+                    (categorizedPicturesList.elementAt(i)) as Parcelable
+                )
+                intent.putExtra("dataset_id", datasetId)
+                startActivity(intent)
+            }
         }
     }
 

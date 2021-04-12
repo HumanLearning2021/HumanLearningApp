@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
@@ -34,33 +35,34 @@ class DataCreationActivity : AppCompatActivity() {
         _binding = ActivityDataCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val extra = intent.extras
-        if (extra != null && extra["dataset_id"] is String) {
-            datasetId = extra["dataset_id"] as String
-            lifecycleScope.launch {
+        lifecycleScope.launch {
+            val extra = intent.extras
+            if (extra != null && extra["dataset_id"] is String) {
+                datasetId = extra["dataset_id"] as String
                 dataset = dBManagement.getDatasetById(datasetId)!!
                 dScategories = dataset.categories
+
             }
-        }
 
-        val count = dScategories.size
-        var v: View?
+            val count = dScategories.size
+            var v: View?
 
-        for (i in 0 until count) {
-            addNewView()
-            v = binding.parentLinearLayout.getChildAt(i)
+            for (i in 0 until count) {
+                addNewView()
+                v = binding.parentLinearLayout.getChildAt(i)
 
-            val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
-            categoryName.setText(dScategories.elementAt(i).name, TextView.BufferType.EDITABLE)
-        }
+                val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
+                categoryName.setText(dScategories.elementAt(i).name, TextView.BufferType.EDITABLE)
+            }
 
-        binding.buttonAdd.setOnClickListener {
-            addNewView()
-        }
+            binding.buttonAdd.setOnClickListener {
+                addNewView()
+            }
 
 
-        binding.buttonSubmitList.setOnClickListener {
-            saveData()
+            binding.buttonSubmitList.setOnClickListener {
+                saveData()
+            }
         }
 
 
@@ -81,35 +83,39 @@ class DataCreationActivity : AppCompatActivity() {
             val cat = dBManagement.getCategoryByName(categoryName.text.toString())
             if (dScategories.contains(cat.first())) {
                 dScategories = dScategories.minus(cat)
-                dBManagement.removeCategoryFromDataset(dataset, cat.first())
+                dataset = dBManagement.removeCategoryFromDataset(dataset, cat.first())
             }
             binding.parentLinearLayout.removeView(view.parent as View)
         }
     }
 
     private fun saveData() {
-        val count = binding.parentLinearLayout.childCount
-        var v: View?
-        val newCategories = dScategories
 
-        for (i in dScategories.size until count) {
-            v = binding.parentLinearLayout.getChildAt(i)
-            val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
-            lifecycleScope.launch {
-                dBManagement.putCategory(categoryName.text.toString())
-                val cat = dBManagement.getCategories().last()
+        lifecycleScope.launch {
+            val count = binding.parentLinearLayout.childCount
+            var v: View?
+            var newCategories = dScategories
+
+            for (i in dScategories.size until count) {
+                v = binding.parentLinearLayout.getChildAt(i)
+                val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
+                val cat = dBManagement.putCategory(categoryName.text.toString())
                 //TODO: Put the generic representative picture
 
-                newCategories.plus(cat)
+                newCategories = newCategories.plus(cat)
+
             }
+
+            for (cat in newCategories) {
+                dataset = dBManagement.addCategoryToDataset(dataset, cat)
+            }
+
+            val intent = Intent(this@DataCreationActivity, DisplayDatasetActivity::class.java)
+            intent.putExtra("dataset_id", datasetId)
+            startActivity(intent)
         }
-
-        //TODO: put new categories in the dataset
-
-        val intent = Intent(this, DisplayDatasetActivity::class.java)
-        intent.putExtra("dataset_id", datasetId)
-        startActivity(intent)
     }
+
 
 
     override fun onDestroy() {
