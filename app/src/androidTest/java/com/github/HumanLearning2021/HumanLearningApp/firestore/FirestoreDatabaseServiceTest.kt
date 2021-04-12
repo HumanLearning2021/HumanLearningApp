@@ -31,30 +31,6 @@ class FirestoreDatabaseServiceTest : TestCase() {
         fakeDataset = FirestoreDataset("oopsy/oopsy", "oopsy", "oopsy", setOf())
     }
 
-    fun test_putCategory() = runBlocking {
-        val cat = scratchInterface.putCategory("Poire")
-        assertThat(cat, hasName("Poire"))
-    }
-
-    fun test_putPicture() = runBlocking {
-        val ctx = ApplicationProvider.getApplicationContext<Context>()
-        val cat = scratchInterface.putCategory("Poire")
-
-        val tmp = File.createTempFile("meow", ".png")
-        val pic = try {
-            ctx.resources.openRawResource(R.drawable.fork).use { img ->
-                tmp.outputStream().use {
-                    img.copyTo(it)
-                }
-            }
-            val uri = Uri.fromFile(tmp)
-            scratchInterface.putPicture(uri, cat)
-        } finally {
-            tmp.delete()
-        }
-        assertThat(pic, hasCategory(equalTo(cat)))
-    }
-
     fun test_getAllPictures() = runBlocking {
         val appleCategory = demoInterface.getCategory(appleCategoryId)
         requireNotNull(appleCategory, {"apple category not found in demo database"})
