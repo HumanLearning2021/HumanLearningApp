@@ -15,16 +15,13 @@ data class RoomUser(
 @Dao
 interface UserDao {
     @Query("SELECT * FROM user")
-    fun loadAll(): List<User>
+    fun loadAll(): List<RoomUser>
 
     @Query("SELECT * FROM user WHERE userId = :id LIMIT 1")
-    fun loadById(id: String): User
+    fun loadById(id: String): RoomUser
 
     @Query("SELECT * FROM user WHERE type == :type")
-    fun loadByType(type: User.Type): List<User>
-
-    @Transaction
-    fun updateUser()
+    fun loadByType(type: User.Type): List<RoomUser>
 
     @Insert
     fun insertAll(vararg users: RoomUser)

@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.room
 
 import androidx.room.Embedded
+import androidx.room.Entity
 import androidx.room.Relation
 
 data class RoomDatasetWithCategories(
@@ -8,5 +9,7 @@ data class RoomDatasetWithCategories(
     @Relation(
         parentColumn = "datasetId",
         entityColumn = "categoryId",
-    ) val categories: List<RoomCategory>
+        entity = RoomCategory::class,
+        projection = ["categoryId"]
+    ) val category: String?
 )

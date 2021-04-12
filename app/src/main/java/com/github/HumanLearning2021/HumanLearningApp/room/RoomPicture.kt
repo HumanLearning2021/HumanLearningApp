@@ -13,15 +13,6 @@ import androidx.room.*
     )]
 )
 data class RoomPicture(
-    @PrimaryKey val uri: Uri
-)
-
-data class RoomCategorizedPicture(
-    @Embedded val category: RoomCategory,
-    @Relation(parentColumn = "categoryId", entityColumn = "categorizedPictureCategoryId") val pictures: List<RoomPicture>
-)
-
-data class RoomRepresentativePicture(
-    @Embedded val category: RoomCategory,
-    @Relation(parentColumn = "categoryId", entityColumn = "representativePictureCategoryId") val picture: RoomPicture
+    @PrimaryKey val uri: Uri,
+    val categoryId: String
 )

@@ -1,13 +1,11 @@
 package com.github.HumanLearning2021.HumanLearningApp.room
 
-import android.net.Uri
 import androidx.room.*
 
 @Entity(tableName = "category")
 data class RoomCategory(
     @PrimaryKey val categoryId: String,
     val name: String,
-    @ColumnInfo(index = true) val datasets: List<RoomDataset>
 )
 
 @Dao
@@ -34,10 +32,4 @@ interface CategoryDao {
 
     @Delete
     fun delete(category: RoomCategory)
-
-    @Insert
-    fun insert(uri: Uri)
-
-    @Delete
-    fun delete(uri: Uri)
 }
