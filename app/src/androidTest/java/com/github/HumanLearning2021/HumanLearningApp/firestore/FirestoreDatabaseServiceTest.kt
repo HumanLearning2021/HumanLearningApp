@@ -31,23 +31,6 @@ class FirestoreDatabaseServiceTest : TestCase() {
         fakeDataset = FirestoreDataset("oopsy/oopsy", "oopsy", "oopsy", setOf())
     }
 
-    fun test_getCategories() = runBlocking {
-        val cats = demoInterface.getCategories()
-        assertThat(cats, hasItem(hasName("Pomme")))
-    }
-
-    fun test_getCategory() = runBlocking {
-        val cat = demoInterface.getCategory(appleCategoryId)
-        assertThat(cat, hasName("Pomme"))
-    }
-
-    fun test_getPicture() = runBlocking {
-        val appleCategory = demoInterface.getCategories().find { it.name == "Pomme" }
-        requireNotNull(appleCategory, { "category of apples not found in demo database" })
-        val pic = demoInterface.getPicture(appleCategory)
-        assertThat(pic, hasCategory(equalTo(appleCategory)))
-    }
-
     fun test_putCategory() = runBlocking {
         val cat = scratchInterface.putCategory("Poire")
         assertThat(cat, hasName("Poire"))
