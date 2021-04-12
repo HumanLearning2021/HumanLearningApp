@@ -18,11 +18,6 @@ class DummyCategoryTest {
     }
 
     @Test
-    fun testEqualsLowerCase() {
-        assertEquals(spoon1, spoon2)
-    }
-
-    @Test
     fun testEqualsExact(){
         assertEquals(spoon1, spoon3)
     }
