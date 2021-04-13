@@ -9,7 +9,5 @@ data class RoomDatasetWithCategories(
     @Relation(
         parentColumn = "datasetId",
         entityColumn = "categoryId",
-        entity = RoomCategory::class,
-        projection = ["categoryId"]
-    ) val category: String?
+    ) val category: RoomCategory?
 )
