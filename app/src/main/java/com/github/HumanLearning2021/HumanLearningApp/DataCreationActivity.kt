@@ -25,8 +25,9 @@ class DataCreationActivity : AppCompatActivity() {
     private var _binding: ActivityDataCreationBinding? = null
     private val binding get() = _binding!!
 
-    private var dScategories = emptySet<Category>()
-    private val dBManagement = FirestoreDatabaseManagement("demo2")
+    private var dsCategories = emptySet<Category>()
+    private lateinit var dbName :String
+    private lateinit var dBManagement : FirestoreDatabaseManagement
     private lateinit var datasetId : String
     private lateinit var dataset : Dataset
 
@@ -39,12 +40,15 @@ class DataCreationActivity : AppCompatActivity() {
             val extra = intent.extras
             if (extra != null && extra["dataset_id"] is String) {
                 datasetId = extra["dataset_id"] as String
-                dataset = dBManagement.getDatasetById(datasetId)!!
-                dScategories = dataset.categories
-
             }
+            if (extra != null && extra["database_name"] is String) {
+                dbName = extra["database_name"] as String
+                dBManagement = FirestoreDatabaseManagement(dbName)
+            }
+            dataset = dBManagement.getDatasetById(datasetId)!!
+            dsCategories = dataset.categories
 
-            val count = dScategories.size
+            val count = dsCategories.size
             var v: View?
 
             for (i in 0 until count) {
@@ -52,7 +56,7 @@ class DataCreationActivity : AppCompatActivity() {
                 v = binding.parentLinearLayout.getChildAt(i)
 
                 val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
-                categoryName.setText(dScategories.elementAt(i).name, TextView.BufferType.EDITABLE)
+                categoryName.setText(dsCategories.elementAt(i).name, TextView.BufferType.EDITABLE)
             }
 
             binding.buttonAdd.setOnClickListener {
@@ -81,8 +85,8 @@ class DataCreationActivity : AppCompatActivity() {
             (view.parent as View).findViewById(R.id.data_creation_category_name)
         lifecycleScope.launch {
             val cat = dBManagement.getCategoryByName(categoryName.text.toString())
-            if (dScategories.contains(cat.first())) {
-                dScategories = dScategories.minus(cat)
+            if (dsCategories.contains(cat.first())) {
+                dsCategories = dsCategories.minus(cat)
                 dataset = dBManagement.removeCategoryFromDataset(dataset, cat.first())
             }
             binding.parentLinearLayout.removeView(view.parent as View)
@@ -94,9 +98,9 @@ class DataCreationActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val count = binding.parentLinearLayout.childCount
             var v: View?
-            var newCategories = dScategories
+            var newCategories = dsCategories
 
-            for (i in dScategories.size until count) {
+            for (i in dsCategories.size until count) {
                 v = binding.parentLinearLayout.getChildAt(i)
                 val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
                 val cat = dBManagement.putCategory(categoryName.text.toString())
@@ -112,6 +116,7 @@ class DataCreationActivity : AppCompatActivity() {
 
             val intent = Intent(this@DataCreationActivity, DisplayDatasetActivity::class.java)
             intent.putExtra("dataset_id", datasetId)
+            intent.putExtra("database_name", dbName)
             startActivity(intent)
         }
     }

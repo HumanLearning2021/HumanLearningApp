@@ -17,31 +17,35 @@ import kotlinx.coroutines.launch
 
 class DisplayImageActivity : AppCompatActivity() {
 
-    private lateinit var picture: CategorizedPicture
+    private var picture: CategorizedPicture? = null
     private lateinit var datasetId: String
-    private val dBManagement = FirestoreDatabaseManagement("demo2")
+    private lateinit var dBManagement : FirestoreDatabaseManagement
+    private lateinit var dbName : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_image)
 
         picture =
-            intent.getParcelableExtra("single_picture")!!
+            intent.getParcelableExtra("single_picture")
         datasetId = intent.getStringExtra("dataset_id")!!
+        dbName = intent.getStringExtra("database_name")!!
+        dBManagement = FirestoreDatabaseManagement(dbName)
+        if(picture != null) {
+            findViewById<TextView>(R.id.display_image_viewCategory).text = picture!!.category.name
+            picture!!.displayOn(this, findViewById(R.id.display_image_viewImage))
 
-        findViewById<TextView>(R.id.display_image_viewCategory).text = picture.category.name
-        picture.displayOn(this, findViewById(R.id.display_image_viewImage))
-
-        findViewById<ImageButton>(R.id.display_image_delete_button).setOnClickListener{
-            removePicture()
+            findViewById<ImageButton>(R.id.display_image_delete_button).setOnClickListener {
+                removePicture()
+            }
         }
     }
 
     private fun removePicture() {
         var noMorePicturesInThisCategory = false
         lifecycleScope.launch {
-            dBManagement.removePicture(picture)
-            if (dBManagement.getAllPictures(picture.category).isEmpty()) {
+            dBManagement.removePicture(picture!!)
+            if (dBManagement.getAllPictures(picture!!.category).isEmpty()) {
                 noMorePicturesInThisCategory = true
             }
             Toast.makeText(this@DisplayImageActivity, getText(R.string.picturehasbeenremoved), Toast.LENGTH_SHORT)
@@ -55,11 +59,9 @@ class DisplayImageActivity : AppCompatActivity() {
     }
 
     private fun launchDisplayDatasetActivity() {
-        lifecycleScope.launch {
-            dBManagement.removeCategory(picture.category)
-        }
         val intent = Intent(this, DisplayDatasetActivity::class.java)
         intent.putExtra("dataset_id", datasetId)
+        intent.putExtra("database_name", dbName)
         startActivity(intent)
     }
 
@@ -67,9 +69,10 @@ class DisplayImageActivity : AppCompatActivity() {
         val intent = Intent(this, DisplayImageSetActivity::class.java)
         intent.putExtra(
             "category_of_pictures",
-            picture.category
+            picture!!.category
         )
         intent.putExtra("dataset_id", datasetId)
+        intent.putExtra("database_name", dbName)
         startActivity(intent)
     }
 }

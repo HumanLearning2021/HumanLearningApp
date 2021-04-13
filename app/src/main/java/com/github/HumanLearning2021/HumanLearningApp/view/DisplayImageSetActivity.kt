@@ -25,7 +25,8 @@ import kotlinx.coroutines.launch
 class DisplayImageSetActivity : AppCompatActivity() {
 
     private var categorizedPicturesList = setOf<CategorizedPicture>()
-    private val dBManagement = FirestoreDatabaseManagement("demo2")
+    private lateinit var dBManagement : FirestoreDatabaseManagement
+    private lateinit var dbName : String
     private lateinit var datasetId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +36,9 @@ class DisplayImageSetActivity : AppCompatActivity() {
         val category: Category =
             intent.getParcelableExtra<Category>("category_of_pictures") as FirestoreCategory
         datasetId = intent.getStringExtra("dataset_id")!!
+        dbName = intent.getStringExtra("database_name")!!
+        dBManagement = FirestoreDatabaseManagement(dbName)
+
         lifecycleScope.launch {
             categorizedPicturesList = dBManagement.getAllPictures(category)
 
@@ -57,6 +61,7 @@ class DisplayImageSetActivity : AppCompatActivity() {
                     (categorizedPicturesList.elementAt(i)) as Parcelable
                 )
                 intent.putExtra("dataset_id", datasetId)
+                intent.putExtra("database_name", dbName)
                 startActivity(intent)
             }
         }

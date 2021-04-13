@@ -19,10 +19,11 @@ import kotlinx.coroutines.launch
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
-    private val dBManagement = FirestoreDatabaseManagement("demo2")
+    private lateinit var dbManagement : FirestoreDatabaseManagement
     private lateinit var categories: Set<Category>
     private lateinit var datasetId: String
     private lateinit var dataset: Dataset
+    private lateinit var dbName : String
 
     private val addPictureContractRegistration =
         registerForActivityResult(AddPictureActivity.AddPictureContract) { resultPair ->
@@ -36,7 +37,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 val category = resultPair.first
                 val pictureUri = resultPair.second
                 lifecycleScope.launch {
-                    dBManagement.putPicture(pictureUri, category)
+                    dbManagement.putPicture(pictureUri, category)
                 }
             }
         }
@@ -50,12 +51,15 @@ class DisplayDatasetActivity : AppCompatActivity() {
         var representativePictures = setOf<CategorizedPicture>()
 
         lifecycleScope.launch {
-            dataset = dBManagement.getDatasetById(datasetId)!!
+            dataset = dbManagement.getDatasetById(datasetId)!!
             findViewById<EditText>(R.id.display_dataset_name).setText(dataset.name)
             categories = dataset.categories
             for (cat in categories) {
-                representativePictures =
-                    representativePictures.plus(dBManagement.getPicture(cat)!!)
+                var pictures = dbManagement.getAllPictures(cat)
+                if(pictures.isNotEmpty()) {
+                    representativePictures =
+                        representativePictures.plus(dbManagement.getPicture(cat)!!)
+                }
             }
 
 
@@ -69,7 +73,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
             findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
                 lifecycleScope.launch {
-                    dataset = dBManagement.editDatasetName(
+                    dataset = dbManagement.editDatasetName(
                         dataset,
                         findViewById<EditText>(R.id.display_dataset_name).text.toString()
                     )
@@ -89,6 +93,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
             R.id.display_dataset_menu_modify_categories -> {
                 val intent = Intent(this@DisplayDatasetActivity, DataCreationActivity::class.java)
                 intent.putExtra("dataset_id", datasetId)
+                intent.putExtra("database_name", dbName)
                 startActivity(intent)
                 true
             }
@@ -142,6 +147,12 @@ class DisplayDatasetActivity : AppCompatActivity() {
             } else {
                 "uEwDkGoGADW4hEJoJ6BA"
             }
+            dbManagement = if (extras != null && extras["database_name"] is String) {
+                dbName = intent.getStringExtra("database_name")!!
+                FirestoreDatabaseManagement(dbName)
+            } else {
+                FirestoreDatabaseManagement("demo2")
+            }
         }
     }
 
@@ -155,6 +166,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 cat
             )
             intent.putExtra("dataset_id", datasetId)
+            intent.putExtra("database_name", dbName)
             startActivity(intent)
         }
     }
