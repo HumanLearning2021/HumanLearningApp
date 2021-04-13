@@ -3,10 +3,9 @@ package com.github.HumanLearning2021.HumanLearningApp.room
 import androidx.room.*
 import com.github.HumanLearning2021.HumanLearningApp.model.User
 
-@Entity(tableName = "user")
+@Entity(tableName = "user", primaryKeys = ["userId", "type"])
 data class RoomUser(
-    @PrimaryKey val userId: String,
-
+    val userId: String,
     val type: User.Type,
     val displayName: String?,
     val email: String?
@@ -17,11 +16,11 @@ interface UserDao {
     @Query("SELECT * FROM user")
     fun loadAll(): List<RoomUser>
 
-    @Query("SELECT * FROM user WHERE userId = :id LIMIT 1")
-    fun loadById(id: String): RoomUser
+    @Query("SELECT * FROM user WHERE userId = :id AND type = :type LIMIT 1")
+    fun loadSpecific(id: String, type: User.Type): RoomUser
 
-    @Query("SELECT * FROM user WHERE type == :type")
-    fun loadByType(type: User.Type): List<RoomUser>
+    @Update
+    fun updateUser(user: RoomUser)
 
     @Insert
     fun insertAll(vararg users: RoomUser)
