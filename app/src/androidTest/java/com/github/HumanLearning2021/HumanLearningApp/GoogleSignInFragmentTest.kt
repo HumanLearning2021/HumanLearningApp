@@ -2,24 +2,25 @@ package com.github.HumanLearning2021.HumanLearningApp
 
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInFragment
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class GoogleSignInFragmentTest {
-    lateinit var fragmentScenario: FragmentScenario<GoogleSignInFragment>
 
-    @Before
-    fun startFragment() {
-        fragmentScenario = FragmentScenario.launch(GoogleSignInFragment::class.java)
-    }
-
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
     @Test
     fun test_success() {
-        fragmentScenario.onFragment {
-            it.onActivityResult(GoogleSignInFragment.RC_SIGN_IN, 0, null)
+        launchFragmentInHiltContainer<GoogleSignInFragment> {
+            onActivityResult(GoogleSignInFragment.RC_SIGN_IN, 0, null)
         }
     }
 }

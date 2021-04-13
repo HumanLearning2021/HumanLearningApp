@@ -13,13 +13,16 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.junit.Assume.assumeTrue
@@ -27,23 +30,30 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayImageSetActivityTest {
 
     @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+    @get:Rule
     var activityRuleIntent = IntentsTestRule(DisplayImageSetActivity::class.java, false, false)
 
+    @Inject
+    @ScratchDatabase
+    lateinit var dbManagement: DatabaseManagement
+
     private var dsPictures = emptySet<CategorizedPicture>()
-    private var categories = emptySet<Category>()
-    private val dbName = "scratch"
-    private val dbManagement = FirestoreDatabaseManagement(dbName)
+    private lateinit var categories: Set<Category>
     private lateinit var dataset: Dataset
     private lateinit var datasetId: String
     private var index = 0
 
     @Before
     fun setUp() {
+        hiltRule.inject()  // to get dbManagement set up
         runBlocking {
             var found = false
             val datasets = dbManagement.getDatasets()
@@ -66,7 +76,6 @@ class DisplayImageSetActivityTest {
             val intent = Intent()
             intent.putExtra("category_of_pictures", (categories.elementAt(index)))
             intent.putExtra("dataset_id", datasetId)
-            intent.putExtra("database_name", dbName)
             activityRuleIntent.launchActivity(intent)
             waitFor(1000)
         }
@@ -107,7 +116,6 @@ class DisplayImageSetActivityTest {
                     dsPictures.elementAt(0)
                 ),
                 IntentMatchers.hasExtra("dataset_id", datasetId),
-                IntentMatchers.hasExtra("database_name", dbName)
             )
         )
 
@@ -120,7 +128,6 @@ class DisplayImageSetActivityTest {
             CoreMatchers.allOf(
                 IntentMatchers.hasComponent(DisplayDatasetActivity::class.java.name),
                 IntentMatchers.hasExtra("dataset_id", datasetId),
-                IntentMatchers.hasExtra("database_name", dbName)
             )
         )
     }

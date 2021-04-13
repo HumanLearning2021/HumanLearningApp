@@ -13,14 +13,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
@@ -29,24 +31,34 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayDatasetActivityTest {
     @get:Rule
     var activityRuleIntent = IntentsTestRule(DisplayDatasetActivity::class.java, false, false)
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
-    private val dbName = "scratch"
-    private val dbManagement = FirestoreDatabaseManagement(dbName)
     private lateinit var dataset: Dataset
     private lateinit var datasetId: String
     private var index = 0
 
-    private val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
+    private val NUMBER_OF_CAT = 3
+    private val datasetImagesList = ArrayList<CategorizedPicture>()
+
+    @Inject
+    @ScratchDatabase
+    lateinit var dbManagement: DatabaseManagement
+    @Inject
+    lateinit var dummyPresenter: DummyUIPresenter
 
     @Before
     fun setUp() {
+        hiltRule.inject()  // ensures dbManagement is available
         runBlocking {
             var found = false
             val datasets = dbManagement.getDatasets()
@@ -67,7 +79,6 @@ class DisplayDatasetActivityTest {
             datasetPictures = emptySet()
             datasetId = dataset.id as String
             val intent = Intent()
-            intent.putExtra("database_name", dbName)
             intent.putExtra("dataset_id", datasetId)
             activityRuleIntent.launchActivity(intent)
         }
@@ -109,7 +120,6 @@ class DisplayDatasetActivityTest {
                         categories.elementAt(index)
                     ),
                     hasExtra("dataset_id", datasetId),
-                    hasExtra("database_name", dbName)
                 )
             )
         }

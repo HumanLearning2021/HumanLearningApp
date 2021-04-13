@@ -16,6 +16,8 @@ import com.github.HumanLearning2021.HumanLearningApp.view.LearningDatasetSelecti
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListRecyclerViewAdapter
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
@@ -23,10 +25,14 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class LearningDatasetSelectionTest {
-    @get:Rule
+    @get:Rule(order=1)
     val testRule = ActivityScenarioRule(LearningDatasetSelectionActivity::class.java)
+    @get:Rule(order=0)
+    val hiltRule = HiltAndroidRule(this)
+
 
     @Before
     fun before(){

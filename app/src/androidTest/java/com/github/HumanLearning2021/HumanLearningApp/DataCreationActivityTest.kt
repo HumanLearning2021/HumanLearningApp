@@ -11,10 +11,13 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.junit.Assume.assumeTrue
@@ -22,13 +25,19 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 class DataCreationActivityTest {
+    @Inject
+    @ScratchDatabase
+    lateinit var dbManagement: DatabaseManagement
 
-    private val dbName = "scratch"
-    private val dbManagement = FirestoreDatabaseManagement(dbName)
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
     private lateinit var categories: Set<Category>
     private var nbCategories = 0
     private lateinit var dataset: Dataset
@@ -39,6 +48,7 @@ class DataCreationActivityTest {
 
     @Before
     fun setUp() {
+        hiltRule.inject()  // to get staticDBManagement set up
         runBlocking {
             var found = false
             val datasets = dbManagement.getDatasets()
@@ -54,7 +64,6 @@ class DataCreationActivityTest {
             datasetId = dataset.id as String
             val intent = Intent()
             intent.putExtra("dataset_id", datasetId)
-            intent.putExtra("database_name", dbName)
             activityRuleIntent.launchActivity(intent)
 
             val delayBeforeTestStart: Long = 3000
@@ -113,7 +122,6 @@ class DataCreationActivityTest {
             CoreMatchers.allOf(
                 IntentMatchers.hasComponent(DisplayDatasetActivity::class.java.name),
                 IntentMatchers.hasExtra("dataset_id", datasetId),
-                IntentMatchers.hasExtra("database_name", dbName)
             )
         )
     }

@@ -29,8 +29,13 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.schibsted.spain.barista.interaction.BaristaClickInteractions.longClickOn
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import org.junit.*
 import org.junit.runner.RunWith
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class LearningSettingsActivityTest {
 
@@ -46,6 +51,9 @@ class LearningSettingsActivityTest {
             }
         )
     )
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
 
     @Before
