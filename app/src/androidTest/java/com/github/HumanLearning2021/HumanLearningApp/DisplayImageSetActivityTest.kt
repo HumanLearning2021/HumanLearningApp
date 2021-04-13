@@ -64,12 +64,14 @@ class DisplayImageSetActivityTest {
 
     @Test
     fun imageSetGridAndNameAreDisplayed() {
-        onView(withId(R.id.display_image_set_imagesGridView)).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
+        if(dsPictures.isNotEmpty()) {
+            onView(withId(R.id.display_image_set_imagesGridView)).check(
+                ViewAssertions.matches(
+                    ViewMatchers.isDisplayed()
+                )
             )
-        )
-        onView(withId(R.id.display_image_set_name)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            onView(withId(R.id.display_image_set_name)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        }
     }
 
     @Test

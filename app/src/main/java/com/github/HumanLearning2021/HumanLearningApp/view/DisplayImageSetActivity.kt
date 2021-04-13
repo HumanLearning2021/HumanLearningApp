@@ -41,28 +41,30 @@ class DisplayImageSetActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             categorizedPicturesList = dBManagement.getAllPictures(category)
+            if(categorizedPicturesList.isNotEmpty()) {
+                findViewById<TextView>(R.id.display_image_set_name).text =
+                    (categorizedPicturesList.elementAt(0)).category.name
 
-            findViewById<TextView>(R.id.display_image_set_name).text =
-                (categorizedPicturesList.elementAt(0)).category.name
+                val displayImageSetAdapter =
+                    DisplayImageSetAdapter(
+                        categorizedPicturesList,
+                        this@DisplayImageSetActivity
+                    )
 
-            val displayImageSetAdapter =
-                DisplayImageSetAdapter(
-                    categorizedPicturesList,
-                    this@DisplayImageSetActivity
-                )
+                findViewById<GridView>(R.id.display_image_set_imagesGridView).adapter =
+                    displayImageSetAdapter
 
-            findViewById<GridView>(R.id.display_image_set_imagesGridView).adapter =
-                displayImageSetAdapter
-
-            findViewById<GridView>(R.id.display_image_set_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
-                val intent = Intent(this@DisplayImageSetActivity, DisplayImageActivity::class.java)
-                intent.putExtra(
-                    "single_picture",
-                    (categorizedPicturesList.elementAt(i)) as Parcelable
-                )
-                intent.putExtra("dataset_id", datasetId)
-                intent.putExtra("database_name", dbName)
-                startActivity(intent)
+                findViewById<GridView>(R.id.display_image_set_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
+                    val intent =
+                        Intent(this@DisplayImageSetActivity, DisplayImageActivity::class.java)
+                    intent.putExtra(
+                        "single_picture",
+                        (categorizedPicturesList.elementAt(i)) as Parcelable
+                    )
+                    intent.putExtra("dataset_id", datasetId)
+                    intent.putExtra("database_name", dbName)
+                    startActivity(intent)
+                }
             }
         }
     }
