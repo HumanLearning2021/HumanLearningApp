@@ -8,8 +8,8 @@ import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.hasName
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.junit.Assert.assertThat
 import java.io.File
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -128,7 +128,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
     fun test_getAllPictures() = runBlocking {
         val cat = demoManagement.getCategoryById(appleCategoryId)
         val pics = demoManagement.getAllPictures(cat!!)
-        assertThat(pics.size, equalTo(2))
+        assertThat(pics, hasSize(5))
         assertThat(pics, hasItems(hasCategory(equalTo(cat))))
     }
 
