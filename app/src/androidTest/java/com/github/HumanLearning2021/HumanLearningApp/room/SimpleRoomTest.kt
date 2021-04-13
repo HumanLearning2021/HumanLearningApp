@@ -36,16 +36,16 @@ class SimpleRoomTest {
 
     @Test
     fun insertDatasetsAndLoadAll() {
-        val ds1 = RoomDataset("id1", "dataset 1")
-        val ds2 = RoomDataset("id2", "dataset 2")
+        val ds1 = RoomDatasetWithoutCategories("id1", "dataset 1")
+        val ds2 = RoomDatasetWithoutCategories("id2", "dataset 2")
 
         datasetDao.insertAll(ds1, ds2)
 
         val res = datasetDao.loadAll()
 
         assertThat(res.size, equalTo(2))
-        assert(res.contains(RoomDatasetWithCategories(ds1, null)))
-        assert(res.contains(RoomDatasetWithCategories(ds2, null)))
+        assert(res.contains(RoomDataset(ds1, null)))
+        assert(res.contains(RoomDataset(ds2, null)))
     }
 
 }
