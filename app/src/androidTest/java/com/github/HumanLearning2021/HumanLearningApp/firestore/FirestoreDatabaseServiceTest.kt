@@ -8,8 +8,8 @@ import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.hasName
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.junit.Assert.assertThat
 import java.io.File
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -76,7 +76,7 @@ class FirestoreDatabaseServiceTest : TestCase() {
         val appleCategory = demoInterface.getCategory(appleCategoryId)
         requireNotNull(appleCategory, {"apple category not found in demo database"})
         val pics = demoInterface.getAllPictures(appleCategory)
-        assertThat(pics.size, equalTo(2))
+        assertThat(pics, hasSize(5))
         for (p in pics) {
             assertThat(p, hasCategory(equalTo(appleCategory)))
         }
