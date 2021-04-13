@@ -23,6 +23,8 @@ import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import kotlinx.coroutines.runBlocking
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -30,10 +32,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class LearningTest {
+    @get:Rule(order=0)
+    val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
+    @get:Rule(order=1)
     val activityScenarioRule: ActivityScenarioRule<LearningActivity> = ActivityScenarioRule(
         Intent(
             ApplicationProvider.getApplicationContext(),

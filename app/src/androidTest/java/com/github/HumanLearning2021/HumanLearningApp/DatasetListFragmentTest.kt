@@ -10,37 +10,45 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListFragment
 import com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListRecyclerViewAdapter
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DatasetListFragmentTest {
+    @Inject
+    @DummyDatabase
+    lateinit var dbMgt: DatabaseManagement
+
     private lateinit var dummyDatasets: Set<Dataset>
-    private lateinit var scenario: FragmentScenario<DatasetListFragment>
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @Before
     fun setUp() {
-        runBlocking {
-            dummyDatasets = DummyDatabaseManagement(DummyDatabaseService()).getDatasets()
+        hiltRule.inject()  // initializes dbMgt
+        dummyDatasets = runBlocking {
+            dbMgt.getDatasets()
         }
-
-        scenario = launchFragmentInContainer()
-
-        val delayBeforeTestStart: Long = 1000
-        TestUtils.waitFor(delayBeforeTestStart)
     }
 
     @Test
     fun listItemInFragmentAreClickable() {
-        scenario.withFragment {
+        launchFragmentInHiltContainer<DatasetListFragment> {
             this.selectedDataset.observe(this) {
                 // tests that the clicked dataset is in the dummy datasets
                 assert(dummyDatasets.find { ds -> ds == it } != null
@@ -58,6 +66,7 @@ class DatasetListFragmentTest {
 
     @Test
     fun fragmentHasChildrenViews() {
+        launchFragmentInHiltContainer<DatasetListFragment>()
         onView(withId(R.id.DatasetList_list)).check(
             matches(
                 ViewMatchers.hasChildCount(dummyDatasets.size)

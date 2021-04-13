@@ -3,29 +3,51 @@ package com.github.HumanLearning2021.HumanLearningApp.firestore
 import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.hasName
-import junit.framework.TestCase
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
+import org.junit.Assert.fail
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
 import java.io.File
 import java.lang.IllegalArgumentException
 import java.util.*
+import javax.inject.Inject
 
-class FirestoreDatabaseManagementTest : TestCase() {
+@HiltAndroidTest
+@RunWith(AndroidJUnit4::class)
+class FirestoreDatabaseManagementTest {
 
-    lateinit var demoManagement: FirestoreDatabaseManagement
-    lateinit var scratchManagement: FirestoreDatabaseManagement
+    @Inject
+    @DemoDatabase
+    lateinit var demoManagement: DatabaseManagement
+
+    @Inject
+    @ScratchDatabase
+    lateinit var scratchManagement: DatabaseManagement
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     lateinit var appleCategoryId: String
     lateinit var pearCategoryId: String
     lateinit var fakeCategory: FirestoreCategory
     lateinit var fakeDataset: FirestoreDataset
 
-    override fun setUp() {
-        demoManagement = FirestoreDatabaseManagement("demo")
-        scratchManagement = FirestoreDatabaseManagement("scratch")
+    @Before
+    fun setUp() {
+        hiltRule.inject()
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")
@@ -34,9 +56,10 @@ class FirestoreDatabaseManagementTest : TestCase() {
 
     private fun getRandomString() = "${UUID.randomUUID()}"
 
+    @Test
     fun test_getPicture_categoryNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.getPicture(FirestoreCategory("path", getRandomString(), name))
+            scratchManagement.getPicture(FirestoreCategory("path", getRandomString(), getRandomString()))
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -44,6 +67,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
         })
     }
 
+    @Test
     fun test_getPicture() = runBlocking {
         val appleCategory = demoManagement.getCategoryById(appleCategoryId)
         requireNotNull(appleCategory, { "category of apples no found in demo database" })
@@ -51,20 +75,23 @@ class FirestoreDatabaseManagementTest : TestCase() {
         assertThat(pic, hasCategory(equalTo(appleCategory)))
     }
 
+    @Test
     fun test_getRepresentativePicture_null() = runBlocking {
         assertThat(demoManagement.getRepresentativePicture(pearCategoryId), equalTo(null))
     }
 
+    @Test
     fun test_getRepresentativePicture() = runBlocking {
         val appleCategory = demoManagement.getCategoryById(appleCategoryId)
         assertThat(demoManagement.getRepresentativePicture(appleCategoryId), hasCategory(equalTo(appleCategory)))
     }
 
+    @Test
     fun test_putPicture_categoryNotPresent() = runBlocking {
         runCatching {
             val tmp = File.createTempFile("meow", ".png")
             val uri = Uri.fromFile(tmp)
-            scratchManagement.putPicture(uri, FirestoreCategory("path", getRandomString(), name))
+            scratchManagement.putPicture(uri, FirestoreCategory("path", getRandomString(), getRandomString()))
             tmp.delete()
         }.fold({
             fail("unexpected successful completion")
@@ -73,8 +100,9 @@ class FirestoreDatabaseManagementTest : TestCase() {
         })
     }
 
+    @Test
     fun test_putPicture() = runBlocking {
-        name = getRandomString()
+        val name = getRandomString()
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cat = scratchManagement.putCategory(name)
 
@@ -93,28 +121,34 @@ class FirestoreDatabaseManagementTest : TestCase() {
         assertThat(pic, hasCategory(equalTo(cat)))
     }
 
+    @Test
     fun test_getCategoryById_null() = runBlocking {
         assertThat(demoManagement.getCategoryById(getRandomString()), equalTo(null))
     }
 
+    @Test
     fun test_getCategoryById() = runBlocking {
         assertThat(demoManagement.getCategoryById(appleCategoryId), hasName("Pomme"))
     }
 
+    @Test
     fun test_getCategoryByName() = runBlocking {
         assertThat(demoManagement.getCategoryByName("Poire").first(), hasName("Poire"))
     }
 
+    @Test
     fun test_putCategory() = runBlocking {
-        name = getRandomString()
+        val name = getRandomString()
         assertThat(scratchManagement.putCategory(name), hasName(name))
     }
 
+    @Test
     fun test_getCategories() = runBlocking {
         val cats = demoManagement.getCategories()
         assertThat(cats, hasItems(hasName("Pomme")))
     }
 
+    @Test
     fun test_getAllPictures_categoryNotPresent() = runBlocking {
         runCatching {
             scratchManagement.getAllPictures(fakeCategory)
@@ -125,6 +159,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
         })
     }
 
+    @Test
     fun test_getAllPictures() = runBlocking {
         val cat = demoManagement.getCategoryById(appleCategoryId)
         val pics = demoManagement.getAllPictures(cat!!)
@@ -132,6 +167,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
         assertThat(pics, hasItems(hasCategory(equalTo(cat))))
     }
 
+    @Test
     fun test_removeCategory() = runBlocking {
         val cat = scratchManagement.putCategory(getRandomString())
         requireNotNull(scratchManagement.getCategoryById(cat.id), {"category was not put into database"})
@@ -139,8 +175,9 @@ class FirestoreDatabaseManagementTest : TestCase() {
         assertThat(scratchManagement.getCategoryById(cat.id), equalTo(null))
     }
 
+    @Test
     fun test_removePicture() = runBlocking {
-        name = getRandomString()
+        val name = getRandomString()
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cat = scratchManagement.putCategory(name)
 
@@ -160,20 +197,24 @@ class FirestoreDatabaseManagementTest : TestCase() {
         assertThat(scratchManagement.getPicture(cat), equalTo(null))
     }
 
+    @Test
     fun test_putDataset() = runBlocking {
         val name = getRandomString()
         val ds = scratchManagement.putDataset(name, setOf())
         assertThat(scratchManagement.getDatasetById(ds.id)!!.name, equalTo(name))
     }
 
+    @Test
     fun test_getDatasetById() = runBlocking {
         assertThat(demoManagement.getDatasetById("PzuR0B48GpYN5ERxM3DW"), not(equalTo(null)))
     }
 
+    @Test
     fun test_getDatasetByName() = runBlocking {
         assertThat(demoManagement.getDatasetByName("Fruit").size, equalTo(1))
     }
 
+    @Test
     fun test_deleteDataset() = runBlocking {
         val ds = scratchManagement.putDataset(getRandomString(), setOf())
         requireNotNull(scratchManagement.getDatasetById(ds.id))
@@ -181,6 +222,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
         assertThat(scratchManagement.getDatasetById(ds.id), equalTo(null))
     }
 
+    @Test
     fun test_putRepresentativePicture_categoryNotPresent() = runBlocking {
         runCatching {
             scratchManagement.putRepresentativePicture(Uri.EMPTY, fakeCategory)
@@ -191,6 +233,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
         })
     }
 
+    @Test
     fun test_putRepresentativePicture() = runBlocking {
         val randomCategoryName = getRandomString()
         val ctx = ApplicationProvider.getApplicationContext<Context>()
@@ -211,37 +254,43 @@ class FirestoreDatabaseManagementTest : TestCase() {
         assertThat(scratchManagement.getRepresentativePicture(cat.id), not(equalTo(null)))
     }
 
+    @Test
     fun test_getDatasets() = runBlocking {
         assertThat(demoManagement.getDatasets().size, equalTo(1))
         assertThat(demoManagement.getDatasets().first().name, equalTo("Fruit"))
     }
 
+    @Test
     fun test_getDatasetNames() = runBlocking {
         assertThat(demoManagement.getDatasetNames().size, equalTo(1))
         assertThat(demoManagement.getDatasetNames().first(), equalTo("Fruit"))
     }
 
+    @Test
     fun test_getDatasetIds() = runBlocking {
         assertThat(demoManagement.getDatasetIds().size, equalTo(1))
         assertThat(demoManagement.getDatasetIds().first(), equalTo("PzuR0B48GpYN5ERxM3DW"))
     }
 
+    @Test
     fun test_removeCategoryFromDataset_datasetNotPresent() = runBlocking {
-        val cat1 = scratchManagement.putCategory(getRandomString())
-        val cat2 = scratchManagement.putCategory(getRandomString())
+        val cat1 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
+        val cat2 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
         val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf(cat1, cat2))
         val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
-        assertEquals(setOf(cat1), res.categories)
+        assertThat(res.categories, equalTo(setOf(cat1)))
     }
 
+    @Test
     fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
-        val cat1 = scratchManagement.putCategory(getRandomString())
+        val cat1 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
         val cat2 = fakeCategory
         val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf(cat1, cat2))
         val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
-        assertEquals(setOf(cat1), res.categories)
+        assertThat(res.categories, equalTo(setOf(cat1)))
     }
 
+    @Test
     fun test_removeCategoryFromDataset() = runBlocking {
         val cat1 = scratchManagement.putCategory(getRandomString())
         val cat2 = scratchManagement.putCategory(getRandomString())
@@ -253,6 +302,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
         assert(!cats.contains(cat2))
     }
 
+    @Test
     fun test_editDatasetName_datasetNotPresent() = runBlocking {
         val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
         runCatching {
@@ -264,6 +314,7 @@ class FirestoreDatabaseManagementTest : TestCase() {
         })
     }
 
+    @Test
     fun test_editDatasetName() = runBlocking {
         val ogName = getRandomString()
         val ds = scratchManagement.putDataset(ogName, setOf())

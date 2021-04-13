@@ -31,6 +31,7 @@ android {
         versionCode 1
         versionName "1.0"
 
+        testInstrumentationRunner "com.github.HumanLearning2021.HumanLearningApp.CustomTestRunner"
         testInstrumentationRunnerArgument "notAnnotation", "androidx.test.filters.FlakyTest"
 
         // Fix Room incremental processing
@@ -143,6 +144,8 @@ dependencies {
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     // Test frameworks
     testImplementation 'junit:junit:4.13.2'
