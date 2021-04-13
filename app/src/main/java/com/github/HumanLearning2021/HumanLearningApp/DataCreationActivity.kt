@@ -38,34 +38,36 @@ class DataCreationActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val extra = intent.extras
-            if (extra != null && extra["dataset_id"] is String) {
+            if(extra != null) {
                 datasetId = extra["dataset_id"] as String
-            }
-            if (extra != null && extra["database_name"] is String) {
                 dbName = extra["database_name"] as String
                 dBManagement = FirestoreDatabaseManagement(dbName)
-            }
-            dataset = dBManagement.getDatasetById(datasetId)!!
-            dsCategories = dataset.categories
 
-            val count = dsCategories.size
-            var v: View?
+                dataset = dBManagement.getDatasetById(datasetId)!!
+                dsCategories = dataset.categories
 
-            for (i in 0 until count) {
-                addNewView()
-                v = binding.parentLinearLayout.getChildAt(i)
+                val count = dsCategories.size
+                var v: View?
 
-                val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
-                categoryName.setText(dsCategories.elementAt(i).name, TextView.BufferType.EDITABLE)
-            }
+                for (i in 0 until count) {
+                    addNewView()
+                    v = binding.parentLinearLayout.getChildAt(i)
 
-            binding.buttonAdd.setOnClickListener {
-                addNewView()
-            }
+                    val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
+                    categoryName.setText(
+                        dsCategories.elementAt(i).name,
+                        TextView.BufferType.EDITABLE
+                    )
+                }
+
+                binding.buttonAdd.setOnClickListener {
+                    addNewView()
+                }
 
 
-            binding.buttonSubmitList.setOnClickListener {
-                saveData()
+                binding.buttonSubmitList.setOnClickListener {
+                    saveData()
+                }
             }
         }
 
