@@ -91,6 +91,7 @@ class DataCreationActivityTest {
         onView(withText("")).perform(typeText("new category"))
         if(categories.isEmpty()) {
             onView(withId(R.id.button_remove)).perform(click())
+            waitFor(1000)
             onView(withId(R.id.parent_linear_layout)).check(
                 ViewAssertions.matches(
                     hasChildCount(0)

@@ -87,7 +87,7 @@ class DataCreationActivity : AppCompatActivity() {
             (view.parent as View).findViewById(R.id.data_creation_category_name)
         lifecycleScope.launch {
             val cat = dBManagement.getCategoryByName(categoryName.text.toString())
-            if (dsCategories.contains(cat.first())) {
+            if (dsCategories.isNotEmpty() && dsCategories.contains(cat.first())) {
                 dsCategories = dsCategories.minus(cat)
                 dataset = dBManagement.removeCategoryFromDataset(dataset, cat.first())
             }
