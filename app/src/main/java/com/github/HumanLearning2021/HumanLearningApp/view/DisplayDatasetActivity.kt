@@ -62,7 +62,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 }
             }
 
-
             val displayDatasetAdapter =
                 DisplayDatasetAdapter(representativePictures, this@DisplayDatasetActivity)
 
@@ -70,14 +69,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 displayDatasetAdapter
 
             setGridViewItemListener()
-            findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
-                lifecycleScope.launch {
-                    dataset = dbManagement.editDatasetName(
-                        dataset,
-                        findViewById<EditText>(R.id.display_dataset_name).text.toString()
-                    )
-                }
-            }
+            setTextChangeListener()
         }
     }
 
@@ -168,6 +160,17 @@ class DisplayDatasetActivity : AppCompatActivity() {
             intent.putExtra("dataset_id", datasetId)
             intent.putExtra("database_name", dbName)
             startActivity(intent)
+        }
+    }
+
+    private fun setTextChangeListener() {
+        findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
+            lifecycleScope.launch {
+                dataset = dbManagement.editDatasetName(
+                    dataset,
+                    findViewById<EditText>(R.id.display_dataset_name).text.toString()
+                )
+            }
         }
     }
 }

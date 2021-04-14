@@ -52,18 +52,7 @@ class DisplayImageSetActivity : AppCompatActivity() {
 
                 findViewById<GridView>(R.id.display_image_set_imagesGridView).adapter =
                     displayImageSetAdapter
-
-                findViewById<GridView>(R.id.display_image_set_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
-                    val intent =
-                        Intent(this@DisplayImageSetActivity, DisplayImageActivity::class.java)
-                    intent.putExtra(
-                        "single_picture",
-                        (categorizedPicturesList.elementAt(i)) as Parcelable
-                    )
-                    intent.putExtra("dataset_id", datasetId)
-                    intent.putExtra("database_name", dbName)
-                    startActivity(intent)
-                }
+                setPictureItemListener()
             }
         }
     }
@@ -106,5 +95,19 @@ class DisplayImageSetActivity : AppCompatActivity() {
             return images.size
         }
 
+    }
+
+    private fun setPictureItemListener(){
+        findViewById<GridView>(R.id.display_image_set_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
+            val intent =
+                Intent(this@DisplayImageSetActivity, DisplayImageActivity::class.java)
+            intent.putExtra(
+                "single_picture",
+                (categorizedPicturesList.elementAt(i)) as Parcelable
+            )
+            intent.putExtra("dataset_id", datasetId)
+            intent.putExtra("database_name", dbName)
+            startActivity(intent)
+        }
     }
 }

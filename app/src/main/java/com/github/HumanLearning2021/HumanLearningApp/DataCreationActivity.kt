@@ -33,15 +33,9 @@ class DataCreationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         lifecycleScope.launch {
-            val extra = intent.extras
-            if (extra != null) {
-                datasetId = extra["dataset_id"] as String
-                dbName = extra["database_name"] as String
-                dBManagement = FirestoreDatabaseManagement(dbName)
-
-                dataset = dBManagement.getDatasetById(datasetId)!!
-                dsCategories = dataset.categories
-
+            val extras = intent.extras
+            if (extras != null) {
+                checkIntentExtras(extras)
                 val count = dsCategories.size
                 var v: View?
 
@@ -126,6 +120,16 @@ class DataCreationActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun checkIntentExtras(extras: Bundle?) {
+        lifecycleScope.launch {
+            datasetId = extras!!["dataset_id"] as String
+            dbName = extras["database_name"] as String
+            dBManagement = FirestoreDatabaseManagement(dbName)
+            dataset = dBManagement.getDatasetById(datasetId)!!
+            dsCategories = dataset.categories
+        }
     }
 }
 
