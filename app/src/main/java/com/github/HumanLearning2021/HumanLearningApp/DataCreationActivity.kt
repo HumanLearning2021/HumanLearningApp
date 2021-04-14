@@ -35,14 +35,17 @@ class DataCreationActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val extras = intent.extras
             if (extras != null) {
-                checkIntentExtras(extras)
+                datasetId = extras!!["dataset_id"] as String
+                dbName = extras["database_name"] as String
+                dBManagement = FirestoreDatabaseManagement(dbName)
+                dataset = dBManagement.getDatasetById(datasetId)!!
+                dsCategories = dataset.categories
                 val count = dsCategories.size
                 var v: View?
 
                 for (i in 0 until count) {
                     addNewView()
                     v = binding.parentLinearLayout.getChildAt(i)
-
                     val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
                     categoryName.setText(
                         dsCategories.elementAt(i).name,
@@ -50,14 +53,7 @@ class DataCreationActivity : AppCompatActivity() {
                     )
                 }
 
-                binding.buttonAdd.setOnClickListener {
-                    addNewView()
-                }
-
-
-                binding.buttonSubmitList.setOnClickListener {
-                    saveData()
-                }
+                setButtonsListener()
             }
         }
 
@@ -122,13 +118,12 @@ class DataCreationActivity : AppCompatActivity() {
         _binding = null
     }
 
-    private fun checkIntentExtras(extras: Bundle?) {
-        lifecycleScope.launch {
-            datasetId = extras!!["dataset_id"] as String
-            dbName = extras["database_name"] as String
-            dBManagement = FirestoreDatabaseManagement(dbName)
-            dataset = dBManagement.getDatasetById(datasetId)!!
-            dsCategories = dataset.categories
+    private fun setButtonsListener() {
+        binding.buttonAdd.setOnClickListener {
+            addNewView()
+        }
+        binding.buttonSubmitList.setOnClickListener {
+            saveData()
         }
     }
 }
