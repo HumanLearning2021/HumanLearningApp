@@ -7,11 +7,11 @@ import androidx.room.*
     foreignKeys = [ForeignKey(
         entity = RoomCategory::class,
         parentColumns = ["categoryId"],
-        childColumns = ["assignedCategoryId"],
+        childColumns = ["categoryId"],
         onDelete = ForeignKey.CASCADE
     )]
 )
 data class RoomPicture(
     @PrimaryKey val uri: Uri,
-    val assignedCategoryId: String
+    @ColumnInfo(index = true) val categoryId: String
 )

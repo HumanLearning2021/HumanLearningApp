@@ -17,10 +17,10 @@ interface UserDao {
     fun loadAll(): List<RoomUser>
 
     @Query("SELECT * FROM user WHERE userId = :id AND type = :type LIMIT 1")
-    fun loadSpecific(id: String, type: User.Type): RoomUser
+    fun load(id: String, type: User.Type): RoomUser
 
     @Update
-    fun updateUser(user: RoomUser)
+    fun update(user: RoomUser)
 
     @Insert
     fun insertAll(vararg users: RoomUser)

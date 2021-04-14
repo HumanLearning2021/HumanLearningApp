@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
-class SimpleRoomTest {
+class RoomOfflineDatabaseTest {
     private lateinit var db: RoomOfflineDatabase
     private lateinit var categoryDao: CategoryDao
     private lateinit var datasetDao: DatasetDao
@@ -36,16 +36,20 @@ class SimpleRoomTest {
 
     @Test
     fun insertDatasetsAndLoadAll() {
-        val ds1 = RoomDataset(RoomDatasetWithoutCategories("id1", "dataset 1"), null)
-        val ds2 = RoomDataset(RoomDatasetWithoutCategories("id2", "dataset 2"), null)
+        val ds1 = RoomDatasetWithoutCategories("id1", "dataset 1")
+        val ds2 = RoomDatasetWithoutCategories("id2", "dataset 2")
 
         datasetDao.insertAll(ds1, ds2)
 
         val res = datasetDao.loadAll()
 
         assertThat(res.size, equalTo(2))
-        assert(res.contains(ds1))
-        assert(res.contains(ds2))
+        assert(res.contains(RoomDataset(ds1, listOf())))
+        assert(res.contains(RoomDataset(ds2, listOf())))
     }
 
+    @Test
+    fun deletingCategoryDeletesPictures() {
+
+    }
 }

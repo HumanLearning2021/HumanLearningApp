@@ -19,16 +19,12 @@ import java.util.*
 @RunWith(AndroidJUnit4::class)
 class RoomUserTest {
     private lateinit var db: RoomOfflineDatabase
-    private lateinit var categoryDao: CategoryDao
-    private lateinit var datasetDao: DatasetDao
     private lateinit var userDao: UserDao
 
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
-        categoryDao = db.categoryDao()
-        datasetDao = db.datasetDao()
         userDao = db.userDao()
     }
 
@@ -68,7 +64,7 @@ class RoomUserTest {
 
     @Test
     fun insertThenLoadUsers() {
-        val numberOfUsers = (0..50).random()
+        val numberOfUsers = (2..50).random()
         val testUsers = mutableListOf<RoomUser>()
         for (i in 0 until numberOfUsers) {
             testUsers.add(getRandomUser())
@@ -84,7 +80,7 @@ class RoomUserTest {
 
     @Test
     fun loadSpecificYieldsCorrectResult() {
-        val numberOfUsers = (0..10).random()
+        val numberOfUsers = (1..10).random()
         val testUsers = mutableListOf<RoomUser>()
         for (i in 0 until numberOfUsers) {
             testUsers.add(getRandomUser())
@@ -93,14 +89,14 @@ class RoomUserTest {
         userDao.insertAll(*testUsers.toTypedArray())
 
         val requestUser = testUsers.random()
-        val res = userDao.loadSpecific(requestUser.userId, requestUser.type)
+        val res = userDao.load(requestUser.userId, requestUser.type)
 
         assertThat(res, equalTo(requestUser))
     }
 
     @Test
     fun deleteUserDeletesUser() {
-        val numberOfUsers = (0..10).random()
+        val numberOfUsers = (1..10).random()
         val testUsers = mutableListOf<RoomUser>()
         for (i in 0 until numberOfUsers) {
             testUsers.add(getRandomUser())
@@ -124,7 +120,7 @@ class RoomUserTest {
 
     @Test
     fun loadNonExistentUserYieldsNoResult() {
-        val res = userDao.loadSpecific(getRandomString(), getRandomUserType())
+        val res = userDao.load(getRandomString(), getRandomUserType())
 
         assertThat(res, equalTo(null))
     }
@@ -148,7 +144,7 @@ class RoomUserTest {
 
     @Test
     fun updatingUserWorks() {
-        val numberOfUsers = (0..10).random()
+        val numberOfUsers = (1..10).random()
         val testUsers = mutableListOf<RoomUser>()
         for (i in 0 until numberOfUsers) {
             testUsers.add(getRandomUser())
@@ -157,11 +153,11 @@ class RoomUserTest {
         userDao.insertAll(*testUsers.toTypedArray())
         val toUpdateUser = testUsers.random()
         val updatedUser = RoomUser(toUpdateUser.userId, toUpdateUser.type, getRandomString(), toUpdateUser.email)
-        userDao.updateUser(updatedUser)
+        userDao.update(updatedUser)
         val res = userDao.loadAll()
 
         assertThat(res, hasSize(numberOfUsers))
         assertThat(res, not(contains(toUpdateUser)))
-        assertThat(userDao.loadSpecific(updatedUser.userId, updatedUser.type), equalTo(updatedUser))
+        assertThat(userDao.load(updatedUser.userId, updatedUser.type), equalTo(updatedUser))
     }
 }

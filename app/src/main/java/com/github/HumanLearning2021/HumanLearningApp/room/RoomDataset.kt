@@ -8,7 +8,7 @@ data class RoomDataset(
         parentColumn = "datasetId",
         entityColumn = "categoryId",
         associateBy = Junction(RoomDatasetCategoriesCrossRef::class)
-    ) val category: RoomCategory?
+    ) val categories: List<RoomCategory>
 )
 
 @Dao
@@ -26,17 +26,17 @@ interface DatasetDao {
     fun loadByName(name: String): List<RoomDataset>
 
     @Update
-    fun update(dataset: RoomDataset)
+    fun update(dataset: RoomDatasetWithoutCategories)
 
     @Insert
-    fun insertAll(vararg datasets: RoomDataset)
+    fun insertAll(vararg refs: RoomDatasetCategoriesCrossRef)
 
     @Insert
-    fun insertCategories(datasetId: String, vararg categories: RoomCategory)
+    fun insertAll(vararg datasets: RoomDatasetWithoutCategories)
 
     @Delete
-    fun delete(dataset: RoomDataset)
+    fun delete(dataset: RoomDatasetWithoutCategories)
 
     @Delete
-    fun delete(category: RoomCategory)
+    fun delete(ref: RoomDatasetCategoriesCrossRef)
 }

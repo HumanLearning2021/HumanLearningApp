@@ -271,6 +271,7 @@ class FirestoreDatabaseService(
         return user?.toPublic()
     }
 
+    //TODO("Make this method return a random image. (implement picture ids, make a getter for all picture ids, application can then get a picture from a random id among those)")
     override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
         require(category is FirestoreCategory)
         val query = pictures.whereEqualTo("category", db.document(category.path)).limit(1)
