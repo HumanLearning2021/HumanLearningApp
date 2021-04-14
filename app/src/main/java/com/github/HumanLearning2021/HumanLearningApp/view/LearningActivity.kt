@@ -62,15 +62,16 @@ class LearningActivity : AppCompatActivity() {
                     this.javaClass.name, "There are fewer than 3 categories in the dataset",
                     IllegalStateException()
                 )
+            }else{
+                val cat0 = cats.elementAt(0)
+
+                initTargetCategory(R.id.learning_cat_0, cat0)
+                initTargetCategory(R.id.learning_cat_1, cats.elementAt(1))
+                initTargetCategory(R.id.learning_cat_2, cats.elementAt(2))
+
+                initImageToSort(R.id.learning_im_to_sort, cat0)
             }
 
-            val cat0 = cats.elementAt(0)
-
-            initTargetCategory(R.id.learning_cat_0, cat0)
-            initTargetCategory(R.id.learning_cat_1, cats.elementAt(1))
-            initTargetCategory(R.id.learning_cat_2, cats.elementAt(2))
-
-            initImageToSort(R.id.learning_im_to_sort, cat0)
         }
     }
 

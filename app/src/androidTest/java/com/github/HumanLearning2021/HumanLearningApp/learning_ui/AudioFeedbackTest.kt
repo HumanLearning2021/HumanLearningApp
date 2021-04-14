@@ -5,10 +5,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningAudioFeedback
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDataset
+import com.github.HumanLearning2021.HumanLearningApp.view.*
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.Assert.assertThat
@@ -23,7 +21,10 @@ class AudioFeedbackTest {
         Intent(
             ApplicationProvider.getApplicationContext(),
             LearningActivity::class.java
-        ).putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION))
+        )
+            .putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
+            .putExtra(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET, DummyDataset("id", "name", emptySet()))
+    )
 
     fun makeLearningAudioFeedback(): LearningAudioFeedback {
         return LearningAudioFeedback(getInstrumentation().targetContext)

@@ -14,10 +14,14 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDataset
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
+import com.github.HumanLearning2021.HumanLearningApp.view.LearningDatasetSelectionActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -33,9 +37,15 @@ class LearningTest {
         Intent(
             ApplicationProvider.getApplicationContext(),
             LearningActivity::class.java
-        ).putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION))
+        )
+            .putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
+            .putExtra(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET,
+                getDS())
+    )
 
-
+    private fun getDS() = runBlocking {
+        return@runBlocking DummyDatabaseManagement.staticDummyDatabaseManagement.getDatasets().first()
+    }
 
     val NUMBER_OF_CATEGORIES = 3
     val CATEGORY_VIEW_CLASS_NAME = "android.widget.ImageView"

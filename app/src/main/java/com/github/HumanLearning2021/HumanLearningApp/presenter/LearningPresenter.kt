@@ -24,10 +24,12 @@ class LearningPresenter(
      * @param view The view on which to display the chosen picture. Normally has id R.id.learning_im_to_sort
      */
     suspend fun displayNextPicture(view: ImageView) {
-        var rndCat: Category = getRandomCategory()
+        val rndCat: Category = getRandomCategory()
 
         val nextPicture = when (learningMode) {
             LearningMode.REPRESENTATION -> {
+                // TODO optimize this and don't download all pictures every time
+                // get all picture ids and choose 1 random one, then download corresponding picture
                 val pics = dbMgt.getAllPictures(rndCat)
                 // I don't really know how to smoothly treat the case when there are no pictures in
                 // the category.
