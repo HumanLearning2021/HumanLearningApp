@@ -124,7 +124,7 @@ class DataCreationActivityTest {
             onView(withId(R.id.button_add)).perform(click())
             onView(withText("")).perform(typeText("new beautiful category"))
             onView(withId(R.id.button_submit_list)).perform(click())
-            waitFor(500)
+            waitFor(2000)
             dataset = dbManagement.getDatasetById(datasetId)!!
             assert(nbCategories + 1 == dataset.categories.size)
         }
