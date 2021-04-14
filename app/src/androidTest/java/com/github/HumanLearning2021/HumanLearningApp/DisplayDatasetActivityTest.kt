@@ -14,13 +14,17 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
+import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,19 +39,33 @@ class DisplayDatasetActivityTest {
     private var categories = emptySet<Category>()
     private val dbName = "scratch"
     private val dbManagement = FirestoreDatabaseManagement(dbName)
-    private lateinit var dataset : Dataset
-    private lateinit var datasetId : String
+    private lateinit var dataset: Dataset
+    private lateinit var datasetId: String
+    private var index = 0
 
     private val dummyPresenter = DummyUIPresenter(DummyDatabaseService())
 
     @Before
     fun setUp() {
         runBlocking {
+            var found = false
+            val datasets = dbManagement.getDatasets()
+            for (ds in datasets) {
+                val dsCats = ds.categories
+                if (dsCats.isNotEmpty() && !found) {
+                    for (i in dsCats.indices) {
+                        val dsPictures = dbManagement.getAllPictures(dsCats.elementAt(i))
+                        if (dsPictures.isNotEmpty() && !found) {
+                            dataset = ds
+                            index = i
+                            found = true
+                        }
+                    }
+                }
+            }
             categories = emptySet()
             datasetPictures = emptySet()
-            dataset = dbManagement.getDatasets().first()
             datasetId = dataset.id as String
-
             val intent = Intent()
             intent.putExtra("database_name", dbName)
             intent.putExtra("dataset_id", datasetId)
@@ -76,26 +94,26 @@ class DisplayDatasetActivityTest {
                 datasetPictures = datasetPictures.plus(dbManagement.getAllPictures(cat))
             }
             waitFor(1000)
-            if (datasetPictures.isNotEmpty()) {
+            assumeTrue(datasetPictures.isNotEmpty())
 
-                onData(anything())
-                    .inAdapterView(withId(R.id.display_dataset_imagesGridView))
-                    .atPosition(0)
-                    .perform(click())
+            onData(anything())
+                .inAdapterView(withId(R.id.display_dataset_imagesGridView))
+                .atPosition(0)
+                .perform(click())
 
-                intended(
-                    allOf(
-                        hasComponent(DisplayImageSetActivity::class.java.name),
-                        hasExtra(
-                            "category_of_pictures",
-                            categories.elementAt(0)
-                        ),
-                        hasExtra("dataset_id", datasetId),
-                        hasExtra("database_name", dbName)
-                    )
+            intended(
+                allOf(
+                    hasComponent(DisplayImageSetActivity::class.java.name),
+                    hasExtra(
+                        "category_of_pictures",
+                        categories.elementAt(index)
+                    ),
+                    hasExtra("dataset_id", datasetId),
+                    hasExtra("database_name", dbName)
                 )
-            }
+            )
         }
+
     }
 
     @Test
@@ -105,7 +123,7 @@ class DisplayDatasetActivityTest {
             waitFor(1000)
             onView(withId(R.id.display_dataset_name)).perform(clearText(), typeText("$newName\n"))
             onView(withId(R.id.display_dataset_name)).check(matches(withText(containsString(newName))))
-            dataset = dbManagement.getDatasets().first()
+            dataset = dbManagement.getDatasetById(datasetId)!!
             assert(dataset.name == newName)
         }
     }
@@ -138,23 +156,23 @@ class DisplayDatasetActivityTest {
         Espresso.pressBack()
 
         categories = dataset.categories
-        if(categories.isNotEmpty()) {
-            runBlocking {
-                val numberOfPictures = dbManagement.getAllPictures(categories.first()).size
+        assumeTrue(categories.isNotEmpty())
+        runBlocking {
+            val numberOfPictures = dbManagement.getAllPictures(categories.elementAt(index)).size
 
-                openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-                onView(withText(R.string.add_new_picture)).perform(click())
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+            onView(withText(R.string.add_new_picture)).perform(click())
 
-                onView(withId(R.id.takePictureButton)).perform(click())
-                onView(withId(R.id.selectCategoryButton)).perform(click())
-                onView(withText(categories.first().name)).perform(click())
-                onView(withId(R.id.saveButton)).perform(click())
-                waitFor(3000)
-                onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
-                assert(dbManagement.getAllPictures(categories.first()).size == numberOfPictures + 1)
-            }
-
+            onView(withId(R.id.takePictureButton)).perform(click())
+            onView(withId(R.id.selectCategoryButton)).perform(click())
+            onView(withText(categories.elementAt(index).name)).perform(click())
+            onView(withId(R.id.saveButton)).perform(click())
+            waitFor(3000)
+            onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
+            assert(dbManagement.getAllPictures(categories.elementAt(index)).size == numberOfPictures + 1)
         }
+
+
     }
 
     @Test

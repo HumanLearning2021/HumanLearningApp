@@ -1,22 +1,17 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityDataCreationBinding
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import kotlinx.coroutines.launch
 
@@ -26,10 +21,11 @@ class DataCreationActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private var dsCategories = emptySet<Category>()
-    private lateinit var dbName :String
-    private lateinit var dBManagement : FirestoreDatabaseManagement
-    private lateinit var datasetId : String
-    private lateinit var dataset : Dataset
+    private lateinit var dbName: String
+    private lateinit var dBManagement: FirestoreDatabaseManagement
+    private lateinit var datasetId: String
+    private lateinit var dataset: Dataset
+    private lateinit var removedCategory: Category
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +34,7 @@ class DataCreationActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val extra = intent.extras
-            if(extra != null) {
+            if (extra != null) {
                 datasetId = extra["dataset_id"] as String
                 dbName = extra["database_name"] as String
                 dBManagement = FirestoreDatabaseManagement(dbName)
@@ -86,10 +82,14 @@ class DataCreationActivity : AppCompatActivity() {
         val categoryName: EditText =
             (view.parent as View).findViewById(R.id.data_creation_category_name)
         lifecycleScope.launch {
-            val cat = dBManagement.getCategoryByName(categoryName.text.toString())
-            if (dsCategories.isNotEmpty() && dsCategories.contains(cat.first())) {
-                dsCategories = dsCategories.minus(cat)
-                dataset = dBManagement.removeCategoryFromDataset(dataset, cat.first())
+            for (i in dsCategories.indices) {
+                if (dsCategories.elementAt(i).name == categoryName.text.toString()) {
+                    removedCategory = dsCategories.elementAt(i)
+                }
+            }
+            if (dsCategories.isNotEmpty() && dsCategories.contains(removedCategory)) {
+                dsCategories = dsCategories.minus(removedCategory)
+                dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
             }
             binding.parentLinearLayout.removeView(view.parent as View)
         }
@@ -107,7 +107,6 @@ class DataCreationActivity : AppCompatActivity() {
                 val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
                 val cat = dBManagement.putCategory(categoryName.text.toString())
                 //TODO: Put the generic representative picture
-
                 newCategories = newCategories.plus(cat)
 
             }
@@ -122,7 +121,6 @@ class DataCreationActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
 
 
     override fun onDestroy() {

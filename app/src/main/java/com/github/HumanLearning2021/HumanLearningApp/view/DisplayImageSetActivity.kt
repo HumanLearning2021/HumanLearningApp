@@ -19,14 +19,13 @@ import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategory
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import kotlinx.coroutines.launch
 
 class DisplayImageSetActivity : AppCompatActivity() {
 
     private var categorizedPicturesList = setOf<CategorizedPicture>()
-    private lateinit var dBManagement : FirestoreDatabaseManagement
-    private lateinit var dbName : String
+    private lateinit var dBManagement: FirestoreDatabaseManagement
+    private lateinit var dbName: String
     private lateinit var datasetId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +40,7 @@ class DisplayImageSetActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             categorizedPicturesList = dBManagement.getAllPictures(category)
-            if(categorizedPicturesList.isNotEmpty()) {
+            if (categorizedPicturesList.isNotEmpty()) {
                 findViewById<TextView>(R.id.display_image_set_name).text =
                     (categorizedPicturesList.elementAt(0)).category.name
 
@@ -72,6 +71,7 @@ class DisplayImageSetActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val intent = Intent(this, DisplayDatasetActivity::class.java)
         intent.putExtra("dataset_id", datasetId)
+        intent.putExtra("database_name", dbName)
         startActivity(intent)
     }
 

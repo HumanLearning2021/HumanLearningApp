@@ -68,7 +68,7 @@ class AddPictureActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkIntentExtras(extras : Bundle?){
+    private fun checkIntentExtras(extras: Bundle?) {
         if (extras != null && extras["categories"] is ArrayList<*>) {
             val givenCategories = extras["categories"] as ArrayList<Category>
             categories = categories.plus(givenCategories)

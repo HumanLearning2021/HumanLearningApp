@@ -19,11 +19,11 @@ import kotlinx.coroutines.launch
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
-    private lateinit var dbManagement : FirestoreDatabaseManagement
+    private lateinit var dbManagement: FirestoreDatabaseManagement
     private lateinit var categories: Set<Category>
     private lateinit var datasetId: String
     private lateinit var dataset: Dataset
-    private lateinit var dbName : String
+    private lateinit var dbName: String
 
     private val addPictureContractRegistration =
         registerForActivityResult(AddPictureActivity.AddPictureContract) { resultPair ->
@@ -56,7 +56,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
             categories = dataset.categories
             for (cat in categories) {
                 var pictures = dbManagement.getAllPictures(cat)
-                if(pictures.isNotEmpty()) {
+                if (pictures.isNotEmpty()) {
                     representativePictures =
                         representativePictures.plus(dbManagement.getPicture(cat)!!)
                 }
@@ -70,7 +70,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 displayDatasetAdapter
 
             setGridViewItemListener()
-
             findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
                 lifecycleScope.launch {
                     dataset = dbManagement.editDatasetName(
@@ -140,7 +139,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
     }
 
-    private fun checkIntentExtras(extras : Bundle?){
+    private fun checkIntentExtras(extras: Bundle?) {
         lifecycleScope.launch {
             datasetId = if (extras != null && extras["dataset_id"] is String) {
                 intent.getStringExtra("dataset_id")!!
@@ -151,12 +150,13 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 dbName = intent.getStringExtra("database_name")!!
                 FirestoreDatabaseManagement(dbName)
             } else {
+                dbName = "demo2"
                 FirestoreDatabaseManagement("demo2")
             }
         }
     }
 
-    private fun setGridViewItemListener(){
+    private fun setGridViewItemListener() {
         findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
             val cat = categories.elementAt(i)
             val intent =

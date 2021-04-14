@@ -2,25 +2,20 @@ package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.net.Uri
 import android.util.Log
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.User
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 import java.util.*
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ktx.getField
 
 class FirestoreDatabaseService(
     /**
@@ -182,8 +177,8 @@ class FirestoreDatabaseService(
         }
         try {
             datasets.document(id as String).delete().await()
-        } catch(e: FirebaseFirestoreException) {
-            Log.w(this.toString(),"Deleting dataset ${datasets.id} from ${this.db} failed", e)
+        } catch (e: FirebaseFirestoreException) {
+            Log.w(this.toString(), "Deleting dataset ${datasets.id} from ${this.db} failed", e)
         }
     }
 
@@ -200,7 +195,11 @@ class FirestoreDatabaseService(
         try {
             representativePictures.add(data).await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w(this.toString(), "Setting representative picture of category ${category.id} to picture at $url failed", e)
+            Log.w(
+                this.toString(),
+                "Setting representative picture of category ${category.id} to picture at $url failed",
+                e
+            )
         }
     }
 
@@ -219,16 +218,26 @@ class FirestoreDatabaseService(
         }
     }
 
-    override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): FirestoreDataset {
+    override suspend fun removeCategoryFromDataset(
+        dataset: Dataset,
+        category: Category
+    ): FirestoreDataset {
         require(dataset is FirestoreDataset)
         require(category is FirestoreCategory)
         try {
-            datasets.document(dataset.id).update("categories", FieldValue.arrayRemove(categories.document(category.id))).await()
+            datasets.document(dataset.id)
+                .update("categories", FieldValue.arrayRemove(categories.document(category.id)))
+                .await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w(this.toString(), "Removing category ${category.id} from dataset ${dataset.id} failed", e)
+            Log.w(
+                this.toString(),
+                "Removing category ${category.id} from dataset ${dataset.id} failed",
+                e
+            )
             throw java.lang.IllegalArgumentException("The category ${category.id} is not contained in the dataset ${dataset.id} or said dataset is not contained in this database")
         }
-        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!.toPublic()
+        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!
+            .toPublic()
     }
 
     override suspend fun editDatasetName(dataset: Dataset, newName: String): FirestoreDataset {
@@ -238,19 +247,30 @@ class FirestoreDatabaseService(
         } catch (e: FirebaseFirestoreException) {
             throw java.lang.IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database $this")
         }
-        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!.toPublic()
+        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!
+            .toPublic()
     }
 
-    override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): FirestoreDataset {
+    override suspend fun addCategoryToDataset(
+        dataset: Dataset,
+        category: Category
+    ): FirestoreDataset {
         require(dataset is FirestoreDataset)
         require(category is FirestoreCategory)
         try {
-            datasets.document(dataset.id).update("categories", FieldValue.arrayUnion(categories.document(category.id))).await()
+            datasets.document(dataset.id)
+                .update("categories", FieldValue.arrayUnion(categories.document(category.id)))
+                .await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w(this.toString(), "Adding category ${category.id} to dataset ${dataset.id} failed", e)
+            Log.w(
+                this.toString(),
+                "Adding category ${category.id} to dataset ${dataset.id} failed",
+                e
+            )
             throw java.lang.IllegalArgumentException("The category ${category.id} is not contained in the dataset ${dataset.id} or said dataset is not contained in this database")
         }
-        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!.toPublic()
+        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!
+            .toPublic()
     }
 
     override suspend fun updateUser(firebaseUser: FirebaseUser): FirestoreUser {
