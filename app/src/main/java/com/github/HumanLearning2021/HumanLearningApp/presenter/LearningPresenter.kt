@@ -5,6 +5,7 @@ import android.widget.ImageView
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
 
 
@@ -14,7 +15,9 @@ class LearningPresenter(
     private val dataset: Dataset
 ) {
     private lateinit var previousCategory: Category
-    private val dbMgt = FirestoreDatabaseManagement("demo")
+
+    // TODO Use injection !
+    private val dbMgt = DummyDatabaseManagement.staticDummyDatabaseManagement
 
     /**
      * Picks a random picture from the dataset, and displays it on the given view

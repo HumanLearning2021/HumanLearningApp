@@ -17,6 +17,7 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
+import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -48,13 +49,11 @@ class LearningTest {
 
     @Test
     fun allImageViewsAreDisplayed(){
-        viewWithIdisDisplayed(R.id.learning_im_to_sort)
-        viewWithIdisDisplayed(R.id.learning_cat_0)
-        viewWithIdisDisplayed(R.id.learning_cat_1)
-        viewWithIdisDisplayed(R.id.learning_cat_2)
+        assertDisplayed(R.id.learning_im_to_sort)
+        assertDisplayed(R.id.learning_cat_0)
+        assertDisplayed(R.id.learning_cat_1)
+        assertDisplayed(R.id.learning_cat_2)
     }
-
-    private fun viewWithIdisDisplayed(id: Int) = onView(withId(id)).check(matches(isDisplayed()))
 
     @Test
     fun dragImageOnCorrectCategory() {
