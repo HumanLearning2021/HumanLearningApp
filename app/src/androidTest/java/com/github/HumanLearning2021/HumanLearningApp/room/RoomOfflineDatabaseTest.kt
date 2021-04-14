@@ -47,9 +47,4 @@ class RoomOfflineDatabaseTest {
         assert(res.contains(RoomDataset(ds1, listOf())))
         assert(res.contains(RoomDataset(ds2, listOf())))
     }
-
-    @Test
-    fun deletingCategoryDeletesPictures() {
-
-    }
 }

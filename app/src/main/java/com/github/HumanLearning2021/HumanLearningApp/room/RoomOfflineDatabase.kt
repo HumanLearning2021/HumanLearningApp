@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 
 @TypeConverters(RoomTypeConverters::class)
 @Database(
-    entities = [RoomCategory::class, RoomDatasetWithoutCategories::class, RoomUser::class, RoomPicture::class, RoomDatasetCategoriesCrossRef::class],
+    entities = [RoomCategory::class, RoomDatasetWithoutCategories::class, RoomUser::class, RoomPicture::class, RoomUnlinkedRepresentativePicture::class, RoomDatasetCategoriesCrossRef::class],
     version = 1,
     exportSchema = false
 )

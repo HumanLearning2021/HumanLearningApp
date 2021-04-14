@@ -7,8 +7,11 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.hasSize
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -37,8 +40,7 @@ class RoomCategoryTest {
     private fun getRandomString() = "${UUID.randomUUID()}"
     private fun getRandomCategory(name: String = getRandomString()) = RoomCategory(getRandomString(), name)
     private fun getRandomPicture(categoryId: String = getRandomString()) = RoomPicture(Uri.parse(getRandomString()), categoryId)
-    private fun getRandomRepresentativePicture(categoryId: String = getRandomString()) = RoomRepresentativePicture(categoryId, Uri.parse(getRandomString()))
-    private fun asCategorizedPicture(pic: RoomPicture) = RoomCategorizedPictures(pic.categoryId, listOf(pic))
+    private fun getRandomRepresentativePicture(categoryId: String = getRandomString()) = RoomUnlinkedRepresentativePicture(Uri.parse(getRandomString()), categoryId)
 
     @Test
     fun insertThenLoadCategories() {
@@ -57,7 +59,7 @@ class RoomCategoryTest {
     }
 
     @Test
-    fun insertThenLoadPictures() {
+    fun insertThenLoadAllPictures() {
         val numberOfPictures = (2..10).random()
         val category = getRandomCategory()
         val testPictures = mutableListOf<RoomPicture>()
@@ -76,26 +78,33 @@ class RoomCategoryTest {
     }
 
     @Test
-    fun loadOnePicture() {
+    fun insertThenLoadAllPicturesOfOneCategory() {
         val numberOfPictures = (2..10).random()
-        val categories = mutableListOf<RoomCategory>()
         val testPictures = mutableListOf<RoomPicture>()
+        val tmpCats = mutableListOf<RoomCategory>()
         for (i in 0 until numberOfPictures) {
-            val pic = getRandomPicture()
+            val tmpCat = getRandomCategory()
+            val pic = getRandomPicture(tmpCat.categoryId)
             testPictures.add(pic)
-            categories.add(RoomCategory(pic.categoryId, getRandomString()))
+            tmpCats.add(tmpCat)
         }
-        val loadPicture = testPictures.random()
+        val category = getRandomCategory()
+        val expectedPictures =
+            listOf(getRandomPicture(category.categoryId), getRandomPicture(category.categoryId))
+        testPictures.addAll(expectedPictures)
 
-        categoryDao.insertAll(*categories.toTypedArray())
+        categoryDao.insertAll(category)
+        categoryDao.insertAll(*tmpCats.toTypedArray())
         categoryDao.insertAll(*testPictures.toTypedArray())
 
-        val res = categoryDao.loadPicture(loadPicture.categoryId)
+        val res = categoryDao.loadAllPictures(category.categoryId).pictures
 
-        MatcherAssert.assertThat(res, equalTo(asCategorizedPicture(loadPicture)))
+        MatcherAssert.assertThat(res, Matchers.hasSize(expectedPictures.size))
+        MatcherAssert.assertThat(res, Matchers.containsInAnyOrder(*expectedPictures.toTypedArray()))
     }
 
-    @Test
+
+        @Test
     fun loadRepresentativePicture() {
         val category = getRandomCategory()
         val representativePicture = getRandomRepresentativePicture(category.categoryId)
@@ -105,7 +114,7 @@ class RoomCategoryTest {
 
         val res = categoryDao.loadRepresentativePicture(category.categoryId)
 
-        MatcherAssert.assertThat(res, equalTo(representativePicture))
+        MatcherAssert.assertThat(res, equalTo(RoomRepresentativePicture(representativePicture.categoryId, representativePicture)))
     }
 
     @Test
@@ -180,9 +189,10 @@ class RoomCategoryTest {
         val deletionPicture = testPictures.random()
         val requestCat = deletionPicture.categoryId
         categoryDao.delete(deletionPicture)
-        val res = categoryDao.loadAllPictures(requestCat)
+        val res = categoryDao.loadAllPictures(requestCat).pictures
 
-        MatcherAssert.assertThat(res, equalTo(null))
+        MatcherAssert.assertThat(res, hasSize(numberOfPictures-1))
+        MatcherAssert.assertThat(res, not(contains(deletionPicture)))
     }
 
     @Test
