@@ -242,12 +242,19 @@ class DummyDatabaseServiceTest {
 
     @ExperimentalCoroutinesApi
     @Test(expected = java.lang.IllegalArgumentException::class)
-    fun removeCategoryFromDatasetThrowsIllegalArgumentException() = runBlockingTest {
+    fun removeCategoryFromDatasetThrowsIllegalArgumentExceptionIfCategoryNotInDb() = runBlockingTest {
         val dummyDatabaseService = DummyDatabaseService()
         val name = "Utensils"
         val fork = DummyCategory("Fork", "Fork")
         val dataset = DummyDataset(name, name, setOf())
         dummyDatabaseService.removeCategoryFromDataset(dataset, fork)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test(expected = java.lang.IllegalArgumentException::class)
+    fun removeCategoryFromDatasetThrowsIllegalArgumentExceptionIfDatasetNotInDb() = runBlockingTest {
+        val dummyDatabaseService = DummyDatabaseService()
+        dummyDatabaseService.removeCategoryFromDataset(DummyDataset("some_id", "some_name", setOf()), fork)
     }
 
     @ExperimentalCoroutinesApi
@@ -277,6 +284,39 @@ class DummyDatabaseServiceTest {
         val newDataset = dummyDatabaseService.editDatasetName(dataset, newName)
         assert(newDataset.categories.containsAll(dataset.categories))
         assert(newDataset.name == newName)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun addCategoryToDatasetWorks() = runBlockingTest {
+        val dummyDatabaseService = DummyDatabaseService()
+        val fork = DummyCategory("Fork", "Fork")
+        val knife = DummyCategory("Knife", "Knife")
+        val name = "Utensils"
+        val dataset = dummyDatabaseService.putDataset(name, setOf(fork, knife))
+        val newCat = DummyCategory("Spoon", "Spoon")
+        require(dataset.categories.containsAll(setOf(fork, knife)))
+        require(dataset.categories.size == 2)
+        val newDataset = dummyDatabaseService.addCategoryToDataset(dataset, newCat)
+        assert(newDataset.categories.containsAll(setOf(fork, knife, newCat)))
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test(expected = java.lang.IllegalArgumentException::class)
+    fun addCategoryToDatasetThrowsIfCategoryNotInDatabase() = runBlockingTest {
+        val dummyDatabaseService = DummyDatabaseService()
+        val fork = DummyCategory("Fork", "Fork")
+        val knife = DummyCategory("Knife", "Knife")
+        val name = "Utensils"
+        val dataset = dummyDatabaseService.putDataset(name, setOf(fork, knife))
+        dummyDatabaseService.addCategoryToDataset(dataset, table)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test(expected = java.lang.IllegalArgumentException::class)
+    fun addCategoryToDatasetThrowsIfDatasetNotInDatabase() = runBlockingTest {
+        val dummyDatabaseService = DummyDatabaseService()
+        dummyDatabaseService.addCategoryToDataset(DummyDataset("some_id", "some_name", setOf()), spoon)
     }
 }
 
