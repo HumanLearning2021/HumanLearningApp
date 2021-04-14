@@ -15,6 +15,7 @@ import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDataset
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningDatasetSelectionActivity
@@ -44,7 +45,7 @@ class LearningTest {
     )
 
     private fun getDS() = runBlocking {
-        return@runBlocking DummyDatabaseManagement.staticDummyDatabaseManagement.getDatasets().first()
+        return@runBlocking DummyDatabaseManagement(DummyDatabaseService()).getDatasets().first()
     }
 
     val NUMBER_OF_CATEGORIES = 3
