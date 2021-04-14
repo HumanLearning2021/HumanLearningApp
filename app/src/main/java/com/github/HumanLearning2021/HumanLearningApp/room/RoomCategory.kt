@@ -20,16 +20,35 @@ interface CategoryDao {
     fun loadByName(name: String): List<RoomCategory>
 
     @Transaction
-    @Query("SELECT * FROM category WHERE categoryId = :categoryId")
+    @Query("SELECT * FROM category WHERE categoryId = :categoryId LIMIT 1")
     fun getPicture(categoryId: String): RoomCategorizedPicture
+
+    @Transaction
+    @Query("SELECT * FROM category WHERE categoryId = :categoryId")
+    fun getAllPictures(categoryId: String): List<RoomCategorizedPicture>
 
     @Transaction
     @Query("SELECT * FROM category WHERE categoryId = :categoryId LIMIT 1")
     fun getRepresentativePicture(categoryId: String): RoomRepresentativePicture
 
+    @Update
+    fun update(category: RoomCategory)
+
     @Insert
     fun insertAll(vararg categories: RoomCategory)
 
+    @Insert
+    fun insert(picture: RoomCategorizedPicture)
+
+    @Insert
+    fun insert(picture: RoomRepresentativePicture)
+
     @Delete
     fun delete(category: RoomCategory)
+
+    @Delete
+    fun delete(picture: RoomCategorizedPicture)
+
+    @Delete
+    fun delete(picture: RoomRepresentativePicture)
 }

@@ -7,6 +7,7 @@ data class RoomDataset(
     @Relation(
         parentColumn = "datasetId",
         entityColumn = "categoryId",
+        associateBy = Junction(RoomDatasetCategoriesCrossRef::class)
     ) val category: RoomCategory?
 )
 
@@ -24,14 +25,17 @@ interface DatasetDao {
     @Query("SELECT * FROM dataset WHERE name = :name")
     fun loadByName(name: String): List<RoomDataset>
 
-    @Insert
-    fun insertAll(vararg datasetWithoutCategories: RoomDatasetWithoutCategories)
+    @Update
+    fun update(dataset: RoomDataset)
 
     @Insert
-    fun insertAll(vararg categories: RoomCategory)
+    fun insertAll(vararg datasets: RoomDataset)
+
+    @Insert
+    fun insertCategories(datasetId: String, vararg categories: RoomCategory)
 
     @Delete
-    fun delete(datasetWithoutCategories: RoomDatasetWithoutCategories)
+    fun delete(dataset: RoomDataset)
 
     @Delete
     fun delete(category: RoomCategory)

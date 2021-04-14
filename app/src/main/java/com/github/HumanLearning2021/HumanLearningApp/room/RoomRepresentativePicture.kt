@@ -7,6 +7,6 @@ data class RoomRepresentativePicture(
     @Embedded val category: RoomCategory,
     @Relation(
         parentColumn = "categoryId",
-        entityColumn = "categoryId",
+        entityColumn = "uri",
     ) val picture: RoomPicture
 )

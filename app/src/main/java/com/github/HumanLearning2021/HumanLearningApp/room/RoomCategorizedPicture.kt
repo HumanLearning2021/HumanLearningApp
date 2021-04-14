@@ -7,6 +7,6 @@ data class RoomCategorizedPicture(
     @Embedded val category: RoomCategory,
     @Relation(
         parentColumn = "categoryId",
-        entityColumn = "categoryId",
-    ) val picture: RoomPicture
+        entityColumn = "assignedCategoryId",
+    ) val picture: List<RoomPicture>
 )
