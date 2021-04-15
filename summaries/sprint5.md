@@ -3,6 +3,7 @@
 ## Scrum master (Louis)
 
 ## Bettens, Louis
+During this week, I introduced dependency injection across the codebase using Hilt. This required a shallow but wide scope of work, and thus more care in order not to interfer with other patches. Overall it went well.
 
 ## Jaakik, Marouane
 
