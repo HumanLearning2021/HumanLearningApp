@@ -32,6 +32,13 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArgument "notAnnotation", "androidx.test.filters.FlakyTest"
+
+        // Fix Room incremental processing
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["room.incremental"] = "true"
+            }
+        }
     }
 
     buildFeatures {
@@ -145,6 +152,13 @@ dependencies {
     androidTestImplementation('com.schibsted.spain:barista:3.8.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
+
+    //Room
+    implementation "androidx.room:room-runtime:2.3.0-rc01"
+    kapt "androidx.room:room-compiler:2.2.6"
+    implementation "androidx.room:room-ktx:2.2.6"
+    // Fix Room incremental Processing
+    annotationProcessor "androidx.room:room-compiler:2.3.0-rc01"
 
 
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
