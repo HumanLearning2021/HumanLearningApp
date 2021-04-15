@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.view
+package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.content.Context
 import android.media.MediaPlayer

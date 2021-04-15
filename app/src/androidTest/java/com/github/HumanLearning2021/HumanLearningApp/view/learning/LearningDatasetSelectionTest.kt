@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.learning_ui
+package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -12,9 +12,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningDatasetSelectionActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListRecyclerViewAdapter
+import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

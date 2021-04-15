@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp
+package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
@@ -10,12 +10,12 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class DataCreationActivityTest {
+class CategoriesEditingActivityTest {
     @Inject
     @ScratchDatabase
     lateinit var dbManagement: DatabaseManagement
@@ -44,7 +44,7 @@ class DataCreationActivityTest {
     private lateinit var datasetId: String
 
     @get:Rule
-    var activityRuleIntent = IntentsTestRule(DataCreationActivity::class.java, false, false)
+    var activityRuleIntent = IntentsTestRule(CategoriesEditingActivity::class.java, false, false)
 
     @Before
     fun setUp() {

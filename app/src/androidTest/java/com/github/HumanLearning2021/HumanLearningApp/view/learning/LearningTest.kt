@@ -1,12 +1,7 @@
-package com.github.HumanLearning2021.HumanLearningApp.learning_ui
+package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.content.Intent
-import android.widget.ImageView
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.FlakyTest
@@ -18,11 +13,6 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDataset
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningDatasetSelectionActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import kotlinx.coroutines.runBlocking
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -49,7 +39,8 @@ class LearningTest {
             LearningActivity::class.java
         )
             .putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
-            .putExtra(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET,
+            .putExtra(
+                LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET,
                 getDS())
     )
 

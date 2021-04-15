@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.view
+package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.app.Activity
 import android.content.Context
@@ -9,8 +9,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
-import com.github.HumanLearning2021.HumanLearningApp.AddPictureActivity
-import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.*
@@ -85,7 +83,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
         val categoriesArray = ArrayList<Category>(categories)
         return when (item.itemId) {
             R.id.display_dataset_menu_modify_categories -> {
-                val intent = Intent(this@DisplayDatasetActivity, DataCreationActivity::class.java)
+                val intent = Intent(this@DisplayDatasetActivity, CategoriesEditingActivity::class.java)
                 intent.putExtra("dataset_id", datasetId)
                 startActivity(intent)
                 true

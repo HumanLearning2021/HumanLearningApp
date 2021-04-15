@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.learning_ui
+package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
@@ -7,10 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDataset
 import com.github.HumanLearning2021.HumanLearningApp.view.*
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningAudioFeedback
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
+import com.github.HumanLearning2021.HumanLearningApp.view.learning.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.CoreMatchers.`is`

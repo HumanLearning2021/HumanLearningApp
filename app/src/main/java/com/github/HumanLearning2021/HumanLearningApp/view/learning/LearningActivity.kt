@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.view
+package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.content.ClipData
 import android.content.ClipDescription
@@ -103,7 +103,7 @@ class LearningActivity : AppCompatActivity() {
     }
 
     private fun initImageToSort(catIvId: Int, cat: Category) {
-        initImageView(catIvId, cat).setOnTouchListener(LearningActivity::onImageToSortTouched)
+        initImageView(catIvId, cat).setOnTouchListener(Companion::onImageToSortTouched)
     }
 
     private fun initTargetCategory(catIvId: Int, cat: Category) {

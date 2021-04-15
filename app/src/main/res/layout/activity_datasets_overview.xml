@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DataOverviewActivity">
+    tools:context=".view.dataset_editing.DatasetsOverviewActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/dataOverview_fragment"
-        class="com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListFragment"
+        class="com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListFragment"
         android:layout_width="wrap_content"
         android:layout_height="500dp"
         app:layout_constraintBottom_toTopOf="@+id/dataOverviewButton"

@@ -1,32 +1,30 @@
-package com.github.HumanLearning2021.HumanLearningApp
+package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityDataCreationBinding
+import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityCategoriesEditingBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DataCreationActivity : AppCompatActivity() {
+class CategoriesEditingActivity : AppCompatActivity() {
 
     @Inject
     @Demo2Database
     lateinit var dBManagement: DatabaseManagement
 
-    private var _binding: ActivityDataCreationBinding? = null
+    private var _binding: ActivityCategoriesEditingBinding? = null
     private val binding get() = _binding!!
 
     private var dsCategories = emptySet<Category>()
@@ -36,7 +34,7 @@ class DataCreationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityDataCreationBinding.inflate(layoutInflater)
+        _binding = ActivityCategoriesEditingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         lifecycleScope.launch {
@@ -109,7 +107,7 @@ class DataCreationActivity : AppCompatActivity() {
                 dataset = dBManagement.addCategoryToDataset(dataset, cat)
             }
 
-            val intent = Intent(this@DataCreationActivity, DisplayDatasetActivity::class.java)
+            val intent = Intent(this@CategoriesEditingActivity, DisplayDatasetActivity::class.java)
             intent.putExtra("dataset_id", datasetId)
             startActivity(intent)
         }

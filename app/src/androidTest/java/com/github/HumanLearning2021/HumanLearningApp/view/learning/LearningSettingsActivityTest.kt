@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp
+package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.content.Intent
 import android.view.View
@@ -14,15 +14,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDataset
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningDatasetSelectionActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivity
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.AssertionFailedError
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
@@ -30,10 +28,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.schibsted.spain.barista.interaction.BaristaClickInteractions.longClickOn
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.*
 import org.junit.runner.RunWith
 
 @HiltAndroidTest
@@ -84,11 +78,13 @@ class LearningSettingsActivityTest {
 
     private fun pressingButtonLaunchesLearningActivity(btnId: Int) {
         clickOn(btnId)
-        intended(allOf(
-            hasComponent(LearningActivity::class.java.name),
-            IntentMatchers.hasExtraWithKey(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET),
-            IntentMatchers.hasExtraWithKey(LearningSettingsActivity.EXTRA_LEARNING_MODE)
-        ))
+        intended(
+            allOf(
+                hasComponent(LearningActivity::class.java.name),
+                IntentMatchers.hasExtraWithKey(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET),
+                IntentMatchers.hasExtraWithKey(LearningSettingsActivity.EXTRA_LEARNING_MODE)
+            )
+        )
     }
 
     @Test
@@ -114,8 +110,10 @@ class LearningSettingsActivityTest {
         override fun check(view: View?, noViewFoundException: NoMatchingViewException?) {
             if (view != null && noViewFoundException == null) {
                 if (view.tooltipText.toString() != text) {
-                    throw AssertionFailedError("The tooltip text was different than expected " +
-                            "was \"${view.tooltipText}\", expected \"$text\"")
+                    throw AssertionFailedError(
+                        "The tooltip text was different than expected " +
+                                "was \"${view.tooltipText}\", expected \"$text\""
+                    )
                 }
             } else {
                 throw AssertionFailedError("The view was not found")

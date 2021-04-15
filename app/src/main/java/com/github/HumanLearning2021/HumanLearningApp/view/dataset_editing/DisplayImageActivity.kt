@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.view
+package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.content.Intent
 import android.os.Bundle

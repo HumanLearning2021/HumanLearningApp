@@ -1,11 +1,12 @@
-package com.github.HumanLearning2021.HumanLearningApp
+package com.github.HumanLearning2021.HumanLearningApp.view
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.LearningDatasetSelectionActivity
+import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.DisplayDatasetActivity
+import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningDatasetSelectionActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

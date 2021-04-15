@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp
+package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.content.Context
 import android.content.Intent
@@ -15,6 +15,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
+import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
@@ -22,8 +23,6 @@ import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
-import com.github.HumanLearning2021.HumanLearningApp.view.DisplayDatasetActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.DisplayImageSetActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -167,7 +166,7 @@ class DisplayDatasetActivityTest {
 
         intended(
             allOf(
-                hasComponent(DataCreationActivity::class.java.name),
+                hasComponent(CategoriesEditingActivity::class.java.name),
                 hasExtra("dataset_id", datasetId),
             )
         )

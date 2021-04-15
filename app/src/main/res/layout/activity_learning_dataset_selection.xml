@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.LearningDatasetSelectionActivity">
+    tools:context=".view.learning.LearningDatasetSelectionActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/LearningDatasetSelection_dataset_list"
         android:layout_width="wrap_content"
         android:layout_height="500dp"
-        class="com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListFragment"
+        class="com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListFragment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

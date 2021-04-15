@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.view.fragments
+package com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment
 
 import android.app.Activity
 import android.view.LayoutInflater
@@ -8,12 +8,9 @@ import android.widget.TextView
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class DatasetListRecyclerViewAdapter(
     private val hostActivity: Activity,
