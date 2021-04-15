@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDataset
@@ -47,7 +48,7 @@ class LearningSettingsActivityTest {
         ).putExtra(
             LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET,
             runBlocking {
-                DummyDatabaseManagement(DummyDatabaseService()).getDatasets().first()
+                FirestoreDatabaseService("scratch").getDatasets().first()
             }
         )
     )
