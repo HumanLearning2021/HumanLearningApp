@@ -2,10 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.app.Activity
 import android.widget.ImageView
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
 
 
@@ -14,28 +11,20 @@ class LearningPresenter(
     private val learningMode: LearningMode,
     private val dataset: Dataset
 ) {
-    private lateinit var previousCategory: Category
+    private var previousCategory: Category? = if(!dataset.categories.isEmpty()) dataset.categories.random() else null
 
     // TODO Use injection !
-    private val dbMgt = DummyDatabaseManagement.staticDummyDatabaseManagement
+    private val dbMgt = DummyDatabaseManagement(DummyDatabaseService())
 
     /**
      * Picks a random picture from the dataset, and displays it on the given view
      * @param view The view on which to display the chosen picture. Normally has id R.id.learning_im_to_sort
      */
     suspend fun displayNextPicture(view: ImageView) {
-        val rndCat: Category = getRandomCategory()
+        val (rndCat, catPics) = getRndCategoryWithPictures()
 
         val nextPicture = when (learningMode) {
-            LearningMode.REPRESENTATION -> {
-                // TODO optimize this and don't download all pictures every time
-                // get all picture ids and choose 1 random one, then download corresponding picture
-                val pics = dbMgt.getAllPictures(rndCat)
-                // I don't really know how to smoothly treat the case when there are no pictures in
-                // the category.
-                if (pics.isEmpty()) throw IllegalStateException("There cannot be a category without pictures")
-                pics.random()
-            }
+            LearningMode.REPRESENTATION -> catPics.random()
             LearningMode.PRESENTATION -> dbMgt.getRepresentativePicture(rndCat.id)
         }
 
@@ -44,13 +33,24 @@ class LearningPresenter(
         view.invalidate()
     }
 
-    private fun getRandomCategory(): Category {
+    /**
+     * Returns a random category of the dataset, with the corresponding set of pictures
+     * The returned category is guaranteed to be different from the previousCategory
+     * The set of pictures is guaranteed to ben non-empty
+     */
+    private suspend fun getRndCategoryWithPictures(): Pair<Category, Set<CategorizedPicture>> {
         var rndCat: Category?
+        var catPics: Set<CategorizedPicture>?
         do {
             rndCat = dataset.categories.random()
-        } while (::previousCategory.isInitialized && previousCategory == rndCat)
+            // TODO optimize this and don't download all pictures every time
+            // get all picture ids and choose 1 random one, then download corresponding picture
+            catPics = dbMgt.getAllPictures(rndCat)
+        } while (
+            previousCategory == rndCat || catPics!!.isEmpty()
+        )
         previousCategory = rndCat!!
-        return rndCat
+        return Pair(rndCat, catPics)
     }
 
     /**

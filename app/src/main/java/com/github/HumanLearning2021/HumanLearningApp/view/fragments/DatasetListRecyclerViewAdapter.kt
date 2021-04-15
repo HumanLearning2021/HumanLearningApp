@@ -12,6 +12,7 @@ import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import kotlinx.coroutines.launch
 
 class DatasetListRecyclerViewAdapter(
@@ -26,7 +27,7 @@ class DatasetListRecyclerViewAdapter(
     private val NB_REPRESENTATIVES_SHOWN = 3
 
     // TODO Use injection with Hilt!
-    private val dbMgt: DatabaseManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
+    private val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     private lateinit var datasetList: List<Dataset>
 

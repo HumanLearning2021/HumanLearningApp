@@ -14,6 +14,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDataset
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningDatasetSelectionActivity
@@ -21,6 +23,7 @@ import com.github.HumanLearning2021.HumanLearningApp.view.LearningSettingsActivi
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 import junit.framework.AssertionFailedError
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -38,7 +41,9 @@ class LearningSettingsActivityTest {
             LearningSettingsActivity::class.java
         ).putExtra(
             LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET,
-            DummyDataset("id", "name", emptySet())
+            runBlocking {
+                DummyDatabaseManagement(DummyDatabaseService()).getDatasets().first()
+            }
         )
     )
 

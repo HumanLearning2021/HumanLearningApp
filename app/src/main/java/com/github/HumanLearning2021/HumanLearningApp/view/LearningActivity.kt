@@ -28,6 +28,7 @@ class LearningActivity : AppCompatActivity() {
         setContentView(R.layout.activity_learning)
         learningMode =
             intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
+
         val maybeDataset =
             intent.getParcelableExtra<Dataset>(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET)
         if (maybeDataset != null) {
