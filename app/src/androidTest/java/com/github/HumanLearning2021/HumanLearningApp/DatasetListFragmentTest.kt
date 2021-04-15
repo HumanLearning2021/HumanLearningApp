@@ -12,6 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListFragment
 import com.github.HumanLearning2021.HumanLearningApp.view.fragments.DatasetListRecyclerViewAdapter
 import kotlinx.coroutines.runBlocking
@@ -28,7 +29,7 @@ class DatasetListFragmentTest {
     @Before
     fun setUp() {
         runBlocking {
-            dummyDatasets = DummyDatabaseManagement.staticDummyDatabaseManagement.getDatasets()
+            dummyDatasets = DummyDatabaseManagement(DummyDatabaseService()).getDatasets()
         }
 
         scenario = launchFragmentInContainer()

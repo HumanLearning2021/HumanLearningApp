@@ -26,6 +26,7 @@
     <string name="learning_settings_btRepresentation">REPRESENTATION</string>
     <string name="learning_settings_tvLearningMode">LEARNING MODE</string>
 
+    <string name="LearningDatasetSelection_title">Select the dataset on which to learn</string>
 
     <string name="main_btLearning">LEARNING</string>
     <string name="main_btDisplayDataset">DISPLAY DATASET</string>

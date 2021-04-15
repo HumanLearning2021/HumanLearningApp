@@ -1,49 +1,64 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.app.Activity
-import android.net.Uri
-import android.util.Log
 import android.widget.ImageView
-import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.LearningMode
-import kotlinx.coroutines.runBlocking
-import java.lang.Exception
-import java.lang.IllegalArgumentException
 
 
-class DummyLearningPresenter(
-    private val learningMode: LearningMode
+class LearningPresenter(
+    private val activity: Activity,
+    private val learningMode: LearningMode,
+    private val dataset: Dataset
 ) {
-    private var previousCategory : Category? = null
-    private val databaseService = DummyDatabaseService()
-    private val databaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    private var previousCategory: Category? = if(!dataset.categories.isEmpty()) dataset.categories.random() else null
 
+    // TODO Use injection !
+    private val dbMgt = DummyDatabaseManagement(DummyDatabaseService())
 
-    suspend fun displayNextPicture(activity: Activity, view: ImageView) {
-        /*
-        TODO: should the activity be a property of the class instead? Since the presenter and the activity have a 1-1 relationship
-         */
-        val cats = databaseManagement.getCategories()
-        var rndCat: Category?
-        do {
-            rndCat = cats.random()
-        } while (previousCategory == rndCat)
-        Log.d("displayNextPicture", "previous : $previousCategory, curr : $rndCat")
-        previousCategory = rndCat
+    /**
+     * Picks a random picture from the dataset, and displays it on the given view
+     * @param view The view on which to display the chosen picture. Normally has id R.id.learning_im_to_sort
+     */
+    suspend fun displayNextPicture(view: ImageView) {
+        val (rndCat, catPics) = getRndCategoryWithPictures()
 
-        val nextPicture = when(learningMode){
-            LearningMode.REPRESENTATION -> databaseManagement.getPicture(rndCat!!)
-            LearningMode.PRESENTATION -> databaseManagement.getRepresentativePicture(rndCat!!.name)
+        val nextPicture = when (learningMode) {
+            LearningMode.REPRESENTATION -> catPics.random()
+            LearningMode.PRESENTATION -> dbMgt.getRepresentativePicture(rndCat.id)
         }
 
         nextPicture!!.displayOn(activity, view)
-        view.contentDescription = rndCat!!.name
+        view.contentDescription = rndCat.name
         view.invalidate()
     }
 
+    /**
+     * Returns a random category of the dataset, with the corresponding set of pictures
+     * The returned category is guaranteed to be different from the previousCategory
+     * The set of pictures is guaranteed to ben non-empty
+     */
+    private suspend fun getRndCategoryWithPictures(): Pair<Category, Set<CategorizedPicture>> {
+        var rndCat: Category?
+        var catPics: Set<CategorizedPicture>?
+        do {
+            rndCat = dataset.categories.random()
+            // TODO optimize this and don't download all pictures every time
+            // get all picture ids and choose 1 random one, then download corresponding picture
+            catPics = dbMgt.getAllPictures(rndCat)
+        } while (
+            previousCategory == rndCat || catPics!!.isEmpty()
+        )
+        previousCategory = rndCat!!
+        return Pair(rndCat, catPics)
+    }
 
-    suspend fun displayTargetPicture(activity: Activity, view: ImageView, categoryName: String){
-        databaseManagement.getRepresentativePicture(categoryName)?.displayOn(activity, view)
+    /**
+     * Displays the representative of the given category on the given ImageView
+     * @param view The ImageView on which the representative is going to be displayed
+     * @param category The category whose representative will be displayed
+     */
+    suspend fun displayTargetPicture(view: ImageView, category: Category) {
+        dbMgt.getRepresentativePicture(category.id)?.displayOn(activity, view)
     }
 }

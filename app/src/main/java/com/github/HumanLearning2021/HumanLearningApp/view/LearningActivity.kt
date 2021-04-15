@@ -2,35 +2,44 @@ package com.github.HumanLearning2021.HumanLearningApp.view
 
 import android.content.ClipData
 import android.content.ClipDescription
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.DragEvent
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.github.HumanLearning2021.HumanLearningApp.BuildConfig
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
-import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyLearningPresenter
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
 import kotlinx.coroutines.launch
 
 class LearningActivity : AppCompatActivity() {
 
-    private lateinit var learningPresenter: DummyLearningPresenter
+    private lateinit var learningPresenter: LearningPresenter
     private lateinit var learningMode: LearningMode
     private lateinit var audioFeedback: LearningAudioFeedback
+    private lateinit var dataset: Dataset
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
         learningMode =
             intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
-        learningPresenter = DummyLearningPresenter(learningMode)
+
+        val maybeDataset =
+            intent.getParcelableExtra<Dataset>(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET)
+        if (maybeDataset != null) {
+            dataset = maybeDataset
+        } else {
+            Log.e(
+                this.localClassName, "The intent launching the LearningActivity didn't contain" +
+                        " a Dataset", IllegalStateException()
+            )
+        }
+        learningPresenter = LearningPresenter(this, learningMode, dataset)
         initLearningViews()
         audioFeedback = LearningAudioFeedback(applicationContext)
     }
@@ -47,49 +56,49 @@ class LearningActivity : AppCompatActivity() {
 
     private fun initLearningViews() {
         lifecycleScope.launch {
-            val cats = DummyDatabaseService().getCategories()
-            if (BuildConfig.DEBUG && cats.size < 3) {
+            val cats = dataset.categories
+            if (cats.size < 3) {
                 // TODO : maybe allow fewer categories in the future
-                error("There should be at least 3 categories")
+                Log.e(
+                    this.javaClass.name, "There are fewer than 3 categories in the dataset",
+                    IllegalStateException()
+                )
+            }else{
+                val cat0 = cats.elementAt(0)
+
+                initTargetCategory(R.id.learning_cat_0, cat0)
+                initTargetCategory(R.id.learning_cat_1, cats.elementAt(1))
+                initTargetCategory(R.id.learning_cat_2, cats.elementAt(2))
+
+                initImageToSort(R.id.learning_im_to_sort, cat0)
             }
 
-            val cat0Name = cats.elementAt(0).name
-
-            initTargetCategory(R.id.learning_cat_0, cat0Name)
-            initTargetCategory(R.id.learning_cat_1, cats.elementAt(1).name)
-            initTargetCategory(R.id.learning_cat_2, cats.elementAt(2).name)
-
-            initImageToSort(R.id.learning_im_to_sort, cat0Name)
         }
     }
 
-    private fun initImageView(catIvId: Int, catName: String): ImageView {
+    private fun initImageView(catIvId: Int, cat: Category): ImageView {
         val catIv = findViewById<ImageView>(catIvId)
-        catIv.contentDescription = catName
+        catIv.contentDescription = cat.name
 
         if (catIvId == R.id.learning_im_to_sort) {
             lifecycleScope.launch {
-                learningPresenter.displayNextPicture(this@LearningActivity, catIv)
+                learningPresenter.displayNextPicture(catIv)
             }
-        }
-
-        else {
+        } else {
             lifecycleScope.launch {
-                learningPresenter.displayTargetPicture(this@LearningActivity, catIv, catName)
+                learningPresenter.displayTargetPicture(catIv, cat)
             }
         }
 
         return catIv
     }
 
-    private fun initImageToSort(catIvId: Int, catName: String) {
-
-        initImageView(catIvId, catName).setOnTouchListener(LearningActivity::onImageToSortTouched)
+    private fun initImageToSort(catIvId: Int, cat: Category) {
+        initImageView(catIvId, cat).setOnTouchListener(LearningActivity::onImageToSortTouched)
     }
 
-    private fun initTargetCategory(catIvId: Int, catName: String) {
-
-        initImageView(catIvId, catName).setOnDragListener(targetOnDragListener)
+    private fun initTargetCategory(catIvId: Int, cat: Category) {
+        initImageView(catIvId, cat).setOnDragListener(targetOnDragListener)
     }
 
     private val opaque = 1.0f
@@ -117,7 +126,6 @@ class LearningActivity : AppCompatActivity() {
             audioFeedback.startCorrectFeedback()
             lifecycleScope.launch {
                 learningPresenter.displayNextPicture(
-                    this@LearningActivity,
                     findViewById(R.id.learning_im_to_sort),
                 )
             }
