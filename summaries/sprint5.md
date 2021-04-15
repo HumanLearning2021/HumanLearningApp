@@ -9,6 +9,7 @@
 ## Konrad, Jonas Franz
 
 ## Lachat, Niels Marco
+During this sprint I integrated the DatasetListFragment into the DatasetSelectionActivity, so that the user can choose a dataset on which to learn from the available datasets. I also adapted LearningSettingsActivity and LearningActivity to take into account the selected dataset. During the sprint, I traded a task with Martin because otherwise we would have stepped on each other's toes (he was supposed to adapt the learning to be able to use firestore, which I did as part of the adaptations for the dataset selection). Overall it went well I think, with the task taking about 8 hours to do. I'm very excited to see that we are approaching a version of the app where all our work is integrated together!
 
 ## Lenweiter, Martin
 
