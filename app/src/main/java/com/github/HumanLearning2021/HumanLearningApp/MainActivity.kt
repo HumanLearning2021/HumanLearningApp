@@ -14,11 +14,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    fun launchToCameraActivity(view: View) {
-        val intent = Intent(this, AddPictureActivity::class.java)
-        startActivity(intent)
-    }
-
     fun launchToDisplayDatasetActivity(view: View) {
         val intent = Intent(this, DisplayDatasetActivity::class.java)
         startActivity(intent)

@@ -147,6 +147,17 @@ interface DatabaseService {
      */
     suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset
 
+    /**
+     * Adds the category to the dataset, does nothing if the dataset already contains the category.
+     *
+     * @param dataset - the dataset where the category should be put
+     * @param category - the category to add
+     * @return the dataset with the new category added
+     * @throws IllegalArgumentException if the database does not contain the specified dataset
+     * @throws IllegalArgumentException if the database does not contain the specified category
+     */
+    suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset
+
     suspend fun updateUser(firebaseUser: FirebaseUser): User
 
     suspend fun getUser(type: User.Type, uid: String): User?

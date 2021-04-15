@@ -12,16 +12,18 @@ import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.AddPictureActivity
 import com.github.HumanLearning2021.HumanLearningApp.DataCreationActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import kotlinx.coroutines.launch
 
 
 class DisplayDatasetActivity : AppCompatActivity() {
 
-    private val staticDBManagement = DummyDatabaseManagement.staticDummyDatabaseManagement
+    private lateinit var dbManagement: FirestoreDatabaseManagement
     private lateinit var categories: Set<Category>
     private lateinit var datasetId: String
     private lateinit var dataset: Dataset
+    private lateinit var dbName: String
 
     private val addPictureContractRegistration =
         registerForActivityResult(AddPictureActivity.AddPictureContract) { resultPair ->
@@ -35,7 +37,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 val category = resultPair.first
                 val pictureUri = resultPair.second
                 lifecycleScope.launch {
-                    staticDBManagement.putPicture(pictureUri, category)
+                    dbManagement.putPicture(pictureUri, category)
                 }
             }
         }
@@ -49,27 +51,25 @@ class DisplayDatasetActivity : AppCompatActivity() {
         var representativePictures = setOf<CategorizedPicture>()
 
         lifecycleScope.launch {
-            dataset = staticDBManagement.getDatasetById(datasetId)!!
-            categories = staticDBManagement.getCategories()
+            dataset = dbManagement.getDatasetById(datasetId)!!
+            findViewById<EditText>(R.id.display_dataset_name).setText(dataset.name)
+            categories = dataset.categories
             for (cat in categories) {
-                representativePictures =
-                    representativePictures.plus(staticDBManagement.getPicture(cat)!!)
+                var pictures = dbManagement.getAllPictures(cat)
+                if (pictures.isNotEmpty()) {
+                    representativePictures =
+                        representativePictures.plus(dbManagement.getPicture(cat)!!)
+                }
             }
-        }
 
-        val displayDatasetAdapter =
-            DisplayDatasetAdapter(representativePictures, this@DisplayDatasetActivity)
+            val displayDatasetAdapter =
+                DisplayDatasetAdapter(representativePictures, this@DisplayDatasetActivity)
 
-        findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
-            displayDatasetAdapter
+            findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
+                displayDatasetAdapter
 
-        setGridViewItemListener()
-
-        findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
-            lifecycleScope.launch {
-                dataset = staticDBManagement.editDatasetName(dataset, findViewById<EditText>(R.id.display_dataset_name).text.toString())
-                datasetId = dataset.id as String
-            }
+            setGridViewItemListener()
+            setTextChangeListener()
         }
     }
 
@@ -83,8 +83,8 @@ class DisplayDatasetActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.display_dataset_menu_modify_categories -> {
                 val intent = Intent(this@DisplayDatasetActivity, DataCreationActivity::class.java)
-                intent.putParcelableArrayListExtra("dataset_categories", categoriesArray)
                 intent.putExtra("dataset_id", datasetId)
+                intent.putExtra("database_name", dbName)
                 startActivity(intent)
                 true
             }
@@ -131,15 +131,24 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
     }
 
-    private fun checkIntentExtras(extras : Bundle?){
-        datasetId = if (extras != null && extras["dataset_id"] is String) {
-            intent.getStringExtra("dataset_id")!!
-        } else {
-            "kitchen utensils"
+    private fun checkIntentExtras(extras: Bundle?) {
+        lifecycleScope.launch {
+            datasetId = if (extras != null && extras["dataset_id"] is String) {
+                intent.getStringExtra("dataset_id")!!
+            } else {
+                "uEwDkGoGADW4hEJoJ6BA"
+            }
+            dbManagement = if (extras != null && extras["database_name"] is String) {
+                dbName = intent.getStringExtra("database_name")!!
+                FirestoreDatabaseManagement(dbName)
+            } else {
+                dbName = "demo2"
+                FirestoreDatabaseManagement("demo2")
+            }
         }
     }
 
-    private fun setGridViewItemListener(){
+    private fun setGridViewItemListener() {
         findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
             val cat = categories.elementAt(i)
             val intent =
@@ -149,7 +158,19 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 cat
             )
             intent.putExtra("dataset_id", datasetId)
+            intent.putExtra("database_name", dbName)
             startActivity(intent)
+        }
+    }
+
+    private fun setTextChangeListener() {
+        findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
+            lifecycleScope.launch {
+                dataset = dbManagement.editDatasetName(
+                    dataset,
+                    findViewById<EditText>(R.id.display_dataset_name).text.toString()
+                )
+            }
         }
     }
 }

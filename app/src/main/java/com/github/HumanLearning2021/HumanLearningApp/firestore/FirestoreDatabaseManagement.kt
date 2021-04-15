@@ -14,7 +14,7 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
     private val databaseService: FirestoreDatabaseService = FirestoreDatabaseService(dbName, app)
 
     companion object {
-        val scratchFirestoreDatabase = FirestoreDatabaseService("scratch")
+        val scratchFirestoreDatabase = FirestoreDatabaseManagement("scratch")
     }
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
@@ -168,6 +168,16 @@ class FirestoreDatabaseManagement(dbName: String, app: FirebaseApp? = null): Dat
         require(dataset is FirestoreDataset)
         return try {
             databaseService.editDatasetName(dataset, newName)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
+    }
+
+    override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset {
+        require(dataset is FirestoreDataset)
+        require(category is FirestoreCategory)
+        return try {
+            databaseService.addCategoryToDataset(dataset, category)
         } catch (e: IllegalArgumentException) {
             throw e
         }
