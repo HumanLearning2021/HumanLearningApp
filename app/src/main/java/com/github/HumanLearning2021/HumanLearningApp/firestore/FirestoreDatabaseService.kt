@@ -267,7 +267,7 @@ class FirestoreDatabaseService(
                 "Adding category ${category.id} to dataset ${dataset.id} failed",
                 e
             )
-            throw java.lang.IllegalArgumentException("The category ${category.id} is not contained in the dataset ${dataset.id} or said dataset is not contained in this database")
+            throw java.lang.IllegalArgumentException("The category ${category.id} is not contained in the database")
         }
         return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!
             .toPublic()

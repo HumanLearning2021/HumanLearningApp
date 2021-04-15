@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -35,7 +36,7 @@ class DataCreationActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val extras = intent.extras
             if (extras != null) {
-                datasetId = extras!!["dataset_id"] as String
+                datasetId = extras["dataset_id"] as String
                 dbName = extras["database_name"] as String
                 dBManagement = FirestoreDatabaseManagement(dbName)
                 dataset = dBManagement.getDatasetById(datasetId)!!
@@ -63,7 +64,7 @@ class DataCreationActivity : AppCompatActivity() {
 
     private fun addNewView() {
 
-        val inflater = LayoutInflater.from(this).inflate(R.layout.row_add_category, null)
+        val inflater = View.inflate(this, R.layout.row_add_category, null)
         binding.parentLinearLayout.addView(inflater, binding.parentLinearLayout.childCount)
 
     }
