@@ -1,6 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class DummyUser(
