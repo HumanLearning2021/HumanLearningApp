@@ -294,12 +294,24 @@ class FirestoreDatabaseService internal constructor(
         return user?.toPublic()
     }
 
-    //TODO("Make this method return a random image. (implement picture ids, make a getter for all picture ids, application can then get a picture from a random id among those)")
     override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
         require(category is FirestoreCategory)
         val query = pictures.whereEqualTo("category", db.document(category.path)).limit(1)
         val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
         return pic?.toPublic()
+    }
+
+    override suspend fun getPicture(pictureId: Any): FirestoreCategorizedPicture? {
+        require(pictureId is String)
+        val query = pictures.whereEqualTo("id", pictureId).limit(1)
+        val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
+        return pic?.toPublic()
+    }
+
+    override suspend fun getPictureIds(category: Category): List<String> {
+        require(category is FirestoreCategory)
+        val query = pictures.whereEqualTo("category", db.document(category.path))
+        return query.get().await().map { r -> r.toObject(PictureSchema::class.java).id }
     }
 
     override suspend fun getRepresentativePicture(categoryId: Any): FirestoreCategorizedPicture? {

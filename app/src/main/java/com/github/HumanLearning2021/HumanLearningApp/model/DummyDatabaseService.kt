@@ -49,7 +49,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
-      require(category is DummyCategory)
+        require(category is DummyCategory)
         if (!categories.contains(category)) throw IllegalArgumentException(
             "The provided category is not present in the dataset"
         )
@@ -57,6 +57,25 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         for (p in pictures)
             if (p.category == category) return p
         return null
+    }
+
+    override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
+        require(pictureId is String)
+        for (p in pictures)
+            if (p.id == pictureId) return p
+        return null
+    }
+
+    override suspend fun getPictureIds(category: Category): List<Any> {
+        require(category is DummyCategory)
+        if (!categories.contains(category)) throw IllegalArgumentException(
+            "The provided category is not present in the dataset"
+        )
+
+        val res = mutableListOf<String>()
+        for (p in pictures)
+            if (p.category == category) res.add(p.id)
+        return res
     }
 
     override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
