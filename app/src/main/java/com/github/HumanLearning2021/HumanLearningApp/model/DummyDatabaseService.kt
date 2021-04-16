@@ -202,7 +202,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
                     addAll(categories)
                     remove(c)
                 }
-                val newDs = DummyDataset(dataset.id as String, dataset.name, newCategories as Set<Category>)
+                val newDs = DummyDataset(dataset.id, dataset.name, newCategories as Set<Category>)
                 this.datasets.apply {
                     add(newDs)
                     remove(dataset)
