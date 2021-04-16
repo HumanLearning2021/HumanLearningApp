@@ -10,7 +10,7 @@
         android:id="@+id/LearningDatasetSelection_dataset_list"
         android:layout_width="wrap_content"
         android:layout_height="500dp"
-        class="com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListFragment"
+        class="com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

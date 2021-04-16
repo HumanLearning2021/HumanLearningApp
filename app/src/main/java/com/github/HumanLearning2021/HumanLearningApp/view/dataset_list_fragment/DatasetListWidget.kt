@@ -21,7 +21,7 @@ import javax.inject.Inject
  * A fragment displaying a list of datasets.
  */
 @AndroidEntryPoint
-class DatasetListFragment : Fragment() {
+class DatasetListWidget : Fragment() {
 
     @Inject
     @DummyDatabase

@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class DatasetListFragmentTest {
+class DatasetListWidgetTest {
     @Inject
     @DummyDatabase
     lateinit var dbMgt: DatabaseManagement
@@ -44,7 +44,7 @@ class DatasetListFragmentTest {
 
     @Test
     fun listItemInFragmentAreClickable() {
-        launchFragmentInHiltContainer<DatasetListFragment> {
+        launchFragmentInHiltContainer<DatasetListWidget> {
             this.selectedDataset.observe(this) {
                 // tests that the clicked dataset is in the dummy datasets
                 assert(dummyDatasets.find { ds -> ds == it } != null
@@ -62,7 +62,7 @@ class DatasetListFragmentTest {
 
     @Test
     fun fragmentHasChildrenViews() {
-        launchFragmentInHiltContainer<DatasetListFragment>()
+        launchFragmentInHiltContainer<DatasetListWidget>()
         onView(withId(R.id.DatasetList_list)).check(
             matches(
                 ViewMatchers.hasChildCount(dummyDatasets.size)

@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListFragment
+import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -16,7 +16,7 @@ class DatasetsOverviewActivity : AppCompatActivity() {
         setContentView(R.layout.activity_datasets_overview)
 
         val dsListFragment = supportFragmentManager.findFragmentById(R.id.dataOverview_fragment)
-        if (dsListFragment is DatasetListFragment) {
+        if (dsListFragment is DatasetListWidget) {
             dsListFragment.selectedDataset.observe(this) {
                 Log.d("DataOverview activity", "selected ds is  $it")
                 // TODO include Dataset (it) with Intent

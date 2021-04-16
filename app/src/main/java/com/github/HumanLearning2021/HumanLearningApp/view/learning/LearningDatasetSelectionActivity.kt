@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListFragment
+import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,7 +19,7 @@ class LearningDatasetSelectionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_learning_dataset_selection)
 
         val dsListFragment = supportFragmentManager.findFragmentById(R.id.LearningDatasetSelection_dataset_list)
-        if (dsListFragment is DatasetListFragment) {
+        if (dsListFragment is DatasetListWidget) {
             dsListFragment.selectedDataset.observe(this) {
                 Log.d(this.localClassName, "Selected dataset $it")
                 startActivity(
