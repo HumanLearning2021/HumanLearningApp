@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.room
+package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.model.*
