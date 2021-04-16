@@ -22,7 +22,6 @@ import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -58,8 +57,6 @@ class DisplayDatasetActivityTest {
     @Inject
     @ScratchDatabase
     lateinit var dbManagement: DatabaseManagement
-    @Inject
-    lateinit var dummyPresenter: DummyUIPresenter
 
     @Before
     fun setUp() {
