@@ -61,11 +61,8 @@ class DummyDatabaseServiceTest {
         dummyDatabaseService.putCategory("Table")
         dummyDatabaseService.putPicture(forkUri, table)
 
-        assertThat(
-            dummyDatabaseService.getPicture(table),
-            equalTo(DummyCategorizedPicture("tablepicid", table, forkUri))
-        )
-
+        val res = dummyDatabaseService.getPicture(table)!!
+        assertThat(res.category, equalTo(table))
     }
 
     @ExperimentalCoroutinesApi
@@ -175,7 +172,7 @@ class DummyDatabaseServiceTest {
         val table = dummyDatabaseService.putCategory("Table")
         assert(dummyDatabaseService.getRepresentativePicture("Table") == null)
         dummyDatabaseService.putRepresentativePicture(Uri.EMPTY, table)
-        assert(dummyDatabaseService.getRepresentativePicture("Table") == DummyCategorizedPicture("tablepicid", table, Uri.EMPTY))
+        assert(dummyDatabaseService.getRepresentativePicture("Table")!!.category == table)
     }
 
     @ExperimentalCoroutinesApi
@@ -208,7 +205,7 @@ class DummyDatabaseServiceTest {
         dummyDatabaseService.putCategory("Fork")
         dummyDatabaseService.putPicture(forkUri, fork)
         dummyDatabaseService.putPicture(spoonUri, fork)
-        val res = dummyDatabaseService.getAllPictures(fork)
+        val res = dummyDatabaseService.getAllPictures(fork).map {p -> DummyCategorizedPicture("forkpicid", p.category, (p as DummyCategorizedPicture).picture)}
         assert(res.containsAll(setOf(DummyCategorizedPicture("forkpicid", fork, forkUri), DummyCategorizedPicture("forkpicid", fork, spoonUri))))
     }
 

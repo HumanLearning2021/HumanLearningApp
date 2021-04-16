@@ -28,9 +28,9 @@ class DummyDatabaseManagementTest {
     private val knifeUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.knife)
     private val spoonUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.spoon)
 
-    private val forkPic = DummyCategorizedPicture("forkid", fork, forkUri)
-    private val knifePic = DummyCategorizedPicture("knifeid", knife, knifeUri)
-    private val spoonPic = DummyCategorizedPicture("spoonid", spoon, spoonUri)
+    private val forkPic = DummyCategorizedPicture("forkpicid", fork, forkUri)
+    private val knifePic = DummyCategorizedPicture("knifepicid", knife, knifeUri)
+    private val spoonPic = DummyCategorizedPicture("spoonpicid", spoon, spoonUri)
 
     @ExperimentalCoroutinesApi
     @Test(expected = IllegalArgumentException::class)

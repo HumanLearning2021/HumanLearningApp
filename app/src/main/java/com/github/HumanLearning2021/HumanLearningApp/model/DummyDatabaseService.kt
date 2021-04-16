@@ -15,17 +15,17 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     private val spoon = DummyCategory("Spoon", "Spoon")
 
     private val forkPic = DummyCategorizedPicture(
-        "forkPic1Id",
+        "forkpicid",
         fork,
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
     )
     private val knifePic = DummyCategorizedPicture(
-        "knifePic1Id",
+        "knifepicid",
         knife,
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
     )
     private val spoonPic = DummyCategorizedPicture(
-        "spoonPic1Id",
+        "spoonpicid",
         spoon,
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.spoon)
     )
@@ -126,7 +126,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     override suspend fun removePicture(picture: CategorizedPicture) {
         require(picture is DummyCategorizedPicture)
         for (p in pictures) {
-            if (p == picture) {
+            if (p.id == picture.id) {
                 pictures.remove(p)
                 return
             }
