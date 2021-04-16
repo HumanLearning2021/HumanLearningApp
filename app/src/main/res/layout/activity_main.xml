@@ -30,7 +30,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/MainActivitySignInFragment"
-        android:name="com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInFragment"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInWidget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

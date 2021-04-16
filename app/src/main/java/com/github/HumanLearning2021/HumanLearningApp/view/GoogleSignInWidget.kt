@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class GoogleSignInFragment : Fragment() {
+class GoogleSignInWidget : Fragment() {
     @Inject
     lateinit var presenter: AuthenticationPresenter
 
@@ -65,7 +65,7 @@ class GoogleSignInFragment : Fragment() {
                             updateUi()
                         } else {
                             Log.e(
-                                "GoogleSignInFragment",
+                                "GoogleSignInWidget",
                                 "Error during authentication",
                                 response.error
                             )
