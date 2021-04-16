@@ -15,6 +15,7 @@ import androidx.room.PrimaryKey
     )]
 )
 data class RoomUnlinkedRepresentativePicture(
-    @PrimaryKey val uri: Uri,
+    @PrimaryKey val pictureId: String,
+    val uri: Uri,
     @ColumnInfo(index = true) val categoryId: String,
 )
