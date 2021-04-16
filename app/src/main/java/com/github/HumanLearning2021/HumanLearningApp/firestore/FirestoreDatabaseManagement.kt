@@ -9,7 +9,7 @@ class FirestoreDatabaseManagement internal constructor(
     private val databaseService: FirestoreDatabaseService
 ): DatabaseManagement {
 
-    override suspend fun getPicture(category: Category): CategorizedPicture? {
+    override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
         require(category is FirestoreCategory)
         return try {
             databaseService.getPicture(category)
@@ -18,12 +18,12 @@ class FirestoreDatabaseManagement internal constructor(
         }
     }
 
-    override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
+    override suspend fun getPicture(pictureId: Any): FirestoreCategorizedPicture? {
         require(pictureId is String)
         return databaseService.getPicture(pictureId)
     }
 
-    override suspend fun getPictureIds(category: Category): List<Any> {
+    override suspend fun getPictureIds(category: Category): List<String> {
         require(category is FirestoreCategory)
         return try {
             databaseService.getPictureIds(category)
