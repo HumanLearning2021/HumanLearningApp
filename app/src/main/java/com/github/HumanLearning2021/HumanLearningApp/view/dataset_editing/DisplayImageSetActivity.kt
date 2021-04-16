@@ -60,9 +60,8 @@ class DisplayImageSetActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        val intent = Intent(this, DisplayDatasetActivity::class.java)
-        intent.putExtra("dataset_id", datasetId)
-        startActivity(intent)
+        startActivity(Intent(this, DisplayDatasetActivity::class.java)
+            .putExtra("dataset_id", datasetId))
     }
 
     class DisplayImageSetAdapter(

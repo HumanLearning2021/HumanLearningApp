@@ -66,9 +66,8 @@ class DisplayImageActivity : AppCompatActivity() {
     }
 
     private fun launchDisplayDatasetActivity() {
-        val intent = Intent(this, DisplayDatasetActivity::class.java)
-        intent.putExtra("dataset_id", datasetId)
-        startActivity(intent)
+        startActivity(Intent(this, DisplayDatasetActivity::class.java)
+            .putExtra("dataset_id", datasetId))
     }
 
     private fun launchDisplayImageSetActivity() {

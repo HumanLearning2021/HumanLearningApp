@@ -17,12 +17,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun launchToDisplayDatasetActivity(view: View) {
-        val intent = Intent(this, DisplayDatasetActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, DisplayDatasetActivity::class.java))
     }
 
     fun launchToLearningActivity(view: View) {
-        val intent = Intent(this, LearningDatasetSelectionActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, LearningDatasetSelectionActivity::class.java))
     }
 }
