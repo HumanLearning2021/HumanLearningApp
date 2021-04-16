@@ -25,9 +25,9 @@ class DummyUIPresenterTest {
     private val knife = DummyCategory("Knife","Knife")
     private val spoon = DummyCategory("Spoon", "Spoon")
 
-    private val forkPic = DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork))
-    private val knifePic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.knife))
-    private val spoonPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.spoon))
+    private val forkPic = DummyCategorizedPicture("forkpicid", fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork))
+    private val knifePic = DummyCategorizedPicture("knifepicid", knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.knife))
+    private val spoonPic = DummyCategorizedPicture("spoonpicid", spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.spoon))
 
     private val databaseService = DummyDatabaseService()
     private val dummyPresenter = DummyUIPresenter(databaseService)
@@ -63,7 +63,7 @@ class DummyUIPresenterTest {
         dummyPresenter.putPicture(Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork), "Fork")
         assertThat(
             dummyPresenter.getPicture("Fork"),
-            Matchers.equalTo(DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork)))
+            Matchers.equalTo(DummyCategorizedPicture("forkpicid", fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork)))
         )
     }
 
