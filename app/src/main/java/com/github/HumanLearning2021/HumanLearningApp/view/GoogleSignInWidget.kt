@@ -33,11 +33,13 @@ class GoogleSignInWidget : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<Button>(R.id.loginButton).setOnClickListener(this::onLoginButtonPress)
+        view.findViewById<Button>(R.id.loginButton).setOnClickListener {
+            onLoginButtonPress()
+        }
         updateUi()
     }
 
-    fun onLoginButtonPress(view: View) {
+    private fun onLoginButtonPress() {
         startActivityForResult(
             presenter.intentForStartActivityForResult(),
             RC_SIGN_IN

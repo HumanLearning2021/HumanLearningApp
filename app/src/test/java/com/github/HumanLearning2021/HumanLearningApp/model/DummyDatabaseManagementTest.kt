@@ -51,7 +51,7 @@ class DummyDatabaseManagementTest {
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
         val newCat = testDatabaseManagement.putCategory("Table")
-        val newPic = testDatabaseManagement.putPicture(knifeUri, newCat)
+        testDatabaseManagement.putPicture(knifeUri, newCat)
         assert(testDatabaseManagement.getPicture(newCat) != null)
     }
 
@@ -174,9 +174,9 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun deleteDatasetWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        testDatabaseManagement.deleteDataset("kitchen utensils")
-        assert(!dummyDatabaseService.getDatasets().contains("kitchen utensils"))
+        val id = "kitchen utensils"
+        testDatabaseManagement.deleteDataset(id)
+        assert(!testDatabaseManagement.getDatasetIds().contains(id))
     }
 
     @ExperimentalCoroutinesApi
