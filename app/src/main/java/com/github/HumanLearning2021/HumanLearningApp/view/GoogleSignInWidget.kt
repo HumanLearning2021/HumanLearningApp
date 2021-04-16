@@ -40,6 +40,7 @@ class GoogleSignInWidget : Fragment() {
     }
 
     private fun onLoginButtonPress() {
+        @Suppress("DEPRECATION")  // FIXME: use something non-deprecated
         startActivityForResult(
             presenter.intentForStartActivityForResult(),
             RC_SIGN_IN
@@ -48,6 +49,7 @@ class GoogleSignInWidget : Fragment() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")  // FIXME: use something non-deprecated
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
