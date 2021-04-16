@@ -1,10 +1,8 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.google.common.collect.ImmutableSet
 import java.lang.IllegalArgumentException
-import javax.inject.Inject
 
 /**
  * Dummy implementation of a database manager
