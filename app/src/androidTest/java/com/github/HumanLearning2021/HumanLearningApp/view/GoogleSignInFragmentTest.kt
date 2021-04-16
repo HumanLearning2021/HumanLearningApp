@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment
+package com.github.HumanLearning2021.HumanLearningApp.view
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
