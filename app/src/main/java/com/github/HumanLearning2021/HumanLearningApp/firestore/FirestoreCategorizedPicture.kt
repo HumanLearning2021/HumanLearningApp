@@ -11,6 +11,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FirestoreCategorizedPicture internal constructor(
+    override val id: String,
     override val path: String,
     override val category: FirestoreCategory,
     val url: String,
