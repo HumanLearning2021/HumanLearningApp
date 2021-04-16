@@ -1,10 +1,19 @@
 package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.net.Uri
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.auth.FirebaseUser
 
 class OfflineDatabaseService: DatabaseService {
+
+    private val room = RoomOfflineDatabase.getDatabase(ApplicationProvider.getApplicationContext())
+    private val datasetDao = room.datasetDao()
+    private val categoryDao = room.categoryDao()
+    private val userDao = room.userDao()
+
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         TODO("Not yet implemented")
     }
