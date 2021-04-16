@@ -3,9 +3,9 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItem
-import org.junit.Assert.assertThat
 
 
 abstract class DemoDatabaseServiceTest : TestCase() {
