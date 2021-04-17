@@ -27,6 +27,7 @@ abstract class DemoDatabaseServiceTest : TestCase() {
         assertThat(cat, hasName("Pomme"))
     }
 
+    @Suppress("DEPRECATION")
     fun test_getPicture() = runBlocking {
         val appleCategory = db.getCategories().find { it.name == "Pomme" }
         requireNotNull(appleCategory, { "category of apples no found in demo dataset" })

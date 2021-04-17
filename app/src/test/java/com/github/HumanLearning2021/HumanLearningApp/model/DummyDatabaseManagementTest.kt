@@ -36,18 +36,21 @@ class DummyDatabaseManagementTest {
     private val spoonPic = DummyCategorizedPicture("spoonpicid", spoon, spoonUri)
 
     @ExperimentalCoroutinesApi
+    @Suppress("DEPRECATION")
     @Test(expected = IllegalArgumentException::class)
     fun getPictureThrowsIllegalArgumentException() = runBlockingTest {
         testDatabaseManagement.getPicture(table)
     }
 
     @ExperimentalCoroutinesApi
+    @Suppress("DEPRECATION")
     @Test
     fun getPictureWorks() = runBlockingTest {
         assert(testDatabaseManagement.getPicture(fork)!! == forkPic)
     }
 
     @ExperimentalCoroutinesApi
+    @Suppress("DEPRECATION")
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
         val newCat = testDatabaseManagement.putCategory("Table")

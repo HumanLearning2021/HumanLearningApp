@@ -11,6 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
+
 @RunWith(RobolectricTestRunner::class)
 class DummyDatabaseServiceTest {
 
@@ -28,6 +29,7 @@ class DummyDatabaseServiceTest {
     private val spoonPic = DummyCategorizedPicture("spoonpicid", spoon, spoonUri)
 
     @ExperimentalCoroutinesApi
+    @Suppress("DEPRECATION")
     @Test
     fun getForkWorks() = runBlockingTest {
         val dummyDatabaseService = DummyDatabaseService()
@@ -37,12 +39,14 @@ class DummyDatabaseServiceTest {
     }
 
     @ExperimentalCoroutinesApi
+    @Suppress("DEPRECATION")
     @Test(expected = IllegalArgumentException::class)
     fun getPictureCategoryNotPresentThrows() = runBlockingTest {
         DummyDatabaseService().getPicture(DummyCategory("Plate", "Plate"))
     }
 
     @ExperimentalCoroutinesApi
+    @Suppress("DEPRECATION")
     @Test
     fun getPictureCategoryEmpty() = runBlockingTest {
         val dummyDatabaseService = DummyDatabaseService()
@@ -55,6 +59,7 @@ class DummyDatabaseServiceTest {
 
 
     @ExperimentalCoroutinesApi
+    @Suppress("DEPRECATION")
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
         val dummyDatabaseService = DummyDatabaseService()
