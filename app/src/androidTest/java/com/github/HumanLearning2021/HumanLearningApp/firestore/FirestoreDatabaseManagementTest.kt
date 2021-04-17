@@ -347,4 +347,16 @@ class FirestoreDatabaseManagementTest {
         scratchManagement.editDatasetName(ds, newName)
         assertThat(scratchManagement.getDatasetById(ds.id)!!.name, equalTo(newName))
     }
+
+    @Test
+    fun test_addCategoryToDataset_categoryNotPresent() = runBlocking {
+        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
+        runCatching {
+            scratchManagement.addCategoryToDataset(fakeDs, fakeCategory)
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
+    }
 }

@@ -4,6 +4,9 @@ import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.hasItems
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -290,5 +293,23 @@ class DummyDatabaseManagementTest {
         val newDataset = testDatabaseManagement.editDatasetName(dataset, newName)
         assert(newDataset.categories.containsAll(dataset.categories))
         assert(newDataset.name == newName)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun getPictureIds() = runBlockingTest {
+        assertThat(testDatabaseManagement.getPictureIds(fork), hasItems("forkpicid"))
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test(expected = java.lang.IllegalArgumentException::class)
+    fun getPictureIdsThrows() = runBlockingTest {
+        testDatabaseManagement.getPictureIds(table)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun getPictureById() = runBlockingTest {
+        assertThat(testDatabaseManagement.getPicture("forkpicid")!!.category, equalTo(fork))
     }
 }
