@@ -49,7 +49,7 @@ class DummyCategorizedPictureTest {
     fun displayOnWorksAsExpected() {
         val pictureUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork)
         val dummyCategory = DummyCategory("Fork", "Fork")
-        val dummyCategorizedPicture = DummyCategorizedPicture(dummyCategory, pictureUri)
+        val dummyCategorizedPicture = DummyCategorizedPicture("some id", dummyCategory, pictureUri)
         val drawable = AppCompatResources.getDrawable(ApplicationProvider.getApplicationContext(), R.drawable.fork)
         val imageView = ImageView(ApplicationProvider.getApplicationContext())
 

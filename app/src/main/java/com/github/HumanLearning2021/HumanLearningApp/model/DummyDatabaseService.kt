@@ -15,21 +15,24 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     private val spoon = DummyCategory("Spoon", "Spoon")
 
     private val forkPic = DummyCategorizedPicture(
+        "forkpicid",
         fork,
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
     )
     private val knifePic = DummyCategorizedPicture(
+        "knifepicid",
         knife,
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
     )
     private val spoonPic = DummyCategorizedPicture(
+        "spoonpicid",
         spoon,
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.spoon)
     )
 
-    private val forkRepPic = DummyCategorizedPicture(fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.fork_rep))
-    private val knifeRepPic = DummyCategorizedPicture(knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife_rep))
-    private val spoonRepPic = DummyCategorizedPicture(spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon_rep))
+    private val forkRepPic = DummyCategorizedPicture("forkPic1Id", fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.fork_rep))
+    private val knifeRepPic = DummyCategorizedPicture("knifePic1Id", knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife_rep))
+    private val spoonRepPic = DummyCategorizedPicture("spoonPic1Id", spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon_rep))
 
     private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
     private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
@@ -46,7 +49,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
-      require(category is DummyCategory)
+        require(category is DummyCategory)
         if (!categories.contains(category)) throw IllegalArgumentException(
             "The provided category is not present in the dataset"
         )
@@ -54,6 +57,25 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         for (p in pictures)
             if (p.category == category) return p
         return null
+    }
+
+    override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
+        require(pictureId is String)
+        for (p in pictures)
+            if (p.id == pictureId) return p
+        return null
+    }
+
+    override suspend fun getPictureIds(category: Category): List<Any> {
+        require(category is DummyCategory)
+        if (!categories.contains(category)) throw IllegalArgumentException(
+            "The provided category is not present in the dataset"
+        )
+
+        val res = mutableListOf<String>()
+        for (p in pictures)
+            if (p.category == category) res.add(p.id)
+        return res
     }
 
     override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
@@ -65,7 +87,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         if(!categories.contains(category)) throw IllegalArgumentException("The provided category" +
                 "is not present in the dataset")
 
-        val addedPicture = DummyCategorizedPicture(category, picture)
+        val addedPicture = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
         pictures.add(addedPicture)
 
         return addedPicture
@@ -123,7 +145,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     override suspend fun removePicture(picture: CategorizedPicture) {
         require(picture is DummyCategorizedPicture)
         for (p in pictures) {
-            if (p == picture) {
+            if (p.id == picture.id) {
                 pictures.remove(p)
                 return
             }
@@ -158,7 +180,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
             throw IllegalArgumentException("The category name ${category.name} is not present in the database")
 
         }
-        representativePictures[category.id as String] = DummyCategorizedPicture(category, picture)
+        representativePictures[category.id as String] = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
     }
 
 

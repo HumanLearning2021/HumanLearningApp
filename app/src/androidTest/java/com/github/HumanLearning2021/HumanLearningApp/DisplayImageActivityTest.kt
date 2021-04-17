@@ -1,6 +1,9 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -11,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
@@ -28,7 +32,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -66,6 +73,22 @@ class DisplayImageActivityTest {
                             found = true
                         }
                     }
+                }
+            }
+            if (!found) {
+                val cat = dbManagement.putCategory("${UUID.randomUUID()}")
+                dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
+                val tmp = File.createTempFile("droid", ".png")
+                try {
+                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
+                        tmp.outputStream().use {
+                            img.copyTo(it)
+                        }
+                    }
+                    val uri = Uri.fromFile(tmp)
+                    dbManagement.putPicture(uri, cat)
+                } finally {
+                    tmp.delete()
                 }
             }
             datasetId = dataset.id as String

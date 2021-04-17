@@ -1,6 +1,9 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
@@ -30,6 +33,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.util.*
 import javax.inject.Inject
 
 @HiltAndroidTest
@@ -68,6 +73,22 @@ class DisplayImageSetActivityTest {
                             found = true
                         }
                     }
+                }
+            }
+            if (!found) {
+                val cat = dbManagement.putCategory("${UUID.randomUUID()}")
+                dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
+                val tmp = File.createTempFile("droid", ".png")
+                try {
+                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
+                        tmp.outputStream().use {
+                            img.copyTo(it)
+                        }
+                    }
+                    val uri = Uri.fromFile(tmp)
+                    dbManagement.putPicture(uri, cat)
+                } finally {
+                    tmp.delete()
                 }
             }
             datasetId = dataset.id as String

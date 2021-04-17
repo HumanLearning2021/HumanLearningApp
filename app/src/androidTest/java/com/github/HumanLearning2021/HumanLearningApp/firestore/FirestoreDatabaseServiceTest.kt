@@ -97,7 +97,7 @@ class FirestoreDatabaseServiceTest {
     @Test
     fun test_removePicture_throwsIfPictureNotPresent(): Unit = runBlocking {
         runCatching {
-            scratchInterface.removePicture(FirestoreCategorizedPicture("path", fakeCategory, "some url"))
+            scratchInterface.removePicture(FirestoreCategorizedPicture("some id", "path", fakeCategory, "some url"))
         }.fold({
             fail("unexpected successful completion")
         }, {

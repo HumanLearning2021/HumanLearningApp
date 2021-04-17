@@ -13,10 +13,26 @@ data class DummyDatabaseManagement internal constructor(
     ): DatabaseManagement {
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
+        require(category is DummyCategory)
         return databaseService.getPicture(category)
     }
 
+    override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
+        require(pictureId is String)
+        return databaseService.getPicture(pictureId)
+    }
+
+    override suspend fun getPictureIds(category: Category): List<Any> {
+        require(category is DummyCategory)
+        return try {
+            databaseService.getPictureIds(category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
+    }
+
     override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
+        require(categoryId is String)
         return databaseService.getRepresentativePicture(categoryId)
     }
 
@@ -30,6 +46,7 @@ data class DummyDatabaseManagement internal constructor(
     }
 
     override suspend fun getCategoryById(categoryId: Any): Category? {
+        require(categoryId is String)
         return databaseService.getCategory(categoryId)
     }
 
@@ -99,6 +116,7 @@ data class DummyDatabaseManagement internal constructor(
     }
 
     override suspend fun deleteDataset(id: Any) {
+        require(id is String)
         try {
             databaseService.deleteDataset(id)
         } catch (e: IllegalArgumentException) {

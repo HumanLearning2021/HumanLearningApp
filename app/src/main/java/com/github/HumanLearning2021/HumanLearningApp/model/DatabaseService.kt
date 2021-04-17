@@ -8,6 +8,10 @@ import com.google.firebase.auth.FirebaseUser
  */
 interface DatabaseService {
 
+    @Deprecated(
+        "Pictures now have an identifying id which should be used. If a random picture is wanted, first retrieve all the ids, select one among them at random then retrieve the picture.",
+        ReplaceWith("getPicture(pictureId: Any)")
+    )
     /**
      * A function to retrieve a picture from the database given a category
      *
@@ -17,6 +21,24 @@ interface DatabaseService {
      * @throws IllegalArgumentException if the provided category is not present in the database
      */
     suspend fun getPicture(category: Category): CategorizedPicture?
+
+    /**
+     * A function to retrieve a picture from the database given its id
+     *
+     * @param category the category of the image to be retrieved
+     * @return a CategorizedPicture from the desired category. Null if no picture of the desired
+     * category is present in the database.
+     */
+    suspend fun getPicture(pictureId: Any): CategorizedPicture?
+
+    /**
+     * A function to retrieve the ids of all the pictures from the database given a category
+     *
+     * @param category the category of image to be retrieved
+     * @return a List of ids. Can be empty if no pictures where found.
+     * @throws IllegalArgumentException if the provided category is not present in the database
+     */
+    suspend fun getPictureIds(category: Category): List<Any>
 
     /**
      * Retrieves the picture associated to the specified category as its representative picture

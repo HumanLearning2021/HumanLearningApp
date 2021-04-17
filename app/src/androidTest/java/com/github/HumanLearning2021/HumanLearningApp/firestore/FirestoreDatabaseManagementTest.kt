@@ -198,6 +198,30 @@ class FirestoreDatabaseManagementTest {
     }
 
     @Test
+    fun test_getPictureIds_throwsIfCategoryNotPresent() = runBlocking {
+        runCatching {
+            scratchManagement.getAllPictures(fakeCategory)
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
+    }
+
+    @Test
+    fun test_getPictureIds() = runBlocking {
+        val ids = demoManagement.getPictureIds(demoManagement.getCategoryById(appleCategoryId)!!)
+        assertThat(ids, hasSize(5))
+        assertThat(ids, containsInAnyOrder("apple01", "apple02", "apple03", "weird_apple", "minecraft_apple"))
+    }
+
+    @Test
+    fun test_getPictureByid() = runBlocking {
+        val pic = demoManagement.getPicture("apple")!!
+        assertThat(pic.category, equalTo(demoManagement.getCategoryById(appleCategoryId)))
+    }
+
+    @Test
     fun test_putDataset() = runBlocking {
         val name = getRandomString()
         val ds = scratchManagement.putDataset(name, setOf())
@@ -322,5 +346,17 @@ class FirestoreDatabaseManagementTest {
         assertThat(scratchManagement.getDatasetById(ds.id)!!.name, equalTo(ogName))
         scratchManagement.editDatasetName(ds, newName)
         assertThat(scratchManagement.getDatasetById(ds.id)!!.name, equalTo(newName))
+    }
+
+    @Test
+    fun test_addCategoryToDataset_categoryNotPresent() = runBlocking {
+        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
+        runCatching {
+            scratchManagement.addCategoryToDataset(fakeDs, fakeCategory)
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
     }
 }
