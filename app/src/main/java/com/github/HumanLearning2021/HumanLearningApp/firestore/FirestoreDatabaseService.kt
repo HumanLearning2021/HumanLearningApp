@@ -62,7 +62,11 @@ class FirestoreDatabaseService internal constructor(
         suspend fun toPublic(): FirestoreCategorizedPicture {
             val cat = category.get().await().toObject(CategorySchema::class.java)
             requireNotNull(cat, { "category not found" })
+<<<<<<< HEAD
             return FirestoreCategorizedPicture(id, self.path, cat.toPublic(), url)
+=======
+            return FirestoreCategorizedPicture(self.id, self.path, cat.toPublic(), url)
+>>>>>>> main
         }
     }
 
@@ -303,8 +307,12 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun getPicture(pictureId: Any): FirestoreCategorizedPicture? {
         require(pictureId is String)
+<<<<<<< HEAD
         val query = pictures.whereEqualTo("id", pictureId).limit(1)
         val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
+=======
+        val pic = pictures.document(pictureId).get().await().toObject(PictureSchema::class.java)
+>>>>>>> main
         return pic?.toPublic()
     }
 

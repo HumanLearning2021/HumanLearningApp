@@ -1,6 +1,11 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
+<<<<<<< HEAD
+=======
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategory
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
+>>>>>>> main
 import com.google.common.collect.ImmutableSet
 import java.lang.IllegalArgumentException
 
