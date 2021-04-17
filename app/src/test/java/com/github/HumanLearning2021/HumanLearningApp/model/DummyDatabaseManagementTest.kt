@@ -4,6 +4,9 @@ import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.hasItems
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,9 +31,9 @@ class DummyDatabaseManagementTest {
     private val knifeUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.knife)
     private val spoonUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.spoon)
 
-    private val forkPic = DummyCategorizedPicture(fork, forkUri)
-    private val knifePic = DummyCategorizedPicture(knife, knifeUri)
-    private val spoonPic = DummyCategorizedPicture(spoon, spoonUri)
+    private val forkPic = DummyCategorizedPicture("forkpicid", fork, forkUri)
+    private val knifePic = DummyCategorizedPicture("knifepicid", knife, knifeUri)
+    private val spoonPic = DummyCategorizedPicture("spoonpicid", spoon, spoonUri)
 
     @ExperimentalCoroutinesApi
     @Test(expected = IllegalArgumentException::class)
@@ -130,7 +133,7 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test(expected = IllegalArgumentException::class)
     fun removePictureThrowsIllegalArgumentException() = runBlockingTest {
-        testDatabaseManagement.removePicture(DummyCategorizedPicture(table, Uri.EMPTY))
+        testDatabaseManagement.removePicture(DummyCategorizedPicture("tableid", table, Uri.EMPTY))
     }
 
     @ExperimentalCoroutinesApi
@@ -192,13 +195,13 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test(expected = java.lang.IllegalArgumentException::class)
     fun putRepresentativePictureOverloadThrowsExpectedException() = runBlockingTest {
-        testDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture(table, Uri.EMPTY))
+        testDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture("tableid", table, Uri.EMPTY))
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun putRepresentativePictureOverloadWorks() = runBlockingTest {
-        testDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture(fork, Uri.EMPTY))
+        testDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture("forkid", fork, Uri.EMPTY))
         assert(testDatabaseManagement.getRepresentativePicture(fork.id) != null)
     }
 
@@ -290,5 +293,23 @@ class DummyDatabaseManagementTest {
         val newDataset = testDatabaseManagement.editDatasetName(dataset, newName)
         assert(newDataset.categories.containsAll(dataset.categories))
         assert(newDataset.name == newName)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun getPictureIds() = runBlockingTest {
+        assertThat(testDatabaseManagement.getPictureIds(fork), hasItems("forkpicid"))
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test(expected = java.lang.IllegalArgumentException::class)
+    fun getPictureIdsThrows() = runBlockingTest {
+        testDatabaseManagement.getPictureIds(table)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun getPictureById() = runBlockingTest {
+        assertThat(testDatabaseManagement.getPicture("forkpicid")!!.category, equalTo(fork))
     }
 }

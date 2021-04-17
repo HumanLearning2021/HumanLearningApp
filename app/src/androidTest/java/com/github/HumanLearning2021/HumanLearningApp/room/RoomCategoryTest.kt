@@ -39,8 +39,8 @@ class RoomCategoryTest {
 
     private fun getRandomString() = "${UUID.randomUUID()}"
     private fun getRandomCategory(name: String = getRandomString()) = RoomCategory(getRandomString(), name)
-    private fun getRandomPicture(categoryId: String = getRandomString()) = RoomPicture(Uri.parse(getRandomString()), categoryId)
-    private fun getRandomRepresentativePicture(categoryId: String = getRandomString()) = RoomUnlinkedRepresentativePicture(Uri.parse(getRandomString()), categoryId)
+    private fun getRandomPicture(categoryId: String = getRandomString()) = RoomPicture(getRandomString(), Uri.parse(getRandomString()), categoryId)
+    private fun getRandomRepresentativePicture(categoryId: String = getRandomString()) = RoomUnlinkedRepresentativePicture(getRandomString(), Uri.parse(getRandomString()), categoryId)
 
     @Test
     fun insertThenLoadCategories() {

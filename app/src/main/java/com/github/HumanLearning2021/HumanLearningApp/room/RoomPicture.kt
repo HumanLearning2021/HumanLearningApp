@@ -12,6 +12,7 @@ import androidx.room.*
     )]
 )
 data class RoomPicture(
-    @PrimaryKey val uri: Uri,
+    @PrimaryKey val pictureId: String,
+    val uri: Uri,
     @ColumnInfo(index = true) val categoryId: String
 )
