@@ -72,7 +72,7 @@ class RoomCategoryTest {
         categoryDao.insertAll(category)
         categoryDao.insertAll(*testPictures.toTypedArray())
 
-        val res = categoryDao.loadAllPictures(category.categoryId).pictures
+        val res = categoryDao.loadAllPictures(category.categoryId)!!.pictures
 
         MatcherAssert.assertThat(res, Matchers.hasSize(numberOfPictures))
         MatcherAssert.assertThat(res, Matchers.containsInAnyOrder(*testPictures.toTypedArray()))
@@ -117,7 +117,7 @@ class RoomCategoryTest {
         categoryDao.insertAll(*tmpCats.toTypedArray())
         categoryDao.insertAll(*testPictures.toTypedArray())
 
-        val res = categoryDao.loadAllPictures(category.categoryId).pictures
+        val res = categoryDao.loadAllPictures(category.categoryId)!!.pictures
 
         MatcherAssert.assertThat(res, Matchers.hasSize(expectedPictures.size))
         MatcherAssert.assertThat(res, Matchers.containsInAnyOrder(*expectedPictures.toTypedArray()))
@@ -209,7 +209,7 @@ class RoomCategoryTest {
         val deletionPicture = testPictures.random()
         val requestCat = deletionPicture.categoryId
         categoryDao.delete(deletionPicture)
-        val res = categoryDao.loadAllPictures(requestCat).pictures
+        val res = categoryDao.loadAllPictures(requestCat)!!.pictures
 
         MatcherAssert.assertThat(res, hasSize(numberOfPictures-1))
         MatcherAssert.assertThat(res, not(contains(deletionPicture)))
