@@ -19,11 +19,14 @@ interface DatasetDao {
 
     @Transaction
     @Query("SELECT * FROM dataset WHERE datasetId = :id LIMIT 1")
-    fun loadById(id: String): RoomDataset
+    fun loadById(id: String): RoomDataset?
 
     @Transaction
     @Query("SELECT * FROM dataset WHERE name = :name")
     fun loadByName(name: String): List<RoomDataset>
+
+    @Query("SELECT * FROM datasetCrossRefs WHERE categoryId = :categoryId")
+    fun loadAll(categoryId: String): List<RoomDatasetCategoriesCrossRef>
 
     @Update
     fun update(dataset: RoomDatasetWithoutCategories)
@@ -38,5 +41,5 @@ interface DatasetDao {
     fun delete(dataset: RoomDatasetWithoutCategories)
 
     @Delete
-    fun delete(ref: RoomDatasetCategoriesCrossRef)
+    fun delete(vararg refs: RoomDatasetCategoriesCrossRef)
 }

@@ -14,22 +14,22 @@ interface CategoryDao {
     fun loadAll(): List<RoomCategory>
 
     @Query("SELECT * FROM category WHERE categoryId = :id")
-    fun loadById(id: String): RoomCategory
+    fun loadById(id: String): RoomCategory?
 
     @Query("SELECT * FROM category WHERE name = :name")
     fun loadByName(name: String): List<RoomCategory>
 
     @Transaction
     @Query("SELECT * FROM category WHERE categoryId = :categoryId")
-    fun loadAllPictures(categoryId: String): RoomCategorizedPictures
+    fun loadAllPictures(categoryId: String): RoomCategorizedPictures?
 
     @Transaction
     @Query("SELECT * FROM picture WHERE pictureId = :pictureId")
-    fun loadPicture(pictureId: String): RoomPicture
+    fun loadPicture(pictureId: String): RoomPicture?
 
     @Transaction
     @Query("SELECT * FROM category WHERE categoryId = :categoryId LIMIT 1")
-    fun loadRepresentativePicture(categoryId: String): RoomRepresentativePicture
+    fun loadRepresentativePicture(categoryId: String): RoomRepresentativePicture?
 
     @Update
     fun update(category: RoomCategory)
