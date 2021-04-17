@@ -216,8 +216,8 @@ class FirestoreDatabaseManagementTest {
     }
 
     @Test
-    fun test_getPictureByid() = runBlocking {
-        val pic = demoManagement.getPicture("apple")!!
+    fun test_getPictureById() = runBlocking {
+        val pic = demoManagement.getPicture("apple01")!!
         assertThat(pic.category, equalTo(demoManagement.getCategoryById(appleCategoryId)))
     }
 
