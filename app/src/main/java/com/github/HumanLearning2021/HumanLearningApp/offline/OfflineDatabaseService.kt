@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.net.Uri
-import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
@@ -15,6 +14,14 @@ class OfflineDatabaseService: DatabaseService {
     private val userDao = room.userDao()
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getPictureIds(category: Category): List<Any> {
         TODO("Not yet implemented")
     }
 

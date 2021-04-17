@@ -78,6 +78,25 @@ class RoomCategoryTest {
     }
 
     @Test
+    fun loadPictureById() {
+        val numberOfPictures = (2..10).random()
+        val category = getRandomCategory()
+        val testPictures = mutableListOf<RoomPicture>()
+        for (i in 0 until numberOfPictures) {
+            val pic = getRandomPicture(category.categoryId)
+            testPictures.add(pic)
+        }
+        val loadPicture = testPictures.random()
+
+        categoryDao.insertAll(category)
+        categoryDao.insertAll(*testPictures.toTypedArray())
+
+        val res = categoryDao.loadPicture(loadPicture.pictureId)
+
+        MatcherAssert.assertThat(res, equalTo(loadPicture))
+    }
+
+    @Test
     fun insertThenLoadAllPicturesOfOneCategory() {
         val numberOfPictures = (2..10).random()
         val testPictures = mutableListOf<RoomPicture>()

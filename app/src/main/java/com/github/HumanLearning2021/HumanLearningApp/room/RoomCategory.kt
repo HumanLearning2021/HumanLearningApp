@@ -24,6 +24,10 @@ interface CategoryDao {
     fun loadAllPictures(categoryId: String): RoomCategorizedPictures
 
     @Transaction
+    @Query("SELECT * FROM picture WHERE pictureId = :pictureId")
+    fun loadPicture(pictureId: String): RoomPicture
+
+    @Transaction
     @Query("SELECT * FROM category WHERE categoryId = :categoryId LIMIT 1")
     fun loadRepresentativePicture(categoryId: String): RoomRepresentativePicture
 

@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.room.*
 
 @Entity(
+    tableName = "picture",
     foreignKeys = [ForeignKey(
         entity = RoomCategory::class,
         parentColumns = ["categoryId"],
