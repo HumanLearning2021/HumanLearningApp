@@ -33,6 +33,7 @@ class RoomCategoryTest {
         db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
         categoryDao = db.categoryDao()
         databaseDao = db.databaseDao()
+        databaseDao.insertAll(RoomEmptyHLDatabase(dbName))
     }
 
     @After
@@ -50,12 +51,15 @@ class RoomCategoryTest {
     fun insertThenLoadCategories() {
         val numberOfCategories = (2..50).random()
         val testCategories = mutableListOf<RoomCategory>()
+        val refs = mutableListOf<RoomDatabaseCategoriesCrossRef>()
         for (i in 0 until numberOfCategories) {
-            testCategories.add(getRandomCategory())
+            val cat = getRandomCategory()
+            testCategories.add(cat)
+            refs.add(RoomDatabaseCategoriesCrossRef(dbName, cat.categoryId))
         }
 
         categoryDao.insertAll(*testCategories.toTypedArray())
-
+        databaseDao.insertAll(*refs.toTypedArray())
         val res = databaseDao.loadByName(dbName)!!.categories
 
         MatcherAssert.assertThat(res, Matchers.hasSize(numberOfCategories))
@@ -179,11 +183,15 @@ class RoomCategoryTest {
     fun updateCategoryWorks() {
         val numberOfCategories = (1..10).random()
         val testCategories = mutableListOf<RoomCategory>()
+        val refs = mutableListOf<RoomDatabaseCategoriesCrossRef>()
         for (i in 0 until numberOfCategories) {
-            testCategories.add(getRandomCategory())
+            val cat = getRandomCategory()
+            testCategories.add(cat)
+            refs.add(RoomDatabaseCategoriesCrossRef(dbName, cat.categoryId))
         }
 
         categoryDao.insertAll(*testCategories.toTypedArray())
+        databaseDao.insertAll(*refs.toTypedArray())
         val toUpdateCategory = testCategories.random()
         val updatedCategory = RoomCategory(toUpdateCategory.categoryId, getRandomString())
         categoryDao.update(updatedCategory)

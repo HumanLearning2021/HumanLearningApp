@@ -27,6 +27,7 @@ class RoomDatasetWithoutCategoriesTest {
         db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
         datasetDao = db.datasetDao()
         databaseDao = db.databaseDao()
+        databaseDao.insertAll(RoomEmptyHLDatabase(dbName))
     }
 
     @After
@@ -43,28 +44,33 @@ class RoomDatasetWithoutCategoriesTest {
     @Test
     fun insertThenLoadDataset() {
         val testDataset = getRandomDatasetWithoutCategories()
+        val ref = RoomDatabaseDatasetsCrossRef(dbName, testDataset.datasetId)
 
         datasetDao.insertAll(testDataset)
+        databaseDao.insertAll(ref)
 
         val res = databaseDao.loadByName(dbName)!!.datasets
         assertThat(res, hasSize(1))
-        assertThat(res.first(), equalTo(asDataset(testDataset)))
+        assertThat(res.first(), equalTo(testDataset))
     }
 
     @Test
     fun insertThenLoadDatasets() {
         val numberOfDatasets = (2..50).random()
         val testDatasets = mutableListOf<RoomDatasetWithoutCategories>()
+        val refs = mutableListOf<RoomDatabaseDatasetsCrossRef>()
         for (i in 0 until numberOfDatasets) {
-            testDatasets.add(getRandomDatasetWithoutCategories())
+            val ds = getRandomDatasetWithoutCategories()
+            testDatasets.add(ds)
+            refs.add(RoomDatabaseDatasetsCrossRef(dbName, ds.datasetId))
         }
 
         datasetDao.insertAll(*testDatasets.toTypedArray())
-
+        databaseDao.insertAll(*refs.toTypedArray())
         val res = databaseDao.loadByName(dbName)!!.datasets
 
         assertThat(res, hasSize(numberOfDatasets))
-        assertThat(res, containsInAnyOrder(*asDatasets(testDatasets).toTypedArray()))
+        assertThat(res, containsInAnyOrder(*testDatasets.toTypedArray()))
     }
 
     @Test
@@ -127,11 +133,15 @@ class RoomDatasetWithoutCategoriesTest {
     fun updatingDatasetWorks() {
         val numberOfDatasets = (1..10).random()
         val testDatasets = mutableListOf<RoomDatasetWithoutCategories>()
+        val refs = mutableListOf<RoomDatabaseDatasetsCrossRef>()
         for (i in 0 until numberOfDatasets) {
-            testDatasets.add(getRandomDatasetWithoutCategories())
+            val ds = getRandomDatasetWithoutCategories()
+            testDatasets.add(ds)
+            refs.add(RoomDatabaseDatasetsCrossRef(dbName, ds.datasetId))
         }
 
         datasetDao.insertAll(*testDatasets.toTypedArray())
+        databaseDao.insertAll(*refs.toTypedArray())
         val toUpdateDataset = testDatasets.random()
         val updatedDataset = RoomDatasetWithoutCategories(toUpdateDataset.datasetId, getRandomString())
         datasetDao.update(updatedDataset)

@@ -46,10 +46,10 @@ class RoomOfflineDatabaseTest {
         datasetDao.insertAll(ds1, ds2)
         databaseDao.insertAll(RoomDatabaseDatasetsCrossRef(dbName, ds1.datasetId), RoomDatabaseDatasetsCrossRef(dbName, ds2.datasetId))
 
-        val res = databaseDao.loadByName(dbName)!!.categories
+        val res = databaseDao.loadByName(dbName)!!.datasets
 
         assertThat(res.size, equalTo(2))
-        assert(res.contains(RoomDataset(ds1, listOf())))
-        assert(res.contains(RoomDataset(ds2, listOf())))
+        assert(res.contains(ds1))
+        assert(res.contains(ds2))
     }
 }
