@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
@@ -28,7 +29,7 @@ class LearningActivity : AppCompatActivity() {
     @Inject lateinit var learningPresenter: LearningPresenter
 
     @Inject
-    @Demo2Database
+    @DummyDatabase
     lateinit var dbMgt: DatabaseManagement
 
     override fun onCreate(savedInstanceState: Bundle?) {

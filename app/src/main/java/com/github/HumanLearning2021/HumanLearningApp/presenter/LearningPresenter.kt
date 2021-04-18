@@ -3,13 +3,14 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 import android.app.Activity
 import android.widget.ImageView
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import javax.inject.Inject
 
 
 class LearningPresenter @Inject constructor(
-    @Demo2Database
+    @DummyDatabase
     private val dbMgt: DatabaseManagement
 ) {
     // may be set by the view
