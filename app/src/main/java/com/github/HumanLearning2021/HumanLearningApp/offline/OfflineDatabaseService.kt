@@ -13,7 +13,9 @@ import com.google.firebase.auth.FirebaseUser
 import java.lang.IllegalArgumentException
 import java.util.*
 
-object OfflineDatabaseService: DatabaseService {
+class OfflineDatabaseService internal constructor(
+    val dbName: String
+): DatabaseService {
 
     private val room = RoomOfflineDatabase.getDatabase(ApplicationProvider.getApplicationContext())
     private val datasetDao = room.datasetDao()

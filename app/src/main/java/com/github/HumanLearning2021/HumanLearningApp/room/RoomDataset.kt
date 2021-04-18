@@ -14,10 +14,6 @@ data class RoomDataset(
 @Dao
 interface DatasetDao {
     @Transaction
-    @Query("SELECT * FROM dataset")
-    fun loadAll(): List<RoomDataset>
-
-    @Transaction
     @Query("SELECT * FROM dataset WHERE datasetId = :id LIMIT 1")
     fun loadById(id: String): RoomDataset?
 
