@@ -18,6 +18,7 @@ class OfflineDatabaseService internal constructor(
 ): DatabaseService {
 
     private val room = RoomOfflineDatabase.getDatabase(ApplicationProvider.getApplicationContext())
+    private val databaseDao = room.databaseDao()
     private val datasetDao = room.datasetDao()
     private val categoryDao = room.categoryDao()
     private val userDao = room.userDao()

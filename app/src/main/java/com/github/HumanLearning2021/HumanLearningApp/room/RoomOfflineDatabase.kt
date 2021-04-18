@@ -9,7 +9,7 @@ import androidx.room.TypeConverters
 @TypeConverters(RoomTypeConverters::class)
 @Database(
     entities = [RoomCategory::class, RoomDatasetWithoutCategories::class, RoomUser::class, RoomPicture::class, RoomUnlinkedRepresentativePicture::class,
-        RoomDatasetCategoriesCrossRef::class, RoomDatabaseWithoutDatasets::class, RoomDatabaseDatasetsCrossRef::class],
+        RoomDatasetCategoriesCrossRef::class, RoomDatabaseWithoutDatasets::class, RoomDatabaseDatasetsCrossRef::class, RoomDatabaseCategoriesCrossRef::class, RoomDatabasePicturesCrossRef::class],
     version = 1,
     exportSchema = false
 )
