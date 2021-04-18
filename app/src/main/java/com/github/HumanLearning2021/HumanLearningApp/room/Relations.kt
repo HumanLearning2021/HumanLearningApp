@@ -22,7 +22,7 @@ data class RoomDataset(
 )
 
 data class RoomHLDatabase (
-    @Embedded val databaseWithoutDatasets: RoomDatabaseWithoutDatasets,
+    @Embedded val emptyHLDatabase: RoomEmptyHLDatabase,
     @Relation(
         parentColumn = "databaseName",
         entityColumn = "datasetId",

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.App
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -39,7 +38,7 @@ class RoomHLDatabaseTest {
     private fun getRandomDatasetWithoutCategories() =
         RoomDatasetWithoutCategories(getRandomString(), getRandomString())
     private fun getRandomDatabaseWithoutDatasets() =
-        RoomDatabaseWithoutDatasets(getRandomString())
+        RoomEmptyHLDatabase(getRandomString())
 
     @Test
     fun works() {
@@ -70,7 +69,7 @@ class RoomHLDatabaseTest {
 
         assertThat(res1.datasets, hasSize(2))
         assertThat(res2.datasets, hasSize(3))
-        assertThat(res1.databaseWithoutDatasets.databaseName, equalTo(hlDb1.databaseName))
-        assertThat(res2.databaseWithoutDatasets.databaseName, equalTo(hlDb2.databaseName))
+        assertThat(res1.emptyHLDatabase.databaseName, equalTo(hlDb1.databaseName))
+        assertThat(res2.emptyHLDatabase.databaseName, equalTo(hlDb2.databaseName))
     }
 }

@@ -14,7 +14,7 @@ data class RoomCategory(
 )
 
 @Entity(tableName = "HLDatabase")
-data class RoomDatabaseWithoutDatasets (
+data class RoomEmptyHLDatabase (
     @PrimaryKey val databaseName: String,
 )
 

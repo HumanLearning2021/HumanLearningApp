@@ -85,7 +85,7 @@ interface DatabaseDao {
     fun loadByName(databaseName: String): RoomHLDatabase?
 
     @Insert
-    fun insertAll(vararg databases: RoomDatabaseWithoutDatasets)
+    fun insertAll(vararg databases: RoomEmptyHLDatabase)
 
     @Insert
     fun insertAll(vararg refs: RoomDatabaseDatasetsCrossRef)
@@ -97,7 +97,7 @@ interface DatabaseDao {
     fun insertAll(vararg refs: RoomDatabasePicturesCrossRef)
 
     @Delete
-    fun delete(database: RoomDatabaseWithoutDatasets)
+    fun delete(database: RoomEmptyHLDatabase)
 
     @Delete
     fun delete(ref: RoomDatabaseDatasetsCrossRef)

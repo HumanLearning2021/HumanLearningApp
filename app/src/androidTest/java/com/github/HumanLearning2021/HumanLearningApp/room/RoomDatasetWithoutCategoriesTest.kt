@@ -16,14 +16,17 @@ import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class RoomDatasetWithoutCategoriesTest {
+    private var dbName = "some name"
     private lateinit var db: RoomOfflineDatabase
     private lateinit var datasetDao: DatasetDao
+    private lateinit var databaseDao: DatabaseDao
 
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
         datasetDao = db.datasetDao()
+        databaseDao = db.databaseDao()
     }
 
     @After
@@ -43,7 +46,7 @@ class RoomDatasetWithoutCategoriesTest {
 
         datasetDao.insertAll(testDataset)
 
-        val res = datasetDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.datasets
         assertThat(res, hasSize(1))
         assertThat(res.first(), equalTo(asDataset(testDataset)))
     }
@@ -58,7 +61,7 @@ class RoomDatasetWithoutCategoriesTest {
 
         datasetDao.insertAll(*testDatasets.toTypedArray())
 
-        val res = datasetDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.datasets
 
         assertThat(res, hasSize(numberOfDatasets))
         assertThat(res, containsInAnyOrder(*asDatasets(testDatasets).toTypedArray()))
@@ -115,7 +118,7 @@ class RoomDatasetWithoutCategoriesTest {
 
         val deletionDataset = testDatasets.random()
         datasetDao.delete(deletionDataset)
-        val res = datasetDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.datasets
 
         assertThat(res, CoreMatchers.not(contains(asDataset(deletionDataset))))
     }
@@ -132,7 +135,7 @@ class RoomDatasetWithoutCategoriesTest {
         val toUpdateDataset = testDatasets.random()
         val updatedDataset = RoomDatasetWithoutCategories(toUpdateDataset.datasetId, getRandomString())
         datasetDao.update(updatedDataset)
-        val res = datasetDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.datasets
 
         assertThat(res, hasSize(numberOfDatasets))
         assertThat(res, CoreMatchers.not(contains(toUpdateDataset)))

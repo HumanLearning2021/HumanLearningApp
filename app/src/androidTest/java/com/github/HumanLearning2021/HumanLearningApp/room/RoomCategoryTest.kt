@@ -22,14 +22,17 @@ import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class RoomCategoryTest {
+    private val dbName = "some name"
     private lateinit var db: RoomOfflineDatabase
     private lateinit var categoryDao: CategoryDao
+    private lateinit var databaseDao: DatabaseDao
 
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
         categoryDao = db.categoryDao()
+        databaseDao = db.databaseDao()
     }
 
     @After
@@ -53,7 +56,7 @@ class RoomCategoryTest {
 
         categoryDao.insertAll(*testCategories.toTypedArray())
 
-        val res = categoryDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.categories
 
         MatcherAssert.assertThat(res, Matchers.hasSize(numberOfCategories))
         MatcherAssert.assertThat(res, Matchers.containsInAnyOrder(*testCategories.toTypedArray()))
@@ -184,7 +187,7 @@ class RoomCategoryTest {
         val toUpdateCategory = testCategories.random()
         val updatedCategory = RoomCategory(toUpdateCategory.categoryId, getRandomString())
         categoryDao.update(updatedCategory)
-        val res = categoryDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.categories
 
         MatcherAssert.assertThat(res, Matchers.hasSize(numberOfCategories))
         MatcherAssert.assertThat(res, CoreMatchers.not(Matchers.contains(toUpdateCategory)))
@@ -227,8 +230,8 @@ class RoomCategoryTest {
 
         val deletionCategory = testCategories.random()
         categoryDao.delete(deletionCategory)
-        val res = categoryDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.categories
 
-        MatcherAssert.assertThat(res, CoreMatchers.not(Matchers.contains(deletionCategory)))
+        MatcherAssert.assertThat(res, not(contains(deletionCategory)))
     }
 }
