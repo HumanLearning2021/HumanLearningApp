@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreUser
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineConverters.fromCategory
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineConverters.fromDataset
@@ -64,7 +63,9 @@ class OfflineDatabaseService internal constructor(
     override suspend fun putPicture(picture: Uri, category: Category): OfflineCategorizedPicture {
         val cat = categoryDao.loadById(category.id as String) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
         val pic = RoomPicture(getID(), picture, cat.categoryId)
+        val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
         categoryDao.insertAll(pic)
+        databaseDao.insertAll(ref)
         return fromPicture(pic, categoryDao)
     }
 
@@ -76,7 +77,9 @@ class OfflineDatabaseService internal constructor(
 
     override suspend fun putCategory(categoryName: String): OfflineCategory {
         val cat = RoomCategory(getID(), categoryName)
+        val ref = RoomDatabaseCategoriesCrossRef(dbName, cat.categoryId)
         categoryDao.insertAll(cat)
+        databaseDao.insertAll(ref)
         return fromCategory(cat)
     }
 
@@ -102,8 +105,10 @@ class OfflineDatabaseService internal constructor(
      */
     override suspend fun removeCategory(category: Category) {
         categoryDao.delete(fromCategory(category))
-        val refs = datasetDao.loadAll(category.id as String)
-        datasetDao.delete(*refs.toTypedArray())
+        val dbRef = RoomDatabaseCategoriesCrossRef(dbName, category.id as String)
+        val dsRefs = datasetDao.loadAll(category.id as String)
+        databaseDao.delete(dbRef)
+        datasetDao.delete(*dsRefs.toTypedArray())
     }
 
     /**
@@ -114,20 +119,24 @@ class OfflineDatabaseService internal constructor(
     override suspend fun removePicture(picture: CategorizedPicture) {
         val pic = categoryDao.loadPicture(picture.id as String)
         if (pic != null) {
+            val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
             categoryDao.delete(pic)
+            databaseDao.delete(ref)
         }
     }
 
     override suspend fun putDataset(name: String, categories: Set<Category>): OfflineDataset {
         val id = getID()
         val ds = RoomDatasetWithoutCategories(id, name)
-        val refs = mutableListOf<RoomDatasetCategoriesCrossRef>()
+        val dsRefs = mutableListOf<RoomDatasetCategoriesCrossRef>()
         for (c in categories) {
-            refs.add(RoomDatasetCategoriesCrossRef(id, c.id as String))
+            dsRefs.add(RoomDatasetCategoriesCrossRef(id, c.id as String))
         }
+        val dbRef = RoomDatabaseDatasetsCrossRef(dbName, id)
         val cats = categories.map{c -> fromCategory(c)}
         datasetDao.insertAll(ds)
-        datasetDao.insertAll(*refs.toTypedArray())
+        datasetDao.insertAll(*dsRefs.toTypedArray())
+        databaseDao.insertAll(dbRef)
         return fromDataset(RoomDataset(ds, cats))
     }
 
@@ -146,9 +155,11 @@ class OfflineDatabaseService internal constructor(
         require(id is String)
         val ds = datasetDao.loadById(id)
         if (ds != null) {
-            val refs = datasetDao.loadAll(ds.datasetWithoutCategories.datasetId)
-            datasetDao.delete(*refs.toTypedArray())
+            val dsRefs = datasetDao.loadAll(ds.datasetWithoutCategories.datasetId)
+            val dbRef = RoomDatabaseDatasetsCrossRef(dbName, ds.datasetWithoutCategories.datasetId)
             datasetDao.delete(ds.datasetWithoutCategories)
+            datasetDao.delete(*dsRefs.toTypedArray())
+            databaseDao.delete(dbRef)
         }
     }
 
