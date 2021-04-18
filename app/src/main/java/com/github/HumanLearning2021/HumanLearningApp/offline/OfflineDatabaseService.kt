@@ -81,7 +81,7 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun getCategories(): Set<OfflineCategory> {
-        return categoryDao.loadAll().map{c -> fromCategory(c)}.toSet()
+        return databaseDao.loadByName(dbName)!!.categories.map{c -> fromCategory(c)}.toSet()
     }
 
     /**
@@ -128,13 +128,13 @@ class OfflineDatabaseService internal constructor(
         val cats = categories.map{c -> fromCategory(c)}
         datasetDao.insertAll(ds)
         datasetDao.insertAll(*refs.toTypedArray())
-        return fromDataset(RoomDataset(ds, cats), categoryDao)
+        return fromDataset(RoomDataset(ds, cats))
     }
 
     override suspend fun getDataset(id: Any): OfflineDataset? {
         require(id is String)
         val ds = datasetDao.loadById(id) ?: return null
-        return fromDataset(ds, categoryDao)
+        return fromDataset(ds)
     }
 
     /**
@@ -158,20 +158,20 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun getDatasets(): Set<Dataset> {
-        return datasetDao.loadAll().map { d -> fromDataset(d, categoryDao) }.toSet()
+        return databaseDao.loadByName(dbName)!!.datasets.map { d -> fromDataset(datasetDao.loadById(d.datasetId)!!) }.toSet()
     }
 
     override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): OfflineDataset {
-        val ref = datasetDao.delete(RoomDatasetCategoriesCrossRef(dataset.id as String, category.id as String))
+        datasetDao.delete(RoomDatasetCategoriesCrossRef(dataset.id as String, category.id as String))
         val ds = datasetDao.loadById(dataset.id as String) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
-        return fromDataset(ds, categoryDao)
+        return fromDataset(ds)
     }
 
     override suspend fun editDatasetName(dataset: Dataset, newName: String): OfflineDataset {
         val ds = datasetDao.loadById(dataset.id as String) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
         val updatedDs = RoomDatasetWithoutCategories(ds.datasetWithoutCategories.datasetId, newName)
         datasetDao.update(updatedDs)
-        return fromDataset(RoomDataset(updatedDs, ds.categories), categoryDao)
+        return fromDataset(RoomDataset(updatedDs, ds.categories))
     }
 
     override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): OfflineDataset {
@@ -180,7 +180,7 @@ class OfflineDatabaseService internal constructor(
         datasetDao.insertAll(RoomDatasetCategoriesCrossRef(ds.datasetWithoutCategories.datasetId, cat.categoryId))
         val updatedCats = ds.categories.toMutableList()
         updatedCats.add(cat)
-        return fromDataset(RoomDataset(ds.datasetWithoutCategories, updatedCats), categoryDao)
+        return fromDataset(RoomDataset(ds.datasetWithoutCategories, updatedCats))
     }
 
     override suspend fun updateUser(firebaseUser: FirebaseUser): OfflineUser {

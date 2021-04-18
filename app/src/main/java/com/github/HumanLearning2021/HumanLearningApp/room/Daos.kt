@@ -5,9 +5,6 @@ import com.github.HumanLearning2021.HumanLearningApp.model.User
 
 @Dao
 interface CategoryDao {
-    @Query("SELECT * FROM category")
-    fun loadAll(): List<RoomCategory>
-
     @Query("SELECT * FROM category WHERE categoryId = :id")
     fun loadById(id: String): RoomCategory?
 
@@ -50,10 +47,6 @@ interface CategoryDao {
 
 @Dao
 interface DatasetDao {
-    @Transaction
-    @Query("SELECT * FROM dataset")
-    fun loadAll(): List<RoomDataset>
-
     @Transaction
     @Query("SELECT * FROM dataset WHERE datasetId = :id LIMIT 1")
     fun loadById(id: String): RoomDataset?

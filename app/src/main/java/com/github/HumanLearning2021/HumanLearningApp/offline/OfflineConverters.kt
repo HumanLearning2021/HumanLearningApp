@@ -22,7 +22,7 @@ object OfflineConverters {
         return RoomCategory(category.id as String, category.name)
     }
 
-    fun fromDataset(dataset: RoomDataset, categoryDao: CategoryDao): OfflineDataset {
+    fun fromDataset(dataset: RoomDataset): OfflineDataset {
         val cats = dataset.categories.map { c -> fromCategory(c) }.toSet()
         return OfflineDataset(dataset.datasetWithoutCategories.datasetId, dataset.datasetWithoutCategories.name, cats)
     }
