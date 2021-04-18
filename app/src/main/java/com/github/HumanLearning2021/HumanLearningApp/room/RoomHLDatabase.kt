@@ -3,19 +3,23 @@ package com.github.HumanLearning2021.HumanLearningApp.room
 import androidx.room.*
 
 data class RoomHLDatabase (
-    @Embedded val databaseWithoutDatasets: RoomDatabaseDatasetsCrossRef,
+    @Embedded val databaseWithoutDatasets: RoomDatabaseWithoutDatasets,
     @Relation(
         parentColumn = "databaseName",
         entityColumn = "datasetId",
         associateBy = Junction(RoomDatabaseDatasetsCrossRef::class)
-    ) val datasets: List<RoomDataset>
+    ) val datasets: List<RoomDatasetWithoutCategories>
 )
 
 @Dao
 interface DatabaseDao {
     @Transaction
-    @Query("SELECT * FROM `database` WHERE databaseName = :databaseName")
-    fun loadAll(databaseName: String): RoomDataset
+    @Query("SELECT * FROM HLDatabase")
+    fun loadAll(): List<RoomHLDatabase>
+
+    @Transaction
+    @Query("SELECT * FROM HLDatabase WHERE databaseName = :databaseName LIMIT 1")
+    fun loadByName(databaseName: String): RoomHLDatabase?
 
     @Insert
     fun insertAll(vararg refs: RoomDatabaseDatasetsCrossRef)
