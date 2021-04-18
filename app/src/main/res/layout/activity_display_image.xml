@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.DisplayImageActivity">
+    tools:context=".view.dataset_editing.DisplayImageActivity">
 
     <ImageView
         android:id="@+id/display_image_viewImage"
