@@ -62,14 +62,14 @@ class UniqueDatabaseManagement {
             }
 
         databaseDao.insertAll(RoomEmptyHLDatabase(databaseName))
-        databaseDao.insertAll(*dbDsRefs.toTypedArray())
-        databaseDao.insertAll(*dbCatRefs.toTypedArray())
-        databaseDao.insertAll(*dbPicRefs.toTypedArray())
-        datasetDao.insertAll(*dsCatRefs.toTypedArray())
         datasetDao.insertAll(*roomDatasets.toTypedArray())
         categoryDao.insertAll(*roomCats.toTypedArray())
         categoryDao.insertAll(*roomPics.toTypedArray())
         categoryDao.insertAll(*roomRepresentativePictures.toTypedArray())
+        databaseDao.insertAll(*dbDsRefs.toTypedArray())
+        databaseDao.insertAll(*dbCatRefs.toTypedArray())
+        databaseDao.insertAll(*dbPicRefs.toTypedArray())
+        datasetDao.insertAll(*dsCatRefs.toTypedArray())
 
         downloadedDatabases.add(databaseName)
         return OfflineDatabaseManagement(databaseName)

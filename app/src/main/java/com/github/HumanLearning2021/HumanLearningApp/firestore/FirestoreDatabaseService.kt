@@ -49,12 +49,10 @@ class FirestoreDatabaseService internal constructor(
     private class PictureSchema() {
         @DocumentId
         lateinit var self: DocumentReference
-        lateinit var id: String
         lateinit var category: DocumentReference
         lateinit var url: String
 
-        constructor(id: String, category: DocumentReference, url: String) : this() {
-            this.id = id
+        constructor(category: DocumentReference, url: String) : this() {
             this.category = category
             this.url = url
         }
@@ -194,7 +192,7 @@ class FirestoreDatabaseService internal constructor(
         val imageRef = imagesDir.child(id)
         imageRef.putFile(picture).await()
         val url = "gs://${imageRef.bucket}/${imageRef.path}"
-        val data = PictureSchema(id, categoryRef, url)
+        val data = PictureSchema(categoryRef, url)
         try {
             representativePictures.add(data).await()
         } catch (e: FirebaseFirestoreException) {
@@ -326,7 +324,7 @@ class FirestoreDatabaseService internal constructor(
         val id = "${UUID.randomUUID()}"
         val ref = imagesDir.child(id)
         ref.putFile(picture).await()
-        val data = PictureSchema(id, db.document(category.path), "gs://${ref.bucket}/${ref.path}")
+        val data = PictureSchema(db.document(category.path), "gs://${ref.bucket}/${ref.path}")
         val documentRef = pictures.add(data).await()
         return documentRef.get().await().toObject(PictureSchema::class.java)!!.toPublic()
     }

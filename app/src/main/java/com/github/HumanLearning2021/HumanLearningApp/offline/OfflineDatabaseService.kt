@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.offline
 
+import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.github.HumanLearning2021.HumanLearningApp.model.*
@@ -16,7 +17,9 @@ class OfflineDatabaseService internal constructor(
     val dbName: String
 ): DatabaseService {
 
-    private val room = RoomOfflineDatabase.getDatabase(ApplicationProvider.getApplicationContext())
+    private val context = ApplicationProvider.getApplicationContext<Context>()
+    private val pictureRepository = PictureRepository(dbName, context)
+    private val room = RoomOfflineDatabase.getDatabase(context)
     private val databaseDao = room.databaseDao()
     private val datasetDao = room.datasetDao()
     private val categoryDao = room.categoryDao()
@@ -64,6 +67,7 @@ class OfflineDatabaseService internal constructor(
         val cat = categoryDao.loadById(category.id as String) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
         val pic = RoomPicture(getID(), picture, cat.categoryId)
         val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
+        pictureRepository.savePicture(picture)
         categoryDao.insertAll(pic)
         databaseDao.insertAll(ref)
         return fromPicture(pic, categoryDao)
@@ -120,6 +124,7 @@ class OfflineDatabaseService internal constructor(
         val pic = categoryDao.loadPicture(picture.id as String)
         if (pic != null) {
             val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
+            pictureRepository.deletePicture(pic.pictureId)
             categoryDao.delete(pic)
             databaseDao.delete(ref)
         }
