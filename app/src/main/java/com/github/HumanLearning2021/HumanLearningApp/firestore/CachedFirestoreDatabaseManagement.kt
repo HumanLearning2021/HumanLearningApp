@@ -29,16 +29,22 @@ class CachedFirestoreDatabaseManagement internal constructor(
         }
     }
 
+    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
+        require(categoryId is String)
+        val fPic = super.getRepresentativePicture(categoryId) ?: return null
+        val uri: Uri? = cache.retrievePicture(fPic.id as String)
+        return if (uri == null) {
+            cachedPictures.remove(fPic.id)
+            putIntoCache(fPic as FirestoreCategorizedPicture)
+        } else {
+            Converters.fromPicture(cachedPictures[fPic.id]!!, uri)
+        }
+    }
+
     override suspend fun removePicture(picture: CategorizedPicture) {
         require(picture is FirestoreCategorizedPicture)
         cache.deletePicture(picture.id)
         super.removePicture(picture)
-    }
-
-    override suspend fun putPicture(picture: Uri, category: Category): FirestoreCategorizedPicture {
-        val res = super.putPicture(picture, category)
-        putIntoCache(res)
-        return res
     }
 
     private suspend fun putIntoCache(picture: FirestoreCategorizedPicture): OfflineCategorizedPicture {

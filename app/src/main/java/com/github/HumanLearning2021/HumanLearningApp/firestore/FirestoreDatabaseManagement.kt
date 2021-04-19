@@ -32,7 +32,7 @@ open class FirestoreDatabaseManagement internal constructor(
         }
     }
 
-    override suspend fun getRepresentativePicture(categoryId: Any): FirestoreCategorizedPicture? {
+    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
         require(categoryId is String)
         return databaseService.getRepresentativePicture(categoryId)
     }

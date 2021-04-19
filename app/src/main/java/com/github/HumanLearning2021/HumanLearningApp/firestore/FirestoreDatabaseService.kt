@@ -311,7 +311,7 @@ class FirestoreDatabaseService internal constructor(
         return query.get().await().map { r -> r.id }
     }
 
-    override suspend fun getRepresentativePicture(categoryId: Any): FirestoreCategorizedPicture? {
+    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
         require(categoryId is String)
         val query = representativePictures.whereEqualTo("category", categories.document(categoryId))
             .limit(1)
