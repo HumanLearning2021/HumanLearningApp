@@ -1,7 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import com.github.HumanLearning2021.HumanLearningApp.model.User
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FirestoreUser(

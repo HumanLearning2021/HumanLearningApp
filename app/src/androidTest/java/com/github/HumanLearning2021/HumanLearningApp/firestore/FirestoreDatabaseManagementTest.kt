@@ -67,6 +67,7 @@ class FirestoreDatabaseManagementTest {
         })
     }
 
+    @Suppress("DEPRECATED")
     @Test
     fun test_getPicture() = runBlocking {
         val appleCategory = demoManagement.getCategoryById(appleCategoryId)

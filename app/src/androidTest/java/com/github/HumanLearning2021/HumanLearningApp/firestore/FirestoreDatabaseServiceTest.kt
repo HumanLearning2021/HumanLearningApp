@@ -105,6 +105,7 @@ class FirestoreDatabaseServiceTest {
         })
     }
 
+    @Suppress("DEPRECATION")
     @Test
     fun test_removePicture() = runBlocking {
         val randomCategoryName = "${UUID.randomUUID()}"
