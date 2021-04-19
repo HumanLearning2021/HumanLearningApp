@@ -13,6 +13,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -20,9 +21,8 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.presenter.DummyUIPresenter
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,7 +36,6 @@ import org.junit.runner.RunWith
 import java.io.File
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -52,14 +51,9 @@ class DisplayDatasetActivityTest {
     private lateinit var datasetId: String
     private var index = 0
 
-    private val NUMBER_OF_CAT = 3
-    private val datasetImagesList = ArrayList<CategorizedPicture>()
-
     @Inject
     @ScratchDatabase
     lateinit var dbManagement: DatabaseManagement
-    @Inject
-    lateinit var dummyPresenter: DummyUIPresenter
 
     @Before
     fun setUp() {
@@ -211,6 +205,18 @@ class DisplayDatasetActivityTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         UiDevice.getInstance(getInstrumentation()).click(0, 100)
         onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun onBackPressedWorks() {
+        Espresso.closeSoftKeyboard()
+        val mDevice = UiDevice.getInstance(getInstrumentation())
+        mDevice.pressBack()
+        intended(
+            allOf(
+                hasComponent(DatasetsOverviewActivity::class.java.name),
+            )
+        )
     }
 
 }

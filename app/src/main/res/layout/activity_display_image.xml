@@ -36,4 +36,13 @@
         app:srcCompat="@android:drawable/ic_menu_delete"
         android:contentDescription="@string/buttontoremovepicturefromdataset" />
 
+    <Button
+        android:id="@+id/display_image_set_representative_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/display_image_viewImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/setAsRepresentativePicture" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

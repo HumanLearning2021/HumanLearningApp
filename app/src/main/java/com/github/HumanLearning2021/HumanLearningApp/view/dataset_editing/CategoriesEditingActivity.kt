@@ -31,6 +31,7 @@ class CategoriesEditingActivity : AppCompatActivity() {
     private lateinit var datasetId: String
     private lateinit var dataset: Dataset
     private lateinit var removedCategory: Category
+    private var new = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +40,9 @@ class CategoriesEditingActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val extras = intent.extras
-            if (extras != null) {
-                datasetId = extras["dataset_id"] as String
+            new = extras == null
+            if (!new) {
+                datasetId = extras!!["dataset_id"] as String
                 dataset = dBManagement.getDatasetById(datasetId)!!
                 dsCategories = dataset.categories
                 val count = dsCategories.size
@@ -55,9 +57,9 @@ class CategoriesEditingActivity : AppCompatActivity() {
                         TextView.BufferType.EDITABLE
                     )
                 }
-
-                setButtonsListener()
             }
+
+            setButtonsListener()
         }
 
 
@@ -98,13 +100,16 @@ class CategoriesEditingActivity : AppCompatActivity() {
                 v = binding.parentLinearLayout.getChildAt(i)
                 val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
                 val cat = dBManagement.putCategory(categoryName.text.toString())
-                //TODO: Put the generic representative picture
                 newCategories = newCategories.plus(cat)
-
             }
 
-            for (cat in newCategories) {
-                dataset = dBManagement.addCategoryToDataset(dataset, cat)
+            if(!new) {
+                for (cat in newCategories) {
+                    dataset = dBManagement.addCategoryToDataset(dataset, cat)
+                }
+            } else {
+                dataset = dBManagement.putDataset("New Dataset", newCategories)
+                datasetId = dataset.id as String
             }
 
             val intent = Intent(this@CategoriesEditingActivity, DisplayDatasetActivity::class.java)
