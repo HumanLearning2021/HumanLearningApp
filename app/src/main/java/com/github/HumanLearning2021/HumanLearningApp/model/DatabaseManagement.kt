@@ -87,6 +87,10 @@ interface DatabaseManagement {
      */
     suspend fun getCategories(): Set<Category>
 
+    @Deprecated(
+        "Pictures now have an identifying id which should be used. If a random picture is wanted, first retrieve all the ids, select one among them at random then retrieve the picture.",
+        ReplaceWith("getPicture(pictureId: Any)")
+    )
     /**
      * Retrieves all the pictures categorized with the specified category
      *

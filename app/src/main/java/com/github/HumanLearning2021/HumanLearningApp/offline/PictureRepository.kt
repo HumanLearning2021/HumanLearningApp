@@ -1,30 +1,29 @@
 package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.content.Context
-import android.graphics.Path
 import android.net.Uri
 import androidx.core.net.toUri
-import androidx.test.core.app.ApplicationProvider
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategorizedPicture
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 import java.io.File
+import java.io.IOException
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.util.*
 
-data class PictureRepository(val context: Context, val dbName: String) {
-
-    private val folder = context.getDir(dbName, Context.MODE_PRIVATE)
+open class PictureRepository(private val dbName: String, private val context: Context,
+                        private val folder: File = context.getDir(dbName, Context.MODE_PRIVATE)
+) {
 
     @Throws(Exception::class)
-    suspend fun savePicture(picture: FirestoreCategorizedPicture): String {
+    suspend fun savePicture(picture: FirestoreCategorizedPicture): Uri {
         val file = File(folder, picture.id)
         val task = Firebase.storage.getReferenceFromUrl(picture.url).getFile(file).await()
         task.error ?: throw task.error!!
-        return picture.id
+        return file.toUri()
     }
 
     @Throws(IllegalArgumentException::class)
@@ -39,15 +38,18 @@ data class PictureRepository(val context: Context, val dbName: String) {
 
     @Throws(IllegalArgumentException::class)
     fun deletePicture(id: String): Boolean {
-        return File(folder, id).delete()
+        return try {
+            File(folder, id).delete()
+        } catch (e: IOException) {
+            throw IllegalArgumentException("There is not picture with id $id in the folder $dbName")
+        }
     }
 
-    @Throws(IllegalArgumentException::class)
-    fun retrievePicture(id: String): Uri {
+    fun retrievePicture(id: String): Uri? {
         return try {
             File(folder, id).toUri()
         } catch (e: NullPointerException) {
-            throw IllegalArgumentException("There is not picture with id $id in the folder $dbName")
+            null
         }
     }
 }

@@ -5,7 +5,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.*
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 
-class FirestoreDatabaseManagement internal constructor(
+open class FirestoreDatabaseManagement internal constructor(
     private val databaseService: FirestoreDatabaseService
 ): DatabaseManagement {
 
@@ -18,7 +18,7 @@ class FirestoreDatabaseManagement internal constructor(
         }
     }
 
-    override suspend fun getPicture(pictureId: Any): FirestoreCategorizedPicture? {
+    override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
         require(pictureId is String)
         return databaseService.getPicture(pictureId)
     }
