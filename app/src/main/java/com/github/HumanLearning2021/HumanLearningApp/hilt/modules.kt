@@ -1,20 +1,20 @@
 package com.github.HumanLearning2021.HumanLearningApp.hilt
 
+import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomEmptyHLDatabase
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.FirebaseApp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -33,6 +33,14 @@ annotation class Demo2Database
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ScratchDatabase
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class OfflineDemoDatabase
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class OfflineScratchDatabase
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -65,6 +73,12 @@ object DatabaseServiceModule {
     @ScratchDatabase
     @Provides
     fun provideScratchService(app: FirebaseApp): DatabaseService = FirestoreDatabaseService("scratch", app)
+    @OfflineDemoDatabase
+    @Provides
+    fun provideOfflineDemoService(): DatabaseService = OfflineDatabaseService("demo")
+    @OfflineScratchDatabase
+    @Provides
+    fun provideOfflineScratchService(): DatabaseService = OfflineDatabaseService("offlineScratch")
 }
 
 @Module
@@ -82,4 +96,16 @@ object DatabaseManagementModule {
     @ScratchDatabase
     @Provides
     fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+    @OfflineDemoDatabase
+    @Provides
+    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement {
+        val name = (db as OfflineDatabaseService).dbName
+        return OfflineDatabaseManagement(name)
+    }
+    @OfflineScratchDatabase
+    @Provides
+    fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement {
+        val name = (db as OfflineDatabaseService).dbName
+        return OfflineDatabaseManagement(name)
+    }
 }

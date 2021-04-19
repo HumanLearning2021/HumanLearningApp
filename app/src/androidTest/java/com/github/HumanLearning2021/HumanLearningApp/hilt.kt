@@ -1,15 +1,11 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.google.firebase.FirebaseApp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import javax.inject.Singleton
 
 @TestInstallIn(
     components = [ SingletonComponent::class ],
@@ -32,4 +28,12 @@ object DatabaseServiceTestModule {
     @ScratchDatabase
     @Provides
     fun provideScratchService(app: FirebaseApp) = DatabaseServiceModule.provideScratchService(app)
+
+    @OfflineDemoDatabase
+    @Provides
+    fun provideOfflineDemoService() = DatabaseServiceModule.provideOfflineDemoService()
+
+    @OfflineScratchDatabase
+    @Provides
+    fun provideOfflineScratchService() = DatabaseServiceModule.provideOfflineScratchService()
 }

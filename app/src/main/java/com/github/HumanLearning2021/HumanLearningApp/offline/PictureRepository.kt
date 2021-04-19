@@ -22,7 +22,7 @@ open class PictureRepository(private val dbName: String, private val context: Co
     suspend fun savePicture(picture: FirestoreCategorizedPicture): Uri {
         val file = File(folder, picture.id)
         val task = Firebase.storage.getReferenceFromUrl(picture.url).getFile(file).await()
-        task.error ?: throw task.error!!
+        if (task.error != null) throw task.error!!
         return file.toUri()
     }
 

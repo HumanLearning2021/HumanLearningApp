@@ -11,6 +11,7 @@ import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineConverters.f
 import com.github.HumanLearning2021.HumanLearningApp.room.*
 import com.google.firebase.auth.FirebaseUser
 import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import java.util.*
 
 class OfflineDatabaseService internal constructor(
@@ -26,6 +27,10 @@ class OfflineDatabaseService internal constructor(
     private val userDao = room.userDao()
 
     private fun getID() = "${UUID.randomUUID()}"
+
+    init {
+        databaseDao.loadByName(dbName) ?: throw IllegalStateException("The database $dbName has not yet been downloaded.")
+    }
 
     /**
      * A function to retrieve a picture from the database given a category

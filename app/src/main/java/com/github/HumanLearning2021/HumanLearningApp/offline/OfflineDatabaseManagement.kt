@@ -1,9 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.net.Uri
-import androidx.room.Database
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategory
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDataset
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement

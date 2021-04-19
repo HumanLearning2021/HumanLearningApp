@@ -3,6 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.Converters.fromPicture
@@ -29,11 +30,11 @@ class UniqueDatabaseManagement {
         }
     }
 
-    fun accessDatabaseFromCloud(databaseName: String): DatabaseManagement {
+    fun accessDatabaseFromCloud(databaseName: String): CachedFirestoreDatabaseManagement {
         return CachedFirestoreDatabaseManagement(databaseName)
     }
 
-    suspend fun downloadDatabase(databaseName: String): DatabaseManagement {
+    suspend fun downloadDatabase(databaseName: String): OfflineDatabaseManagement {
         val firestoreDbManagement =
             FirestoreDatabaseManagement(FirestoreDatabaseService(databaseName))
         val pictureRepository = PictureRepository(databaseName, context)
@@ -58,7 +59,7 @@ class UniqueDatabaseManagement {
         val roomRepresentativePictures = categories.mapNotNull { cat ->
              firestoreDbManagement.getRepresentativePicture(cat.id)
             }.map { pic ->
-                RoomUnlinkedRepresentativePicture(pic.id, pictureRepository.savePicture(pic), pic.category.id)
+                RoomUnlinkedRepresentativePicture(pic.id as String, pictureRepository.savePicture(pic as FirestoreCategorizedPicture), pic.category.id)
             }
 
         databaseDao.insertAll(RoomEmptyHLDatabase(databaseName))
@@ -75,9 +76,7 @@ class UniqueDatabaseManagement {
         return OfflineDatabaseManagement(databaseName)
     }
 
-    suspend fun removeOfflineDatabase(databaseName: String) {
-        //TODO("uncomment once implemented")
-        //updateTowardsCloud(databaseName)
+    fun removeOfflineDatabase(databaseName: String) {
         room.databaseDao().delete(RoomEmptyHLDatabase(databaseName))
         downloadedDatabases.remove(databaseName)
     }
