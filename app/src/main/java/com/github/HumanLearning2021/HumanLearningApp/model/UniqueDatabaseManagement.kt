@@ -3,15 +3,14 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
+import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.*
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineConverters.fromPicture
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 
-class UniqueDatabaseManagement internal constructor(
-    private val dbName: String
-) {
+class UniqueDatabaseManagement {
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val room = RoomOfflineDatabase.getDatabase(context)
@@ -20,29 +19,34 @@ class UniqueDatabaseManagement internal constructor(
     private val categoryDao = room.categoryDao()
     private val userDao = room.userDao()
 
-    private val picRepository: PictureRepository
-
-    private val downloadedDatasets: MutableList<String> = mutableListOf()
+    private val downloadedDatabases: MutableList<String> = mutableListOf()
 
     init {
-        picRepository = PictureRepository(dbName, context)
-        val dsNames = databaseDao.loadByName(dbName)!!.datasets.map { ds -> ds.datasetId }
-        dsNames.forEach { dsName -> downloadedDatasets.add(dsName) }
+        val dsNames = databaseDao.loadAll().map { db -> db.emptyHLDatabase.databaseName }
+        dsNames.forEach { dsName -> downloadedDatabases.add(dsName) }
     }
 
-    suspend fun downloadDataset(id: Any) {
+    suspend fun accessDatabase(databaseName: String): DatabaseManagement {
+        return if (downloadedDatabases.contains(databaseName)) {
+            OfflineDatabaseManagement(databaseName)
+        } else {
+            CachedFirestoreDatabaseManagement(databaseName)
+        }
+    }
+
+    suspend fun accessDatabaseFromCloud(databaseName: String): DatabaseManagement {
+        return CachedFirestoreDatabaseManagement(databaseName)
+    }
+
+    suspend fun downloadDatabase(databaseName: String) {
 
     }
 
-    suspend fun downloadDatabase() {
-
+    suspend fun updateFromCloud(databaseName: String) {
+        TODO("To be implemented next sprint")
     }
 
-    suspend fun updateFromCloud() {
-
-    }
-
-    suspend fun updateTowardsCloud() {
-
+    suspend fun updateTowardsCloud(databaseName: String) {
+        TODO("To be implemented next sprint")
     }
 }
