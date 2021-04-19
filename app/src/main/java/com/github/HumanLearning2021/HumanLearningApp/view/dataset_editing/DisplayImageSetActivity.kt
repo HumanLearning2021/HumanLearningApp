@@ -72,11 +72,11 @@ class DisplayImageSetActivity : AppCompatActivity() {
         private var layoutInflater =
             context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-        override fun getView(position: Int, view: View?, viewGroup: ViewGroup?): View {
+        override fun getView(position: Int, view0: View?, viewGroup: ViewGroup?): View {
             val view =
-                view ?: layoutInflater.inflate(R.layout.image_item, viewGroup, false)
+                view0 ?: layoutInflater.inflate(R.layout.image_item, viewGroup!!, false)
 
-            val imageView = view?.findViewById<ImageView>(R.id.image_item_imageView)
+            val imageView = view.findViewById<ImageView>(R.id.image_item_imageView)
 
             images.elementAt(position).displayOn(context, imageView as ImageView)
 
@@ -98,7 +98,7 @@ class DisplayImageSetActivity : AppCompatActivity() {
     }
 
     private fun setPictureItemListener(){
-        findViewById<GridView>(R.id.display_image_set_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
+        findViewById<GridView>(R.id.display_image_set_imagesGridView).setOnItemClickListener { _, _, i, _ ->
             val intent =
                 Intent(this@DisplayImageSetActivity, DisplayImageActivity::class.java)
             intent.putExtra(

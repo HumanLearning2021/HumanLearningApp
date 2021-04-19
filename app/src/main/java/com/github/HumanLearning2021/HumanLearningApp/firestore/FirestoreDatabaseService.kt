@@ -167,7 +167,7 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun getDataset(id: Any): FirestoreDataset? {
         require(id is String)
-        val ds = datasets.document(id as String).get().await().toObject(DatasetSchema::class.java)
+        val ds = datasets.document(id).get().await().toObject(DatasetSchema::class.java)
         return ds?.toPublic()
     }
 
@@ -176,7 +176,7 @@ class FirestoreDatabaseService internal constructor(
             throw java.lang.IllegalArgumentException("Dataset with id $id is not contained in the databse")
         }
         try {
-            datasets.document(id as String).delete().await()
+            datasets.document(id).delete().await()
         } catch (e: FirebaseFirestoreException) {
             Log.w(this.toString(), "Deleting dataset ${datasets.id} from ${this.db} failed", e)
         }
@@ -331,7 +331,7 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun getCategory(categoryId: Any): FirestoreCategory? {
         require(categoryId is String)
-        val cat = categories.document(categoryId as String).get().await()
+        val cat = categories.document(categoryId).get().await()
             .toObject(CategorySchema::class.java)
         return cat?.toPublic()
     }

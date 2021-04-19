@@ -8,8 +8,8 @@ import com.google.firebase.ktx.Firebase
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.Assert.assertThat
 
 
 abstract class ScratchDatabaseServiceTest : TestCase() {

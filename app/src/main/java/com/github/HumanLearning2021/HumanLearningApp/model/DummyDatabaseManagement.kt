@@ -140,7 +140,7 @@ data class DummyDatabaseManagement internal constructor(
         require(picture is DummyCategorizedPicture)
         try {
             databaseService.putRepresentativePicture(
-                (picture as DummyCategorizedPicture).picture,
+                picture.picture,
                 picture.category
             )
         } catch (e: IllegalArgumentException) {
