@@ -25,7 +25,7 @@
         android:id="@+id/display_dataset_imagesGridView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:numColumns="3"
+        android:numColumns="1"
         android:layout_marginTop="100dp"
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
