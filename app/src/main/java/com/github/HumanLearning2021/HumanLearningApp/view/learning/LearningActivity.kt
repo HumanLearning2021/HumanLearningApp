@@ -38,7 +38,7 @@ class LearningActivity : AppCompatActivity() {
             intent.getParcelableExtra<Dataset>(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET)!!
 
         val learningMode =
-            intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
+            intent.getSerializableExtra(LearningSettingsFragment.EXTRA_LEARNING_MODE) as LearningMode
 
 
         if (savedInstanceState == null) {
