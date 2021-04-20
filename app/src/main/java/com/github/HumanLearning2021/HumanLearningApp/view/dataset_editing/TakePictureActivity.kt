@@ -35,7 +35,7 @@ import java.util.concurrent.Executors
 Activity where an administrator can take a picture to add it to a selected data set.
 Should be started using the ActivityResultContract provided by the AddPictureContract object.
  */
-class AddPictureActivity : AppCompatActivity() {
+class TakePictureActivity : AppCompatActivity() {
 
     private var categories = setOf<Category>()
     private lateinit var imageCapture: ImageCapture
@@ -85,7 +85,7 @@ class AddPictureActivity : AppCompatActivity() {
     object AddPictureContract :
         ActivityResultContract<ArrayList<Category>, Pair<Category, Uri>?>() {
         override fun createIntent(context: Context, input: ArrayList<Category>?): Intent =
-            Intent(context, AddPictureActivity::class.java).putParcelableArrayListExtra(
+            Intent(context, TakePictureActivity::class.java).putParcelableArrayListExtra(
                 "categories",
                 input
             )
