@@ -29,7 +29,7 @@ import java.lang.reflect.Method
 
 @RunWith(AndroidJUnit4::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // to enforce consistent order of tests
-class AddPictureActivityTest {
+class TakePictureActivityTest {
 
     private fun grantCameraPermission() {
         PermissionGranter.allowPermissionOneTime(Manifest.permission.CAMERA)
@@ -47,10 +47,10 @@ class AddPictureActivityTest {
     )
 
     @get:Rule
-    val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
+    val activityScenarioRule: ActivityScenarioRule<TakePictureActivity> = ActivityScenarioRule(
         Intent(
             ApplicationProvider.getApplicationContext(),
-            AddPictureActivity::class.java
+            TakePictureActivity::class.java
         ).putExtra("categories", ArrayList<Category>(catSet))
     )
 
@@ -190,7 +190,7 @@ class AddPictureActivityTest {
     fun permissionNeededDialogShowsCorrectDialog() {
         grantCameraPermission()
         val method: Method =
-            AddPictureActivity::class.java.getDeclaredMethod("permissionNeededDialog")
+            TakePictureActivity::class.java.getDeclaredMethod("permissionNeededDialog")
         method.isAccessible = true
         activityScenarioRule.scenario.onActivity { activity ->
             method.invoke(activity)
@@ -206,7 +206,7 @@ class AddPictureActivityTest {
     fun showCaptureErrorDialogShowsCorrectly() {
         grantCameraPermission()
         val method: Method =
-            AddPictureActivity::class.java.getDeclaredMethod("showCaptureErrorDialog")
+            TakePictureActivity::class.java.getDeclaredMethod("showCaptureErrorDialog")
         method.isAccessible = true
         activityScenarioRule.scenario.onActivity { activity ->
             method.invoke(activity)
@@ -222,13 +222,13 @@ class AddPictureActivityTest {
         }
         val intent = Intent().putExtra("result", bundle)
         assert(
-            AddPictureActivity.AddPictureContract.parseResult(
+            TakePictureActivity.AddPictureContract.parseResult(
                 Activity.RESULT_OK,
                 intent
             )!!.first.name == "some_category"
         )
         assert(
-            AddPictureActivity.AddPictureContract.parseResult(
+            TakePictureActivity.AddPictureContract.parseResult(
                 Activity.RESULT_CANCELED,
                 intent
             ) == null

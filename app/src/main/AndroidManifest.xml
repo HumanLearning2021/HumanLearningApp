@@ -21,7 +21,7 @@
             android:name=".view.learning.LearningDatasetSelectionActivity"
             android:label="@string/LearningDatasetSelection_title" />
         <activity android:name=".view.dataset_editing.CategoriesEditingActivity" />
-        <activity android:name=".view.dataset_editing.AddPictureActivity" />
+        <activity android:name=".view.dataset_editing.TakePictureActivity" />
         <activity android:name=".view.dataset_editing.DisplayImageActivity" />
         <activity android:name=".view.dataset_editing.DisplayDatasetActivity" />
         <activity android:name=".view.learning.LearningSettingsActivity" />
