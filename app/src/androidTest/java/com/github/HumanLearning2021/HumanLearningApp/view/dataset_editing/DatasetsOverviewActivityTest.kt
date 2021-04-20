@@ -42,7 +42,7 @@ class DatasetsOverviewActivityTest {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
     @get:Rule
-    val activityScenarioRule: ActivityScenarioRule<AddPictureActivity> = ActivityScenarioRule(
+    val activityScenarioRule: ActivityScenarioRule<TakePictureActivity> = ActivityScenarioRule(
         Intent(
             ApplicationProvider.getApplicationContext(),
             DatasetsOverviewActivity::class.java
