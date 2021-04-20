@@ -15,20 +15,20 @@
         android:inputType="text"
         android:maxLines="1"
         android:textAlignment="center"
-        android:textSize="25sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@id/display_ds_guideline1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <GridView
         android:id="@+id/display_dataset_imagesGridView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
-        android:numColumns="2"
+        android:numColumns="3"
         app:layout_constraintBottom_toTopOf="@id/display_ds_guideline4"
         app:layout_constraintLeft_toRightOf="@id/display_ds_guideline2"
         app:layout_constraintRight_toLeftOf="@id/display_ds_guideline3"

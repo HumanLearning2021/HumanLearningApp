@@ -25,6 +25,7 @@
             android:id="@+id/image_and_category_item_imageCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="18sp"
             android:layout_below="@id/image_and_category_item_imageView"
             android:layout_centerHorizontal="true"/>
     </RelativeLayout>
