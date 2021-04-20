@@ -14,7 +14,7 @@
 
         <ImageView
             android:id="@+id/image_and_category_item_imageView"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="175dp"
             android:layout_centerHorizontal="true"
             android:scaleType="centerCrop"
