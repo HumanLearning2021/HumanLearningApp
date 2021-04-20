@@ -16,8 +16,7 @@
             android:id="@+id/image_and_category_item_imageView"
             android:layout_width="fill_parent"
             android:layout_height="175dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher" />
 
