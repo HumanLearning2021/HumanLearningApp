@@ -41,7 +41,7 @@ class LearningFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         activity = requireActivity()
-        return inflater.inflate(R.layout.fragment_learning, null)
+        return inflater.inflate(R.layout.fragment_learning, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

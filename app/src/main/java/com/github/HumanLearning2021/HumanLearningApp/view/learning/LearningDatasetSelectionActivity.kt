@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.view.MainFragment
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,17 +19,12 @@ class LearningDatasetSelectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning_dataset_selection)
 
-        val dsListFragment = supportFragmentManager.findFragmentById(R.id.LearningDatasetSelection_dataset_list)
-        if (dsListFragment is DatasetListWidget) {
-            dsListFragment.selectedDataset.observe(this) {
-                Log.d(this.localClassName, "Selected dataset $it")
-                startActivity(
-                    Intent(this, LearningSettingsActivity::class.java)
-                            // add the selected dataset as extra
-                        .putExtra(EXTRA_SELECTED_DATASET, it)
-                )
-            }
+        if (savedInstanceState == null) {
+            val fragment = LearningDatasetSelectionFragment()
+            supportFragmentManager
+                .beginTransaction()
+                .add(R.id.learning_dataset_selection_content, fragment)
+                .commit()
         }
-
     }
 }
