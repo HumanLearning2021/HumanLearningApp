@@ -9,9 +9,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -65,13 +65,13 @@ class DisplayImageActivity : AppCompatActivity() {
     }
 
     private fun launchDisplayDatasetActivity() {
-        Toast.makeText(this, "AAAAAAA", Toast.LENGTH_SHORT).show()
-        startActivity(Intent(this, DisplayDatasetActivity::class.java)
-            .putExtra("dataset_id", datasetId))
+        startActivity(
+            Intent(this, DisplayDatasetActivity::class.java)
+                .putExtra("dataset_id", datasetId)
+        )
     }
 
     private fun launchDisplayImageSetActivity() {
-        Toast.makeText(this, "BBBBBBB", Toast.LENGTH_SHORT).show()
         val intent = Intent(this, DisplayImageSetActivity::class.java)
         intent.putExtra(
             "category_of_pictures",
