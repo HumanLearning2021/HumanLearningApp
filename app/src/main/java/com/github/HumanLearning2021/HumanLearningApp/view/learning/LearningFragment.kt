@@ -16,10 +16,12 @@ import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.Serializable
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class LearningFragment: Fragment() {
     private lateinit var audioFeedback: LearningAudioFeedback
     private lateinit var dataset: Dataset
@@ -60,6 +62,17 @@ class LearningFragment: Fragment() {
         initLearningViews()
         audioFeedback = LearningAudioFeedback(activity.applicationContext)
     }
+
+    override fun onResume() {
+        super.onResume()
+        audioFeedback.initMediaPlayers()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        audioFeedback.releaseMediaPlayers()
+    }
+
 
 
     private fun initLearningViews() {

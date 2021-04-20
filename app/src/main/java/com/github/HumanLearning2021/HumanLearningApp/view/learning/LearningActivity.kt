@@ -23,10 +23,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class LearningActivity : AppCompatActivity() {
-    private lateinit var audioFeedback: LearningAudioFeedback
-    private lateinit var dataset: Dataset
-
-    @Inject lateinit var learningPresenter: LearningPresenter
+    @Inject
+    lateinit var learningPresenter: LearningPresenter
 
     @Inject
     @DummyDatabase
@@ -42,6 +40,7 @@ class LearningActivity : AppCompatActivity() {
         val learningMode =
             intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
 
+
         if (savedInstanceState == null) {
             val fragment = LearningFragment.newInstance(dataset, learningMode)
             supportFragmentManager
@@ -50,16 +49,5 @@ class LearningActivity : AppCompatActivity() {
                 .commit()
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        audioFeedback.initMediaPlayers()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        audioFeedback.releaseMediaPlayers()
-    }
-
-
 }
+
