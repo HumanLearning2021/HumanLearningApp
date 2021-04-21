@@ -2,8 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -21,10 +19,12 @@ class DisplayImageActivity : AppCompatActivity() {
     @Inject
     @Demo2Database
     lateinit var dbManagement: DatabaseManagement
-
     private var picture: CategorizedPicture? = null
     private lateinit var datasetId: String
     private lateinit var category: Category
+
+    lateinit var fragment: DisplayImageFragment
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,15 +33,15 @@ class DisplayImageActivity : AppCompatActivity() {
         picture =
             intent.getParcelableExtra("single_picture")
         datasetId = intent.getStringExtra("dataset_id")!!
-        if (picture != null) {
-            category = picture!!.category
-            findViewById<TextView>(R.id.display_image_viewCategory).text = category.name
-            picture!!.displayOn(this, findViewById(R.id.display_image_viewImage))
 
-            findViewById<ImageButton>(R.id.display_image_delete_button).setOnClickListener {
-                removePicture()
-            }
+        if (savedInstanceState == null) {
+            fragment = DisplayImageFragment.newInstance(datasetId, picture!!)
+            supportFragmentManager
+                .beginTransaction()
+                .add(R.id.display_image_content, fragment)
+                .commit()
         }
+
     }
 
     private fun removePicture() {

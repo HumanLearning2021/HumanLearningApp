@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DisplayDatasetFragment: Fragment() {
+class DisplayDatasetFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
 
     @Inject
@@ -31,6 +31,11 @@ class DisplayDatasetFragment: Fragment() {
     private lateinit var categories: Set<Category>
     private lateinit var datasetId: String
     private lateinit var dataset: Dataset
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,7 +65,7 @@ class DisplayDatasetFragment: Fragment() {
             }
 
             val displayDatasetAdapter =
-               DisplayDatasetAdapter(
+                DisplayDatasetAdapter(
                     representativePictures,
                     parentActivity
                 )
@@ -73,7 +78,6 @@ class DisplayDatasetFragment: Fragment() {
         }
 
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val categoriesArray = ArrayList<Category>(categories)
@@ -90,6 +94,11 @@ class DisplayDatasetFragment: Fragment() {
                 true
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.display_dataset_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private val addPictureContractRegistration =
@@ -145,17 +154,18 @@ class DisplayDatasetFragment: Fragment() {
     }
 
     private fun setGridViewItemListener() {
-        parentActivity.findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { adapterView, view, i, l ->
-            val cat = categories.elementAt(i)
-            val intent =
-                Intent(parentActivity, DisplayImageSetActivity::class.java)
-            intent.putExtra(
-                "category_of_pictures",
-                cat
-            )
-            intent.putExtra("dataset_id", datasetId)
-            startActivity(intent)
-        }
+        parentActivity.findViewById<GridView>(R.id.display_dataset_imagesGridView)
+            .setOnItemClickListener { adapterView, view, i, l ->
+                val cat = categories.elementAt(i)
+                val intent =
+                    Intent(parentActivity, DisplayImageSetActivity::class.java)
+                intent.putExtra(
+                    "category_of_pictures",
+                    cat
+                )
+                intent.putExtra("dataset_id", datasetId)
+                startActivity(intent)
+            }
     }
 
     private fun setTextChangeListener() {
@@ -183,11 +193,7 @@ class DisplayDatasetFragment: Fragment() {
 
     private fun checkArguments() {
         lifecycleScope.launch {
-            datasetId = if (arguments != null && !requireArguments().isEmpty) {
-                arguments?.getString(ARG_DSET_ID)!!
-            } else {
-                "uEwDkGoGADW4hEJoJ6BA"
-            }
+            datasetId = arguments?.getString(ARG_DSET_ID)!!
         }
     }
 }

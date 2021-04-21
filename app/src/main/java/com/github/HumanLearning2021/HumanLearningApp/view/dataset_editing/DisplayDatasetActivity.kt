@@ -16,10 +16,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
     @Inject
     @Demo2Database
     lateinit var dbManagement: DatabaseManagement
-
-    private lateinit var categories: Set<Category>
     private lateinit var datasetId: String
-    private lateinit var dataset: Dataset
 
     lateinit var fragment: DisplayDatasetFragment
 
@@ -40,12 +37,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 .commit()
         }
 
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.display_dataset_menu, menu)
-        return true
     }
 
     private fun checkIntentExtras(extras: Bundle?) {
