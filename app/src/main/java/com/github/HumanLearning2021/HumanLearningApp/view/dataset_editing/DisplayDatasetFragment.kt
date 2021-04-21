@@ -42,6 +42,7 @@ class DisplayDatasetFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         checkArguments()
 
         var representativePictures = setOf<CategorizedPicture>()
