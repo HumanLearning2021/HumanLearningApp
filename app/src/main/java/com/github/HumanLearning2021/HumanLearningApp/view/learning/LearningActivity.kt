@@ -14,9 +14,9 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,7 +26,8 @@ class LearningActivity : AppCompatActivity() {
     private lateinit var audioFeedback: LearningAudioFeedback
     private lateinit var dataset: Dataset
 
-    @Inject lateinit var learningPresenter: LearningPresenter
+    @Inject
+    lateinit var learningPresenter: LearningPresenter
 
     @Inject
     @DummyDatabase
@@ -72,7 +73,7 @@ class LearningActivity : AppCompatActivity() {
                     this.javaClass.name, "There are fewer than 3 categories in the dataset",
                     IllegalStateException()
                 )
-            }else{
+            } else {
                 val cat0 = cats.elementAt(0)
 
                 initTargetCategory(R.id.learning_cat_0, cat0)

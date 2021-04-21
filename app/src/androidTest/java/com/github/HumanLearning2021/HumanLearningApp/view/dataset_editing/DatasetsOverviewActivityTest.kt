@@ -93,8 +93,6 @@ class DatasetsOverviewActivityTest {
         ))
     }
 
-    */
-
     @Test
     fun onBackPressedWorks() {
         Espresso.pressBack()
