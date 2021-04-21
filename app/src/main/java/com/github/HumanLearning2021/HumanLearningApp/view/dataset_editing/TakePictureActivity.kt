@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -14,7 +13,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +26,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.AddPictureContract.Companion.finishWith
+import com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.AddPictureContract.Companion.parseArgs
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -47,7 +47,7 @@ class TakePictureActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        checkIntentExtras(intent.extras)
+        checkIntentExtras()
 
         if (cameraIsAvailable()) {
             when {
@@ -69,47 +69,14 @@ class TakePictureActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkIntentExtras(extras: Bundle?) {
-        if (extras != null && extras["categories"] is ArrayList<*>) {
-            @Suppress("UNCHECKED_CAST")  // due to type erasure
-            val givenCategories = extras["categories"] as ArrayList<Category>
-            categories = categories.plus(givenCategories)
-        }
-    }
-
-    /**
-    The ActivityResultContract which should be used when launching this activity.
-    The launch argument is an Array<String> containing the categories to select from.
-    The return value is a Pair containing the selected category as a first element and the Uri pointing to the image as a second element
-     */
-    object AddPictureContract :
-        ActivityResultContract<ArrayList<Category>, Pair<Category, Uri>?>() {
-        override fun createIntent(context: Context, input: ArrayList<Category>?): Intent =
-            Intent(context, TakePictureActivity::class.java).putParcelableArrayListExtra(
-                "categories",
-                input
-            )
-
-        override fun parseResult(resultCode: Int, result: Intent?): Pair<Category, Uri>? {
-            return if (resultCode != Activity.RESULT_OK) {
-                null
-            } else {
-                val bundle = result!!.extras!!.get("result") as Bundle
-                Pair(bundle["category"] as Category, bundle["image"] as Uri)
-            }
-        }
+    private fun checkIntentExtras() {
+        val givenCategories = parseArgs()
+        categories = categories.plus(givenCategories)
     }
 
     @Suppress("UNUSED_PARAMETER")
     private fun onSave(view: View) {
-        val returnIntent = Intent()
-        val bundle = Bundle().apply {
-            putParcelable("category", chosenCategory)
-            putParcelable("image", capturedImageUri)
-        }
-        returnIntent.putExtra("result", bundle)
-        setResult(Activity.RESULT_OK, returnIntent)
-        finish()
+        finishWith(chosenCategory, capturedImageUri)
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -282,5 +249,9 @@ class TakePictureActivity : AppCompatActivity() {
 
     private fun notifySaveButton() {
         findViewById<Button>(R.id.saveButton).isEnabled = categorySet && imageTaken
+    }
+
+    companion object {
+        val Contract = AddPictureContract(TakePictureActivity::class.java)
     }
 }

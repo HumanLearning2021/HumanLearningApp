@@ -149,6 +149,7 @@ class DisplayDatasetActivityTest {
     fun clickOnMenuAddNewPictureWorks() {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText(R.string.add_new_picture)).perform(click())
+        onView(withText(R.string.use_camera)).perform(click())
 
         intended(
             allOf(
@@ -158,6 +159,7 @@ class DisplayDatasetActivityTest {
         )
 
         Espresso.pressBack()
+        Espresso.pressBack()
 
         categories = dataset.categories
         assumeTrue(categories.isNotEmpty())
@@ -166,6 +168,7 @@ class DisplayDatasetActivityTest {
 
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
             onView(withText(R.string.add_new_picture)).perform(click())
+            onView(withText(R.string.use_camera)).perform(click())
 
             onView(withId(R.id.takePictureButton)).perform(click())
             onView(withId(R.id.selectCategoryButton)).perform(click())

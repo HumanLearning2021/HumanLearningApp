@@ -48,4 +48,7 @@
 
     <string name="DatasetList_default_ds_name">Dataset name</string>
     <string name="DatasetList_im_content_description">Category representative of the dataset</string>
+    <string name="select_existing_picture">Select Existing Picture</string>
+    <string name="use_camera">Use camera</string>
+    <string name="choose_picture">Choose Picture</string>
 </resources>
