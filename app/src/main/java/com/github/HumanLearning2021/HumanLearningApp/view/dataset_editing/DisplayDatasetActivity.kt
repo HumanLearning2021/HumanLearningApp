@@ -27,7 +27,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
     private lateinit var dataset: Dataset
 
     private val addPictureContractRegistration =
-        registerForActivityResult(AddPictureActivity.AddPictureContract) { resultPair ->
+        registerForActivityResult(AddPictureActivity.Contract) { resultPair ->
             if (resultPair == null) {
                 Toast.makeText(
                     this,

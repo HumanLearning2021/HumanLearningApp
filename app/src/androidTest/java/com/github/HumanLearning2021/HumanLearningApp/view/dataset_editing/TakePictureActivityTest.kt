@@ -222,13 +222,13 @@ class TakePictureActivityTest {
         }
         val intent = Intent().putExtra("result", bundle)
         assert(
-            TakePictureActivity.AddPictureContract.parseResult(
+            TakePictureActivity.Contract.parseResult(
                 Activity.RESULT_OK,
                 intent
             )!!.first.name == "some_category"
         )
         assert(
-            TakePictureActivity.AddPictureContract.parseResult(
+            TakePictureActivity.Contract.parseResult(
                 Activity.RESULT_CANCELED,
                 intent
             ) == null
