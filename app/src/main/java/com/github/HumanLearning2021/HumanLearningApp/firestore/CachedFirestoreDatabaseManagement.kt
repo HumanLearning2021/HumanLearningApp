@@ -2,7 +2,9 @@ package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Converters
 import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategorizedPicture
@@ -28,7 +30,7 @@ class CachedFirestoreDatabaseManagement internal constructor(
         require(pictureId is String)
         val uri = cache.retrievePicture(pictureId)
         return if (uri == null) {
-            cachedPictures.remove(pictureId)
+           removeFromCache(pictureId)
             val fPic = super.getPicture(pictureId) ?: return null
             putIntoCache(fPic as FirestoreCategorizedPicture)
         } else {
@@ -36,20 +38,20 @@ class CachedFirestoreDatabaseManagement internal constructor(
         }
     }
 
+    override suspend fun getPicture(category: Category): CategorizedPicture? {
+        val picIds = super.getPictureIds(category)
+        return this.getPicture(picIds.random())
+    }
+
     override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
         require(categoryId is String)
         val fPic = super.getRepresentativePicture(categoryId) ?: return null
-        val uri: Uri? = cache.retrievePicture(fPic.id as String)
-        return if (uri == null) {
-            cachedPictures.remove(fPic.id)
-            putIntoCache(fPic as FirestoreCategorizedPicture)
-        } else {
-            Converters.fromPicture(cachedPictures[fPic.id]!!, uri)
-        }
+        return this.getPicture(fPic.id)
     }
 
     override suspend fun removePicture(picture: CategorizedPicture) {
         require(picture is FirestoreCategorizedPicture)
+        cachedPictures.remove(picture.id)
         cache.deletePicture(picture.id)
         super.removePicture(picture)
     }
@@ -58,5 +60,10 @@ class CachedFirestoreDatabaseManagement internal constructor(
         val uri = cache.savePicture(picture)
         cachedPictures[picture.id] = picture
         return Converters.fromPicture(picture, uri)
+    }
+
+    private fun removeFromCache(pictureId: String) {
+        cachedPictures.remove(pictureId)
+        cache.deletePicture(pictureId)
     }
 }

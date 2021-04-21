@@ -39,16 +39,16 @@ open class PictureRepository(private val dbName: String, private val context: Co
     @Throws(IllegalArgumentException::class)
     fun deletePicture(id: String): Boolean {
         return try {
-            File(folder, id).delete()
+            File("${folder.path}${File.pathSeparator}$id").delete()
         } catch (e: IOException) {
             throw IllegalArgumentException("There is not picture with id $id in the folder $dbName")
         }
     }
 
     fun retrievePicture(id: String): Uri? {
-        return try {
+        return if (File("${folder.path}${File.pathSeparator}$id").exists()) {
             File(folder, id).toUri()
-        } catch (e: NullPointerException) {
+        } else {
             null
         }
     }
