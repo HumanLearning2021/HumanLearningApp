@@ -11,9 +11,9 @@ import com.github.HumanLearning2021.HumanLearningApp.room.*
 class UniqueDatabaseManagement(private val context: Context) {
 
     private val room = RoomOfflineDatabase.getDatabase(context)
-    val databaseDao = room.databaseDao()
-    val datasetDao = room.datasetDao()
-    val categoryDao = room.categoryDao()
+    private val databaseDao = room.databaseDao()
+    private val datasetDao = room.datasetDao()
+    private val categoryDao = room.categoryDao()
 
     private val downloadedDatabases: MutableList<String> = mutableListOf()
 
@@ -21,6 +21,10 @@ class UniqueDatabaseManagement(private val context: Context) {
         val dsNames = room.databaseDao().loadAll().map { db -> db.emptyHLDatabase.databaseName }
         dsNames.forEach { dsName -> downloadedDatabases.add(dsName) }
     }
+
+    fun getDownloadedDatabases(): List<String> = downloadedDatabases.toList()
+
+    suspend fun getDatabases(): List<String> = FirestoreDatabaseService.getDatabaseNames()
 
     fun accessDatabase(databaseName: String): DatabaseManagement {
         return if (downloadedDatabases.contains(databaseName)) {
@@ -65,8 +69,20 @@ class UniqueDatabaseManagement(private val context: Context) {
         return OfflineDatabaseManagement(databaseName).initialize(context)
     }
 
-    private fun initializeRoomEntities(dbName: String, datasets: List<RoomDatasetWithoutCategories>, categories: List<RoomCategory>, pictures: List<RoomPicture>, representativePictures: List<RoomUnlinkedRepresentativePicture>) {
+    fun removeOfflineDatabase(databaseName: String) {
+        room.databaseDao().delete(RoomEmptyHLDatabase(databaseName))
+        downloadedDatabases.remove(databaseName)
+    }
 
+    suspend fun updateFromCloud(databaseName: String) {
+        TODO("To be implemented next sprint")
+    }
+
+    suspend fun updateTowardsCloud(databaseName: String) {
+        TODO("To be implemented next sprint")
+    }
+
+    private fun initializeRoomEntities(dbName: String, datasets: List<RoomDatasetWithoutCategories>, categories: List<RoomCategory>, pictures: List<RoomPicture>, representativePictures: List<RoomUnlinkedRepresentativePicture>) {
         databaseDao.insertAll(RoomEmptyHLDatabase(dbName))
         datasetDao.insertAll(*datasets.toTypedArray())
         categoryDao.insertAll(*categories.toTypedArray())
@@ -79,18 +95,5 @@ class UniqueDatabaseManagement(private val context: Context) {
         databaseDao.insertAll(*dbCatRefs.toTypedArray())
         databaseDao.insertAll(*dbPicRefs.toTypedArray())
         datasetDao.insertAll(*dsCatRefs.toTypedArray())
-    }
-
-    fun removeOfflineDatabase(databaseName: String) {
-        room.databaseDao().delete(RoomEmptyHLDatabase(databaseName))
-        downloadedDatabases.remove(databaseName)
-    }
-
-    suspend fun updateFromCloud(databaseName: String) {
-        TODO("To be implemented next sprint")
-    }
-
-    suspend fun updateTowardsCloud(databaseName: String) {
-        TODO("To be implemented next sprint")
     }
 }

@@ -45,7 +45,6 @@ object FirebaseAuthUIModule {
     fun provideAuthUI(app: FirebaseApp) = AuthUI.getInstance(app)
 }
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object FirebaseAppModule {

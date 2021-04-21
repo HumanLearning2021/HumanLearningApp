@@ -9,7 +9,7 @@ import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseMana
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.After
@@ -36,6 +36,17 @@ class UniqueDatabaseManagementTest {
         context.cacheDir.deleteRecursively()
         RoomOfflineDatabase.getDatabase(context).clearAllTables()
         Thread.sleep(1000) //wait for above method to complete
+    }
+
+    @Test
+    fun getDatabaseNamesWorks() = runBlocking {
+        assertThat(uDbMan.getDatabases(), hasItems("scratch", "demo", "demo2"))
+    }
+
+    @Test
+    fun getDownloadedDatabaseNamesWorks() = runBlocking {
+        uDbMan.downloadDatabase("demo")
+        assertThat(uDbMan.getDownloadedDatabases(), hasItem("demo"))
     }
 
     @Test

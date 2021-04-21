@@ -20,7 +20,7 @@ abstract class RoomOfflineDatabase : RoomDatabase() {
     abstract fun databaseDao(): DatabaseDao
 
     companion object {
-        // Singleton prevents multiple instances of the database opening at the same time
+        // Singleton to prevent multiple instances of the database opening at the same time
         @Volatile
         private var INSTANCE: RoomOfflineDatabase? = null
 

@@ -34,6 +34,13 @@ class FirestoreDatabaseService internal constructor(
     private val storage = Firebase.storage(this.app)
     private val imagesDir = storage.reference.child("$dbName/images")
 
+    companion object {
+        suspend fun getDatabaseNames(app: FirebaseApp? = null): List<String> {
+            val res = Firebase.firestore(app ?: Firebase.app).collection("databases").get().await()
+            return res.documents.map { doc -> doc.id }
+        }
+    }
+
     private class CategorySchema() {
         @DocumentId
         lateinit var self: DocumentReference
