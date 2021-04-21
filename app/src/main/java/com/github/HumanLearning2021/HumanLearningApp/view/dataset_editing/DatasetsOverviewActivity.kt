@@ -21,10 +21,4 @@ class DatasetsOverviewActivity : AppCompatActivity() {
                 .commit()
         }
     }
-
-    /*
-    fun launchDataCreationActivity(view: View){
-        fragment.launchDataCreationActivity(view)
-    }
-     */
 }

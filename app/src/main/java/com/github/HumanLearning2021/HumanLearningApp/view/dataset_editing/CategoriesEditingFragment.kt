@@ -148,7 +148,7 @@ class CategoriesEditingFragment : Fragment() {
     }
 
     companion object {
-        const val ARG_DSET_ID = "argDsetId"
+        const val ARG_DSET_ID = "dataset_id"
 
         fun newInstance(dSetId: String): CategoriesEditingFragment {
             val args = Bundle()
