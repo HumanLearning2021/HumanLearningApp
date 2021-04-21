@@ -30,7 +30,7 @@ class LearningActivity : AppCompatActivity() {
     @Inject lateinit var learningPresenter: LearningPresenter
 
     @Inject
-    @DummyDatabase
+    @Demo2Database
     lateinit var dbMgt: DatabaseManagement
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,6 +97,7 @@ class LearningActivity : AppCompatActivity() {
         // the contentDescription of the target ImageView and the text carried in the drag & drop
         // see LearningActivity::dropCallback
         catIv.contentDescription = cat.name
+        Log.d(localClassName, "init contentDescription to ${cat.name}")
 
         if (catIvId == R.id.learning_im_to_sort) {
             lifecycleScope.launch {
@@ -148,12 +149,12 @@ class LearningActivity : AppCompatActivity() {
     /**
      * This callback is called when the image to sort is dropped on a target ImageView
      * @param event the DragEvent representing the interaction
-     * @param v The ImageView representing the image to sort
+     * @param v The ImageView representing the target category
      */
     private fun dropCallback(event: DragEvent, v: View): Boolean {
         val item: ClipData.Item = event.clipData.getItemAt(0)
         setOpacity(v, opaque)
-        Log.d("dropCallback", "${item.text} vs ${v.contentDescription}")
+        Log.d(localClassName, "dropped : ${item.text} on category: ${v.contentDescription}")
 
         // the classification is considered correct if the text carried by the drag
         // is equal to the contentDescription of the target ImageView

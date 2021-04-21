@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 
 class LearningPresenter @Inject constructor(
-    @DummyDatabase
+    @Demo2Database
     private val dbMgt: DatabaseManagement
 ) {
     // may be set by the view
