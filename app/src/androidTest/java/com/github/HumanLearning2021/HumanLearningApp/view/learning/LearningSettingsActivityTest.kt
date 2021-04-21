@@ -82,7 +82,7 @@ class LearningSettingsActivityTest {
             allOf(
                 hasComponent(LearningActivity::class.java.name),
                 IntentMatchers.hasExtraWithKey(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET),
-                IntentMatchers.hasExtraWithKey(LearningSettingsActivity.EXTRA_LEARNING_MODE)
+                IntentMatchers.hasExtraWithKey(LearningSettingsFragment.EXTRA_LEARNING_MODE)
             )
         )
     }

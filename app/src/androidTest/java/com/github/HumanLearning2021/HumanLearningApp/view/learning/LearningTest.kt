@@ -38,7 +38,7 @@ class LearningTest {
             ApplicationProvider.getApplicationContext(),
             LearningActivity::class.java
         )
-            .putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
+            .putExtra(LearningSettingsFragment.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
             .putExtra(
                 LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET,
                 getDS())
