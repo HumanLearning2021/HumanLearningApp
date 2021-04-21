@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.offline
 
+import android.content.Context
 import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
@@ -9,10 +10,19 @@ import java.lang.Exception
 import java.lang.IllegalArgumentException
 
 class OfflineDatabaseManagement internal constructor (
-    val databaseName: String
+    val dbName: String
 ): DatabaseManagement {
 
-    private val databaseService = OfflineDatabaseService(databaseName)
+    private lateinit var databaseService: OfflineDatabaseService
+
+    /**
+     * Should be called the offline database management is first used (in onCreate for activities)
+     * @param context: the context of the calling application
+     */
+    fun initialize(context: Context): OfflineDatabaseManagement {
+        databaseService = OfflineDatabaseService(dbName).initialize(context)
+        return this
+    }
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         require(category is OfflineCategory)

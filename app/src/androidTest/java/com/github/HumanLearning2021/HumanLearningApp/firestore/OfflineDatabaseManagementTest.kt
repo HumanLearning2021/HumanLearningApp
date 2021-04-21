@@ -9,6 +9,7 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineDemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategory
+import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDataset
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomEmptyHLDatabase
@@ -30,8 +31,10 @@ import javax.inject.Inject
 @RunWith(AndroidJUnit4::class)
 class OfflineDatabaseManagementTest {
 
+    private val context = ApplicationProvider.getApplicationContext<Context>()
+
     private fun dlDemo() = runBlocking {
-        UniqueDatabaseManagement().downloadDatabase("demo")
+        UniqueDatabaseManagement(ApplicationProvider.getApplicationContext()).downloadDatabase("demo")
     }
 
     @Inject
@@ -56,10 +59,12 @@ class OfflineDatabaseManagementTest {
 
     @Before
     fun setUp() {
-        RoomOfflineDatabase.getDatabase(ApplicationProvider.getApplicationContext()).databaseDao().insertAll(
+        RoomOfflineDatabase.getDatabase(context).databaseDao().insertAll(
             RoomEmptyHLDatabase("offlineScratch")
         )
         hiltRule.inject()
+        (demoManagement as OfflineDatabaseManagement).initialize(context)
+        (scratchManagement as OfflineDatabaseManagement).initialize(context)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")
@@ -68,8 +73,8 @@ class OfflineDatabaseManagementTest {
 
     @After
     fun teardown() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
         RoomOfflineDatabase.getDatabase(context).clearAllTables()
+        PictureRepository("demo", context).clear()
         PictureRepository("offlineScratch", context).clear()
         Thread.sleep(1000) //wait for above method to complete
     }

@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.content.Context
 import android.net.Uri
-import androidx.test.core.app.ApplicationProvider
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineConverters.fromCategory
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineConverters.fromDataset
@@ -18,18 +17,28 @@ class OfflineDatabaseService internal constructor(
     val dbName: String
 ): DatabaseService {
 
-    private val context = ApplicationProvider.getApplicationContext<Context>()
-    private val pictureRepository = PictureRepository(dbName, context)
-    private val room = RoomOfflineDatabase.getDatabase(context)
-    private val databaseDao = room.databaseDao()
-    private val datasetDao = room.datasetDao()
-    private val categoryDao = room.categoryDao()
-    private val userDao = room.userDao()
+    private lateinit var pictureRepository: PictureRepository
+    private lateinit var room: RoomOfflineDatabase
+    private lateinit var databaseDao: DatabaseDao
+    private lateinit var datasetDao: DatasetDao
+    private lateinit var categoryDao: CategoryDao
+    private lateinit var userDao: UserDao
 
     private fun getID() = "${UUID.randomUUID()}"
 
-    init {
+    /**
+     * Should be called before the offline database service is first used
+     * @param context: the context of the calling application
+     */
+    fun initialize(context: Context): OfflineDatabaseService {
+        pictureRepository = PictureRepository(dbName, context)
+        room = RoomOfflineDatabase.getDatabase(context)
+        databaseDao = room.databaseDao()
         databaseDao.loadByName(dbName) ?: throw IllegalStateException("The database $dbName has not yet been downloaded.")
+        datasetDao = room.datasetDao()
+        categoryDao = room.categoryDao()
+        userDao = room.userDao()
+        return this
     }
 
     /**
@@ -184,7 +193,6 @@ class OfflineDatabaseService internal constructor(
 
     override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): OfflineDataset {
         datasetDao.delete(RoomDatasetCategoriesCrossRef(dataset.id as String, category.id as String))
-        Thread.sleep(1000)
         val ds = datasetDao.loadById(dataset.id as String) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
         return fromDataset(ds)
     }

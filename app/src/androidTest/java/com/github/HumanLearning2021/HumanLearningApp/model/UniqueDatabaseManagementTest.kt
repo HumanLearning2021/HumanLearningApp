@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -22,23 +23,23 @@ import java.lang.IllegalStateException
 @RunWith(AndroidJUnit4::class)
 class UniqueDatabaseManagementTest {
 
+    private val context = ApplicationProvider.getApplicationContext<Context>()
     private lateinit var uDbMan: UniqueDatabaseManagement
 
     @Before
     fun setup() {
-        uDbMan = UniqueDatabaseManagement()
+        uDbMan = UniqueDatabaseManagement(context)
     }
 
     @After
     fun teardown() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
         context.cacheDir.deleteRecursively()
         RoomOfflineDatabase.getDatabase(context).clearAllTables()
         Thread.sleep(1000) //wait for above method to complete
     }
 
     @Test
-    fun offlineAndFirestoreContainTheSameElements() = runBlocking {
+    fun offlineAndFirestoreDatabasesContainTheSameElements() = runBlocking {
         val dbName = "demo"
         val fDbMan: CachedFirestoreDatabaseManagement = uDbMan.accessDatabaseFromCloud(dbName)
         val oDbman: OfflineDatabaseManagement = uDbMan.downloadDatabase(dbName)
@@ -49,11 +50,18 @@ class UniqueDatabaseManagementTest {
     @Test
     fun offlineDatabaseThrowsIfNotDownloaded() = runBlocking {
         kotlin.runCatching {
-            OfflineDatabaseManagement("demo")
+            OfflineDatabaseManagement("demo").initialize(context)
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
             assertThat(it, Matchers.instanceOf(IllegalStateException::class.java))
         })
+    }
+
+    @Test
+    fun accessDatabaseReturnsCorrectTypes() = runBlocking {
+        uDbMan.downloadDatabase("demo")
+        assert(uDbMan.accessDatabase("demo") is OfflineDatabaseManagement)
+        assert(uDbMan.accessDatabase("scratch") is FirestoreDatabaseManagement)
     }
 }

@@ -1,18 +1,15 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.content.Context
-import androidx.test.core.app.ApplicationProvider
 import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.Converters.fromPicture
 import com.github.HumanLearning2021.HumanLearningApp.offline.*
 import com.github.HumanLearning2021.HumanLearningApp.room.*
 
-class UniqueDatabaseManagement {
+class UniqueDatabaseManagement(private val context: Context) {
 
-    private val context: Context = ApplicationProvider.getApplicationContext()
     private val room = RoomOfflineDatabase.getDatabase(context)
     val databaseDao = room.databaseDao()
     val datasetDao = room.datasetDao()
@@ -27,14 +24,14 @@ class UniqueDatabaseManagement {
 
     fun accessDatabase(databaseName: String): DatabaseManagement {
         return if (downloadedDatabases.contains(databaseName)) {
-            OfflineDatabaseManagement(databaseName)
+            OfflineDatabaseManagement(databaseName).initialize(context)
         } else {
-            CachedFirestoreDatabaseManagement(databaseName)
+            CachedFirestoreDatabaseManagement(databaseName).initialize(context)
         }
     }
 
     fun accessDatabaseFromCloud(databaseName: String): CachedFirestoreDatabaseManagement {
-        return CachedFirestoreDatabaseManagement(databaseName)
+        return CachedFirestoreDatabaseManagement(databaseName).initialize(context)
     }
 
     suspend fun downloadDatabase(databaseName: String): OfflineDatabaseManagement {
@@ -65,7 +62,7 @@ class UniqueDatabaseManagement {
         initializeRoomEntities(databaseName, roomDatasets, roomCats, roomPics, roomRepresentativePictures)
         initializeRoomCrossRefs(dbDsRefs, dbCatRefs, dbPicRefs, dsCatRefs)
         downloadedDatabases.add(databaseName)
-        return OfflineDatabaseManagement(databaseName)
+        return OfflineDatabaseManagement(databaseName).initialize(context)
     }
 
     private fun initializeRoomEntities(dbName: String, datasets: List<RoomDatasetWithoutCategories>, categories: List<RoomCategory>, pictures: List<RoomPicture>, representativePictures: List<RoomUnlinkedRepresentativePicture>) {
