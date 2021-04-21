@@ -22,6 +22,7 @@ class LearningSettingsActivity : AppCompatActivity() {
                 .add(R.id.learning_settings_content, fragment)
                 .commit()
         }
+
     }
 }
 
