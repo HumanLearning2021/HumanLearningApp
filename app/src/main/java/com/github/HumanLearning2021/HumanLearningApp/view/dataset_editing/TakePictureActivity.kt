@@ -79,10 +79,10 @@ class TakePictureActivity : AppCompatActivity() {
 
     /**
     The ActivityResultContract which should be used when launching this activity.
-    The launch argument is an Array<String> containing the categories to select from.
+    The launch argument is a list containing the categories to select from.
     The return value is a Pair containing the selected category as a first element and the Uri pointing to the image as a second element
      */
-    object AddPictureContract :
+    object TakePictureContract :
         ActivityResultContract<ArrayList<Category>, Pair<Category, Uri>?>() {
         override fun createIntent(context: Context, input: ArrayList<Category>?): Intent =
             Intent(context, TakePictureActivity::class.java).putParcelableArrayListExtra(
