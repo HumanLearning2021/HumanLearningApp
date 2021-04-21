@@ -6,6 +6,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -137,6 +138,13 @@ class CategoriesEditingFragment : Fragment() {
         binding.buttonSubmitList.setOnClickListener {
             saveData()
         }
+
+        /*
+        //TODO: use binding
+        parentActivity.findViewById<Button>(R.id.button_remove).setOnClickListener(this::removeView)
+
+
+         */
     }
 
     companion object {

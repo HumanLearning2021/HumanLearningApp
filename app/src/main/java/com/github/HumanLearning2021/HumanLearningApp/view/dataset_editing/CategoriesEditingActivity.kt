@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class CategoriesEditingActivity : AppCompatActivity() {
-
+    lateinit var fragment: CategoriesEditingFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +30,7 @@ class CategoriesEditingActivity : AppCompatActivity() {
             val datasetId = extras["dataset_id"] as String
 
             if (savedInstanceState == null) {
-                val fragment = CategoriesEditingFragment.newInstance(datasetId)
+                fragment = CategoriesEditingFragment.newInstance(datasetId)
                 supportFragmentManager
                     .beginTransaction()
                     .add(R.id.categories_editing_content, fragment)
@@ -38,5 +38,12 @@ class CategoriesEditingActivity : AppCompatActivity() {
             }
         }
     }
+
+    //this is a quick hack to be able to use it in delete button's XML. Will be changed when introducing navigation component
+    fun removeView(view: View) {
+        fragment.removeView(view)
+    }
+
+
 }
 
