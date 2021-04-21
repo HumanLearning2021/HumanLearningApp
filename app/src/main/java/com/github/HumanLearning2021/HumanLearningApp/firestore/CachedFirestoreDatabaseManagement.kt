@@ -2,20 +2,26 @@ package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.content.Context
 import android.net.Uri
-import androidx.test.core.app.ApplicationProvider
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Converters
 import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 
 class CachedFirestoreDatabaseManagement internal constructor(
-    dbName: String
+    val dbName: String
 ): FirestoreDatabaseManagement(FirestoreDatabaseService(dbName)) {
 
-    private val context: Context = ApplicationProvider.getApplicationContext()
-    private val cache = CachePictureRepository(dbName, context)
+    private lateinit var cache: PictureRepository
     private val cachedPictures: MutableMap<String, FirestoreCategorizedPicture> = mutableMapOf()
+
+    /**
+     * Should be called in onCreate where the cached database management is used
+     * @param context: the context of the calling application
+     */
+    fun initialize(context: Context) {
+        cache = CachePictureRepository(this.dbName, context)
+    }
 
     override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
         require(pictureId is String)

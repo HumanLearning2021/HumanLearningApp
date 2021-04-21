@@ -178,12 +178,13 @@ class OfflineDatabaseService internal constructor(
         categoryDao.insertAll(RoomUnlinkedRepresentativePicture(getID(), picture, cat.categoryId))
     }
 
-    override suspend fun getDatasets(): Set<Dataset> {
+    override suspend fun getDatasets(): Set<OfflineDataset> {
         return databaseDao.loadByName(dbName)!!.datasets.map { d -> fromDataset(datasetDao.loadById(d.datasetId)!!) }.toSet()
     }
 
     override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): OfflineDataset {
         datasetDao.delete(RoomDatasetCategoriesCrossRef(dataset.id as String, category.id as String))
+        Thread.sleep(1000)
         val ds = datasetDao.loadById(dataset.id as String) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
         return fromDataset(ds)
     }

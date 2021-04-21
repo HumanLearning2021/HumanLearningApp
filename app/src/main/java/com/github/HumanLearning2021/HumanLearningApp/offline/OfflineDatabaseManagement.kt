@@ -28,7 +28,7 @@ class OfflineDatabaseManagement internal constructor (
         return databaseService.getPicture(pictureId)
     }
 
-    override suspend fun getPictureIds(category: Category): List<Any> {
+    override suspend fun getPictureIds(category: Category): List<String> {
         require(category is OfflineCategory)
         return try {
             databaseService.getPictureIds(category)

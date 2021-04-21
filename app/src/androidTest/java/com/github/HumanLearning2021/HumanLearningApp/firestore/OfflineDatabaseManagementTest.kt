@@ -5,18 +5,18 @@ import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineDemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineScratchDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
-import com.github.HumanLearning2021.HumanLearningApp.model.hasName
+import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategory
+import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDataset
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomEmptyHLDatabase
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.*
@@ -49,13 +49,16 @@ class OfflineDatabaseManagementTest {
     lateinit var fakeCategory: FirestoreCategory
     lateinit var fakeDataset: FirestoreDataset
 
+    init {
+        dlDemo()
+        Thread.sleep(2000) //wait for download to finish
+    }
+
     @Before
     fun setUp() {
-        dlDemo()
         RoomOfflineDatabase.getDatabase(ApplicationProvider.getApplicationContext()).databaseDao().insertAll(
             RoomEmptyHLDatabase("offlineScratch")
         )
-        Thread.sleep(5000)
         hiltRule.inject()
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
@@ -65,7 +68,9 @@ class OfflineDatabaseManagementTest {
 
     @After
     fun teardown() {
-        RoomOfflineDatabase.getDatabase(ApplicationProvider.getApplicationContext()).clearAllTables()
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        RoomOfflineDatabase.getDatabase(context).clearAllTables()
+        PictureRepository("offlineScratch", context).clear()
         Thread.sleep(1000) //wait for above method to complete
     }
 
@@ -87,7 +92,23 @@ class OfflineDatabaseManagementTest {
         val appleCategory = demoManagement.getCategoryById(appleCategoryId)
         requireNotNull(appleCategory, { "category of apples no found in demo database" })
         val pic = demoManagement.getPicture(appleCategory)
-        MatcherAssert.assertThat(pic, hasCategory(Matchers.equalTo(appleCategory)))
+        MatcherAssert.assertThat(pic!!.category.id, Matchers.equalTo(appleCategory.id))
+    }
+
+    @Test
+    fun test_getPictureIds() = runBlocking {
+        val ids = demoManagement.getPictureIds(demoManagement.getCategoryById(appleCategoryId)!!)
+        MatcherAssert.assertThat(ids, Matchers.hasSize(5))
+        MatcherAssert.assertThat(ids, Matchers.containsInAnyOrder("apple01", "apple02", "apple03", "weird_apple", "minecraft_apple"))
+    }
+
+    @Test
+    fun test_getPictureById() = runBlocking {
+        val appleCategory = demoManagement.getCategoryById(appleCategoryId) as OfflineCategory
+        requireNotNull(appleCategory, { "category of apples no found in demo database" })
+        val picId = demoManagement.getPictureIds(appleCategory).random()
+        val pic = demoManagement.getPicture(picId)
+        MatcherAssert.assertThat(pic!!.category.id, Matchers.equalTo(appleCategory.id))
     }
 
     @Test
@@ -98,9 +119,7 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_getRepresentativePicture() = runBlocking {
         val appleCategory = demoManagement.getCategoryById(appleCategoryId)
-        MatcherAssert.assertThat(demoManagement.getRepresentativePicture(appleCategoryId), hasCategory(
-            Matchers.equalTo(appleCategory)
-        )
+        MatcherAssert.assertThat(demoManagement.getRepresentativePicture(appleCategoryId)!!.category.id, equalTo(appleCategory!!.id)
         )
     }
 
@@ -136,7 +155,7 @@ class OfflineDatabaseManagementTest {
         } finally {
             tmp.delete()
         }
-        MatcherAssert.assertThat(pic, hasCategory(Matchers.equalTo(cat)))
+        MatcherAssert.assertThat(pic.category.id, equalTo(cat.id))
     }
 
     @Test
@@ -182,7 +201,7 @@ class OfflineDatabaseManagementTest {
         val cat = demoManagement.getCategoryById(appleCategoryId)
         val pics = demoManagement.getAllPictures(cat!!)
         MatcherAssert.assertThat(pics, Matchers.hasSize(5))
-        MatcherAssert.assertThat(pics, Matchers.hasItems(hasCategory(Matchers.equalTo(cat))))
+        MatcherAssert.assertThat(pics.map { p -> p.category.id }, Matchers.hasItems(Matchers.equalTo(cat.id)))
     }
 
     @Test
@@ -212,7 +231,7 @@ class OfflineDatabaseManagementTest {
             tmp.delete()
         }
         scratchManagement.removePicture(pic)
-        MatcherAssert.assertThat(scratchManagement.getPicture(cat), Matchers.equalTo(null))
+        MatcherAssert.assertThat(scratchManagement.getPicture(pic.id), Matchers.equalTo(null))
     }
 
     @Test
@@ -224,19 +243,6 @@ class OfflineDatabaseManagementTest {
         }, {
             MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
         })
-    }
-
-    @Test
-    fun test_getPictureIds() = runBlocking {
-        val ids = demoManagement.getPictureIds(demoManagement.getCategoryById(appleCategoryId)!!)
-        MatcherAssert.assertThat(ids, Matchers.hasSize(5))
-        MatcherAssert.assertThat(ids, Matchers.containsInAnyOrder("apple01", "apple02", "apple03", "weird_apple", "minecraft_apple"))
-    }
-
-    @Test
-    fun test_getPictureById() = runBlocking {
-        val pic = demoManagement.getPicture("apple01")!!
-        MatcherAssert.assertThat(pic.category, Matchers.equalTo(demoManagement.getCategoryById(appleCategoryId)))
     }
 
     @Test
@@ -322,18 +328,18 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_removeCategoryFromDataset_datasetNotPresent() = runBlocking {
-        val cat1 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
-        val cat2 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
-        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf(cat1, cat2))
+        val cat1 = scratchManagement.putCategory(getRandomString())
+        val cat2 = scratchManagement.putCategory(getRandomString())
+        val fakeDs = OfflineDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
         val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
         MatcherAssert.assertThat(res.categories, Matchers.equalTo(setOf(cat1)))
     }
 
     @Test
     fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
-        val cat1 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
-        val cat2 = fakeCategory
-        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf(cat1, cat2))
+        val cat1 = scratchManagement.putCategory(getRandomString())
+        val cat2 = Converters.fromCategory(fakeCategory)
+        val fakeDs = OfflineDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
         val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
         MatcherAssert.assertThat(res.categories, Matchers.equalTo(setOf(cat1)))
     }
@@ -346,8 +352,9 @@ class OfflineDatabaseManagementTest {
         scratchManagement.removeCategoryFromDataset(ds, cat2)
         val cats = scratchManagement.getDatasetById(ds.id)!!.categories
         MatcherAssert.assertThat(cats.size, Matchers.equalTo(1))
-        assert(cats.contains(cat1))
-        assert(!cats.contains(cat2))
+        val catIds = cats.map { c -> c.id }
+        assert(catIds.contains(cat1.id))
+        assert(!catIds.contains(cat2.id))
     }
 
     @Test

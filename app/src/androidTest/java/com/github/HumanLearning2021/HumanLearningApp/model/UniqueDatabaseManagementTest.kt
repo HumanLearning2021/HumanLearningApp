@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
@@ -30,7 +31,9 @@ class UniqueDatabaseManagementTest {
 
     @After
     fun teardown() {
-        RoomOfflineDatabase.getDatabase(ApplicationProvider.getApplicationContext()).clearAllTables()
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        context.cacheDir.deleteRecursively()
+        RoomOfflineDatabase.getDatabase(context).clearAllTables()
         Thread.sleep(1000) //wait for above method to complete
     }
 

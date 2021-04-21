@@ -9,7 +9,9 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
+import androidx.test.core.app.ApplicationProvider
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,6 +52,10 @@ class DisplayDatasetActivity : AppCompatActivity() {
         checkIntentExtras(intent.extras)
 
         var representativePictures = setOf<CategorizedPicture>()
+
+        if (dbManagement is CachedFirestoreDatabaseManagement) {
+            (dbManagement as CachedFirestoreDatabaseManagement).initialize(this.applicationContext)
+        }
 
         lifecycleScope.launch {
             dataset = dbManagement.getDatasetById(datasetId)!!

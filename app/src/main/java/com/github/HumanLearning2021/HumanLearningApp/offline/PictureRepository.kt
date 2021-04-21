@@ -52,4 +52,8 @@ open class PictureRepository(private val dbName: String, private val context: Co
             null
         }
     }
+
+    fun clear(): Boolean {
+        return folder.deleteRecursively()
+    }
 }

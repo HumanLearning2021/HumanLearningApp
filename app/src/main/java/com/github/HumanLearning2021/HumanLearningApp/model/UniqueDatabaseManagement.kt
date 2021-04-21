@@ -14,6 +14,9 @@ class UniqueDatabaseManagement {
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val room = RoomOfflineDatabase.getDatabase(context)
+    val databaseDao = room.databaseDao()
+    val datasetDao = room.datasetDao()
+    val categoryDao = room.categoryDao()
 
     private val downloadedDatabases: MutableList<String> = mutableListOf()
 
@@ -38,9 +41,6 @@ class UniqueDatabaseManagement {
         val firestoreDbManagement =
             FirestoreDatabaseManagement(FirestoreDatabaseService(databaseName))
         val pictureRepository = PictureRepository(databaseName, context)
-        val databaseDao = room.databaseDao()
-        val datasetDao = room.datasetDao()
-        val categoryDao = room.categoryDao()
 
         val datasets = firestoreDbManagement.getDatasets()
         val categories = firestoreDbManagement.getCategories()
@@ -62,18 +62,26 @@ class UniqueDatabaseManagement {
                 RoomUnlinkedRepresentativePicture(pic.id as String, pictureRepository.savePicture(pic as FirestoreCategorizedPicture), pic.category.id)
             }
 
-        databaseDao.insertAll(RoomEmptyHLDatabase(databaseName))
-        datasetDao.insertAll(*roomDatasets.toTypedArray())
-        categoryDao.insertAll(*roomCats.toTypedArray())
-        categoryDao.insertAll(*roomPics.toTypedArray())
-        categoryDao.insertAll(*roomRepresentativePictures.toTypedArray())
+        initializeRoomEntities(databaseName, roomDatasets, roomCats, roomPics, roomRepresentativePictures)
+        initializeRoomCrossRefs(dbDsRefs, dbCatRefs, dbPicRefs, dsCatRefs)
+        downloadedDatabases.add(databaseName)
+        return OfflineDatabaseManagement(databaseName)
+    }
+
+    private fun initializeRoomEntities(dbName: String, datasets: List<RoomDatasetWithoutCategories>, categories: List<RoomCategory>, pictures: List<RoomPicture>, representativePictures: List<RoomUnlinkedRepresentativePicture>) {
+
+        databaseDao.insertAll(RoomEmptyHLDatabase(dbName))
+        datasetDao.insertAll(*datasets.toTypedArray())
+        categoryDao.insertAll(*categories.toTypedArray())
+        categoryDao.insertAll(*pictures.toTypedArray())
+        categoryDao.insertAll(*representativePictures.toTypedArray())
+    }
+
+    private fun initializeRoomCrossRefs(dbDsRefs: List<RoomDatabaseDatasetsCrossRef>, dbCatRefs: List<RoomDatabaseCategoriesCrossRef>, dbPicRefs: List<RoomDatabasePicturesCrossRef>, dsCatRefs: List<RoomDatasetCategoriesCrossRef>) {
         databaseDao.insertAll(*dbDsRefs.toTypedArray())
         databaseDao.insertAll(*dbCatRefs.toTypedArray())
         databaseDao.insertAll(*dbPicRefs.toTypedArray())
         datasetDao.insertAll(*dsCatRefs.toTypedArray())
-
-        downloadedDatabases.add(databaseName)
-        return OfflineDatabaseManagement(databaseName)
     }
 
     fun removeOfflineDatabase(databaseName: String) {
