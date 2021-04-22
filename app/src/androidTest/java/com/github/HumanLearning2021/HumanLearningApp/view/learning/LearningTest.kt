@@ -29,8 +29,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-// TODO: fix
-//@FlakyTest
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)

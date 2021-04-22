@@ -93,6 +93,8 @@ class LearningActivity : AppCompatActivity() {
 
     private fun initImageView(catIvId: Int, cat: Category): ImageView {
         val catIv = findViewById<ImageView>(catIvId)
+
+        // TODO (next sprint) make this less hacky
         // The mechanism to verify that the classification is correct is the comparison between
         // the contentDescription of the target ImageView and the text carried in the drag & drop
         // see LearningActivity::dropCallback
@@ -156,6 +158,7 @@ class LearningActivity : AppCompatActivity() {
         setOpacity(v, opaque)
         Log.d(localClassName, "dropped : ${item.text} on category: ${v.contentDescription}")
 
+        // TODO (next sprint) make this less hacky
         // the classification is considered correct if the text carried by the drag
         // is equal to the contentDescription of the target ImageView
         val res = item.text == v.contentDescription
@@ -194,6 +197,7 @@ class LearningActivity : AppCompatActivity() {
             val clipDataLabel = "My Clip Data"
             return when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    // TODO (next sprint) change this to setCurrentCategory in presenter
                     val item = ClipData.Item(view.contentDescription)
                     val dragData = ClipData(
                         clipDataLabel,

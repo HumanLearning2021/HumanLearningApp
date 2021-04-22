@@ -21,6 +21,8 @@ data class FirestoreCategorizedPicture internal constructor(
         Glide.with(activity)
             .load(Firebase.storage.getReferenceFromUrl(url))
             .into(imageView)
-        imageView.contentDescription = url
+        // TODO uncomment if necessary (but interacts with learning activity)
+        // and for accessibility it's better to make contentDescription human readable
+        // imageView.contentDescription = url
     }
 }
