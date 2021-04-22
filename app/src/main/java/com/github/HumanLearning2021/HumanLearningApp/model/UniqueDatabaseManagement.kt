@@ -34,7 +34,7 @@ class UniqueDatabaseManagement(private val context: Context) {
         }
     }
 
-    fun accessDatabaseFromCloud(databaseName: String): CachedFirestoreDatabaseManagement {
+    fun accessCloudDatabase(databaseName: String): CachedFirestoreDatabaseManagement {
         return CachedFirestoreDatabaseManagement(databaseName).initialize(context)
     }
 
