@@ -12,8 +12,8 @@ import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategory
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDataset
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
-import com.github.HumanLearning2021.HumanLearningApp.room.RoomEmptyHLDatabase
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
@@ -31,19 +31,19 @@ import javax.inject.Inject
 @RunWith(AndroidJUnit4::class)
 class OfflineDatabaseManagementTest {
 
-    private val context = ApplicationProvider.getApplicationContext<Context>()
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
 
-    private fun dlDemo() = runBlocking {
-        UniqueDatabaseManagement(ApplicationProvider.getApplicationContext()).downloadDatabase("demo")
-    }
+    private fun dlDatasets() = runBlocking {
+        UniqueDatabaseManagement(ApplicationProvider.getApplicationContext()).apply{
+            downloadDatabase("demo")
+        }}
 
     @Inject
     @OfflineDemoDatabase
     lateinit var demoManagement: DatabaseManagement
 
-    @Inject
-    @OfflineScratchDatabase
-    lateinit var scratchManagement: DatabaseManagement
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -52,31 +52,17 @@ class OfflineDatabaseManagementTest {
     lateinit var fakeCategory: FirestoreCategory
     lateinit var fakeDataset: FirestoreDataset
 
-    init {
-        dlDemo()
-        Thread.sleep(2000) //wait for download to finish
-    }
-
     @Before
-    fun setUp() {
-        RoomOfflineDatabase.getDatabase(context).databaseDao().insertAll(
-            RoomEmptyHLDatabase("offlineScratch")
-        )
+    fun setUp() = runBlocking {
         hiltRule.inject()
+        RoomOfflineDatabase.getDatabase(context).clearAllTables()
+        PictureRepository("demo", context).clear()
+        dlDatasets()
         (demoManagement as OfflineDatabaseManagement).initialize(context)
-        (scratchManagement as OfflineDatabaseManagement).initialize(context)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")
         fakeDataset = FirestoreDataset("oopsy/oopsy", "oopsy", "oopsy", setOf())
-    }
-
-    @After
-    fun teardown() {
-        RoomOfflineDatabase.getDatabase(context).clearAllTables()
-        PictureRepository("demo", context).clear()
-        PictureRepository("offlineScratch", context).clear()
-        Thread.sleep(1000) //wait for above method to complete
     }
 
     private fun getRandomString() = "${UUID.randomUUID()}"
@@ -84,7 +70,7 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_getPicture_categoryNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.getPicture(FirestoreCategory("path", getRandomString(), getRandomString()))
+            demoManagement.getPicture(FirestoreCategory("path", getRandomString(), getRandomString()))
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
@@ -124,7 +110,8 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_getRepresentativePicture() = runBlocking {
         val appleCategory = demoManagement.getCategoryById(appleCategoryId)
-        MatcherAssert.assertThat(demoManagement.getRepresentativePicture(appleCategoryId)!!.category.id, equalTo(appleCategory!!.id)
+        MatcherAssert.assertThat(
+            demoManagement.getRepresentativePicture(appleCategoryId)!!.category.id, equalTo(appleCategory!!.id)
         )
     }
 
@@ -133,7 +120,7 @@ class OfflineDatabaseManagementTest {
         runCatching {
             val tmp = File.createTempFile("meow", ".png")
             val uri = Uri.fromFile(tmp)
-            scratchManagement.putPicture(uri, FirestoreCategory("path", getRandomString(), getRandomString()))
+            demoManagement.putPicture(uri, FirestoreCategory("path", getRandomString(), getRandomString()))
             tmp.delete()
         }.fold({
             Assert.fail("unexpected successful completion")
@@ -146,7 +133,7 @@ class OfflineDatabaseManagementTest {
     fun test_putPicture() = runBlocking {
         val name = getRandomString()
         val ctx = ApplicationProvider.getApplicationContext<Context>()
-        val cat = scratchManagement.putCategory(name)
+        val cat = demoManagement.putCategory(name)
 
         val tmp = File.createTempFile("meow", ".png")
         val pic = try {
@@ -156,7 +143,7 @@ class OfflineDatabaseManagementTest {
                 }
             }
             val uri = Uri.fromFile(tmp)
-            scratchManagement.putPicture(uri, cat)
+            demoManagement.putPicture(uri, cat)
         } finally {
             tmp.delete()
         }
@@ -181,7 +168,7 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_putCategory() = runBlocking {
         val name = getRandomString()
-        MatcherAssert.assertThat(scratchManagement.putCategory(name), hasName(name))
+        MatcherAssert.assertThat(demoManagement.putCategory(name), hasName(name))
     }
 
     @Test
@@ -193,7 +180,7 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_getAllPictures_categoryNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.getAllPictures(fakeCategory)
+            demoManagement.getAllPictures(fakeCategory)
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
@@ -211,17 +198,17 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_removeCategory() = runBlocking {
-        val cat = scratchManagement.putCategory(getRandomString())
-        requireNotNull(scratchManagement.getCategoryById(cat.id), {"category was not put into database"})
-        scratchManagement.removeCategory(cat)
-        MatcherAssert.assertThat(scratchManagement.getCategoryById(cat.id), Matchers.equalTo(null))
+        val cat = demoManagement.putCategory(getRandomString())
+        requireNotNull(demoManagement.getCategoryById(cat.id), {"category was not put into database"})
+        demoManagement.removeCategory(cat)
+        MatcherAssert.assertThat(demoManagement.getCategoryById(cat.id), Matchers.equalTo(null))
     }
 
     @Test
     fun test_removePicture() = runBlocking {
         val name = getRandomString()
         val ctx = ApplicationProvider.getApplicationContext<Context>()
-        val cat = scratchManagement.putCategory(name)
+        val cat = demoManagement.putCategory(name)
 
         val tmp = File.createTempFile("meow", ".png")
         val pic = try {
@@ -231,18 +218,18 @@ class OfflineDatabaseManagementTest {
                 }
             }
             val uri = Uri.fromFile(tmp)
-            scratchManagement.putPicture(uri, cat)
+            demoManagement.putPicture(uri, cat)
         } finally {
             tmp.delete()
         }
-        scratchManagement.removePicture(pic)
-        MatcherAssert.assertThat(scratchManagement.getPicture(pic.id), Matchers.equalTo(null))
+        demoManagement.removePicture(pic)
+        MatcherAssert.assertThat(demoManagement.getPicture(pic.id), Matchers.equalTo(null))
     }
 
     @Test
     fun test_getPictureIds_throwsIfCategoryNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.getAllPictures(fakeCategory)
+            demoManagement.getAllPictures(fakeCategory)
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
@@ -253,13 +240,14 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_putDataset() = runBlocking {
         val name = getRandomString()
-        val ds = scratchManagement.putDataset(name, setOf())
-        MatcherAssert.assertThat(scratchManagement.getDatasetById(ds.id)!!.name, Matchers.equalTo(name))
+        val ds = demoManagement.putDataset(name, setOf())
+        MatcherAssert.assertThat(demoManagement.getDatasetById(ds.id)!!.name, Matchers.equalTo(name))
     }
 
     @Test
     fun test_getDatasetById() = runBlocking {
-        MatcherAssert.assertThat(demoManagement.getDatasetById("PzuR0B48GpYN5ERxM3DW"), Matchers.not(
+        MatcherAssert.assertThat(
+            demoManagement.getDatasetById("PzuR0B48GpYN5ERxM3DW"), Matchers.not(
             Matchers.equalTo(null)
         )
         )
@@ -272,16 +260,16 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_deleteDataset() = runBlocking {
-        val ds = scratchManagement.putDataset(getRandomString(), setOf())
-        requireNotNull(scratchManagement.getDatasetById(ds.id))
-        scratchManagement.deleteDataset(ds.id)
-        MatcherAssert.assertThat(scratchManagement.getDatasetById(ds.id), Matchers.equalTo(null))
+        val ds = demoManagement.putDataset(getRandomString(), setOf())
+        requireNotNull(demoManagement.getDatasetById(ds.id))
+        demoManagement.deleteDataset(ds.id)
+        MatcherAssert.assertThat(demoManagement.getDatasetById(ds.id), Matchers.equalTo(null))
     }
 
     @Test
     fun test_putRepresentativePicture_categoryNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.putRepresentativePicture(Uri.EMPTY, fakeCategory)
+            demoManagement.putRepresentativePicture(Uri.EMPTY, fakeCategory)
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
@@ -293,7 +281,7 @@ class OfflineDatabaseManagementTest {
     fun test_putRepresentativePicture() = runBlocking {
         val randomCategoryName = getRandomString()
         val ctx = ApplicationProvider.getApplicationContext<Context>()
-        val cat = scratchManagement.putCategory(randomCategoryName)
+        val cat = demoManagement.putCategory(randomCategoryName)
         val tmp = File.createTempFile("droid", ".png")
         try {
             ctx.resources.openRawResource(R.drawable.fork).use { img ->
@@ -302,12 +290,13 @@ class OfflineDatabaseManagementTest {
                 }
             }
             val uri = Uri.fromFile(tmp)
-            scratchManagement.putRepresentativePicture(uri, cat)
+            demoManagement.putRepresentativePicture(uri, cat)
         } finally {
             tmp.delete()
         }
 
-        MatcherAssert.assertThat(scratchManagement.getRepresentativePicture(cat.id), Matchers.not(
+        MatcherAssert.assertThat(
+            demoManagement.getRepresentativePicture(cat.id), Matchers.not(
             Matchers.equalTo(null)
         )
         )
@@ -333,29 +322,29 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_removeCategoryFromDataset_datasetNotPresent() = runBlocking {
-        val cat1 = scratchManagement.putCategory(getRandomString())
-        val cat2 = scratchManagement.putCategory(getRandomString())
+        val cat1 = demoManagement.putCategory(getRandomString())
+        val cat2 = demoManagement.putCategory(getRandomString())
         val fakeDs = OfflineDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
-        val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
+        val res = demoManagement.removeCategoryFromDataset(fakeDs, cat2)
         MatcherAssert.assertThat(res.categories, Matchers.equalTo(setOf(cat1)))
     }
 
     @Test
     fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
-        val cat1 = scratchManagement.putCategory(getRandomString())
+        val cat1 = demoManagement.putCategory(getRandomString())
         val cat2 = Converters.fromCategory(fakeCategory)
         val fakeDs = OfflineDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
-        val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
+        val res = demoManagement.removeCategoryFromDataset(fakeDs, cat2)
         MatcherAssert.assertThat(res.categories, Matchers.equalTo(setOf(cat1)))
     }
 
     @Test
     fun test_removeCategoryFromDataset() = runBlocking {
-        val cat1 = scratchManagement.putCategory(getRandomString())
-        val cat2 = scratchManagement.putCategory(getRandomString())
-        val ds = scratchManagement.putDataset(getRandomString(), setOf(cat1, cat2))
-        scratchManagement.removeCategoryFromDataset(ds, cat2)
-        val cats = scratchManagement.getDatasetById(ds.id)!!.categories
+        val cat1 = demoManagement.putCategory(getRandomString())
+        val cat2 = demoManagement.putCategory(getRandomString())
+        val ds = demoManagement.putDataset(getRandomString(), setOf(cat1, cat2))
+        demoManagement.removeCategoryFromDataset(ds, cat2)
+        val cats = demoManagement.getDatasetById(ds.id)!!.categories
         MatcherAssert.assertThat(cats.size, Matchers.equalTo(1))
         val catIds = cats.map { c -> c.id }
         assert(catIds.contains(cat1.id))
@@ -366,7 +355,7 @@ class OfflineDatabaseManagementTest {
     fun test_editDatasetName_datasetNotPresent() = runBlocking {
         val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
         runCatching {
-            scratchManagement.editDatasetName(fakeDs, getRandomString())
+            demoManagement.editDatasetName(fakeDs, getRandomString())
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
@@ -377,18 +366,18 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_editDatasetName() = runBlocking {
         val ogName = getRandomString()
-        val ds = scratchManagement.putDataset(ogName, setOf())
+        val ds = demoManagement.putDataset(ogName, setOf())
         val newName = getRandomString()
-        MatcherAssert.assertThat(scratchManagement.getDatasetById(ds.id)!!.name, Matchers.equalTo(ogName))
-        scratchManagement.editDatasetName(ds, newName)
-        MatcherAssert.assertThat(scratchManagement.getDatasetById(ds.id)!!.name, Matchers.equalTo(newName))
+        MatcherAssert.assertThat(demoManagement.getDatasetById(ds.id)!!.name, Matchers.equalTo(ogName))
+        demoManagement.editDatasetName(ds, newName)
+        MatcherAssert.assertThat(demoManagement.getDatasetById(ds.id)!!.name, Matchers.equalTo(newName))
     }
 
     @Test
     fun test_addCategoryToDataset_categoryNotPresent() = runBlocking {
         val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
         runCatching {
-            scratchManagement.addCategoryToDataset(fakeDs, fakeCategory)
+            demoManagement.addCategoryToDataset(fakeDs, fakeCategory)
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
