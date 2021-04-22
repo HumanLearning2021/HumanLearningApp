@@ -3,8 +3,9 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 import android.app.Activity
 import android.widget.ImageView
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import javax.inject.Inject
 
@@ -15,10 +16,11 @@ class LearningPresenter @Inject constructor(
 ) {
     // may be set by the view
     var learningMode = LearningMode.PRESENTATION
+
     // must be set by the view
     lateinit var dataset: Dataset
 
-    private var previousCategory : Category? = null
+    private var previousCategory: Category? = null
 
     /**
      * Picks a random picture from the dataset, and displays it on the given view

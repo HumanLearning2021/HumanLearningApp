@@ -149,4 +149,9 @@ class DisplayImageActivityTest {
         }
 
     }
+
+    @Test
+    fun setAsRepresentativePictureButtonWorks() {
+        onView(withId(R.id.display_image_set_representative_picture)).perform(click())
+    }
 }
