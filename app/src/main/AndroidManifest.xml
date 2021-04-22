@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HumanLearning">
+        <activity android:name=".view.Search"></activity>
         <activity android:name=".view.dataset_editing.DisplayImageSetActivity" />
         <activity android:name=".view.dataset_editing.DatasetsOverviewActivity" />
         <activity
