@@ -119,7 +119,7 @@ class CategoriesEditingActivityTest {
     @Test
     fun rowViewIsRemovedWhenRemoveButtonIsClicked() {
         runBlocking {
-            val delayBeforeTestStart: Long = 100
+            val delayBeforeTestStart: Long = 1000
             waitFor(delayBeforeTestStart)
             assumeTrue(categories.size == 1)
             onView(withId(R.id.button_remove)).perform(click())
@@ -153,7 +153,7 @@ class CategoriesEditingActivityTest {
             onView(withId(R.id.button_add)).perform(click())
             onView(withText("")).perform(typeText("new beautiful category"))
             onView(withId(R.id.button_submit_list)).perform(click())
-            waitFor(2000)
+            waitFor(5000)
             dataset = dbManagement.getDatasetById(datasetId)!!
             assert(nbCategories + 1 == dataset.categories.size)
         }
