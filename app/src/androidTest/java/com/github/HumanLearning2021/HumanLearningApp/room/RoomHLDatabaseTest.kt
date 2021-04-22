@@ -4,26 +4,35 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class RoomHLDatabaseTest {
-    private lateinit var db: RoomOfflineDatabase
+    @Inject
+    lateinit var db: RoomOfflineDatabase
+
     private lateinit var databaseDao: DatabaseDao
     private lateinit var datasetDao: DatasetDao
 
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @Before
     fun createDb() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
+        hiltRule.inject()
         databaseDao = db.databaseDao()
         datasetDao = db.datasetDao()
     }
@@ -43,7 +52,6 @@ class RoomHLDatabaseTest {
     @Test
     fun works() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = RoomOfflineDatabase.getDatabase(context)
         val hlDb1 = getRandomDatabaseWithoutDatasets()
         val hlDb2 = getRandomDatabaseWithoutDatasets()
         val ds1 = getRandomDatasetWithoutCategories()

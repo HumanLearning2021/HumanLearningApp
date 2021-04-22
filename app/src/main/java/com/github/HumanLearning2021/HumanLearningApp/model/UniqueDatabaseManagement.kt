@@ -1,19 +1,21 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.content.Context
+import androidx.room.Room
 import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.*
 import com.github.HumanLearning2021.HumanLearningApp.room.*
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 /**
  * @param context: the application context
  */
-class UniqueDatabaseManagement(private val context: Context) {
+class UniqueDatabaseManagement @Inject constructor(@ApplicationContext val context: Context, private val room: RoomOfflineDatabase) {
 
-    private val room = RoomOfflineDatabase.getDatabase(context)
     private val databaseDao = room.databaseDao()
     private val datasetDao = room.datasetDao()
     private val categoryDao = room.categoryDao()
@@ -31,7 +33,7 @@ class UniqueDatabaseManagement(private val context: Context) {
 
     fun accessDatabase(databaseName: String): DatabaseManagement {
         return if (downloadedDatabases.contains(databaseName)) {
-            OfflineDatabaseManagement(OfflineDatabaseService(databaseName, context))
+            OfflineDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
         } else {
             CachedFirestoreDatabaseManagement(databaseName).initialize(context)
         }
@@ -69,7 +71,7 @@ class UniqueDatabaseManagement(private val context: Context) {
         initializeRoomEntities(databaseName, roomDatasets, roomCats, roomPics, roomRepresentativePictures)
         initializeRoomCrossRefs(dbDsRefs, dbCatRefs, dbPicRefs, dsCatRefs)
         downloadedDatabases.add(databaseName)
-        return OfflineDatabaseManagement(OfflineDatabaseService(databaseName, context))
+        return OfflineDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
     }
 
     fun removeOfflineDatabase(databaseName: String) {

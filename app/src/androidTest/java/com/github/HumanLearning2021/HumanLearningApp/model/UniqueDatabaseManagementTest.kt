@@ -8,31 +8,38 @@ import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabase
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
+import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import java.lang.IllegalStateException
+import javax.inject.Inject
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class UniqueDatabaseManagementTest {
 
+    @Inject
+    lateinit var room: RoomOfflineDatabase
+
+    @Inject
+    lateinit var uDbMan: UniqueDatabaseManagement
+
     private val context = ApplicationProvider.getApplicationContext<Context>()
-    private lateinit var uDbMan: UniqueDatabaseManagement
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @Before
     fun setup() {
+        hiltRule.inject()
         context.cacheDir.deleteRecursively()
-        RoomOfflineDatabase.getDatabase(context).clearAllTables()
+        room.clearAllTables()
         Thread.sleep(1000) //wait for above method to complete
-        uDbMan = UniqueDatabaseManagement(context)
     }
 
     @Test
@@ -58,7 +65,7 @@ class UniqueDatabaseManagementTest {
     @Test
     fun offlineDatabaseThrowsIfNotDownloaded() = runBlocking {
         kotlin.runCatching {
-            OfflineDatabaseManagement(OfflineDatabaseService("demo", context))
+            OfflineDatabaseManagement(OfflineDatabaseService("demo", context, room))
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {

@@ -32,18 +32,15 @@ import javax.inject.Inject
 class OfflineDatabaseManagementTest {
 
     @Inject
+    lateinit var room: RoomOfflineDatabase
+
+    @Inject
     @ApplicationContext
     lateinit var context: Context
-
-    private fun dlDatasets() = runBlocking {
-        UniqueDatabaseManagement(ApplicationProvider.getApplicationContext()).apply{
-            downloadDatabase("demo")
-        }}
 
     @Inject
     @OfflineDemoDatabase
     lateinit var demoManagement: DatabaseManagement
-
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -55,14 +52,16 @@ class OfflineDatabaseManagementTest {
     @Before
     fun setUp() = runBlocking {
         hiltRule.inject()
-        RoomOfflineDatabase.getDatabase(context).clearAllTables()
-        PictureRepository("demo", context).clear()
-        dlDatasets()
-        (demoManagement as OfflineDatabaseManagement)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")
         fakeDataset = FirestoreDataset("oopsy/oopsy", "oopsy", "oopsy", setOf())
+    }
+
+    @After
+    fun teardown() {
+        room.clearAllTables()
+        PictureRepository("demo", context).clear()
     }
 
     private fun getRandomString() = "${UUID.randomUUID()}"

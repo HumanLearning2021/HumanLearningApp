@@ -12,14 +12,15 @@ import com.google.firebase.auth.FirebaseUser
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import java.util.*
+import javax.inject.Inject
 
 class OfflineDatabaseService internal constructor(
     val dbName: String,
-    val context: Context
+    val context: Context,
+    val room: RoomOfflineDatabase
 ): DatabaseService {
 
     private val pictureRepository: PictureRepository
-    private val room: RoomOfflineDatabase
     private val databaseDao: DatabaseDao
     private val datasetDao: DatasetDao
     private val categoryDao: CategoryDao
@@ -27,7 +28,6 @@ class OfflineDatabaseService internal constructor(
 
     init {
         pictureRepository = PictureRepository(dbName, context)
-        room = RoomOfflineDatabase.getDatabase(context)
         databaseDao = room.databaseDao()
         databaseDao.loadByName(dbName) ?: throw IllegalStateException("The database $dbName has not yet been downloaded.")
         datasetDao = room.datasetDao()

@@ -1,8 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.room
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
@@ -18,22 +16,4 @@ abstract class RoomOfflineDatabase : RoomDatabase() {
     abstract fun datasetDao(): DatasetDao
     abstract fun userDao(): UserDao
     abstract fun databaseDao(): DatabaseDao
-
-    companion object {
-        // Singleton to prevent multiple instances of the database opening at the same time
-        @Volatile
-        private var INSTANCE: RoomOfflineDatabase? = null
-
-        fun getDatabase(context: Context): RoomOfflineDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    RoomOfflineDatabase::class.java,
-                    "general_offline_database"
-                ).build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }
 }

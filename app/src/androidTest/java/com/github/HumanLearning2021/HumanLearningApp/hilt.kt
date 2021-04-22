@@ -1,13 +1,19 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
 import android.content.Context
+import androidx.room.Room
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.FirebaseApp
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import javax.inject.Singleton
 
 @TestInstallIn(
     components = [ SingletonComponent::class ],
@@ -33,9 +39,5 @@ object DatabaseServiceTestModule {
 
     @OfflineDemoDatabase
     @Provides
-    fun provideOfflineDemoService(@ApplicationContext context: Context) = DatabaseServiceModule.provideOfflineDemoService(context)
-
-    @OfflineScratchDatabase
-    @Provides
-    fun provideOfflineScratchService(@ApplicationContext context: Context) = DatabaseServiceModule.provideOfflineScratchService(context)
+    fun provideDemoDatabase(@ApplicationContext context: Context, @GlobalDatabaseManagement uDb: UniqueDatabaseManagement) = DatabaseServiceModule.provideOfflineDemoService(context, uDb)
 }
