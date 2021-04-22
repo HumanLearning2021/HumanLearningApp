@@ -4,36 +4,34 @@ import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.TestUtils
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
-import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningDatasetSelectionActivity
-import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningSettingsActivity
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.runBlocking
+import dagger.hilt.android.testing.*
 import org.hamcrest.CoreMatchers
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
-import javax.inject.Inject
 
-
+@UninstallModules(DatabaseManagementModule::class)
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class DatasetsOverviewActivityTest {
@@ -47,6 +45,10 @@ class DatasetsOverviewActivityTest {
             DatasetsOverviewActivity::class.java
         )
     )
+
+    @BindValue
+    @Demo2Database
+    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     @Before
     fun setUp() {
@@ -67,8 +69,7 @@ class DatasetsOverviewActivityTest {
         assertDisplayed(R.id.datasetsOverview_fragment)
         assertDisplayed(R.id.datasetsOverviewButton)
     }
-    //Waiting PR #103
-    /*
+
     @Test
     fun rightActivityIsStartedAfterCreateButtonIsClicked() {
         onView(withId(R.id.datasetsOverviewButton)).perform(click())
@@ -78,7 +79,6 @@ class DatasetsOverviewActivityTest {
 
     @Test
     fun whenClickOnDatasetDisplayDatasetActivity() {
-        waitFor(10000)
         onView(withId(R.id.DatasetList_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
@@ -92,7 +92,6 @@ class DatasetsOverviewActivityTest {
             IntentMatchers.hasExtraWithKey("dataset_id")
         ))
     }
-    */
 
     @Test
     fun onBackPressedWorks() {

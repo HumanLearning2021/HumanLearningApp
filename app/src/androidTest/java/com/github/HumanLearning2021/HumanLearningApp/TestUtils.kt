@@ -5,6 +5,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -40,4 +43,8 @@ object TestUtils {
         }
 
     fun waitFor(millis: Long) = onView(isRoot()).perform(waitForAction(millis))
+
+    fun getFirstDummyDataset() = runBlocking {
+        DummyDatabaseManagement(DummyDatabaseService()).getDatasets().first()
+    }
 }

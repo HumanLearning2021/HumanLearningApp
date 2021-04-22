@@ -32,7 +32,6 @@ import java.io.File
 import java.util.*
 import javax.inject.Inject
 
-
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class CategoriesEditingActivityTest {

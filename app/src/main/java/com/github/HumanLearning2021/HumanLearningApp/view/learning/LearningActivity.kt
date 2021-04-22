@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipDescription
 import android.os.Bundle
@@ -30,7 +31,7 @@ class LearningActivity : AppCompatActivity() {
     lateinit var learningPresenter: LearningPresenter
 
     @Inject
-    @DummyDatabase
+    @Demo2Database
     lateinit var dbMgt: DatabaseManagement
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +65,10 @@ class LearningActivity : AppCompatActivity() {
         audioFeedback.releaseMediaPlayers()
     }
 
+    /**
+     * This method initializes the image views containing the image to sort and the images
+     * representing the target categories.
+     */
     private fun initLearningViews() {
         lifecycleScope.launch {
             val cats = dataset.categories
@@ -86,38 +91,56 @@ class LearningActivity : AppCompatActivity() {
         }
     }
 
+
     private fun initImageView(catIvId: Int, cat: Category): ImageView {
         val catIv = findViewById<ImageView>(catIvId)
+
+        // TODO (next sprint) make this less hacky
+        // The mechanism to verify that the classification is correct is the comparison between
+        // the contentDescription of the target ImageView and the text carried in the drag & drop
+        // see LearningActivity::dropCallback
         catIv.contentDescription = cat.name
-        val self = this
+        Log.d(localClassName, "init contentDescription to ${cat.name}")
 
         if (catIvId == R.id.learning_im_to_sort) {
             lifecycleScope.launch {
-                learningPresenter.displayNextPicture(self, catIv)
+                learningPresenter.displayNextPicture(this@LearningActivity, catIv)
             }
         } else {
             lifecycleScope.launch {
-                learningPresenter.displayTargetPicture(self, catIv, cat)
+                learningPresenter.displayTargetPicture(this@LearningActivity, catIv, cat)
             }
         }
 
         return catIv
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    /**
+     * This method initializes the image view containing the image to sort
+     */
     private fun initImageToSort(catIvId: Int, cat: Category) {
         initImageView(catIvId, cat).setOnTouchListener(Companion::onImageToSortTouched)
     }
 
+    /**
+     * This method initializes an image view representing a target category
+     */
     private fun initTargetCategory(catIvId: Int, cat: Category) {
         initImageView(catIvId, cat).setOnDragListener(targetOnDragListener)
     }
 
     private val opaque = 1.0f
     private val halfOpaque = opaque / 2
+
+    /**
+     * This is the listener used by a target image view to determine what action to take when
+     * the image view to sort interacts with it
+     */
     private val targetOnDragListener = View.OnDragListener { v, event ->
         when (event.action) {
-            DragEvent.ACTION_DRAG_ENTERED -> dragEnteredCallback(v)
-            DragEvent.ACTION_DRAG_EXITED -> dragExitedCallback(v)
+            DragEvent.ACTION_DRAG_ENTERED -> dragInOutCallback(v, halfOpaque)
+            DragEvent.ACTION_DRAG_EXITED -> dragInOutCallback(v, opaque)
             DragEvent.ACTION_DROP -> dropCallback(event, v)
 
             // DragEvent.ACTION_DRAG_ENDED &
@@ -126,19 +149,26 @@ class LearningActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * This callback is called when the image to sort is dropped on a target ImageView
+     * @param event the DragEvent representing the interaction
+     * @param v The ImageView representing the target category
+     */
     private fun dropCallback(event: DragEvent, v: View): Boolean {
         val item: ClipData.Item = event.clipData.getItemAt(0)
-        v.alpha = opaque
-        v.invalidate()
-        Log.d("dropCallback", "${item.text} vs ${v.contentDescription}")
+        setOpacity(v, opaque)
+        Log.d(localClassName, "dropped : ${item.text} on category: ${v.contentDescription}")
+
+        // TODO (next sprint) make this less hacky
+        // the classification is considered correct if the text carried by the drag
+        // is equal to the contentDescription of the target ImageView
         val res = item.text == v.contentDescription
-        val self = this
         audioFeedback.stopAndPrepareMediaPlayers()
         if (res) {
             audioFeedback.startCorrectFeedback()
             lifecycleScope.launch {
                 learningPresenter.displayNextPicture(
-                    self,
+                    this@LearningActivity,
                     findViewById(R.id.learning_im_to_sort),
                 )
             }
@@ -148,22 +178,27 @@ class LearningActivity : AppCompatActivity() {
         return res
     }
 
-
+    /**
+     * This callback is called when the image to sort enters or leaves a target ImageView
+     * @param v The image view that caused the event
+     * @param opacity the opacity to which the given View will be set, between 0 and 1 (included)
+     */
     private fun dragInOutCallback(v: View, opacity: Float): Boolean {
-        v.alpha = opacity
-        v.invalidate()
+        setOpacity(v, opacity)
         return true
     }
 
-    private fun dragExitedCallback(v: View): Boolean = dragInOutCallback(v, opaque)
-
-    private fun dragEnteredCallback(v: View): Boolean = dragInOutCallback(v, halfOpaque)
-
     companion object {
-        fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
+        private fun setOpacity(v: View, opacity: Float){
+            v.alpha = opacity
+            v.invalidate()
+        }
+
+        private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
             val clipDataLabel = "My Clip Data"
             return when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    // TODO (next sprint) change this to setCurrentCategory in presenter
                     val item = ClipData.Item(view.contentDescription)
                     val dragData = ClipData(
                         clipDataLabel,
@@ -177,6 +212,5 @@ class LearningActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
     }
 }
