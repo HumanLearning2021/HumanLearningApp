@@ -1,6 +1,9 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -12,10 +15,10 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
@@ -25,6 +28,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.util.*
 import javax.inject.Inject
 
 
@@ -57,6 +62,23 @@ class CategoriesEditingActivityTest {
                 if (dsCats.size == 1 && !found) {
                     dataset = ds
                     found = true
+                }
+            }
+            if (!found) {
+                val cat = dbManagement.putCategory("${UUID.randomUUID()}")
+                dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
+                val tmp = File.createTempFile("droid", ".png")
+                try {
+                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork)
+                        .use { img ->
+                            tmp.outputStream().use {
+                                img.copyTo(it)
+                            }
+                        }
+                    val uri = Uri.fromFile(tmp)
+                    dbManagement.putPicture(uri, cat)
+                } finally {
+                    tmp.delete()
                 }
             }
             categories = dataset.categories
