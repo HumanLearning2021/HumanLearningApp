@@ -17,5 +17,5 @@ Then, I refactored and documented the Learning side of the app. It took much lon
 This week, I performed the refactoring of all the activities into fragments, which is the first step to being able to use the navigation component. I had (still having) some issues with merging my teammates' work into my PR, especially the dependency injection part. Other than that, the week went pretty smoothly, but I expect next week will be tricky when implementing the navigation component.
 
 ## Vial, Nicolas
-
+This week I first updated DatasetsOverview and then linked it to other activities. I also made some changes to tests that were not complete and fixed some others. Then I started working on my 2nd issue which is about having nice interfaces on phone as well as on tablet. I clearly didn't have time to finish this part because it takes me much more time than I thought. So I will finish this issue next week by adding the interface changes when the phone or tablet is in landscape mode.
 ## Overall Team: Lessons Learned
