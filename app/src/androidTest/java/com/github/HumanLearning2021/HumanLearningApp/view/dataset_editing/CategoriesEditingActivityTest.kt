@@ -66,19 +66,8 @@ class CategoriesEditingActivityTest {
             if (!found) {
                 val cat = dbManagement.putCategory("${UUID.randomUUID()}")
                 dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
-                val tmp = File.createTempFile("droid", ".png")
-                try {
-                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
-                        tmp.outputStream().use {
-                            img.copyTo(it)
-                        }
-                    }
-
-                    val uri = Uri.fromFile(tmp)
-                    dbManagement.putPicture(uri, cat)
-                } finally {
-                    tmp.delete()
-                }
+                val uri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork)
+                dbManagement.putPicture(uri, cat)
             }
             categories = dataset.categories
             nbCategories = categories.size
