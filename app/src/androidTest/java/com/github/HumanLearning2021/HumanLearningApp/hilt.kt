@@ -41,3 +41,19 @@ object DatabaseServiceTestModule {
     @Provides
     fun provideDemoDatabase(@ApplicationContext context: Context, @GlobalDatabaseManagement uDb: UniqueDatabaseManagement) = DatabaseServiceModule.provideOfflineDemoService(context, uDb)
 }
+
+@TestInstallIn(
+    components = [ SingletonComponent::class ],
+    replaces = [ RoomDatabaseModule::class ],
+)
+@Module
+object RoomDatabaseTestModule {
+    @RoomDatabase
+    @Provides
+    fun provideRoomTestDatabase(@ApplicationContext context: Context): RoomOfflineDatabase =
+        Room.databaseBuilder(
+            context.applicationContext,
+            RoomOfflineDatabase::class.java,
+            "general_offline_database"
+        ).build()
+}

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.MatcherAssert.assertThat
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @RunWith(AndroidJUnit4::class)
 class RoomHLDatabaseTest {
     @Inject
+    @RoomDatabase
     lateinit var db: RoomOfflineDatabase
 
     private lateinit var databaseDao: DatabaseDao

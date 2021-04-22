@@ -47,11 +47,16 @@ annotation class OfflineScratchDatabase
 @Retention(AnnotationRetention.BINARY)
 annotation class GlobalDatabaseManagement
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class RoomDatabase
+
 @Module
 @InstallIn(SingletonComponent::class)
 object RoomDatabaseModule {
     @Provides
     @Singleton
+    @RoomDatabase
     fun provideRoomDatabase(@ApplicationContext context: Context): RoomOfflineDatabase = Room.databaseBuilder(
         context.applicationContext,
         RoomOfflineDatabase::class.java,
@@ -134,11 +139,11 @@ object DatabaseManagementModule {
     fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
     @OfflineDemoDatabase
     @Provides
-    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService, @ApplicationContext context: Context): DatabaseManagement = OfflineDatabaseManagement(db as OfflineDatabaseService)
+    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement = OfflineDatabaseManagement(db as OfflineDatabaseService)
     @OfflineScratchDatabase
     @Provides
-    fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService, @ApplicationContext context: Context): DatabaseManagement = OfflineDatabaseManagement(db as OfflineDatabaseService)
+    fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement = OfflineDatabaseManagement(db as OfflineDatabaseService)
     @GlobalDatabaseManagement
     @Provides
-    fun provideGlobalDatabaseManagement(@ApplicationContext context: Context, room: RoomOfflineDatabase): UniqueDatabaseManagement = UniqueDatabaseManagement(context, room)
+    fun provideGlobalDatabaseManagement(@ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase): UniqueDatabaseManagement = UniqueDatabaseManagement(context, room)
 }

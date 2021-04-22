@@ -14,7 +14,7 @@ import javax.inject.Inject
 /**
  * @param context: the application context
  */
-class UniqueDatabaseManagement @Inject constructor(@ApplicationContext val context: Context, private val room: RoomOfflineDatabase) {
+class UniqueDatabaseManagement constructor(val context: Context, private val room: RoomOfflineDatabase) {
 
     private val databaseDao = room.databaseDao()
     private val datasetDao = room.datasetDao()

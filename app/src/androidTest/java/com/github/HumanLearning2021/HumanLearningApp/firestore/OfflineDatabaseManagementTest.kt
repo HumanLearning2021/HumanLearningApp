@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineDemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategory
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
@@ -32,6 +33,7 @@ import javax.inject.Inject
 class OfflineDatabaseManagementTest {
 
     @Inject
+    @RoomDatabase
     lateinit var room: RoomOfflineDatabase
 
     @Inject
