@@ -52,10 +52,6 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
         var representativePictures = setOf<CategorizedPicture>()
 
-        if (dbManagement is CachedFirestoreDatabaseManagement) {
-            (dbManagement as CachedFirestoreDatabaseManagement).initialize(this.applicationContext)
-        }
-
         lifecycleScope.launch {
             dataset = dbManagement.getDatasetById(datasetId)!!
             findViewById<EditText>(R.id.display_dataset_name).setText(dataset.name)

@@ -17,15 +17,6 @@ class CachedFirestoreDatabaseManagement internal constructor(
     private lateinit var cache: PictureRepository
     private val cachedPictures: MutableMap<String, FirestoreCategorizedPicture> = mutableMapOf()
 
-    /**
-     * Should be called before the cached database management is first used (in onCreate for activities)
-     * @param context: the context of the calling application
-     */
-    fun initialize(context: Context): CachedFirestoreDatabaseManagement {
-        cache = CachePictureRepository(this.dbName, context)
-        return this
-    }
-
     override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
         require(pictureId is String)
         val uri = cache.retrievePicture(pictureId)
