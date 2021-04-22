@@ -75,7 +75,6 @@ class DatasetsOverviewActivityTest {
         onView(withId(R.id.button_submit_list)).perform(click())
     }
 
-    @Ignore("TODO: enable when DatasetListWidget and DisplayDatasetActivity use the same DB")
     @Test
     fun whenClickOnDatasetDisplayDatasetActivity() {
         waitFor(10000)
