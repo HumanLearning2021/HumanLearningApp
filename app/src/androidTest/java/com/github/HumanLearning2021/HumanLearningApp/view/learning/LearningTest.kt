@@ -10,11 +10,17 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDummyDataset
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -24,12 +30,16 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 // TODO: fix
-@FlakyTest
+//@FlakyTest
+@UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class LearningTest {
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
+
+    @BindValue @Demo2Database
+    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     @get:Rule(order = 1)
     val activityScenarioRule: ActivityScenarioRule<LearningActivity> = ActivityScenarioRule(
@@ -40,13 +50,9 @@ class LearningTest {
             .putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
             .putExtra(
                 LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET,
-                getDS()
+                getFirstDummyDataset()
             )
     )
-
-    private fun getDS() = runBlocking {
-        DummyDatabaseManagement(DummyDatabaseService()).getDatasets().first()
-    }
 
     val NUMBER_OF_CATEGORIES = 3
     val CATEGORY_VIEW_CLASS_NAME = "android.widget.ImageView"
