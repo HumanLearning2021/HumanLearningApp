@@ -6,6 +6,7 @@
 During this week, I introduced dependency injection across the codebase using Hilt. This required a shallow but wide scope of work, and thus more care in order not to interfer with other patches. Overall it went well.
 
 ## Jaakik, Marouane
+This Sprint, I have mainly worked on redesigning the Main activity for the Demo to allow for Learner and Admin Mode. I have also started researching and thinking about implementing a basic search activity which will be my main focus next week. 
 
 ## Konrad, Jonas Franz
 During this sprint I prepared the SQL database which will be needed to allow downloading datasets. This was done using Room. I had a bit of trouble implementing relations due to the poor documentation but managed to do it. The next step will be to implement the corresponding databaseService. Images will be stored on the apps external storage and indexed by said database.
