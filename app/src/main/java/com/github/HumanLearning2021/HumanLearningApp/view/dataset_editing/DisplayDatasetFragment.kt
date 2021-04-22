@@ -48,7 +48,7 @@ class DisplayDatasetFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkArguments()
+        datasetId = arguments?.getString(ARG_DSET_ID)!!
 
         var representativePictures = setOf<CategorizedPicture>()
 
@@ -191,9 +191,4 @@ class DisplayDatasetFragment : Fragment() {
         }
     }
 
-    private fun checkArguments() {
-        lifecycleScope.launch {
-            datasetId = arguments?.getString(ARG_DSET_ID)!!
-        }
-    }
 }

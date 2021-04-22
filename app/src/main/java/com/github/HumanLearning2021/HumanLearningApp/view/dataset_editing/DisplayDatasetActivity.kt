@@ -27,7 +27,8 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
         val extras = intent.extras
 
-        checkIntentExtras(savedInstanceState)
+        datasetId = intent.getStringExtra("dataset_id")!!
+        //checkIntentExtras(savedInstanceState)
 
         if (savedInstanceState == null) {
             fragment = DisplayDatasetFragment.newInstance(datasetId)
@@ -39,9 +40,13 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
     }
 
+
+    // Not using this if else unlike in the original activity. This was breaking the tests. If
+    // anyone sees what this is feel free to correct it or let me know
     private fun checkIntentExtras(extras: Bundle?) {
         lifecycleScope.launch {
             datasetId = if (extras != null && extras["dataset_id"] is String) {
+                val intent = intent
                 intent.getStringExtra("dataset_id")!!
             } else {
                 "uEwDkGoGADW4hEJoJ6BA"
