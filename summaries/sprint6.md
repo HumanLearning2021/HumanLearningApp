@@ -7,6 +7,7 @@
 ## Jaakik, Marouane
 
 ## Konrad, Jonas Franz
+This week I implemented caching and the ability to download databases. I had some trouble integrating dependency injection to write cleaner code but otherwise it went ok.
 
 ## Lachat, Niels Marco
 This week I started by merging a PR that cleaned the project hierarchy and renamed a few files to have a more coherent project hierarchy.
