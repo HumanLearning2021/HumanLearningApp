@@ -58,9 +58,15 @@ object DatabaseServiceModule {
     @DemoDatabase
     @Provides
     fun provideDemoService(app: FirebaseApp): DatabaseService = FirestoreDatabaseService("demo", app)
+
+
     @Demo2Database
     @Provides
-    fun provideDemo2Service(app: FirebaseApp): DatabaseService = FirestoreDatabaseService("demo2", app)
+    // TODO change back once firestore quota is up again
+//    fun provideDemo2Service(app: FirebaseApp): DatabaseService = FirestoreDatabaseService("demo2", app)
+    fun provideDemo2Service(app: FirebaseApp): DatabaseService = provideDummyService()
+
+
     @ScratchDatabase
     @Provides
     fun provideScratchService(app: FirebaseApp): DatabaseService = FirestoreDatabaseService("scratch", app)
@@ -75,9 +81,14 @@ object DatabaseManagementModule {
     @DemoDatabase
     @Provides
     fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+
     @Demo2Database
     @Provides
-    fun provideDemo2Service(@Demo2Database db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+    // TODO change back once firestore quota is up again
+//    fun provideDemo2Service(@Demo2Database db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+    fun provideDemo2Service(@Demo2Database db: DatabaseService): DatabaseManagement =
+        DummyDatabaseManagement(db)
+
     @ScratchDatabase
     @Provides
     fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)

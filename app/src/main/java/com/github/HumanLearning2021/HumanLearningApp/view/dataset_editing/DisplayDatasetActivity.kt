@@ -145,7 +145,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
             datasetId = if (extras != null && extras["dataset_id"] is String) {
                 intent.getStringExtra("dataset_id")!!
             } else {
-                "uEwDkGoGADW4hEJoJ6BA"
+                "kitchen utensils" // default dataset id
             }
         }
     }

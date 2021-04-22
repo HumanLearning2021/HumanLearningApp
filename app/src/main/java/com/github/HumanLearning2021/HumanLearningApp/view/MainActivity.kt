@@ -17,10 +17,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    fun launchToDisplayDatasetActivity(@Suppress("UNUSED_PARAMETER") view: View) {
-        startActivity(Intent(this, DisplayDatasetActivity::class.java))
-    }
-
     fun launchToLearningActivity(@Suppress("UNUSED_PARAMETER") view: View) {
         startActivity(Intent(this, LearningDatasetSelectionActivity::class.java))
     }

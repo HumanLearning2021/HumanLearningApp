@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.app.Activity
+import android.util.Log
 import android.widget.ImageView
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
@@ -34,7 +35,11 @@ class LearningPresenter @Inject constructor(
             LearningMode.PRESENTATION -> dbMgt.getRepresentativePicture(rndCat.id)
         }
 
-        nextPicture!!.displayOn(activity, view)
+        if(nextPicture != null){
+            nextPicture.displayOn(activity, view)
+        }else{
+            Log.e(this::class.java.simpleName, "No picture found for category ${rndCat.name}")
+        }
         view.contentDescription = rndCat.name
         view.invalidate()
     }
