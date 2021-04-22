@@ -63,6 +63,7 @@ object DatabaseServiceModule {
     @Demo2Database
     @Provides
     // TODO change back once firestore quota is up again
+    @Singleton
 //    fun provideDemo2Service(app: FirebaseApp): DatabaseService = FirestoreDatabaseService("demo2", app)
     fun provideDemo2Service(app: FirebaseApp): DatabaseService = provideDummyService()
 
