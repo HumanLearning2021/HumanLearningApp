@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.hilt
 
+import android.content.Context
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
@@ -10,6 +11,7 @@ import com.google.firebase.FirebaseApp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -70,10 +72,10 @@ object DatabaseServiceModule {
     fun provideScratchService(app: FirebaseApp): DatabaseService = FirestoreDatabaseService("scratch", app)
     @OfflineDemoDatabase
     @Provides
-    fun provideOfflineDemoService(): DatabaseService = OfflineDatabaseService("demo")
+    fun provideOfflineDemoService(@ApplicationContext context: Context): DatabaseService = OfflineDatabaseService("demo", context)
     @OfflineScratchDatabase
     @Provides
-    fun provideOfflineScratchService(): DatabaseService = OfflineDatabaseService("offlineScratch")
+    fun provideOfflineScratchService(@ApplicationContext context: Context): DatabaseService = OfflineDatabaseService("offlineScratch", context)
 }
 
 @Module
@@ -93,14 +95,8 @@ object DatabaseManagementModule {
     fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
     @OfflineDemoDatabase
     @Provides
-    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement {
-        val name = (db as OfflineDatabaseService).dbName
-        return OfflineDatabaseManagement(name)
-    }
+    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement = OfflineDatabaseManagement(db as OfflineDatabaseService)
     @OfflineScratchDatabase
     @Provides
-    fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement {
-        val name = (db as OfflineDatabaseService).dbName
-        return OfflineDatabaseManagement(name)
-    }
+    fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement = OfflineDatabaseManagement(db as OfflineDatabaseService)
 }

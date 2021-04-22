@@ -8,6 +8,9 @@ import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabase
 import com.github.HumanLearning2021.HumanLearningApp.offline.*
 import com.github.HumanLearning2021.HumanLearningApp.room.*
 
+/**
+ * @param context: the application context
+ */
 class UniqueDatabaseManagement(private val context: Context) {
 
     private val room = RoomOfflineDatabase.getDatabase(context)
@@ -28,7 +31,7 @@ class UniqueDatabaseManagement(private val context: Context) {
 
     fun accessDatabase(databaseName: String): DatabaseManagement {
         return if (downloadedDatabases.contains(databaseName)) {
-            OfflineDatabaseManagement(databaseName).initialize(context)
+            OfflineDatabaseManagement(OfflineDatabaseService(databaseName, context))
         } else {
             CachedFirestoreDatabaseManagement(databaseName).initialize(context)
         }
@@ -66,7 +69,7 @@ class UniqueDatabaseManagement(private val context: Context) {
         initializeRoomEntities(databaseName, roomDatasets, roomCats, roomPics, roomRepresentativePictures)
         initializeRoomCrossRefs(dbDsRefs, dbCatRefs, dbPicRefs, dsCatRefs)
         downloadedDatabases.add(databaseName)
-        return OfflineDatabaseManagement(databaseName).initialize(context)
+        return OfflineDatabaseManagement(OfflineDatabaseService(databaseName, context))
     }
 
     fun removeOfflineDatabase(databaseName: String) {

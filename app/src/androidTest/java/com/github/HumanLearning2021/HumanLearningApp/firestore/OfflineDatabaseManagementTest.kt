@@ -58,7 +58,7 @@ class OfflineDatabaseManagementTest {
         RoomOfflineDatabase.getDatabase(context).clearAllTables()
         PictureRepository("demo", context).clear()
         dlDatasets()
-        (demoManagement as OfflineDatabaseManagement).initialize(context)
+        (demoManagement as OfflineDatabaseManagement)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")

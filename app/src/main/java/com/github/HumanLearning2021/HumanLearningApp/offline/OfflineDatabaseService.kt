@@ -14,23 +14,18 @@ import java.lang.IllegalStateException
 import java.util.*
 
 class OfflineDatabaseService internal constructor(
-    val dbName: String
+    val dbName: String,
+    val context: Context
 ): DatabaseService {
 
-    private lateinit var pictureRepository: PictureRepository
-    private lateinit var room: RoomOfflineDatabase
-    private lateinit var databaseDao: DatabaseDao
-    private lateinit var datasetDao: DatasetDao
-    private lateinit var categoryDao: CategoryDao
-    private lateinit var userDao: UserDao
+    private val pictureRepository: PictureRepository
+    private val room: RoomOfflineDatabase
+    private val databaseDao: DatabaseDao
+    private val datasetDao: DatasetDao
+    private val categoryDao: CategoryDao
+    private val userDao: UserDao
 
-    private fun getID() = "${UUID.randomUUID()}"
-
-    /**
-     * Should be called before the offline database service is first used
-     * @param context: the context of the calling application
-     */
-    fun initialize(context: Context): OfflineDatabaseService {
+    init {
         pictureRepository = PictureRepository(dbName, context)
         room = RoomOfflineDatabase.getDatabase(context)
         databaseDao = room.databaseDao()
@@ -38,8 +33,9 @@ class OfflineDatabaseService internal constructor(
         datasetDao = room.datasetDao()
         categoryDao = room.categoryDao()
         userDao = room.userDao()
-        return this
     }
+
+    private fun getID() = "${UUID.randomUUID()}"
 
     /**
      * A function to retrieve a picture from the database given a category

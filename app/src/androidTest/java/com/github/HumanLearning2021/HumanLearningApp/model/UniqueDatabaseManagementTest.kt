@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
@@ -28,14 +29,10 @@ class UniqueDatabaseManagementTest {
 
     @Before
     fun setup() {
-        uDbMan = UniqueDatabaseManagement(context)
-    }
-
-    @After
-    fun teardown() {
         context.cacheDir.deleteRecursively()
         RoomOfflineDatabase.getDatabase(context).clearAllTables()
         Thread.sleep(1000) //wait for above method to complete
+        uDbMan = UniqueDatabaseManagement(context)
     }
 
     @Test
@@ -52,7 +49,7 @@ class UniqueDatabaseManagementTest {
     @Test
     fun offlineAndFirestoreDatabasesContainTheSameElements() = runBlocking {
         val dbName = "demo"
-        val fDbMan: CachedFirestoreDatabaseManagement = uDbMan.accessDatabaseFromCloud(dbName)
+        val fDbMan: CachedFirestoreDatabaseManagement = uDbMan.accessCloudDatabase(dbName)
         val oDbman: OfflineDatabaseManagement = uDbMan.downloadDatabase(dbName)
         assertThat(fDbMan.getDatasets().map { ds -> ds.id }, equalTo(oDbman.getDatasets().map { ds -> ds.id }))
         assertThat(fDbMan.getCategories().map { cat -> cat.id }, equalTo(oDbman.getCategories().map { cat -> cat.id }))
@@ -61,7 +58,7 @@ class UniqueDatabaseManagementTest {
     @Test
     fun offlineDatabaseThrowsIfNotDownloaded() = runBlocking {
         kotlin.runCatching {
-            OfflineDatabaseManagement("demo").initialize(context)
+            OfflineDatabaseManagement(OfflineDatabaseService("demo", context))
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {

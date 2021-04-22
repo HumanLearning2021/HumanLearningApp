@@ -1,9 +1,11 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
+import android.content.Context
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.google.firebase.FirebaseApp
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 
@@ -31,9 +33,9 @@ object DatabaseServiceTestModule {
 
     @OfflineDemoDatabase
     @Provides
-    fun provideOfflineDemoService() = DatabaseServiceModule.provideOfflineDemoService()
+    fun provideOfflineDemoService(@ApplicationContext context: Context) = DatabaseServiceModule.provideOfflineDemoService(context)
 
     @OfflineScratchDatabase
     @Provides
-    fun provideOfflineScratchService() = DatabaseServiceModule.provideOfflineScratchService()
+    fun provideOfflineScratchService(@ApplicationContext context: Context) = DatabaseServiceModule.provideOfflineScratchService(context)
 }
