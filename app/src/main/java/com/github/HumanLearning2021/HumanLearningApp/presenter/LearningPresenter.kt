@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 
 class LearningPresenter @Inject constructor(
-    @DummyDatabase
+    @Demo2Database
     private val dbMgt: DatabaseManagement
 ) {
     // may be set by the view
@@ -25,10 +25,10 @@ class LearningPresenter @Inject constructor(
      * @param view The view on which to display the chosen picture. Normally has id R.id.learning_im_to_sort
      */
     suspend fun displayNextPicture(activity: Activity, view: ImageView) {
-        val (rndCat, catPics) = getRndCategoryWithPictures()
+        val (rndCat, catPicsIds) = getRndCategoryWithPictureIds()
 
         val nextPicture = when (learningMode) {
-            LearningMode.REPRESENTATION -> catPics.random()
+            LearningMode.REPRESENTATION -> dbMgt.getPicture(catPicsIds.random())
             LearningMode.PRESENTATION -> dbMgt.getRepresentativePicture(rndCat.id)
         }
 
@@ -38,23 +38,21 @@ class LearningPresenter @Inject constructor(
     }
 
     /**
-     * Returns a random category of the dataset, with the corresponding set of pictures
+     * Returns a random category of the dataset, with the corresponding list of picture *ids*.
      * The returned category is guaranteed to be different from the previousCategory
-     * The set of pictures is guaranteed to ben non-empty
+     * The list of picture ids is guaranteed to ben non-empty
      */
-    private suspend fun getRndCategoryWithPictures(): Pair<Category, Set<CategorizedPicture>> {
+    private suspend fun getRndCategoryWithPictureIds(): Pair<Category, List<Any>> {
         var rndCat: Category?
-        var catPics: Set<CategorizedPicture>?
+        var catPicsIds: List<Any>
         do {
             rndCat = dataset.categories.random()
-            // TODO optimize this and don't download all pictures every time
-            // get all picture ids and choose 1 random one, then download corresponding picture
-            catPics = dbMgt.getAllPictures(rndCat)
+            catPicsIds = dbMgt.getPictureIds(rndCat)
         } while (
-            previousCategory == rndCat || catPics!!.isEmpty()
+            previousCategory == rndCat || catPicsIds.isEmpty()
         )
         previousCategory = rndCat!!
-        return Pair(rndCat, catPics)
+        return Pair(rndCat, catPicsIds)
     }
 
     /**

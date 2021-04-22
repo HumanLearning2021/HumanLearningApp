@@ -25,7 +25,7 @@ class DatasetsOverviewActivity : AppCompatActivity() {
         }
     }
 
-    fun launchDataCreationActivity(view: View){
+    fun launchDataCreationActivity(@Suppress("UNUSED_PARAMETER") view: View){
         startActivity(Intent(this, CategoriesEditingActivity::class.java))
     }
 }

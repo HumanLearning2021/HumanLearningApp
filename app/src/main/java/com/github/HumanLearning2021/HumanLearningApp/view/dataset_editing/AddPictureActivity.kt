@@ -71,6 +71,7 @@ class AddPictureActivity : AppCompatActivity() {
 
     private fun checkIntentExtras(extras: Bundle?) {
         if (extras != null && extras["categories"] is ArrayList<*>) {
+            @Suppress("UNCHECKED_CAST")  // due to type erasure
             val givenCategories = extras["categories"] as ArrayList<Category>
             categories = categories.plus(givenCategories)
         }

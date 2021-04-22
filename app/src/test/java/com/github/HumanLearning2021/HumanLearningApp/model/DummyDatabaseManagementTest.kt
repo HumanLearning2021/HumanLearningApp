@@ -36,22 +36,25 @@ class DummyDatabaseManagementTest {
     private val spoonPic = DummyCategorizedPicture("spoonpicid", spoon, spoonUri)
 
     @ExperimentalCoroutinesApi
+    @Suppress("DEPRECATION")
     @Test(expected = IllegalArgumentException::class)
     fun getPictureThrowsIllegalArgumentException() = runBlockingTest {
         testDatabaseManagement.getPicture(table)
     }
 
     @ExperimentalCoroutinesApi
+    @Suppress("DEPRECATION")
     @Test
     fun getPictureWorks() = runBlockingTest {
         assert(testDatabaseManagement.getPicture(fork)!! == forkPic)
     }
 
     @ExperimentalCoroutinesApi
+    @Suppress("DEPRECATION")
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
         val newCat = testDatabaseManagement.putCategory("Table")
-        val newPic = testDatabaseManagement.putPicture(knifeUri, newCat)
+        testDatabaseManagement.putPicture(knifeUri, newCat)
         assert(testDatabaseManagement.getPicture(newCat) != null)
     }
 
@@ -174,9 +177,9 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun deleteDatasetWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        testDatabaseManagement.deleteDataset("kitchen utensils")
-        assert(!dummyDatabaseService.getDatasets().contains("kitchen utensils"))
+        val id = "kitchen utensils"
+        testDatabaseManagement.deleteDataset(id)
+        assert(!testDatabaseManagement.getDatasetIds().contains(id))
     }
 
     @ExperimentalCoroutinesApi

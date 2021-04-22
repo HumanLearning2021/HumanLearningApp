@@ -10,29 +10,36 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDummyDataset
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
-import kotlinx.coroutines.runBlocking
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-// TODO: fix
-@FlakyTest
+@UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class LearningTest {
-    @get:Rule(order=0)
+    @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule(order=1)
+    @BindValue @Demo2Database
+    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+
+    @get:Rule(order = 1)
     val activityScenarioRule: ActivityScenarioRule<LearningActivity> = ActivityScenarioRule(
         Intent(
             ApplicationProvider.getApplicationContext(),
@@ -41,25 +48,23 @@ class LearningTest {
             .putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
             .putExtra(
                 LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET,
-                getDS())
+                getFirstDummyDataset()
+            )
     )
-
-    private fun getDS() = runBlocking {
-        FirestoreDatabaseService("demo2").getDatasets().first()
-    }
 
     val NUMBER_OF_CATEGORIES = 3
     val CATEGORY_VIEW_CLASS_NAME = "android.widget.ImageView"
     val NUMBER_OF_DRAG_STEPS = 10
 
     lateinit var mDevice: UiDevice
+
     @Before
     fun init() {
         mDevice = UiDevice.getInstance(getInstrumentation())
     }
 
     @Test
-    fun allImageViewsAreDisplayed(){
+    fun allImageViewsAreDisplayed() {
         assertDisplayed(R.id.learning_im_to_sort)
         assertDisplayed(R.id.learning_cat_0)
         assertDisplayed(R.id.learning_cat_1)
@@ -122,8 +127,10 @@ class LearningTest {
         assertThat(startDescr, `is`(imToSort.contentDescription))
     }
 
-    private fun getImageInstance(instance: Int) = mDevice.findObject(UiSelector().className(CATEGORY_VIEW_CLASS_NAME)
-            .instance(instance))
+    private fun getImageInstance(instance: Int) = mDevice.findObject(
+        UiSelector().className(CATEGORY_VIEW_CLASS_NAME)
+            .instance(instance)
+    )
 
     /**
      * instance at index NUMBER_OF_CATEGORIES (eg. 3) is the image to sort
