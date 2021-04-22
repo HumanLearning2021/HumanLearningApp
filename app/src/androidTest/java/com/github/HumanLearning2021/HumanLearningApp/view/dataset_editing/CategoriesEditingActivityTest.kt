@@ -109,6 +109,7 @@ class CategoriesEditingActivityTest {
     @Test
     fun rowViewIsAddedWhenAddButtonIsClicked() {
         onView(withId(R.id.button_add)).perform(click())
+        waitFor(1000)
         onView(withId(R.id.parent_linear_layout)).check(
             ViewAssertions.matches(
                 hasChildCount(categories.size + 1)
