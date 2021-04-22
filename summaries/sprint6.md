@@ -7,7 +7,7 @@
 ## Jaakik, Marouane
 
 ## Konrad, Jonas Franz
-This week I implemented caching and the ability to download databases. I had some trouble integrating dependency injection to write cleaner code but otherwise it went ok.
+This week I implemented caching and the ability to download databases. I had some trouble integrating dependency injection to write cleaner code but otherwise it went ok. We had trouble with our tests because we hit the quota limit on Firestore which means that they could no longer run. I explored the possibility to use the Firebase Emulator to test instead of the "real" Firebase such as to not have this problem again. Some testing yielded positive results which means that we will probably integrate this after this sprint.
 
 ## Lachat, Niels Marco
 This week I started by merging a PR that cleaned the project hierarchy and renamed a few files to have a more coherent project hierarchy.
