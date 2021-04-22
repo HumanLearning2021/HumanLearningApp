@@ -15,12 +15,13 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.model.*
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.junit.Assume.assumeTrue
@@ -30,14 +31,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import java.util.*
-import javax.inject.Inject
 
+@UninstallModules(DatabaseManagementModule::class)
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class CategoriesEditingActivityTest {
-    @Inject
-    @ScratchDatabase
-    lateinit var dbManagement: DatabaseManagement
+    @BindValue
+    @Demo2Database
+    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -52,7 +53,6 @@ class CategoriesEditingActivityTest {
 
     @Before
     fun setUp() {
-        hiltRule.inject()  // to get staticDBManagement set up
         runBlocking {
             var found = false
             val datasets = dbManagement.getDatasets()
