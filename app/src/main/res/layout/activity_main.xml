@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:onClick="launchToDisplayDatasetActivity"
         android:text="@string/main_btDisplayDataset"
-        app:layout_constraintBottom_toTopOf="@+id/MainActivitySignInFragment"
+        app:layout_constraintBottom_toTopOf="@+id/goToDatasetsOverviewButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/goToLearningButton" />
@@ -28,6 +28,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/goToDatasetsOverviewButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:onClick="launchToDatasetsOverviewActivity"
+        android:text="@string/main_btDatasetsOverview"
+        app:layout_constraintBottom_toTopOf="@+id/MainActivitySignInFragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/goToDisplayDatasetButton" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/MainActivitySignInFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInWidget"
@@ -36,6 +47,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/goToDisplayDatasetButton" />
+        app:layout_constraintTop_toBottomOf="@+id/goToDatasetsOverviewButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

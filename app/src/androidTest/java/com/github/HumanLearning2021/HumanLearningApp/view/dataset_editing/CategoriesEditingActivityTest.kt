@@ -32,7 +32,6 @@ import java.io.File
 import java.util.*
 import javax.inject.Inject
 
-
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class CategoriesEditingActivityTest {
@@ -69,12 +68,12 @@ class CategoriesEditingActivityTest {
                 dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
                 val tmp = File.createTempFile("droid", ".png")
                 try {
-                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork)
-                        .use { img ->
-                            tmp.outputStream().use {
-                                img.copyTo(it)
-                            }
+                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
+                        tmp.outputStream().use {
+                            img.copyTo(it)
                         }
+                    }
+
                     val uri = Uri.fromFile(tmp)
                     dbManagement.putPicture(uri, cat)
                 } finally {
@@ -110,6 +109,7 @@ class CategoriesEditingActivityTest {
     @Test
     fun rowViewIsAddedWhenAddButtonIsClicked() {
         onView(withId(R.id.button_add)).perform(click())
+        waitFor(1000)
         onView(withId(R.id.parent_linear_layout)).check(
             ViewAssertions.matches(
                 hasChildCount(categories.size + 1)
@@ -120,7 +120,7 @@ class CategoriesEditingActivityTest {
     @Test
     fun rowViewIsRemovedWhenRemoveButtonIsClicked() {
         runBlocking {
-            val delayBeforeTestStart: Long = 100
+            val delayBeforeTestStart: Long = 1000
             waitFor(delayBeforeTestStart)
             assumeTrue(categories.size == 1)
             onView(withId(R.id.button_remove)).perform(click())
@@ -154,7 +154,7 @@ class CategoriesEditingActivityTest {
             onView(withId(R.id.button_add)).perform(click())
             onView(withText("")).perform(typeText("new beautiful category"))
             onView(withId(R.id.button_submit_list)).perform(click())
-            waitFor(2000)
+            waitFor(5000)
             dataset = dbManagement.getDatasetById(datasetId)!!
             assert(nbCategories + 1 == dataset.categories.size)
         }

@@ -29,6 +29,7 @@
     <string name="LearningDatasetSelection_title">Select the dataset on which to learn</string>
 
     <string name="main_btLearning">LEARNING</string>
+    <string name="main_btDatasetsOverview">DATASETS OVERVIEW</string>
     <string name="main_btDisplayDataset">DISPLAY DATASET</string>
     <string name="main_btAddImage">ADD IMAGE TO THE DATASET</string>
 
@@ -39,7 +40,8 @@
     <string name="buttontoremovepicturefromdataset">button to remove picture from dataset</string>
     <string name="picturehasbeenremoved">This Picture has been removed from this dataset.</string>
     <string name="DataOverview_CreateButton">Create dataset</string>
-    <string name="DataOverview_Ttile">DataSet Overview</string>
+    <string name="DatasetsOverview_Title">Datasets Overview</string>
+    <string name="setAsRepresentativePicture">Set as representative picture</string>
 
     <string name="SignInFragment_loginStatusSuccessMessage">Welcome %1$s</string>
     <string name="SignInFragment_loginStatusDefaultMessage">Not logged in</string>
