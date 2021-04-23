@@ -5,6 +5,7 @@
 ## Bettens, Louis
 
 ## Jaakik, Marouane
+This sprint I have implemented a basic Search activity where the user can search by the dataset name, further improvements could be brought to the Database management to make it easier to perform more complicated search such as by category or tags, that is why I decided not to merge it this week and work on this aspect of the search activity during next week after discussing with the Team. 
 
 ## Konrad, Jonas Franz
 This week I implemented caching and the ability to download databases. I had some trouble integrating dependency injection to write cleaner code but otherwise it went ok. We had trouble with our tests because we hit the quota limit on Firestore which means that they could no longer run. I explored the possibility to use the Firebase Emulator to test instead of the "real" Firebase such as to not have this problem again. Some testing yielded positive results which means that we will probably integrate this after this sprint.
