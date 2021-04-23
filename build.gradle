@@ -29,12 +29,11 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task init_firebase_emulator(type:Exec) {
-    description = "Runs the Firebase emulator"
-//    doLast { commandLine 'cmd', 'firebase emulators:start --import ./firestore_state' }
-    commandLine 'cmd', 'firebase emulators:start --import ./firestore_state'
-}
-
-tasks.matching { it.name == 'test' || it.name == 'connectedCheck' }.all { Task task ->
-    task.dependsOn(launchFirebaseEmulator)
-}
+//task init_firebase_emulator(type: Exec) {
+//    description = "Runs the Firebase emulator"
+//    commandLine 'cmd', 'firebase emulators:start --import ./firestore_state'
+//}
+//
+//tasks.matching { it.name == 'test' || it.name == 'connectedCheck' }.all { Task task ->
+//    task.dependsOn(launchFirebaseEmulator)
+//}
