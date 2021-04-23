@@ -1,5 +1,7 @@
 check_android_task:
   name: Run Android tests
+  before-build: - curl -sL https://firebase.tools | bash
+  statr_emulator_bakground_script: firebase emulators:start --import ./firestore_state
   env:
     API_LEVEL: 30
     TARGET: google_apis
@@ -19,7 +21,7 @@ check_android_task:
     cat >keystore.properties << END
     storePassword=$KEYSTORE_PASSPHRASE
     keyPassword=$KEYSTORE_PASSPHRASE
-    END
+    END 
   build_script: |
     chmod +x gradlew
     ./gradlew assembleDebugAndroidTest
