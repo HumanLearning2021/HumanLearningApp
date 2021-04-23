@@ -5,8 +5,8 @@ launch_firebase_emulator_task:
     cpu: 4
     memeory: 14G
   build_script:
-    $- curl -sL https://firebase.tools | bash
-    $firebase emulators:start --import ./firestore_state    
+    $- curl -sL https://firebase.tools | bash |
+    firebase emulators:start --import ./firestore_state    
 
 check_android_task:
   name: Run Android tests
