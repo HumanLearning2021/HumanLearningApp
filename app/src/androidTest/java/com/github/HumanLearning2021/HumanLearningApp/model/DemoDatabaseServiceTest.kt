@@ -1,21 +1,28 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
+import dagger.hilt.android.testing.HiltAndroidRule
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItem
+import org.junit.Rule
+import javax.inject.Inject
 
 
 abstract class DemoDatabaseServiceTest : TestCase() {
-    private lateinit var db: DatabaseService
+    @Inject
+    @DemoDatabase
+    lateinit var db: DatabaseService
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     override fun setUp() {
-        db = setUpDatabaseService()
+        hiltRule.inject()
     }
-
-    protected abstract fun setUpDatabaseService(): DatabaseService
 
     fun test_getCategories() = runBlocking {
         val cats = db.getCategories()
@@ -34,8 +41,4 @@ abstract class DemoDatabaseServiceTest : TestCase() {
         val pic = db.getPicture(appleCategory)
         assertThat(pic, hasCategory(equalTo(appleCategory)))
     }
-}
-
-class FirestoreDemoDatabaseServiceTest : DemoDatabaseServiceTest() {
-    override fun setUpDatabaseService() = FirestoreDatabaseService("demo")
 }

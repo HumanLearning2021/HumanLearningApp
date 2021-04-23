@@ -8,12 +8,15 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -33,20 +36,57 @@ annotation class Demo2Database
 @Retention(AnnotationRetention.BINARY)
 annotation class ScratchDatabase
 
-@Module
-@InstallIn(SingletonComponent::class)
-object FirebaseAuthUIModule {
-    @Provides
-    fun provideAuthUI(app: FirebaseApp) = AuthUI.getInstance(app)
-}
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class EmulatedFirestore
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ProductionFirestore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ProductionFirebaseApp
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class EmulationFirebaseApp
 
 @Module
 @InstallIn(SingletonComponent::class)
 object FirebaseAppModule {
     @Provides
-    fun provideApp() = FirebaseApp.getInstance()
+    @ProductionFirebaseApp
+    fun provideApp(): FirebaseApp = FirebaseApp.getInstance()
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+object FirebaseAuthUIModule {
+    @Provides
+    fun provideAuthUI(@ProductionFirebaseApp app: FirebaseApp) = AuthUI.getInstance(app)
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object EmulationModule {
+    @Provides
+    @ProductionFirestore
+    fun provideNotEmulated(@ProductionFirebaseApp app: FirebaseApp): FirebaseFirestore = Firebase.firestore(app)
+
+    @Provides
+    @EmulatedFirestore
+    @Singleton
+    fun provideEmulated(): FirebaseFirestore {
+        FirebaseFirestore.getInstance().terminate() //TODO("Find out why it is initialized before this instead of just terminating it before restarting")
+        val db = FirebaseFirestore.getInstance()
+        db.useEmulator("10.0.2.2", 8080)
+        val settings = FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build()
+        db.firestoreSettings = settings
+        return db
+    }
+}
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -57,13 +97,13 @@ object DatabaseServiceModule {
     fun provideDummyService(): DatabaseService = DummyDatabaseService()
     @DemoDatabase
     @Provides
-    fun provideDemoService(app: FirebaseApp): DatabaseService = FirestoreDatabaseService("demo", app)
+    fun provideDemoService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("demo", firestore)
     @Demo2Database
     @Provides
-    fun provideDemo2Service(app: FirebaseApp): DatabaseService = FirestoreDatabaseService("demo2", app)
+    fun provideDemo2Service( @ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("demo2", firestore)
     @ScratchDatabase
     @Provides
-    fun provideScratchService(app: FirebaseApp): DatabaseService = FirestoreDatabaseService("scratch", app)
+    fun provideScratchService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("scratch", firestore)
 }
 
 @Module

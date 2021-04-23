@@ -1,15 +1,12 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import javax.inject.Singleton
 
 @TestInstallIn(
     components = [ SingletonComponent::class ],
@@ -22,14 +19,14 @@ object DatabaseServiceTestModule {
     fun provideDummyService() = DatabaseServiceModule.provideDummyService()
     @DemoDatabase
     @Provides
-    fun provideDemoService(app: FirebaseApp) = DatabaseServiceModule.provideDemoService(app)
+    fun provideDemoService(@EmulatedFirestore firestore: FirebaseFirestore) = DatabaseServiceModule.provideDemoService(firestore)
 
     /** override demo2 with scratch */
     @Demo2Database
     @Provides
-    fun provideDemo2Service(app: FirebaseApp) = provideScratchService(app)
+    fun provideDemo2Service(@EmulatedFirestore firestore: FirebaseFirestore) = provideScratchService(firestore)
 
     @ScratchDatabase
     @Provides
-    fun provideScratchService(app: FirebaseApp) = DatabaseServiceModule.provideScratchService(app)
+    fun provideScratchService(@EmulatedFirestore firestore: FirebaseFirestore) = DatabaseServiceModule.provideScratchService(firestore)
 }

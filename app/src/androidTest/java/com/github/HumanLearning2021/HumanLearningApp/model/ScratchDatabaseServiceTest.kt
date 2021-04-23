@@ -3,25 +3,31 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.testing.HiltAndroidRule
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.Rule
+import javax.inject.Inject
 
 
 abstract class ScratchDatabaseServiceTest : TestCase() {
-    private lateinit var db: DatabaseService
+    @Inject
+    @ScratchDatabase
+    lateinit var db: DatabaseService
 
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     override fun setUp() {
-        db = setUpDatabaseService()
+        hiltRule.inject()
     }
-
-    protected abstract fun setUpDatabaseService(): DatabaseService
-
 
     fun test_putCategory() = runBlocking {
         val cat = db.putCategory("Poire")
@@ -60,12 +66,4 @@ abstract class ScratchDatabaseServiceTest : TestCase() {
         assertThat(user.displayName, equalTo(firebaseUser.displayName))
         assertThat(user.email, equalTo(firebaseUser.email))
     }
-}
-
-class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
-    override fun setUpDatabaseService() = FirestoreDatabaseService("scratch")
-}
-
-class ScratchDummyDatabaseServiceTest : ScratchDatabaseServiceTest() {
-    override fun setUpDatabaseService() = DummyDatabaseService()
 }
