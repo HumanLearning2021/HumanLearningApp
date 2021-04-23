@@ -3,7 +3,7 @@
 ## Scrum master (JAAKIK)
 
 ## Bettens, Louis
-
+ this week  i worked on implementing support for adding already existing photos from the user's device to the database. I was able to accomplish the task, but could not merge in time because of the Firebase situation.
 ## Jaakik, Marouane
 This sprint I have implemented a basic Search activity where the user can search by the dataset name, further improvements could be brought to the Database management to make it easier to perform more complicated search such as by category or tags, that is why I decided not to merge it this week and work on this aspect of the search activity during next week after discussing with the Team. 
 
