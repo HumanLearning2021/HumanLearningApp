@@ -9,8 +9,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
+import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.launch
@@ -32,25 +33,37 @@ class DummyCategorizedPictureTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        testRule.launchActivity(Intent(ApplicationProvider.getApplicationContext(), MainActivity::class.java))
+        testRule.launchActivity(
+            Intent(
+                ApplicationProvider.getApplicationContext(),
+                MainActivity::class.java
+            )
+        )
     }
 
     @Test
     fun displayOnWorksAsExpected() {
-        val pictureUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork)
+        val pictureUri =
+            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
         val dummyCategory = DummyCategory("Fork", "Fork")
         val dummyCategorizedPicture = DummyCategorizedPicture("some id", dummyCategory, pictureUri)
-        val drawable = AppCompatResources.getDrawable(ApplicationProvider.getApplicationContext(), R.drawable.fork)
+        val drawable = AppCompatResources.getDrawable(
+            ApplicationProvider.getApplicationContext(),
+            R.drawable.fork
+        )
         val imageView = ImageView(ApplicationProvider.getApplicationContext())
 
         testRule.activity.run {
             lifecycleScope.launch {
-            setContentView(imageView)
-            dummyCategorizedPicture.displayOn(this@run, imageView)
+                setContentView(imageView)
+                dummyCategorizedPicture.displayOn(this@run, imageView)
 
+            }
+            waitFor(500)
             //for a lack of a better way to compare drawables
-            assert(imageView.drawable.toBitmap().getPixel(5, 5) == drawable!!.toBitmap().getPixel(5, 5))
-        }
+            assert(
+                imageView.drawable.toBitmap().getPixel(5, 5) == drawable!!.toBitmap().getPixel(5, 5)
+            )
         }
     }
 }
