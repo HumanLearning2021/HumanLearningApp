@@ -1,10 +1,12 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
+import android.util.Log
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import kotlinx.coroutines.runBlocking
@@ -37,14 +39,20 @@ object TestUtils {
                 return "Wait for $millis milliseconds"
             }
 
+            private val WARN_WAIT_TOO_LONG = 2000
+
             override fun perform(uiController: UiController?, view: View?) {
+                if(millis > WARN_WAIT_TOO_LONG){
+                    Log.w("TestUtils, wait", "PERFORMANCE : you use a long wait time > $WARN_WAIT_TOO_LONG" +
+                            ", is this really necessary?")
+                }
                 uiController?.loopMainThreadForAtLeast(millis)
             }
         }
 
     fun waitFor(millis: Long) = onView(isRoot()).perform(waitForAction(millis))
 
-    fun getFirstDummyDataset() = runBlocking {
-        DummyDatabaseManagement(DummyDatabaseService()).getDatasets().first()
+    fun getFirstDataset(dbMgt : DatabaseManagement) = runBlocking {
+        dbMgt.getDatasets().first()
     }
 }

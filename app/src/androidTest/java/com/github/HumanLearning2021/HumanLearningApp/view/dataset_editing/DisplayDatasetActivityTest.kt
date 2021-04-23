@@ -17,13 +17,13 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.model.*
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
@@ -34,8 +34,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import java.util.*
-import javax.inject.Inject
 
+@UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayDatasetActivityTest {
@@ -50,21 +50,21 @@ class DisplayDatasetActivityTest {
     private lateinit var datasetId: String
     private var index = 0
 
-    @Inject
-    @ScratchDatabase
-    lateinit var dbManagement: DatabaseManagement
+    @BindValue
+    @Demo2Database
+    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     @Before
     fun setUp() {
         hiltRule.inject()  // ensures dbManagement is available
         runBlocking {
             var found = false
-            val datasets = dbManagement.getDatasets()
+            val datasets = dbMgt.getDatasets()
             for (ds in datasets) {
                 val dsCats = ds.categories
                 if (dsCats.isNotEmpty() && !found) {
                     for (i in dsCats.indices) {
-                        val dsPictures = dbManagement.getAllPictures(dsCats.elementAt(i))
+                        val dsPictures = dbMgt.getAllPictures(dsCats.elementAt(i))
                         if (dsPictures.isNotEmpty() && !found) {
                             dataset = ds
                             index = i
@@ -74,8 +74,8 @@ class DisplayDatasetActivityTest {
                 }
             }
             if (!found) {
-                val cat = dbManagement.putCategory("${UUID.randomUUID()}")
-                dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
+                val cat = dbMgt.putCategory("${UUID.randomUUID()}")
+                dataset = dbMgt.putDataset("${UUID.randomUUID()}", setOf(cat))
                 val tmp = File.createTempFile("droid", ".png")
                 try {
                     ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
@@ -84,7 +84,7 @@ class DisplayDatasetActivityTest {
                         }
                     }
                     val uri = Uri.fromFile(tmp)
-                    dbManagement.putPicture(uri, cat)
+                    dbMgt.putPicture(uri, cat)
                 } finally {
                     tmp.delete()
                 }
@@ -116,7 +116,7 @@ class DisplayDatasetActivityTest {
         runBlocking {
             categories = dataset.categories
             for (cat in categories) {
-                datasetPictures = datasetPictures.plus(dbManagement.getAllPictures(cat))
+                datasetPictures = datasetPictures.plus(dbMgt.getAllPictures(cat))
             }
             waitFor(1000)
             assumeTrue(datasetPictures.isNotEmpty())
@@ -147,7 +147,11 @@ class DisplayDatasetActivityTest {
             waitFor(1000)
             onView(withId(R.id.display_dataset_name)).perform(clearText(), typeText("$newName\n"))
             onView(withId(R.id.display_dataset_name)).check(matches(withText(containsString(newName))))
-            dataset = dbManagement.getDatasetById(datasetId)!!
+            // TODO FIX
+            //java.lang.NullPointerException
+            //	at com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.DisplayDatasetActivityTest
+            //	$modifyingDatasetNameWorks$1.invokeSuspend(DisplayDatasetActivityTest.kt:150)
+            dataset = dbMgt.getDatasetById(datasetId)!!
             assert(dataset.name == newName)
         }
     }
@@ -182,7 +186,7 @@ class DisplayDatasetActivityTest {
         categories = dataset.categories
         assumeTrue(categories.isNotEmpty())
         runBlocking {
-            val numberOfPictures = dbManagement.getAllPictures(categories.elementAt(index)).size
+            val numberOfPictures = dbMgt.getAllPictures(categories.elementAt(index)).size
 
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
             onView(withText(R.string.add_new_picture)).perform(click())
@@ -193,7 +197,7 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.saveButton)).perform(click())
             waitFor(3000)
             onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
-            assert(dbManagement.getAllPictures(categories.elementAt(index)).size == numberOfPictures + 1)
+            assert(dbMgt.getAllPictures(categories.elementAt(index)).size == numberOfPictures + 1)
         }
 
 

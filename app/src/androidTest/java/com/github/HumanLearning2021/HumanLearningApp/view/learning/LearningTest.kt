@@ -10,7 +10,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDummyDataset
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
@@ -48,7 +48,7 @@ class LearningTest {
             .putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
             .putExtra(
                 LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET,
-                getFirstDummyDataset()
+                getFirstDataset(dbMgt)
             )
     )
 
@@ -60,6 +60,7 @@ class LearningTest {
 
     @Before
     fun init() {
+        hiltRule.inject()
         mDevice = UiDevice.getInstance(getInstrumentation())
     }
 
