@@ -1,21 +1,21 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
@@ -27,75 +27,49 @@ import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
+import org.junit.After
 import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
-import java.util.*
 
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayDatasetActivityTest {
-    @get:Rule
-    var activityRuleIntent = IntentsTestRule(DisplayDatasetActivity::class.java, false, false)
-    @get:Rule
+    @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
-
-    private var datasetPictures = emptySet<CategorizedPicture>()
-    private var categories = emptySet<Category>()
-    private lateinit var dataset: Dataset
-    private lateinit var datasetId: String
-    private var index = 0
 
     @BindValue
     @Demo2Database
     val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
+    private val datasetId: String = getFirstDataset(dbMgt).id as String
+    @get:Rule(order = 1)
+    val activityScenarioRule: ActivityScenarioRule<DisplayDatasetActivity> = ActivityScenarioRule(
+        Intent(
+            ApplicationProvider.getApplicationContext(),
+            DisplayDatasetActivity::class.java
+        ).putExtra("dataset_id", datasetId)
+    )
+
+    private var datasetPictures = emptySet<CategorizedPicture>()
+    private var categories = emptySet<Category>()
+    private lateinit var dataset: Dataset
+    private var index = 0
+
+
     @Before
     fun setUp() {
         hiltRule.inject()  // ensures dbManagement is available
-        runBlocking {
-            var found = false
-            val datasets = dbMgt.getDatasets()
-            for (ds in datasets) {
-                val dsCats = ds.categories
-                if (dsCats.isNotEmpty() && !found) {
-                    for (i in dsCats.indices) {
-                        val dsPictures = dbMgt.getAllPictures(dsCats.elementAt(i))
-                        if (dsPictures.isNotEmpty() && !found) {
-                            dataset = ds
-                            index = i
-                            found = true
-                        }
-                    }
-                }
-            }
-            if (!found) {
-                val cat = dbMgt.putCategory("${UUID.randomUUID()}")
-                dataset = dbMgt.putDataset("${UUID.randomUUID()}", setOf(cat))
-                val tmp = File.createTempFile("droid", ".png")
-                try {
-                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
-                        tmp.outputStream().use {
-                            img.copyTo(it)
-                        }
-                    }
-                    val uri = Uri.fromFile(tmp)
-                    dbMgt.putPicture(uri, cat)
-                } finally {
-                    tmp.delete()
-                }
-            }
-            categories = emptySet()
-            datasetPictures = emptySet()
-            datasetId = dataset.id as String
-            val intent = Intent()
-            intent.putExtra("dataset_id", datasetId)
-            activityRuleIntent.launchActivity(intent)
-        }
+        dataset = getFirstDataset(dbMgt)
+        Intents.init()
+    }
+
+    @After
+    fun release(){
+        Intents.release()
     }
 
     /**
@@ -118,7 +92,7 @@ class DisplayDatasetActivityTest {
             for (cat in categories) {
                 datasetPictures = datasetPictures.plus(dbMgt.getAllPictures(cat))
             }
-            waitFor(1000)
+            waitFor(1) // increase if needed
             assumeTrue(datasetPictures.isNotEmpty())
 
             onData(anything())
@@ -144,15 +118,17 @@ class DisplayDatasetActivityTest {
     fun modifyingDatasetNameWorks() {
         val newName = "new dataset name"
         runBlocking {
-            waitFor(1000)
+            waitFor(1) // increase if needed
             onView(withId(R.id.display_dataset_name)).perform(clearText(), typeText("$newName\n"))
             onView(withId(R.id.display_dataset_name)).check(matches(withText(containsString(newName))))
-            // TODO FIX
-            //java.lang.NullPointerException
-            //	at com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.DisplayDatasetActivityTest
-            //	$modifyingDatasetNameWorks$1.invokeSuspend(DisplayDatasetActivityTest.kt:150)
-            dataset = dbMgt.getDatasetById(datasetId)!!
-            assert(dataset.name == newName)
+
+            // need to get again because dataset is immutable and editing the name creates a new
+            // Dataset object in the database
+            dataset = getFirstDataset(dbMgt)
+            assert(dataset.name == newName) {
+                "dataset name \"${dataset.name}\" different" +
+                        " from \"$newName\""
+            }
         }
     }
 
@@ -195,7 +171,7 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.selectCategoryButton)).perform(click())
             onView(withText(categories.elementAt(index).name)).perform(click())
             onView(withId(R.id.saveButton)).perform(click())
-            waitFor(3000)
+            waitFor(1) // increase if needed
             onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
             assert(dbMgt.getAllPictures(categories.elementAt(index)).size == numberOfPictures + 1)
         }

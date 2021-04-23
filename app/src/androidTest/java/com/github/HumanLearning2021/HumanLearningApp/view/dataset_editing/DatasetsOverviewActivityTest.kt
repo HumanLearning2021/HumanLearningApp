@@ -53,7 +53,7 @@ class DatasetsOverviewActivityTest {
     @Before
     fun setUp() {
         Intents.init()
-        val delayBeforeTestStart: Long = 1000
+        val delayBeforeTestStart: Long = 1 // increase if needed
         waitFor(delayBeforeTestStart)
     }
 

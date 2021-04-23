@@ -19,6 +19,5 @@ data class DummyCategorizedPicture(override val id: String, override val categor
         val inputStream = activity.contentResolver.openInputStream(picture)
         val drawable = Drawable.createFromStream(inputStream, picture.toString())
         imageView.setImageDrawable(drawable)
-        imageView.setTag(drawable)
     }
 }

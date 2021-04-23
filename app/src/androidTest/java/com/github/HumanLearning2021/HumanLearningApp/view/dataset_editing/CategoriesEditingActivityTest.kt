@@ -149,8 +149,7 @@ class CategoriesEditingActivityTest {
         )
     }
 
-    //TODO restore
-//    @Test
+    @Test
     fun addNewCategoryToDatasetWorks() {
             onView(withId(R.id.button_add)).perform(click())
             onView(withText("")).perform(typeText("new beautiful category"))
