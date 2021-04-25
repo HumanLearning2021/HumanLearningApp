@@ -1,17 +1,10 @@
-launch_firebase_emulator_task:
-  name: Launch Firebase emulator
-  container:
-    image: openjdk:8-jdk
-    cpu: 4
-    memeory: 14G
+check_android_task:
+  name: Run Android tests
   install_emulator_script: |
     curl -sL https://firebase.tools
     firebase --version
   launch_emulator_script: |
-    firebase emulators:start --import ./firestore_state    
-
-check_android_task:
-  name: Run Android tests
+    firebase emulators:start --import ./firestore_stat
   env:
     API_LEVEL: 30
     TARGET: google_apis
