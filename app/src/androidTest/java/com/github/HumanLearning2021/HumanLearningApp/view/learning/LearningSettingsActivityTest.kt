@@ -16,11 +16,19 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDummyDataset
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import junit.framework.AssertionFailedError
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
@@ -30,6 +38,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class LearningSettingsActivityTest {
@@ -41,15 +50,15 @@ class LearningSettingsActivityTest {
             LearningSettingsActivity::class.java
         ).putExtra(
             LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET,
-            runBlocking {
-                FirestoreDatabaseService("scratch").getDatasets().first()
-            }
+            getFirstDummyDataset()
         )
     )
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @BindValue @Demo2Database
+    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     @Before
     fun setUp() {
