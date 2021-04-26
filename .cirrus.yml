@@ -1,5 +1,4 @@
 setup_firebase_emulator_task:
-  name: Install and launch Firebase Emulator
   container:
     image: openjdk:8-jdk
     cpu: 4
