@@ -1,9 +1,9 @@
 check_android_task:
   name: Run Android tests
   install_emulator_script: |
-    curl -sL https://firebase.tools
+    curl -sL https://firebase.tools | bash
     firebase --version
-  launch_emulator_script: |
+  launch_emulator_background_script: |
     firebase emulators:start --import ./firestore_stat
   env:
     API_LEVEL: 30
