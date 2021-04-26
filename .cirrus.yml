@@ -1,27 +1,19 @@
-setup_firebase_emulator_task:
-  container:
-    dockerfile: firebase_emulator_dockerfile
-  map_ports_script: |
-    run -p 9090:9090 -u node -it firebase_emulator_dockerfile sh
-    run -p 8080:8080 -u node -it firebase_emulator_dockerfile sh
-  launch_emulator_background_script: |
-    run firebase emulators:start --import ./firestore_stat
-
 check_android_task:
   name: Run Android tests
-  depends_on:
-    - setup_firebase_emulator
   env:
     API_LEVEL: 30
     TARGET: google_apis
     ARCH: x86
     CC_TEST_REPORTER_ID: ENCRYPTED[de4bf2175d1caa3fa7967460887811e99b14819ed833ce2783d6f6ff1c7d6dbb65bf29f3468f978306f753912e27e991]
     KEYSTORE_PASSPHRASE: ENCRYPTED[8cf2af5735b5466ae45825e30c356f5aa95a363f57e5fc90529d27d27e71ce0f18bb995bf3a4f2cf801cd71b3fa552f0]
+    FIREBASE_TOKEN: ENCRYPTED[574693c17b095dbdb775360edeb99be34637b5c81e442d10d28eee5da5866d941186114fdfc14f7b0ddd9e897c4dc590]
   container:
-    image: reactivecircus/android-emulator-$API_LEVEL:latest
+    image: jfkonrad/humanlearning:emulators
     kvm: true
     cpu: 8
     memory: 10G
+  start_firebase_emulator_background_script:
+    firebase emulators:start --token ${FIREBASE_TOKEN}
   create_device_script:
     echo no | avdmanager create avd --force --name test --abi "$TARGET/$ARCH" --package "system-images;android-$API_LEVEL;$TARGET;$ARCH"
   start_emulator_background_script:
@@ -50,7 +42,7 @@ check_android_task:
   report_codeclimate_script: |
     export JACOCO_SOURCE_PATH=app/src/main/java/
     ./cc-test-reporter format-coverage ./app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml --input-type jacoco
-    ./cc-test-reporter upload-coverage
+    /cc-test-reporter upload-coverage
   lint_script:
     ./gradlew lintDebug
   always:
