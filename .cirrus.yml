@@ -1,5 +1,9 @@
 setup_firebase_emulator_task:
   name: Install and launch Firebase Emulator
+  container:
+    image: openjdk:8-jdk
+    cpu: 4
+    memory: 12G
   install_emulator_script: |
     curl -sL https://firebase.tools | bash
     firebase --version
