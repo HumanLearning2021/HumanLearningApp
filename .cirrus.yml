@@ -4,7 +4,7 @@ setup_firebase_emulator_task:
     cpu: 4
     memory: 12G
   install_emulator_script: |
-    curl -sL https://firebase.tools | bash
+    npm install -g firebase-tools
     firebase --version
   launch_emulator_background_script: |
     firebase emulators:start --import ./firestore_stat
