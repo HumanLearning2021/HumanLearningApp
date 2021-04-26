@@ -4,6 +4,8 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -50,70 +52,13 @@ class DisplayImageActivityTest {
     private lateinit var categoryWith1Picture : Category
     private lateinit var categoryWith2Pictures : Category
 
-    @get:Rule
-    var activityRuleIntent = IntentsTestRule(DisplayImageActivity::class.java, false, false)
-
-//    @get:Rule(order = 1)
-//    val activityScenarioRule: ActivityScenarioRule<DisplayImageActivity> = ActivityScenarioRule(
-//        Intent(
-//            ApplicationProvider.getApplicationContext(),
-//            DisplayImageActivity::class.java
-//        )
-//            .putExtra("dataset_id", datasetId)
-//            .putExtra("single_picture", (picturesInCategory.elementAt(0)))
-//    )
-
     @Before
     fun setUp() {
-        hiltRule.inject()  // to get dbManagement set up
         Intents.init()
+        hiltRule.inject()
 
         categoryWith1Picture = newCategoryWithNPictures(1)
         categoryWith2Pictures = newCategoryWithNPictures(2)
-
-//        runBlocking {
-//            var found = false
-//            val datasets = dbManagement.getDatasets()
-//            for (ds in datasets) {
-//                val dsCats = ds.categories
-//                if (dsCats.isNotEmpty() && !found) {
-//                    for (i in dsCats.indices) {
-//                        val dsPictures = dbManagement.getAllPictures(dsCats.elementAt(i))
-//                        if (dsPictures.isNotEmpty() && !found) {
-//                            dataset = ds
-//                            index = i
-//                            found = true
-//                        }
-//                    }
-//                }
-//            }
-//            if (!found) {
-//                val cat = dbManagement.putCategory("${UUID.randomUUID()}")
-//                dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
-//                val tmp = File.createTempFile("droid", ".png")
-//                try {
-//                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
-//                        tmp.outputStream().use {
-//                            img.copyTo(it)
-//                        }
-//                    }
-//                    val uri = Uri.fromFile(tmp)
-//                    dbManagement.putPicture(uri, cat)
-//                } finally {
-//                    tmp.delete()
-//                }
-//            }
-//            datasetId = dataset.id as String
-//            categories = dataset.categories
-//            dsPictures = dbManagement.getAllPictures(categories.elementAt(index))
-//            val intent = Intent()
-//            if (dsPictures.isNotEmpty()) {
-//                intent.putExtra("single_picture", (dsPictures.elementAt(0)))
-//            }
-//            intent.putExtra("dataset_id", datasetId)
-//            activityRuleIntent.launchActivity(intent)
-//            waitFor(1) // increase if needed
-//        }
     }
 
     @After
@@ -121,13 +66,23 @@ class DisplayImageActivityTest {
         Intents.release()
     }
 
+    private fun getFirstPicture(category: Category) = runBlocking {
+        dbMgt.getAllPictures(category).first()
+    }
+
+    private fun launchActivityWithPictureOfCategory(category: Category){
+        ActivityScenario.launch<DisplayImageActivity>(
+            Intent(ApplicationProvider.getApplicationContext(),
+                DisplayImageActivity::class.java)
+                .putExtra("dataset_id", dataset.id as String)
+                .putExtra("single_picture", getFirstPicture(category))
+        )
+    }
+
     @Test
     fun pictureAndCategoryAreDisplayed() {
-        activityRuleIntent.launchActivity(Intent()
-            .putExtra("dataset_id", dataset.id as String)
-        )
-//
-//        assumeTrue(picturesInCategory.isNotEmpty())
+        launchActivityWithPictureOfCategory(categoryWith1Picture)
+
         onView(withId(R.id.display_image_viewImage))
             .check(matches(isDisplayed()))
         onView(withId(R.id.display_image_viewCategory))
@@ -152,7 +107,6 @@ class DisplayImageActivityTest {
         return runBlocking {
             val newCategory = dbMgt.putCategory("${UUID.randomUUID()}")
 
-            // TODO : java.lang.IllegalArgumentException: The underlying database does not contain the dataset kitchen utensils
             dbMgt.addCategoryToDataset(dataset, newCategory)
 
             val forkUri = getForkUri()
@@ -165,6 +119,8 @@ class DisplayImageActivityTest {
 
     @Test
     fun deleteLastImageOfCategory() {
+        launchActivityWithPictureOfCategory(categoryWith1Picture)
+
         onView(withId(R.id.display_image_delete_button)).perform(click())
         waitFor(1) // increase if needed
         val updatedPicturesInCategory = runBlocking {
@@ -184,12 +140,14 @@ class DisplayImageActivityTest {
 
     @Test
     fun deleteNotLastImageInCategory() {
+        launchActivityWithPictureOfCategory(categoryWith2Pictures)
+
         onView(withId(R.id.display_image_delete_button)).perform(click())
         waitFor(1) // increase if needed
         val updatedPicturesInCategory = runBlocking {
             dbMgt.getAllPictures(categoryWith1Picture)
         }
-        assumeTrue(updatedPicturesInCategory.isEmpty())
+        assumeTrue(updatedPicturesInCategory.isNotEmpty())
         Intents.intended(
             CoreMatchers.allOf(
                 IntentMatchers.hasComponent(DisplayImageSetActivity::class.java.name),
@@ -207,6 +165,8 @@ class DisplayImageActivityTest {
 
     @Test
     fun setAsRepresentativePictureButtonWorks() {
+        launchActivityWithPictureOfCategory(categoryWith2Pictures)
+
         onView(withId(R.id.display_image_set_representative_picture)).perform(click())
         // TODO test that the functionality is correctly implemented
     }
