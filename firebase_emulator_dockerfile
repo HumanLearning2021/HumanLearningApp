@@ -1,7 +1,6 @@
-FROM node:9.10-alpine
+FROM node:15.14.0-alpine
 
 EXPOSE 9099
 EXPOSE 8080
 
-RUN npm i npm@latest -g
 RUN npm install -g firebase-tools
