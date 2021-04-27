@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="learning_image_size">128dp</dimen>
+    <dimen name="learning_image_size_land">110dp</dimen>
     <dimen name="learning_image_size_tablet">220dp</dimen>
 </resources>

@@ -42,10 +42,9 @@ class DisplayImageSetActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             categorizedPicturesList = dBManagement.getAllPictures(category)
+            findViewById<TextView>(R.id.display_image_set_name).text =
+                category.name
             if (categorizedPicturesList.isNotEmpty()) {
-                findViewById<TextView>(R.id.display_image_set_name).text =
-                    (categorizedPicturesList.elementAt(0)).category.name
-
                 val displayImageSetAdapter =
                     DisplayImageSetAdapter(
                         categorizedPicturesList,
