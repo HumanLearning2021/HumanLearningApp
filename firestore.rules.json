@@ -1,0 +1,12 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  // {database} is always "(default)"
+  // hence, we fake having distinct databases by creating subcollections
+  match /databases/{dbName}/{documentPath=**} {
+      allow read;
+      allow write: if dbName == "scratch" || dbName == "demo2";
+	  allow create;
+  }
+  }
+}
