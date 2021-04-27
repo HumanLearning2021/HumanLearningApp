@@ -13,7 +13,7 @@ check_android_task:
     cpu: 8
     memory: 10G
   start_firebase_emulator_background_script:
-    firebase emulators:start --token ${FIREBASE_TOKEN}
+    firebase emulators:start --token ${FIREBASE_TOKEN} --import ./firestore_state_linux
   create_device_script:
     echo no | avdmanager create avd --force --name test --abi "$TARGET/$ARCH" --package "system-images;android-$API_LEVEL;$TARGET;$ARCH"
   start_emulator_background_script:
