@@ -1,5 +1,5 @@
-Apr 27, 2021 11:18:38 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
-INFO: Started WebSocket server on ws://localhost:56146
+Apr 27, 2021 11:44:34 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
+INFO: Started WebSocket server on ws://localhost:57293
 API endpoint: http://localhost:8080
 If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
 
@@ -7,41 +7,299 @@ If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment
 
 Dev App Server is now running.
 
-Apr 27, 2021 11:18:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:24 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:24 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:25 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:25 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
+INFO: operation failed: no entity to update: app: "dev~human-learning-app"
+path <
+  Element {
+    type: "databases"
+    name: "scratch"
+  }
+  Element {
+    type: "datasets"
+    name: "a207ccfb-6be8-4674-ba8b-81d5499bad41"
+  }
+>
+
+com.google.cloud.datastore.core.exception.DatastoreException: no entity to update: app: "dev~human-learning-app"
+path <
+  Element {
+    type: "databases"
+    name: "scratch"
+  }
+  Element {
+    type: "datasets"
+    name: "a207ccfb-6be8-4674-ba8b-81d5499bad41"
+  }
+>
+
+	at com.google.cloud.datastore.core.exception.DatastoreException.withProblem(DatastoreException.java:176)
+	at com.google.cloud.datastore.emulator.impl.util.FirestoreEmulatorConverters.checkMutation(FirestoreEmulatorConverters.java:166)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.commitHelper(CloudFirestoreV1.java:830)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:732)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:716)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.write(CloudFirestoreV1.java:705)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.handleRequest(CloudFirestoreV1WriteStream.java:208)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.write(CloudFirestoreV1WriteStream.java:136)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:92)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:25)
+	at io.grpc.stub.ServerCalls$StreamingServerCallHandler$StreamingServerCallListener.onMessage(ServerCalls.java:255)
+	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
+	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
+	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
+	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
+	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailableInternal(ServerCallImpl.java:309)
+	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailable(ServerCallImpl.java:292)
+	at io.grpc.internal.ServerImpl$JumpToApplicationThreadServerStreamListener$1MessagesAvailable.runInContext(ServerImpl.java:765)
+	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37)
+	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:123)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+
+Apr 27, 2021 11:45:26 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:26 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:26 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:26 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:26 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
+INFO: operation failed: no entity to update: app: "dev~human-learning-app"
+path <
+  Element {
+    type: "databases"
+    name: "scratch"
+  }
+  Element {
+    type: "datasets"
+    name: "a33ef754-a138-4664-a2d7-87587cc7b1f4"
+  }
+>
+
+com.google.cloud.datastore.core.exception.DatastoreException: no entity to update: app: "dev~human-learning-app"
+path <
+  Element {
+    type: "databases"
+    name: "scratch"
+  }
+  Element {
+    type: "datasets"
+    name: "a33ef754-a138-4664-a2d7-87587cc7b1f4"
+  }
+>
+
+	at com.google.cloud.datastore.core.exception.DatastoreException.withProblem(DatastoreException.java:176)
+	at com.google.cloud.datastore.emulator.impl.util.FirestoreEmulatorConverters.checkMutation(FirestoreEmulatorConverters.java:166)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.commitHelper(CloudFirestoreV1.java:830)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:732)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:716)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.write(CloudFirestoreV1.java:705)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.handleRequest(CloudFirestoreV1WriteStream.java:208)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.write(CloudFirestoreV1WriteStream.java:136)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:92)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:25)
+	at io.grpc.stub.ServerCalls$StreamingServerCallHandler$StreamingServerCallListener.onMessage(ServerCalls.java:255)
+	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
+	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
+	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
+	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
+	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailableInternal(ServerCallImpl.java:309)
+	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailable(ServerCallImpl.java:292)
+	at io.grpc.internal.ServerImpl$JumpToApplicationThreadServerStreamListener$1MessagesAvailable.runInContext(ServerImpl.java:765)
+	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37)
+	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:123)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+
+Apr 27, 2021 11:45:26 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
+INFO: operation failed: no entity to update: app: "dev~human-learning-app"
+path <
+  Element {
+    type: "databases"
+    name: "scratch"
+  }
+  Element {
+    type: "datasets"
+    name: "e7904bb7-7bb9-409c-b1b2-f86d3182f3be"
+  }
+>
+
+com.google.cloud.datastore.core.exception.DatastoreException: no entity to update: app: "dev~human-learning-app"
+path <
+  Element {
+    type: "databases"
+    name: "scratch"
+  }
+  Element {
+    type: "datasets"
+    name: "e7904bb7-7bb9-409c-b1b2-f86d3182f3be"
+  }
+>
+
+	at com.google.cloud.datastore.core.exception.DatastoreException.withProblem(DatastoreException.java:176)
+	at com.google.cloud.datastore.emulator.impl.util.FirestoreEmulatorConverters.checkMutation(FirestoreEmulatorConverters.java:166)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.commitHelper(CloudFirestoreV1.java:830)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:732)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:716)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.write(CloudFirestoreV1.java:705)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.handleRequest(CloudFirestoreV1WriteStream.java:208)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.write(CloudFirestoreV1WriteStream.java:136)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:92)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:25)
+	at io.grpc.stub.ServerCalls$StreamingServerCallHandler$StreamingServerCallListener.onMessage(ServerCalls.java:255)
+	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
+	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
+	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
+	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
+	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailableInternal(ServerCallImpl.java:309)
+	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailable(ServerCallImpl.java:292)
+	at io.grpc.internal.ServerImpl$JumpToApplicationThreadServerStreamListener$1MessagesAvailable.runInContext(ServerImpl.java:765)
+	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37)
+	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:123)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
+INFO: operation failed: no entity to update: app: "dev~human-learning-app"
+path <
+  Element {
+    type: "databases"
+    name: "scratch"
+  }
+  Element {
+    type: "datasets"
+    name: "c3473d1c-2b5c-4d4f-b936-c0541a9d36ae"
+  }
+>
+
+com.google.cloud.datastore.core.exception.DatastoreException: no entity to update: app: "dev~human-learning-app"
+path <
+  Element {
+    type: "databases"
+    name: "scratch"
+  }
+  Element {
+    type: "datasets"
+    name: "c3473d1c-2b5c-4d4f-b936-c0541a9d36ae"
+  }
+>
+
+	at com.google.cloud.datastore.core.exception.DatastoreException.withProblem(DatastoreException.java:176)
+	at com.google.cloud.datastore.emulator.impl.util.FirestoreEmulatorConverters.checkMutation(FirestoreEmulatorConverters.java:166)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.commitHelper(CloudFirestoreV1.java:830)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:732)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:716)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.write(CloudFirestoreV1.java:705)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.handleRequest(CloudFirestoreV1WriteStream.java:208)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.write(CloudFirestoreV1WriteStream.java:136)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:92)
+	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:25)
+	at io.grpc.stub.ServerCalls$StreamingServerCallHandler$StreamingServerCallListener.onMessage(ServerCalls.java:255)
+	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
+	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
+	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
+	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
+	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailableInternal(ServerCallImpl.java:309)
+	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailable(ServerCallImpl.java:292)
+	at io.grpc.internal.ServerImpl$JumpToApplicationThreadServerStreamListener$1MessagesAvailable.runInContext(ServerImpl.java:765)
+	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37)
+	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:123)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:28 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:28 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:28 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:28 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:28 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:45:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
-Apr 27, 2021 11:18:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:18:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
-Apr 27, 2021 11:18:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
-Apr 27, 2021 11:18:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
-Apr 27, 2021 11:18:59 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:30 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:00 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:30 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:00 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:30 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:00 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:30 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:00 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:30 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:30 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:01 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
+Apr 27, 2021 11:45:30 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
 INFO: operation failed: no entity to update: app: "dev~human-learning-app"
 path <
   Element {
@@ -90,21 +348,21 @@ path <
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
 	at java.base/java.lang.Thread.run(Thread.java:832)
 
-Apr 27, 2021 11:19:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:30 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:30 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:02 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:30 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:02 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:30 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:02 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:02 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:02 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:45:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:02 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
+Apr 27, 2021 11:45:31 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
 INFO: operation failed: no entity to update: app: "dev~human-learning-app"
 path <
   Element {
@@ -153,263 +411,107 @@ path <
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
 	at java.base/java.lang.Thread.run(Thread.java:832)
 
-Apr 27, 2021 11:19:07 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:47:41 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:08 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:47:41 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:47:41 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:47:46 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:47:52 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:08 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:47:52 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:47:52 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:47:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:08 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
-INFO: operation failed: no entity to update: app: "dev~human-learning-app"
-path <
-  Element {
-    type: "databases"
-    name: "scratch"
-  }
-  Element {
-    type: "datasets"
-    name: "cd9c175e-6b47-439e-b2d6-e47dc805c739"
-  }
->
-
-com.google.cloud.datastore.core.exception.DatastoreException: no entity to update: app: "dev~human-learning-app"
-path <
-  Element {
-    type: "databases"
-    name: "scratch"
-  }
-  Element {
-    type: "datasets"
-    name: "cd9c175e-6b47-439e-b2d6-e47dc805c739"
-  }
->
-
-	at com.google.cloud.datastore.core.exception.DatastoreException.withProblem(DatastoreException.java:176)
-	at com.google.cloud.datastore.emulator.impl.util.FirestoreEmulatorConverters.checkMutation(FirestoreEmulatorConverters.java:166)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.commitHelper(CloudFirestoreV1.java:830)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:732)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:716)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.write(CloudFirestoreV1.java:705)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.handleRequest(CloudFirestoreV1WriteStream.java:208)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.write(CloudFirestoreV1WriteStream.java:136)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:92)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:25)
-	at io.grpc.stub.ServerCalls$StreamingServerCallHandler$StreamingServerCallListener.onMessage(ServerCalls.java:255)
-	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
-	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
-	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
-	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
-	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailableInternal(ServerCallImpl.java:309)
-	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailable(ServerCallImpl.java:292)
-	at io.grpc.internal.ServerImpl$JumpToApplicationThreadServerStreamListener$1MessagesAvailable.runInContext(ServerImpl.java:765)
-	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37)
-	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:123)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
-	at java.base/java.lang.Thread.run(Thread.java:832)
-
-Apr 27, 2021 11:19:08 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:47:57 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:47:57 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:03 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:09 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:48:03 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:03 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:07 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:09 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:09 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:48:09 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:09 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:13 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:09 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:48:13 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:13 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:18 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:30 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:09 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
-INFO: operation failed: no entity to update: app: "dev~human-learning-app"
-path <
-  Element {
-    type: "databases"
-    name: "scratch"
-  }
-  Element {
-    type: "datasets"
-    name: "1c3ae870-8ab9-43e3-9220-2191dc36b040"
-  }
->
-
-com.google.cloud.datastore.core.exception.DatastoreException: no entity to update: app: "dev~human-learning-app"
-path <
-  Element {
-    type: "databases"
-    name: "scratch"
-  }
-  Element {
-    type: "datasets"
-    name: "1c3ae870-8ab9-43e3-9220-2191dc36b040"
-  }
->
-
-	at com.google.cloud.datastore.core.exception.DatastoreException.withProblem(DatastoreException.java:176)
-	at com.google.cloud.datastore.emulator.impl.util.FirestoreEmulatorConverters.checkMutation(FirestoreEmulatorConverters.java:166)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.commitHelper(CloudFirestoreV1.java:830)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:732)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:716)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.write(CloudFirestoreV1.java:705)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.handleRequest(CloudFirestoreV1WriteStream.java:208)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.write(CloudFirestoreV1WriteStream.java:136)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:92)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:25)
-	at io.grpc.stub.ServerCalls$StreamingServerCallHandler$StreamingServerCallListener.onMessage(ServerCalls.java:255)
-	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
-	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
-	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
-	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
-	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailableInternal(ServerCallImpl.java:309)
-	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailable(ServerCallImpl.java:292)
-	at io.grpc.internal.ServerImpl$JumpToApplicationThreadServerStreamListener$1MessagesAvailable.runInContext(ServerImpl.java:765)
-	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37)
-	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:123)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
-	at java.base/java.lang.Thread.run(Thread.java:832)
-
-Apr 27, 2021 11:19:09 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:48:30 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:30 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:31 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:33 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:48:33 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:33 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:35 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:36 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
-INFO: operation failed: no entity to update: app: "dev~human-learning-app"
-path <
-  Element {
-    type: "databases"
-    name: "scratch"
-  }
-  Element {
-    type: "datasets"
-    name: "36d8b8a4-4ff9-4cce-9106-6e64b651204c"
-  }
->
-
-com.google.cloud.datastore.core.exception.DatastoreException: no entity to update: app: "dev~human-learning-app"
-path <
-  Element {
-    type: "databases"
-    name: "scratch"
-  }
-  Element {
-    type: "datasets"
-    name: "36d8b8a4-4ff9-4cce-9106-6e64b651204c"
-  }
->
-
-	at com.google.cloud.datastore.core.exception.DatastoreException.withProblem(DatastoreException.java:176)
-	at com.google.cloud.datastore.emulator.impl.util.FirestoreEmulatorConverters.checkMutation(FirestoreEmulatorConverters.java:166)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.commitHelper(CloudFirestoreV1.java:830)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:732)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:716)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.write(CloudFirestoreV1.java:705)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.handleRequest(CloudFirestoreV1WriteStream.java:208)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.write(CloudFirestoreV1WriteStream.java:136)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:92)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:25)
-	at io.grpc.stub.ServerCalls$StreamingServerCallHandler$StreamingServerCallListener.onMessage(ServerCalls.java:255)
-	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
-	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
-	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
-	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
-	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailableInternal(ServerCallImpl.java:309)
-	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailable(ServerCallImpl.java:292)
-	at io.grpc.internal.ServerImpl$JumpToApplicationThreadServerStreamListener$1MessagesAvailable.runInContext(ServerImpl.java:765)
-	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37)
-	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:123)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
-	at java.base/java.lang.Thread.run(Thread.java:832)
-
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:48:36 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:36 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:39 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:48:39 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:39 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:41 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:48:41 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:41 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:43 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:48:43 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:43 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:47 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:48:51 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:51 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:52 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Apr 27, 2021 11:48:52 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:52 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:54 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
-INFO: operation failed: no entity to update: app: "dev~human-learning-app"
-path <
-  Element {
-    type: "databases"
-    name: "scratch"
-  }
-  Element {
-    type: "datasets"
-    name: "f33f416b-549a-4ba9-a80d-772c6af15c00"
-  }
->
-
-com.google.cloud.datastore.core.exception.DatastoreException: no entity to update: app: "dev~human-learning-app"
-path <
-  Element {
-    type: "databases"
-    name: "scratch"
-  }
-  Element {
-    type: "datasets"
-    name: "f33f416b-549a-4ba9-a80d-772c6af15c00"
-  }
->
-
-	at com.google.cloud.datastore.core.exception.DatastoreException.withProblem(DatastoreException.java:176)
-	at com.google.cloud.datastore.emulator.impl.util.FirestoreEmulatorConverters.checkMutation(FirestoreEmulatorConverters.java:166)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.commitHelper(CloudFirestoreV1.java:830)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:732)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.internalCommit(CloudFirestoreV1.java:716)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1.write(CloudFirestoreV1.java:705)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.handleRequest(CloudFirestoreV1WriteStream.java:208)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.write(CloudFirestoreV1WriteStream.java:136)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:92)
-	at com.google.cloud.datastore.emulator.impl.CloudFirestoreV1WriteStream.onNext(CloudFirestoreV1WriteStream.java:25)
-	at io.grpc.stub.ServerCalls$StreamingServerCallHandler$StreamingServerCallListener.onMessage(ServerCalls.java:255)
-	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
-	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
-	at io.grpc.ForwardingServerCallListener.onMessage(ForwardingServerCallListener.java:33)
-	at io.grpc.Contexts$ContextualizedServerCallListener.onMessage(Contexts.java:76)
-	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailableInternal(ServerCallImpl.java:309)
-	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.messagesAvailable(ServerCallImpl.java:292)
-	at io.grpc.internal.ServerImpl$JumpToApplicationThreadServerStreamListener$1MessagesAvailable.runInContext(ServerImpl.java:765)
-	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37)
-	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:123)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
-	at java.base/java.lang.Thread.run(Thread.java:832)
-
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:10 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:11 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:11 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:11 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:11 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
-Apr 27, 2021 11:19:11 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
+Apr 27, 2021 11:48:58 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
+Apr 27, 2021 11:48:58 PM com.google.cloud.datastore.emulator.impl.context.EmulatorAuthorization warnAboutSecuredJwt
+WARNING: expected an unsecured JWT, the emulator does not validate JWTs and IS NOT SECURE
