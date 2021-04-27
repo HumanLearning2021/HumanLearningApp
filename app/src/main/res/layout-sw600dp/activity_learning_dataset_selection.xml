@@ -9,7 +9,7 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/LearningDatasetSelection_dataset_list"
         android:layout_width="wrap_content"
-        android:layout_height="600dp"
+        android:layout_height="800dp"
         class="com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

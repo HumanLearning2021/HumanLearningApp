@@ -26,7 +26,7 @@ import javax.inject.Inject
 class DatasetListWidget : Fragment() {
 
     @Inject
-    @Demo2Database
+    @ScratchDatabase
     lateinit var dbMgt: DatabaseManagement
 
     private val mutableSelectedDataset = MutableLiveData<Dataset>()

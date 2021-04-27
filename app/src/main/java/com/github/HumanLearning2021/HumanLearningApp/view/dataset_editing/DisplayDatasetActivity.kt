@@ -103,7 +103,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
         }
     }
 
-    class DisplayDatasetAdapter(
+    private class DisplayDatasetAdapter(
         private val images: Set<CategorizedPicture>,
         private val context: Activity
     ) : BaseAdapter() {

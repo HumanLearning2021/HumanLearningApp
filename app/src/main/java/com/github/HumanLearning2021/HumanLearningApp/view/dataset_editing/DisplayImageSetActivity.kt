@@ -64,7 +64,7 @@ class DisplayImageSetActivity : AppCompatActivity() {
             .putExtra("dataset_id", datasetId))
     }
 
-    class DisplayImageSetAdapter(
+    private class DisplayImageSetAdapter(
         private val images: Set<CategorizedPicture>,
         private val context: Activity
     ) : BaseAdapter() {

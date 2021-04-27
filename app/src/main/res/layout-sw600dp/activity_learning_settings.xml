@@ -13,19 +13,18 @@
         android:layout_height="wrap_content"
         android:text="@string/learning_settings_tvLearningMode"
         android:textColor="#3F51B5"
-        android:textSize="25sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/learning_settings_guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/learning_settings_guideline1" />
 
-
     <Button
         android:id="@+id/learningSettings_btChoosePresentation"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:text="@string/learning_settings_btPresentation"
         app:layout_constraintBottom_toTopOf="@id/learning_settings_guideline3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +35,7 @@
         android:id="@+id/learningSettings_btChooseRepresentation"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:text="@string/learning_settings_btRepresentation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

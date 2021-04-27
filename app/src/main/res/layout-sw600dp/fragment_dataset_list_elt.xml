@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="300dp"
+    android:layout_width="450dp"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@string/DatasetList_default_ds_name"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="20sp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/DatasetList_elt_im1"
         app:layout_constraintEnd_toEndOf= "@id/ds_list_elt_guideline2"
         app:layout_constraintStart_toStartOf="@id/ds_list_elt_guideline1"
@@ -21,8 +21,8 @@
 
     <ImageView
         android:id="@+id/DatasetList_elt_im0"
-        android:layout_width="@dimen/DatasetList_im_size"
-        android:layout_height="@dimen/DatasetList_im_size"
+        android:layout_width="@dimen/DatasetList_im_size_tablet"
+        android:layout_height="@dimen/DatasetList_im_size_tablet"
         android:background="@color/white"
         android:contentDescription="@string/DatasetList_im_content_description"
         android:scaleType="centerCrop"
@@ -35,8 +35,8 @@
 
     <ImageView
         android:id="@+id/DatasetList_elt_im1"
-        android:layout_width="@dimen/DatasetList_im_size"
-        android:layout_height="@dimen/DatasetList_im_size"
+        android:layout_width="@dimen/DatasetList_im_size_tablet"
+        android:layout_height="@dimen/DatasetList_im_size_tablet"
         android:background="@color/white"
         android:contentDescription="@string/DatasetList_im_content_description"
         android:scaleType="centerCrop"
@@ -49,8 +49,8 @@
 
     <ImageView
         android:id="@+id/DatasetList_elt_im2"
-        android:layout_width="@dimen/DatasetList_im_size"
-        android:layout_height="@dimen/DatasetList_im_size"
+        android:layout_width="@dimen/DatasetList_im_size_tablet"
+        android:layout_height="@dimen/DatasetList_im_size_tablet"
         android:background="@color/white"
         android:contentDescription="@string/DatasetList_im_content_description"
         android:scaleType="centerCrop"

@@ -3,6 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 import android.app.Activity
 import android.widget.ImageView
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
@@ -11,7 +12,7 @@ import javax.inject.Inject
 
 
 class LearningPresenter @Inject constructor(
-    @Demo2Database
+    @ScratchDatabase
     private val dbMgt: DatabaseManagement
 ) {
     // may be set by the view

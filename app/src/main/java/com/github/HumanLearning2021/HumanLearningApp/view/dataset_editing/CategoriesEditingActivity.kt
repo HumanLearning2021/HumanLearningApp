@@ -80,11 +80,9 @@ class CategoriesEditingActivity : AppCompatActivity() {
             for (i in dsCategories.indices) {
                 if (dsCategories.elementAt(i).name == categoryName.text.toString()) {
                     removedCategory = dsCategories.elementAt(i)
+                    dsCategories = dsCategories.minus(removedCategory)
+                    dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
                 }
-            }
-            if (dsCategories.isNotEmpty() && dsCategories.contains(removedCategory)) {
-                dsCategories = dsCategories.minus(removedCategory)
-                dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
             }
             binding.parentLinearLayout.removeView(view.parent as View)
         }
@@ -133,4 +131,3 @@ class CategoriesEditingActivity : AppCompatActivity() {
         }
     }
 }
-
