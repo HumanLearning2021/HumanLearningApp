@@ -58,7 +58,6 @@ class LearningTest {
 
     @Before
     fun init() {
-        hiltRule.inject()
         mDevice = UiDevice.getInstance(getInstrumentation())
     }
 

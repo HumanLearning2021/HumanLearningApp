@@ -27,6 +27,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
+import org.hamcrest.Matchers.hasSize
 import org.junit.*
 import org.junit.Assume.assumeTrue
 import org.junit.runner.RunWith
@@ -67,6 +68,7 @@ class CategoriesEditingActivityTest {
         Intents.release()
     }
 
+    @Ignore("TODO")
     @Test
     fun staticUITests(){
         // TODO, using https://developer.android.com/reference/androidx/test/espresso/matcher/ViewMatchers#iscompletelydisplayed
@@ -110,12 +112,9 @@ class CategoriesEditingActivityTest {
                     hasChildCount(nbCategories - 1)
                 )
             )
+
             val updatedDataset = dbMgt.getDatasetById(dataset.id)!!
-            val actual = updatedDataset.categories.size
-            val expected = nbCategories - 1
-            assert(expected == actual) {
-                "nb categories = $actual, expected $expected"
-            }
+            assertThat(updatedDataset.categories, hasSize(nbCategories - 1))
         }
     }
 
@@ -131,9 +130,11 @@ class CategoriesEditingActivityTest {
         )
     }
 
-    @Ignore("This test fails on the emulator : Error performing 'single click - " +
+    @Ignore("This test fails on the emulator of the CI : Error performing 'single click - " +
             "At Coordinates: 159, 425 and precision: 16, 16' on view " +
-            "'with id: com.github.HumanLearning2021.HumanLearningApp:id/button_submit_list'")
+            "'with id: com.github.HumanLearning2021.HumanLearningApp:id/button_submit_list'" +
+            "This seems to be a UI bug rather than a test bug. The submit button should not be" +
+            "inaccessible when there are too many categories.")
     @Test
     fun addNewCategoryToDatasetWorks() {
         val nbCategories = dataset.categories.size

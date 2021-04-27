@@ -61,7 +61,6 @@ class LearningSettingsActivityTest {
 
     @Before
     fun setUp() {
-        hiltRule.inject()
         Intents.init()
         // By waiting before the test starts, it allows time for the app to startup to prevent the
         // following error to appear on cirrus:
