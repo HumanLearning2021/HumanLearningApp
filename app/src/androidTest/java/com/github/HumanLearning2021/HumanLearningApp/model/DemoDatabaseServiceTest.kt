@@ -1,32 +1,35 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
-import junit.framework.TestCase
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItem
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import javax.inject.Inject
 
+abstract class DemoDatabaseServiceTest {
+    protected abstract val db: DatabaseService
 
-abstract class DemoDatabaseServiceTest : TestCase() {
-    private lateinit var db: DatabaseService
-
-    override fun setUp() {
-        db = setUpDatabaseService()
-    }
-
-    protected abstract fun setUpDatabaseService(): DatabaseService
-
+    @Test
     fun test_getCategories() = runBlocking {
         val cats = db.getCategories()
         assertThat(cats, hasItem(hasName("Pomme")))
     }
 
+    @Test
     fun test_getCategory() = runBlocking {
         val cat = db.getCategory("LbaIwsl1kizvTod4q1TG")
         assertThat(cat, hasName("Pomme"))
     }
 
+    @Test
     @Suppress("DEPRECATION")
     fun test_getPicture() = runBlocking {
         val appleCategory = db.getCategories().find { it.name == "Pomme" }
@@ -36,6 +39,18 @@ abstract class DemoDatabaseServiceTest : TestCase() {
     }
 }
 
+@HiltAndroidTest
+@RunWith(AndroidJUnit4::class)
 class FirestoreDemoDatabaseServiceTest : DemoDatabaseServiceTest() {
-    override fun setUpDatabaseService() = FirestoreDatabaseService("demo")
+    @Inject
+    @DemoDatabase
+    override lateinit var db: DatabaseService
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    @Before
+    fun setUpDb() {
+        hiltRule.inject()
+    }
 }
