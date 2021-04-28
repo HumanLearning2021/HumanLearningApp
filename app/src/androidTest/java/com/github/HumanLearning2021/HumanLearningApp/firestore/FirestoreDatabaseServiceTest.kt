@@ -183,6 +183,7 @@ class FirestoreDatabaseServiceTest {
     }
 
     @Ignore("find out why the exception is not thrown")
+    @Test
     fun test_putRepresentativePicture_throwsIfCategoryNotPresent() = runBlocking {
         runCatching {
             demoInterface.putRepresentativePicture(Uri.EMPTY, fakeCategory)
@@ -232,6 +233,7 @@ class FirestoreDatabaseServiceTest {
     }
 
     @Ignore("find out why the exception is not thrown")
+    @Test
     fun test_removeCategoryFromDataset_throwsIfCategoryNotContained(): Unit = runBlocking {
         val ds = demoInterface.getDatasets().first()
         runCatching {
