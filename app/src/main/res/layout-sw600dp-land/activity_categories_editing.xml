@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:orientation="vertical"
     tools:context=".view.MainActivity">
 
@@ -21,6 +22,7 @@
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:animateLayoutChanges="true"
         app:layout_constraintBottom_toTopOf="@id/categories_editing_guideline2"
         app:layout_constraintTop_toBottomOf="@id/categories_editing_guideline1"
         app:layout_constraintStart_toStartOf="@id/categories_editing_guideline3"
@@ -30,6 +32,7 @@
             android:id="@+id/parent_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
             android:orientation="vertical" />
 
     </ScrollView>
