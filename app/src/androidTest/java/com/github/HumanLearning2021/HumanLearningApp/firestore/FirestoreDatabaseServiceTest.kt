@@ -17,6 +17,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.Assert.fail
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -63,17 +64,17 @@ class FirestoreDatabaseServiceTest {
         }
     }
 
-//    TODO("Why does this test not pass?")
-//    @Test
-//    fun test_getAllPictures_throwsIfCategoryNotPresent(): Unit = runBlocking {
-//        runCatching {
-//            demoInterface.getAllPictures(fakeCategory)
-//        }.fold({
-//            fail("unexpected successful completion")
-//        }, {
-//            assertThat(it, instanceOf(IllegalArgumentException::class.java))
-//        })
-//    }
+    @Ignore("find out why the exception is not thrown")
+    @Test
+    fun test_getAllPictures_throwsIfCategoryNotPresent(): Unit = runBlocking {
+        runCatching {
+            demoInterface.getAllPictures(fakeCategory)
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
+    }
 
     @Test
     fun test_removeCategory_throws(): Unit = runBlocking {
@@ -181,17 +182,16 @@ class FirestoreDatabaseServiceTest {
         assertThat(scratchInterface.getDataset(ds.id), equalTo(null))
     }
 
-//    TODO("find out why the exception is not thrown")
-//    @Test
-//    fun test_putRepresentativePicture_throwsIfCategoryNotPresent() = runBlocking {
-//        runCatching {
-//            demoInterface.putRepresentativePicture(Uri.EMPTY, fakeCategory)
-//        }.fold({
-//            fail("unexpected successful completion")
-//        }, {
-//            assertThat(it, instanceOf(IllegalArgumentException::class.java))
-//        })
-//    }
+    @Ignore("find out why the exception is not thrown")
+    fun test_putRepresentativePicture_throwsIfCategoryNotPresent() = runBlocking {
+        runCatching {
+            demoInterface.putRepresentativePicture(Uri.EMPTY, fakeCategory)
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
+    }
 
     @Test
     fun test_putRepresentativePicture() = runBlocking {
@@ -231,18 +231,17 @@ class FirestoreDatabaseServiceTest {
         })
     }
 
-//    TODO("find out why the exception is not thrown")
-//    @Test
-//    fun test_removeCategoryFromDataset_throwsIfCategoryNotContained(): Unit = runBlocking {
-//        val ds = demoInterface.getDatasets().first()
-//        runCatching {
-//            demoInterface.removeCategoryFromDataset(ds, fakeCategory)
-//        }.fold({
-//            fail("unexpected successful completion")
-//        }, {
-//            assertThat(it, instanceOf(IllegalArgumentException::class.java))
-//        })
-//    }
+    @Ignore("find out why the exception is not thrown")
+    fun test_removeCategoryFromDataset_throwsIfCategoryNotContained(): Unit = runBlocking {
+        val ds = demoInterface.getDatasets().first()
+        runCatching {
+            demoInterface.removeCategoryFromDataset(ds, fakeCategory)
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
+    }
 
     @Test
     fun test_removeCategoryFromDataset() = runBlocking {
