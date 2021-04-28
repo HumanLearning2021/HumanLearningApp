@@ -8,7 +8,7 @@ check_android_task:
     KEYSTORE_PASSPHRASE: ENCRYPTED[8cf2af5735b5466ae45825e30c356f5aa95a363f57e5fc90529d27d27e71ce0f18bb995bf3a4f2cf801cd71b3fa552f0]
     FIREBASE_TOKEN: ENCRYPTED[574693c17b095dbdb775360edeb99be34637b5c81e442d10d28eee5da5866d941186114fdfc14f7b0ddd9e897c4dc590]
   container:
-    image: jfkonrad/humanlearning:emulators
+    dockerfile: Dockerfile
     kvm: true
     cpu: 8
     memory: 10G
