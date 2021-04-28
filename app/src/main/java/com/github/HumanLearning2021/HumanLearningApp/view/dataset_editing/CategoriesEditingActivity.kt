@@ -83,6 +83,7 @@ class CategoriesEditingActivity : AppCompatActivity() {
                     removedCategory = dsCategories.elementAt(i)
                     dsCategories = dsCategories.minus(removedCategory)
                     dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
+                    break
                 }
             }
             binding.parentLinearLayout.removeView(view.parent as View)

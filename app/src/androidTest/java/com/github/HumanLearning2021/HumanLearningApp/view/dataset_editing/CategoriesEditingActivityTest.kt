@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -129,12 +130,13 @@ class CategoriesEditingActivityTest {
             )
         )
     }
-    
+
     @Test
     fun addNewCategoryToDatasetWorks() {
         val nbCategories = dataset.categories.size
         onView(withId(R.id.button_add)).perform(click())
         onView(withText("")).perform(typeText("new beautiful category"))
+        closeSoftKeyboard()
         onView(withId(R.id.button_submit_list)).perform(click())
         waitFor(1) // increase id needed
         runBlocking {

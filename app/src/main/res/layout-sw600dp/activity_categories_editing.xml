@@ -18,15 +18,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/parent_linear_layout"
+    <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/categories_editing_guideline2"
         app:layout_constraintTop_toBottomOf="@id/categories_editing_guideline1"
         app:layout_constraintStart_toStartOf="@id/categories_editing_guideline3"
-        app:layout_constraintEnd_toStartOf="@id/categories_editing_guideline4" />
+        app:layout_constraintEnd_toStartOf="@id/categories_editing_guideline4" >
+
+        <LinearLayout
+            android:id="@+id/parent_linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_add"
