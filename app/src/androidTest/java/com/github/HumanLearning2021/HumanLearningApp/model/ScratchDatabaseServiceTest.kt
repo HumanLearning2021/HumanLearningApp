@@ -1,39 +1,36 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.HiltAndroidRule
-import junit.framework.TestCase
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.notNullValue
+import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
 import javax.inject.Inject
 
 
-abstract class ScratchDatabaseServiceTest : TestCase() {
-    @Inject
-    @ScratchDatabase
-    lateinit var db: DatabaseService
+abstract class ScratchDatabaseServiceTest {
+    protected abstract val db: DatabaseService
 
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
-
-    override fun setUp() {
-        hiltRule.inject()
-    }
-
+    @Test
     fun test_putCategory() = runBlocking {
         val cat = db.putCategory("Poire")
         assertThat(cat, hasName("Poire"))
     }
 
+    @Test
     fun test_putPicture() = runBlocking {
         val cat = db.putCategory("Poire")
 
@@ -43,6 +40,7 @@ abstract class ScratchDatabaseServiceTest : TestCase() {
         assertThat(pic, hasCategory(equalTo(cat)))
     }
 
+    @Test
     fun test_updateUser() = runBlocking {
         val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
         val user = db.updateUser(firebaseUser)
@@ -55,15 +53,48 @@ abstract class ScratchDatabaseServiceTest : TestCase() {
         assertThat(db.updateUser(firebaseUser), equalTo(user))
     }
 
+    @Test
     fun test_getUser() = runBlocking {
         val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
         db.updateUser(firebaseUser)
         val user = db.getUser(User.Type.FIREBASE, firebaseUser.uid)
-        assertNotNull(user)
+        assertThat(user, notNullValue())
         user!!
         assertThat(user.type, equalTo(User.Type.FIREBASE))
         assertThat(user.uid, equalTo(firebaseUser.uid))
         assertThat(user.displayName, equalTo(firebaseUser.displayName))
         assertThat(user.email, equalTo(firebaseUser.email))
+    }
+}
+
+@HiltAndroidTest
+@RunWith(AndroidJUnit4::class)
+class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
+    @Inject
+    @ScratchDatabase
+    override lateinit var db: DatabaseService
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    @Before
+    fun setUpDb() {
+        hiltRule.inject()
+    }
+}
+
+@HiltAndroidTest
+@RunWith(AndroidJUnit4::class)
+class ScratchDummyDatabaseServiceTest : ScratchDatabaseServiceTest() {
+    @Inject
+    @DummyDatabase
+    override lateinit var db: DatabaseService
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    @Before
+    fun setUpDb() {
+        hiltRule.inject()
     }
 }
