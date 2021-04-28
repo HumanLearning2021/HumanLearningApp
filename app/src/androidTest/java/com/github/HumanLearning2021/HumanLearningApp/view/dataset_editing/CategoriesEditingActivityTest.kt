@@ -129,12 +129,7 @@ class CategoriesEditingActivityTest {
             )
         )
     }
-
-    @Ignore("This test fails on the emulator of the CI : Error performing 'single click - " +
-            "At Coordinates: 159, 425 and precision: 16, 16' on view " +
-            "'with id: com.github.HumanLearning2021.HumanLearningApp:id/button_submit_list'" +
-            "This seems to be a UI bug rather than a test bug. The submit button should not be" +
-            "inaccessible when there are too many categories.")
+    
     @Test
     fun addNewCategoryToDatasetWorks() {
         val nbCategories = dataset.categories.size
