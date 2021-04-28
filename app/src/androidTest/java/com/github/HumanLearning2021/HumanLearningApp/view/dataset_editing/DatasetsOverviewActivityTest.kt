@@ -23,7 +23,10 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
-import dagger.hilt.android.testing.*
+import dagger.hilt.android.testing.BindValue
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
@@ -53,7 +56,7 @@ class DatasetsOverviewActivityTest {
     @Before
     fun setUp() {
         Intents.init()
-        val delayBeforeTestStart: Long = 1000
+        val delayBeforeTestStart: Long = 1 // increase if needed
         waitFor(delayBeforeTestStart)
     }
 

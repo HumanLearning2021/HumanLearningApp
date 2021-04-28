@@ -16,8 +16,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
-import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDummyDataset
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
@@ -30,7 +29,6 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import junit.framework.AssertionFailedError
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -42,6 +40,12 @@ import org.junit.runner.RunWith
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class LearningSettingsActivityTest {
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    @BindValue
+    @Demo2Database
+    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<LearningSettingsActivity> = ActivityScenarioRule(
@@ -50,15 +54,10 @@ class LearningSettingsActivityTest {
             LearningSettingsActivity::class.java
         ).putExtra(
             LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET,
-            getFirstDummyDataset()
+            getFirstDataset(dbMgt)
         )
     )
 
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
-
-    @BindValue @Demo2Database
-    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     @Before
     fun setUp() {
@@ -68,7 +67,7 @@ class LearningSettingsActivityTest {
         // `Waited for the root of the view hierarchy to have window focus and not request layout for 10 seconds.`
         // This solution is not ideal because it slows down the tests, and it might not work
         // every time. But there isn't a better solution that I (Niels Lachat) know of.
-        val delayBeforeTestStart: Long = 2000
+        val delayBeforeTestStart: Long = 1 // increase if needed
         TestUtils.waitFor(delayBeforeTestStart)
     }
 
@@ -79,6 +78,21 @@ class LearningSettingsActivityTest {
     }
 
     @Test
+    fun staticUITests(){
+        learningModeTooltipsAreCorrect()
+        bothButtonsAndTVAreDisplayed()
+    }
+
+//    @Test
+    fun learningModeTooltipsAreCorrect() {
+        val res = InstrumentationRegistry.getInstrumentation().targetContext.resources
+        onView(withId(R.id.learningSettings_btChoosePresentation))
+            .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_presentation)))
+        onView(withId(R.id.learningSettings_btChooseRepresentation))
+            .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_representation)))
+    }
+
+//    @Test
     fun bothButtonsAndTVAreDisplayed() {
         assertDisplayed(R.id.learningSettings_btChoosePresentation)
         assertDisplayed(R.id.learningSettings_btChooseRepresentation)
@@ -106,14 +120,6 @@ class LearningSettingsActivityTest {
         pressingButtonLaunchesLearningActivity(R.id.learningSettings_btChooseRepresentation)
     }
 
-    @Test
-    fun learningModeTooltipsAreCorrect() {
-        val res = InstrumentationRegistry.getInstrumentation().targetContext.resources
-        onView(withId(R.id.learningSettings_btChoosePresentation))
-            .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_presentation)))
-        onView(withId(R.id.learningSettings_btChooseRepresentation))
-            .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_representation)))
-    }
 
     inner class HasTooltipText(private val text: String) : ViewAssertion {
         override fun check(view: View?, noViewFoundException: NoMatchingViewException?) {

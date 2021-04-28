@@ -1,16 +1,17 @@
 package com.github.HumanLearning2021.HumanLearningApp
 
+import android.util.Log
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 
 object TestUtils {
     // inspired by : https://stackoverflow.com/a/35924943/7158887
@@ -37,14 +38,39 @@ object TestUtils {
                 return "Wait for $millis milliseconds"
             }
 
+            private val WARN_WAIT_TOO_LONG = 2000
+
             override fun perform(uiController: UiController?, view: View?) {
+                if(millis > WARN_WAIT_TOO_LONG){
+                    Log.w(
+                        "TestUtils, wait",
+                        "PERFORMANCE : you use a long wait time > $WARN_WAIT_TOO_LONG" +
+                                ", is this really necessary?"
+                    )
+                }
                 uiController?.loopMainThreadForAtLeast(millis)
             }
         }
 
     fun waitFor(millis: Long) = onView(isRoot()).perform(waitForAction(millis))
 
-    fun getFirstDummyDataset() = runBlocking {
-        DummyDatabaseManagement(DummyDatabaseService()).getDatasets().first()
+    fun getFirstDataset(dbMgt: DatabaseManagement) = runBlocking {
+        dbMgt.getDatasets().first()
+    }
+
+    // inspired by https://stackoverflow.com/a/39756832/7158887
+    fun withIndex(matcher: Matcher<View?>, index: Int): Matcher<View?> {
+        return object : TypeSafeMatcher<View?>() {
+            var currentIndex = 0
+            override fun describeTo(description: Description) {
+                description.appendText("with index: ")
+                description.appendValue(index)
+                matcher.describeTo(description)
+            }
+
+            override fun matchesSafely(view: View?): Boolean {
+                return matcher.matches(view) && currentIndex++ == index
+            }
+        }
     }
 }

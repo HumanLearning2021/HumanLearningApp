@@ -47,7 +47,7 @@ class LearningDatasetSelectionTest {
     @Before
     fun before(){
         Intents.init()
-        TestUtils.waitFor(100)
+        TestUtils.waitFor(1)
     }
     @After
     fun after(){
