@@ -62,7 +62,7 @@ class AddPictureActivityTest {
         // `Waited for the root of the view hierarchy to have window focus and not request layout for 10 seconds.`
         // This solution is not ideal because it slows down the tests, and it might not work
         // every time. But there isn't a better solution that I (Niels Lachat) know of.
-        val delayBeforeTestStart: Long = 3000
+        val delayBeforeTestStart: Long = 1 // increase if needed
         TestUtils.waitFor(delayBeforeTestStart)
     }
 
