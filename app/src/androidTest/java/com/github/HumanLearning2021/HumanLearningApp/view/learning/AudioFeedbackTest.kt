@@ -5,11 +5,17 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDataset
-import com.github.HumanLearning2021.HumanLearningApp.view.*
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.*
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -17,11 +23,16 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class AudioFeedbackTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
+
+    @BindValue
+    @Demo2Database
+    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<LearningActivity> = ActivityScenarioRule(
@@ -30,7 +41,7 @@ class AudioFeedbackTest {
             LearningActivity::class.java
         )
             .putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
-            .putExtra(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET, DummyDataset("id", "name", emptySet()))
+            .putExtra(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET, getFirstDataset(dbMgt))
     )
 
     fun makeLearningAudioFeedback(): LearningAudioFeedback {

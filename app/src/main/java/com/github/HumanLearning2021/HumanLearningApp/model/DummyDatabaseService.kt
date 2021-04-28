@@ -230,10 +230,15 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         require(dataset is DummyDataset)
         require(category is DummyCategory)
         if (!categories.contains(category)) {
-            throw java.lang.IllegalArgumentException("The underlying database does not contain the category ${category.name}")
+            throw java.lang.IllegalArgumentException("The underlying database does not " +
+                    "contain the category ${category.name}")
         }
-        if (!datasets.contains(dataset)) {
-            throw IllegalArgumentException("The underlying database does not contain the dataset ${dataset.name}")
+        // calling datasets.contains(dataset) returned false for obviously equal datasets
+        // TODO : discuss this
+//        if (!datasets.contains(dataset)) {
+        if (datasets.find{it == dataset} == null) {
+            throw IllegalArgumentException("The underlying database:\n $datasets\n\n does not " +
+                    "contain the dataset \n $dataset")
         }
         return if (dataset.categories.contains(category)) {
             dataset
