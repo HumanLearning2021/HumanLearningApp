@@ -6,20 +6,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.FlakyTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.notNullValue
+import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assume.assumeThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,20 +32,16 @@ class FirestoreCategorizedPictureTest {
     @Inject
     @DemoDatabase
     lateinit var db: DatabaseService
-    lateinit var pic: CategorizedPicture
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val testRule = IntentsTestRule(MainActivity::class.java, false, false)
 
     @Before
     fun setUp() {
         hiltRule.inject()  // to get db set up
-        pic = runBlocking {
-            val cats = db.getCategories()
-            db.getPicture(cats.first())!!
-        }
         UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).apply {
             if (!isScreenOn)
                 wakeUp()
@@ -54,19 +50,26 @@ class FirestoreCategorizedPictureTest {
         testRule.launchActivity(intent)
     }
 
-    @FlakyTest(detail = "Glide appears not to play well with the CI")
     @Test
     fun displayOnWorksAsExpected() {
+        val pic = runBlocking {
+            val cats = db.getCategories()
+            db.getPicture(cats.first())
+        }
+        assumeThat("no picture to test display", pic, notNullValue())
+        pic!!
+
         val imageView = ImageView(ApplicationProvider.getApplicationContext())
+        assumeThat(imageView.drawable, nullValue())
 
         testRule.activity.run {
             lifecycleScope.launch {
                 setContentView(imageView)
                 pic.displayOn(this@run, imageView)
-                delay(1000)
-                assertThat(imageView.drawable, notNullValue())
             }
         }
+        waitFor(1000)
+        assertThat(imageView.drawable, notNullValue())
     }
 }
 
