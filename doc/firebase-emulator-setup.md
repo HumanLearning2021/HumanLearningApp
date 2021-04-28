@@ -2,7 +2,7 @@
 
 ## Installation
 
-Follow the instructions [here](https://firebase.google.com/docs/cli?authuser=5&hl=en#install_the_firebase_cli).
+Follow the instructions [here](https://firebase.google.com/docs/cli?authuser=5&hl=en#install_the_firebase_cli). There is no need to run `firebase init`, everything is already setup in the project. You only have to do `firebase login`.
 
 ## Usage
 
