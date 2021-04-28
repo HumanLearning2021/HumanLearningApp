@@ -1,157 +1,174 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
+import org.junit.After
 import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
 import java.util.*
-import javax.inject.Inject
-import kotlin.collections.ArrayList
 
+@UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayImageActivityTest {
-    @get:Rule
+    @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
-    @get:Rule
-    var activityRuleIntent = IntentsTestRule(DisplayImageActivity::class.java, false, false)
 
-    @Inject
-    @ScratchDatabase
-    lateinit var dbManagement: DatabaseManagement
+    @BindValue
+    @Demo2Database
+    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
-    private var dsPictures = emptySet<CategorizedPicture>()
-    private lateinit var dataset: Dataset
-    private lateinit var datasetId: String
-    private var index = 0
-    private lateinit var categories: Set<Category>
-    private val categoryImagesList = ArrayList<CategorizedPicture>()
+    private val dataset = getFirstDataset(dbMgt)
+
+    private lateinit var categoryWith1Picture : Category
+    private lateinit var categoryWith2Pictures : Category
 
     @Before
     fun setUp() {
-        hiltRule.inject()  // to get dbManagement set up
-        runBlocking {
-            var found = false
-            val datasets = dbManagement.getDatasets()
-            for (ds in datasets) {
-                val dsCats = ds.categories
-                if (dsCats.isNotEmpty() && !found) {
-                    for (i in dsCats.indices) {
-                        val dsPictures = dbManagement.getAllPictures(dsCats.elementAt(i))
-                        if (dsPictures.isNotEmpty() && !found) {
-                            dataset = ds
-                            index = i
-                            found = true
-                        }
-                    }
-                }
-            }
-            if (!found) {
-                val cat = dbManagement.putCategory("${UUID.randomUUID()}")
-                dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
-                val tmp = File.createTempFile("droid", ".png")
-                try {
-                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
-                        tmp.outputStream().use {
-                            img.copyTo(it)
-                        }
-                    }
-                    val uri = Uri.fromFile(tmp)
-                    dbManagement.putPicture(uri, cat)
-                } finally {
-                    tmp.delete()
-                }
-            }
-            datasetId = dataset.id as String
-            categories = dataset.categories
-            dsPictures = dbManagement.getAllPictures(categories.elementAt(index))
-            val intent = Intent()
-            if (dsPictures.isNotEmpty()) {
-                intent.putExtra("single_picture", (dsPictures.elementAt(0)))
-            }
-            intent.putExtra("dataset_id", datasetId)
-            activityRuleIntent.launchActivity(intent)
-            waitFor(1000)
-        }
+        Intents.init()
+        hiltRule.inject()
+
+        categoryWith1Picture = newCategoryWithNPictures(1)
+        categoryWith2Pictures = newCategoryWithNPictures(2)
+    }
+
+    @After
+    fun release(){
+        Intents.release()
+    }
+
+    private fun getFirstPicture(category: Category) = runBlocking {
+        dbMgt.getAllPictures(category).first()
+    }
+
+    private fun launchActivityWithPictureOfCategory(category: Category){
+        ActivityScenario.launch<DisplayImageActivity>(
+            Intent(ApplicationProvider.getApplicationContext(),
+                DisplayImageActivity::class.java)
+                .putExtra("dataset_id", dataset.id as String)
+                .putExtra("single_picture", getFirstPicture(category))
+        )
     }
 
     @Test
     fun pictureAndCategoryAreDisplayed() {
-        assumeTrue(dsPictures.isNotEmpty())
+        launchActivityWithPictureOfCategory(categoryWith1Picture)
+
         onView(withId(R.id.display_image_viewImage))
             .check(matches(isDisplayed()))
         onView(withId(R.id.display_image_viewCategory))
             .check(matches(isDisplayed()))
         onView(withId(R.id.display_image_delete_button)).check(matches(isDisplayed()))
+    }
 
+    private fun getForkUri(): Uri {
+        // could maybe be made simpler
+        val res = ApplicationProvider.getApplicationContext<Context>().resources
+        val rId = R.drawable.fork
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
+                "://" + res.getResourcePackageName(rId) +
+                "/" + res.getResourceTypeName(rId) +
+                "/" + res.getResourceEntryName(rId)
+        )
+    }
+
+    private fun newCategoryWithNPictures(N : Int): Category {
+        require(N > 0)
+
+        return runBlocking {
+            val newCategory = dbMgt.putCategory("${UUID.randomUUID()}")
+
+            dbMgt.addCategoryToDataset(dataset, newCategory)
+
+            val forkUri = getForkUri()
+            for(i in 1..N){
+                dbMgt.putPicture(forkUri, newCategory)
+            }
+            newCategory
+        }
     }
 
     @Test
-    fun deleteButtonWorks() {
-        var sameCatPictures: Set<CategorizedPicture>
-        runBlocking {
-            sameCatPictures = dbManagement.getAllPictures(categories.elementAt(index))
-        }
-        assumeTrue(sameCatPictures.isNotEmpty())
-        onView(withId(R.id.display_image_delete_button)).perform(click())
-        waitFor(3000)
-        if (sameCatPictures.size == 1) {
-            Intents.intended(
-                CoreMatchers.allOf(
-                    IntentMatchers.hasComponent(DisplayDatasetActivity::class.java.name),
-                    IntentMatchers.hasExtra(
-                        "dataset_id",
-                        datasetId
-                    ),
-                )
-            )
-        } else {
-            Intents.intended(
-                CoreMatchers.allOf(
-                    IntentMatchers.hasComponent(DisplayImageSetActivity::class.java.name),
-                    IntentMatchers.hasExtra(
-                        "category_of_pictures",
-                        categories.elementAt(index)
-                    ),
-                    IntentMatchers.hasExtra(
-                        "dataset_id",
-                        datasetId
-                    ),
-                )
-            )
-        }
+    fun deleteLastImageOfCategory() {
+        launchActivityWithPictureOfCategory(categoryWith1Picture)
 
+        onView(withId(R.id.display_image_delete_button)).perform(click())
+        waitFor(1) // increase if needed
+        val updatedPicturesInCategory = runBlocking {
+            dbMgt.getAllPictures(categoryWith1Picture)
+        }
+        assumeTrue(updatedPicturesInCategory.isEmpty())
+        Intents.intended(
+            CoreMatchers.allOf(
+                IntentMatchers.hasComponent(DisplayDatasetActivity::class.java.name),
+                IntentMatchers.hasExtra(
+                    "dataset_id",
+                    dataset.id as String
+                ),
+            )
+        )
+    }
+
+    @Test
+    fun deleteNotLastImageInCategory() {
+        launchActivityWithPictureOfCategory(categoryWith2Pictures)
+
+        onView(withId(R.id.display_image_delete_button)).perform(click())
+        waitFor(1) // increase if needed
+        val updatedPicturesInCategory = runBlocking {
+            dbMgt.getAllPictures(categoryWith1Picture)
+        }
+        assumeTrue(updatedPicturesInCategory.isNotEmpty())
+        Intents.intended(
+            CoreMatchers.allOf(
+                IntentMatchers.hasComponent(DisplayImageSetActivity::class.java.name),
+                IntentMatchers.hasExtra(
+                    "category_of_pictures",
+                    categoryWith2Pictures
+                ),
+                IntentMatchers.hasExtra(
+                    "dataset_id",
+                    dataset.id as String
+                ),
+            )
+        )
     }
 
     @Test
     fun setAsRepresentativePictureButtonWorks() {
+        launchActivityWithPictureOfCategory(categoryWith2Pictures)
+
         onView(withId(R.id.display_image_set_representative_picture)).perform(click())
+        // TODO test that the functionality is correctly implemented
     }
 }

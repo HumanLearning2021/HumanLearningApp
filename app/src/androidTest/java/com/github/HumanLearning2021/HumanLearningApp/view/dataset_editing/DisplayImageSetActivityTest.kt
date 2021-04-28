@@ -17,13 +17,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.model.*
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.junit.Assume.assumeTrue
@@ -33,8 +33,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import java.util.*
-import javax.inject.Inject
 
+@UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayImageSetActivityTest {
@@ -44,9 +44,9 @@ class DisplayImageSetActivityTest {
     @get:Rule
     var activityRuleIntent = IntentsTestRule(DisplayImageSetActivity::class.java, false, false)
 
-    @Inject
-    @ScratchDatabase
-    lateinit var dbManagement: DatabaseManagement
+    @BindValue
+    @Demo2Database
+    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     private var dsPictures = emptySet<CategorizedPicture>()
     private lateinit var categories: Set<Category>
@@ -96,7 +96,7 @@ class DisplayImageSetActivityTest {
             intent.putExtra("category_of_pictures", (categories.elementAt(index)))
             intent.putExtra("dataset_id", datasetId)
             activityRuleIntent.launchActivity(intent)
-            waitFor(1000)
+            waitFor(1) // increase if needed
         }
     }
 
@@ -115,7 +115,7 @@ class DisplayImageSetActivityTest {
     @Test
     fun imageIsDisplayedOnClick() {
         assumeTrue(dsPictures.isNotEmpty())
-        waitFor(1000)
+        waitFor(1) // increase if needed
         onView(withId(R.id.display_image_set_imagesGridView)).check(
             ViewAssertions.matches(
                 ViewMatchers.isDisplayed()

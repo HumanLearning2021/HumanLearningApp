@@ -39,12 +39,11 @@ class DisplayImageActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.display_image_viewCategory).text = category.name
             picture!!.displayOn(this, findViewById(R.id.display_image_viewImage))
 
-            setDeletePictureAndSetRepresentativePictureButtonsListener()
+            setButtonsListeners()
         }
     }
 
     private fun removePicture() {
-        var noMorePicturesInThisCategory = false
         lifecycleScope.launch {
             dbManagement.removePicture(picture!!)
             Toast.makeText(
@@ -53,11 +52,9 @@ class DisplayImageActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             )
                 .show()
-            if (dbManagement.getAllPictures(category).isEmpty()) {
-                noMorePicturesInThisCategory = true
-            }
-            if (noMorePicturesInThisCategory) {
-                launchDisplayDatasetActivity()
+
+            if (dbManagement.getAllPictures(category).isEmpty()) { // noMorePicturesInThisCategory
+                launchDisplayDatasetActivity() // no image set to show, so return to dataset
             } else {
                 launchDisplayImageSetActivity()
             }
@@ -87,7 +84,7 @@ class DisplayImageActivity : AppCompatActivity() {
         }
     }
 
-    private fun setDeletePictureAndSetRepresentativePictureButtonsListener() {
+    private fun setButtonsListeners() {
         findViewById<ImageButton>(R.id.display_image_delete_button).setOnClickListener {
             removePicture()
         }
