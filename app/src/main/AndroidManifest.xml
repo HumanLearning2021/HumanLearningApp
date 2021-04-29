@@ -15,13 +15,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HumanLearning">
+        <activity android:name=".view.dataset_editing.SelectPictureActivity" >
+        </activity>
+        <activity android:name=".view.dataset_editing.AddPictureActivity" />
         <activity android:name=".view.dataset_editing.DisplayImageSetActivity" />
         <activity android:name=".view.dataset_editing.DatasetsOverviewActivity" />
         <activity
             android:name=".view.learning.LearningDatasetSelectionActivity"
             android:label="@string/LearningDatasetSelection_title" />
         <activity android:name=".view.dataset_editing.CategoriesEditingActivity" />
-        <activity android:name=".view.dataset_editing.AddPictureActivity" />
+        <activity android:name=".view.dataset_editing.TakePictureActivity" />
         <activity android:name=".view.dataset_editing.DisplayImageActivity" />
         <activity android:name=".view.dataset_editing.DisplayDatasetActivity" />
         <activity android:name=".view.learning.LearningSettingsActivity" />
