@@ -139,7 +139,7 @@ class DisplayDatasetFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    class DisplayDatasetAdapter(
+    private class DisplayDatasetAdapter(
         private val images: Set<CategorizedPicture>,
         private val context: Activity
     ) : BaseAdapter() {
@@ -201,5 +201,6 @@ class DisplayDatasetFragment : Fragment() {
             }
         }
     }
+
 
 }
