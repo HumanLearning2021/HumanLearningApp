@@ -3,6 +3,7 @@
 ## Scrum master (LENWEITER)
 
 ## Bettens, Louis
+This week I finished my work on uploading existing pictures to the app. I had to request help on a tricky UI problem from Nicolas, and he helped me.
 
 ## Jaakik, Marouane
 
