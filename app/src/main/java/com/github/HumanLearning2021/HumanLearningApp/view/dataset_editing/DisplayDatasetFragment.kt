@@ -72,8 +72,6 @@ class DisplayDatasetFragment : Fragment() {
             }
         }
 
-
-
         lifecycleScope.launch {
             dataset = dbManagement.getDatasetById(datasetId)!!
             var representativePictures = setOf<CategorizedPicture>()
@@ -90,7 +88,6 @@ class DisplayDatasetFragment : Fragment() {
                     }
                 }
             }
-
 
             val displayDatasetAdapter =
                 DisplayDatasetAdapter(
@@ -204,12 +201,5 @@ class DisplayDatasetFragment : Fragment() {
             }
         }
     }
-
-
-    companion object {
-        const val ARG_PIC_URI = "pictureUri"
-        const val ARG_CATEGORY = "category"
-    }
-
 
 }

@@ -2,20 +2,24 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -23,36 +27,70 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentAddPictureBinding
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayDatasetBinding
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentTakePictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.AddPictureContract.Companion.finishWith
-import com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.AddPictureContract.Companion.parseArgs
 import java.io.File
+import java.util.*
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 
-/*
-Activity where an administrator can take a picture to add it to a selected data set.
-Should be started using the ActivityResultContract provided by the AddPictureContract object.
- */
-class TakePictureActivity : AppCompatActivity() {
+class TakePictureFragment : Fragment() {
+    private lateinit var parentActivity: FragmentActivity
+
+    private val args: AddPictureFragmentArgs by navArgs()
 
     private var categories = setOf<Category>()
     private lateinit var imageCapture: ImageCapture
     private lateinit var capturedImageUri: Uri
     private lateinit var chosenCategory: Category
+    private lateinit var datasetId: String // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesnt seem to work
     private var imageTaken: Boolean = false
     private var categorySet: Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private var _binding: FragmentTakePictureBinding? = null
+    private val binding get() = _binding!!
 
-        checkIntentExtras()
+    val callback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            findNavController().popBackStack()
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        parentActivity = requireActivity()
+
+        datasetId = args.datasetId
+        val givenCategories = args.categories.toList() as ArrayList
+        categories = categories.plus(givenCategories)
+
+        _binding = FragmentTakePictureBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
 
         if (cameraIsAvailable()) {
             when {
                 ContextCompat.checkSelfPermission(
-                    this,
+                    parentActivity,
                     Manifest.permission.CAMERA
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     setupActivityLayout()
@@ -69,20 +107,17 @@ class TakePictureActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkIntentExtras() {
-        val givenCategories = parseArgs()
-        categories = categories.plus(givenCategories)
-    }
 
     @Suppress("UNUSED_PARAMETER")
     private fun onSave(view: View) {
-        finishWith(chosenCategory, capturedImageUri)
+       val action = TakePictureFragmentDirections.actionTakePictureFragmentToAddPictureFragment(categories.toTypedArray(), datasetId, chosenCategory, capturedImageUri)
+        findNavController().navigate(action)
     }
 
     @Suppress("UNUSED_PARAMETER")
     private fun onTakePicture(view: View) {
         val executor = Executors.newSingleThreadExecutor()
-        val file: File = filesDir
+        val file: File = parentActivity.filesDir
         val outputFileOptions = ImageCapture.OutputFileOptions.Builder(file).build()
         imageCapture.takePicture(
             outputFileOptions,
@@ -90,14 +125,14 @@ class TakePictureActivity : AppCompatActivity() {
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(error: ImageCaptureException) {
                     Log.e(error.imageCaptureError.toString(), error.message.toString())
-                    runOnUiThread {
+                    parentActivity.runOnUiThread {
                         showCaptureErrorDialog()
                     }
 
                 }
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    runOnUiThread {
+                    parentActivity.runOnUiThread {
                         capturedImageUri = Uri.fromFile(file)
                         imageTaken = true
                         setCaptureButton()
@@ -109,18 +144,18 @@ class TakePictureActivity : AppCompatActivity() {
 
     @Suppress("UNUSED_PARAMETER")
     private fun onSelectCategoryButton(view: View) {
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(parentActivity)
         builder.apply {
             setTitle(getString(R.string.AddPicture_categorySelectionDialogTitle))
             var catCopy = emptySet<Category>()
             catCopy = catCopy.plus(categories)
             setItems(catCopy.map { cat -> cat.name }.toTypedArray()) { _, category_index ->
-                val button = findViewById<Button>(R.id.selectCategoryButton)
+                val button = binding.selectCategoryButton
                 chosenCategory = categories.elementAt(category_index)
                 button.text = chosenCategory.name
                 button.apply {
-                    setBackgroundColor(getColor(R.color.button_set))
-                    button.setTextColor(getColor(R.color.black))
+                    setBackgroundColor(getColor(parentActivity, R.color.button_set))
+                    button.setTextColor(getColor(parentActivity, R.color.black))
                 }
                 categorySet = true
                 notifySaveButton()
@@ -131,15 +166,14 @@ class TakePictureActivity : AppCompatActivity() {
     }
 
     private fun setupActivityLayout() {
-        setContentView(R.layout.activity_camera)
-        findViewById<Button>(R.id.selectCategoryButton).setOnClickListener(this::onSelectCategoryButton)
-        findViewById<Button>(R.id.saveButton).setOnClickListener(this::onSave)
-        findViewById<ImageView>(R.id.cameraImageView).isVisible = false
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        binding.selectCategoryButton.setOnClickListener(this::onSelectCategoryButton)
+        binding.saveButton.setOnClickListener(this::onSave)
+        binding.cameraImageView.isVisible = false
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(parentActivity)
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
             setupCamera(cameraProvider)
-        }, ContextCompat.getMainExecutor(this))
+        }, ContextCompat.getMainExecutor(parentActivity))
     }
 
     private fun setupCamera(cameraProvider: ProcessCameraProvider) {
@@ -149,11 +183,11 @@ class TakePictureActivity : AppCompatActivity() {
         val cameraSelector: CameraSelector =
             CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
 
-        preview.setSurfaceProvider(findViewById<PreviewView>(R.id.cameraPreviewView).surfaceProvider)
+        preview.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
 
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
 
-        findViewById<Button>(R.id.takePictureButton).setOnClickListener(this::onTakePicture)
+        binding.takePictureButton.setOnClickListener(this::onTakePicture)
     }
 
     private fun setupRequestPermissionLauncher(): ActivityResultLauncher<String> {
@@ -161,7 +195,7 @@ class TakePictureActivity : AppCompatActivity() {
             if (isGranted) {
                 setupActivityLayout()
                 Toast.makeText(
-                    applicationContext,
+                    parentActivity.applicationContext,
                     getString(R.string.AddPicture_permissionGrantedToast),
                     Toast.LENGTH_SHORT
                 ).show()
@@ -171,14 +205,16 @@ class TakePictureActivity : AppCompatActivity() {
         }
     }
 
+
     private fun permissionNeededDialog() {
-        val builder = AlertDialog.Builder(this)
+
+        val builder = AlertDialog.Builder(parentActivity)
 
         builder.apply {
             setMessage(getString(R.string.AddPicture_permissionNeededDialogMessage))
             setTitle(getString(R.string.AddPicture_permissionNeededDialogTitle))
             setPositiveButton("OK") { _, _ ->
-                super.onBackPressed()
+                findNavController().popBackStack() //TODO: check
             }
             val dialog = builder.create()
             dialog.show()
@@ -186,7 +222,7 @@ class TakePictureActivity : AppCompatActivity() {
     }
 
     private fun showCaptureErrorDialog() {
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(parentActivity)
 
         builder.apply {
             setMessage(R.string.AddPicture_errorWhileTakingPictureDialogMessage)
@@ -200,35 +236,35 @@ class TakePictureActivity : AppCompatActivity() {
     }
 
     private fun cameraIsAvailable(): Boolean {
-        return applicationContext.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
+        return parentActivity.applicationContext.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
     }
 
     @Suppress("UNUSED_PARAMETER")
     private fun resetCaptureButton(view: View) {
-        val button = findViewById<Button>(R.id.takePictureButton)
+        val button = binding.takePictureButton
         updateButton(
             button,
             R.string.AddPicture_takePictureButtonText,
             R.color.white,
             R.color.button_default
         )
-        findViewById<PreviewView>(R.id.cameraPreviewView).isVisible = true
-        findViewById<ImageView>(R.id.cameraImageView).isVisible = false
+        binding.cameraPreviewView.isVisible = true
+        binding.cameraImageView.isVisible = false
         imageTaken = false
         notifySaveButton()
         button.setOnClickListener(this::onTakePicture)
     }
 
     private fun setCaptureButton() {
-        val button = findViewById<Button>(R.id.takePictureButton)
+        val button = binding.takePictureButton
         updateButton(
             button,
             R.string.AddPicture_takePictureButtonTextWhenImageTaken,
             R.color.black,
             R.color.button_set
         )
-        findViewById<PreviewView>(R.id.cameraPreviewView).isVisible = false
-        val imageView = findViewById<ImageView>(R.id.cameraImageView)
+        binding.cameraPreviewView.isVisible = false
+        val imageView = binding.cameraImageView
         imageView.isVisible = true
         imageView.setImageDrawable(Drawable.createFromPath(capturedImageUri.path))
         button.setOnClickListener(this::resetCaptureButton)
@@ -241,17 +277,13 @@ class TakePictureActivity : AppCompatActivity() {
         backgroundColorCode: Int
     ) {
         button.apply {
-            setBackgroundColor(getColor(backgroundColorCode))
-            setTextColor(getColor(textColorCode))
+            setBackgroundColor(getColor(parentActivity, backgroundColorCode))
+            setTextColor(getColor(parentActivity, textColorCode))
             setText(text)
         }
     }
 
     private fun notifySaveButton() {
-        findViewById<Button>(R.id.saveButton).isEnabled = categorySet && imageTaken
-    }
-
-    companion object {
-        val Contract = AddPictureContract(TakePictureActivity::class.java)
+        binding.saveButton.isEnabled = categorySet && imageTaken
     }
 }

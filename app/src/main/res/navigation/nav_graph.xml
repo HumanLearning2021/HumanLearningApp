@@ -140,19 +140,70 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/addPictureFragment"
-        android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.AddPictureFragment"
+        android:id="@+id/takePictureFragment"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.TakePictureFragment"
         android:label="fragment_add_picture"
-        tools:layout="@layout/fragment_add_picture" >
-        <action
-            android:id="@+id/action_addPictureFragment_to_displayDatasetFragment"
-            app:destination="@id/displayDatasetFragment"
-            app:popUpTo="@id/displayDatasetFragment"/>
+        tools:layout="@layout/fragment_take_picture" >
         <argument
             android:name="categories"
             app:argType="com.github.HumanLearning2021.HumanLearningApp.model.Category[]" />
         <argument
             android:name="datasetId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_takePictureFragment_to_addPictureFragment"
+            app:destination="@id/addPictureFragment"
+            app:popUpTo="@+id/takePictureFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/selectPictureFragment"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.SelectPictureFragment"
+        android:label="fragment_select_picture"
+        tools:layout="@layout/fragment_select_picture" >
+        <argument
+            android:name="categories"
+            app:argType="com.github.HumanLearning2021.HumanLearningApp.model.Category[]" />
+        <argument
+            android:name="datasetId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_selectPictureFragment_to_addPictureFragment"
+            app:destination="@id/addPictureFragment"
+            app:popUpTo="@+id/selectPictureFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/addPictureFragment"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.AddPictureFragment"
+        android:label="fragment_add_picture"
+        tools:layout="@layout/fragment_add_picture" >
+        <action
+            android:id="@+id/action_addPictureFragment_to_selectPictureFragment"
+            app:destination="@id/selectPictureFragment" />
+        <action
+            android:id="@+id/action_addPictureFragment_to_takePictureFragment"
+            app:destination="@id/takePictureFragment" />
+        <argument
+            android:name="categories"
+            app:argType="com.github.HumanLearning2021.HumanLearningApp.model.Category[]" />
+        <argument
+            android:name="datasetId"
+            app:argType="string" />
+        <argument
+            android:name="chosenCategory"
+            app:argType="com.github.HumanLearning2021.HumanLearningApp.model.Category"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="pictureUri"
+            app:argType="android.net.Uri"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_addPictureFragment_to_displayDatasetFragment"
+            app:destination="@id/displayDatasetFragment"
+            app:popUpTo="@+id/addPictureFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 </navigation>
