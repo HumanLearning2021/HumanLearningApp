@@ -16,3 +16,4 @@ This week I worked on optimizing the UI tests. The main work was to make the tes
 This sprint I implemented the Navigation component, using the fragments I made last week. Most of my time was spent on 1) merging my teammate's PR's and converting them to fragments; 2) implementing the actual navigation component; 3) adapting the tests. I spent a lot of time this sprint, 4 days of work so north of 20 hours, but in the end I did not manage to merge, as there were still some glitches with the navigation and a couple tests were failing.
 
 ## Vial, Nicolas
+This week reworked all the interfaces so that we can use the application on phone and tablet in portrait or landscape mode while keeping a nice interface. I didn't encounter any big problems for this task. I then used a lot of time on Thursday to help Martin with his PR which is complicated to merge but we are finally very close to get it right. 
