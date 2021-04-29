@@ -58,19 +58,17 @@ class LearningDatasetSelectionTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        launchFragment()
     }
 
     @Test
     fun allViewsAreDisplayed(){
-        launchFragment()
         assertDisplayed(R.id.LearningDatasetSelection_dataset_list)
     }
 
 
     @Test
     fun clickingADatasetLaunchesLearningSettings(){
-        launchFragment()
-
         onView(ViewMatchers.withId(R.id.DatasetList_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(

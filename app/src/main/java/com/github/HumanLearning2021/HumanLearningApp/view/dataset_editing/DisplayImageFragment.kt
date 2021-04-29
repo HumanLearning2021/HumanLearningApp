@@ -114,4 +114,10 @@ class DisplayImageFragment : Fragment() {
             }
         }
     }
+
+    private fun setRepresentativePicture() {
+        lifecycleScope.launch {
+            //TODO: Set the picture as representative picture of the category
+        }
+    }
 }

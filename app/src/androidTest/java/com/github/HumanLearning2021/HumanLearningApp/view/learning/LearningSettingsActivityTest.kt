@@ -69,11 +69,11 @@ class LearningSettingsActivityTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        launchFragment()
     }
 
     @Test
     fun pressingPresentationButtonLaunchesLearningActivity(){
-        launchFragment()
 
         onView(withId(R.id.learningSettings_btChoosePresentation)).perform(click())
 
@@ -85,19 +85,13 @@ class LearningSettingsActivityTest {
 
     @Test
     fun pressingReresentationButtonLaunchesLearningActivity(){
-        launchFragment()
-
         onView(withId(R.id.learningSettings_btChooseRepresentation)).perform(click())
-
-
         verify(navController).navigate(
             LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(datasetId, LearningMode.REPRESENTATION)
         )
     }
 
     private fun bothButtonsAndTVAreDisplayed() {
-        launchFragment()
-
         assertDisplayed(R.id.learningSettings_btChoosePresentation)
         assertDisplayed(R.id.learningSettings_btChooseRepresentation)
         assertDisplayed(R.id.learningSettings_tvMode)
@@ -105,8 +99,6 @@ class LearningSettingsActivityTest {
 
     @Test
     fun learningModeTooltipsAreCorrect() {
-        launchFragment()
-
         val res = InstrumentationRegistry.getInstrumentation().targetContext.resources
         onView(withId(R.id.learningSettings_btChoosePresentation))
             .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_presentation)))

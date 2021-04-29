@@ -61,12 +61,11 @@ class LearningTest {
     fun setup() {
         mDevice = UiDevice.getInstance(getInstrumentation())
         hiltRule.inject()
+        launchFragment()
     }
 
     @Test
     fun allImageViewsAreDisplayed() {
-        launchFragment()
-
         assertDisplayed(R.id.learning_im_to_sort)
         assertDisplayed(R.id.learning_cat_0)
         assertDisplayed(R.id.learning_cat_1)
@@ -75,8 +74,6 @@ class LearningTest {
 
     @Test
     fun dragImageOnCorrectCategory() {
-        launchFragment()
-
         val imToSort = getImageToSort()
         val startDescr = imToSort.contentDescription
         val NUMBER_OF_ATTEMPTS = 50
@@ -98,8 +95,6 @@ class LearningTest {
 
     @Test
     fun dragImageOnIncorrectCategory() {
-        launchFragment()
-
         val imToSort = getImageToSort()
         val startDescr = imToSort.contentDescription
         for (i in 0 until NUMBER_OF_CATEGORIES) {
@@ -126,8 +121,6 @@ class LearningTest {
      */
     @Test
     fun dragWithUnsuccessfulDrop() {
-        launchFragment()
-
         val imToSort = getImageToSort()
         val startDescr = imToSort.contentDescription
         // there shouldn't be a category on the topleft corner
