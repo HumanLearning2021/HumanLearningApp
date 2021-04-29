@@ -19,3 +19,4 @@ keystore.properties
 .gitsecret/keys/random_seed
 .gitsecret/keys/pubring.kbx~
 !*.secret
+*.log

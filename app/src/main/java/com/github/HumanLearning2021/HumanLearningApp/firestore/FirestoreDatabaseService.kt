@@ -6,10 +6,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentId
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
@@ -22,16 +19,15 @@ class FirestoreDatabaseService internal constructor(
      * name of a database within the Firebase App
      */
     dbName: String,
-    app: FirebaseApp? = null
+    firestore: FirebaseFirestore
 ) : DatabaseService {
-    private val app = app ?: Firebase.app
-    private val db = Firebase.firestore(this.app)
+    private val db = firestore
     private val categories = db.collection("/databases/$dbName/categories")
     private val pictures = db.collection("/databases/$dbName/pictures")
     private val datasets = db.collection("/databases/$dbName/datasets")
     private val representativePictures = db.collection("/databases/$dbName/representativePictures")
     private val users = db.collection("/databases/$dbName/users")
-    private val storage = Firebase.storage(this.app)
+    private val storage = Firebase.storage
     private val imagesDir = storage.reference.child("$dbName/images")
 
     private class CategorySchema() {

@@ -32,7 +32,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "com.github.HumanLearning2021.HumanLearningApp.CustomTestRunner"
-        testInstrumentationRunnerArgument "notAnnotation", "androidx.test.filters.FlakyTest"
 
         // Fix Room incremental processing
         javaCompileOptions {
