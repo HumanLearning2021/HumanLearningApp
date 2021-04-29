@@ -100,11 +100,11 @@ class DisplayImageSetActivityTest {
             categories = dataset.categories
             dsPictures = dbManagement.getAllPictures(categories.elementAt(index))
         }
+        launchFragment()
     }
 
     @Test
     fun imageSetGridAndNameAreDisplayed() {
-        launchFragment()
         assumeTrue(dsPictures.isNotEmpty())
         onView(withId(R.id.display_image_set_imagesGridView)).check(
             ViewAssertions.matches(
@@ -117,7 +117,6 @@ class DisplayImageSetActivityTest {
 
     @Test
     fun imageIsDisplayedOnClick() {
-        launchFragment()
         assumeTrue(dsPictures.isNotEmpty())
         waitFor(1) // increase if needed
         onView(withId(R.id.display_image_set_imagesGridView)).check(
@@ -137,7 +136,6 @@ class DisplayImageSetActivityTest {
 
     @Test
     fun onBackPressedWorks() {
-        launchFragment()
         Espresso.pressBack()
         verify(navController).popBackStack()
     }

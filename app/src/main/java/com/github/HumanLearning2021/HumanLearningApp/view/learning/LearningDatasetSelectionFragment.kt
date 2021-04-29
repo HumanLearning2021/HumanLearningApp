@@ -34,8 +34,6 @@ class LearningDatasetSelectionFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        //TODO: use binding
         val dsListFragment =
             childFragmentManager.findFragmentById(R.id.LearningDatasetSelection_dataset_list)
         if (dsListFragment is DatasetListWidget) {

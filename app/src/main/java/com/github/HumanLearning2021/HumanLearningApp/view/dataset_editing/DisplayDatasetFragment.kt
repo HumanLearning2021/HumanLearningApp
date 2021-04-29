@@ -126,27 +126,6 @@ class DisplayDatasetFragment : Fragment() {
             }
             //Clicked on Add new Picture button
             else -> {
-
-                //Ugly hack, because I didn't know how to retrive both data at once. See https://issuetracker.google.com/issues/79672220#comment55
-                var category: Category? = null
-                var pictureUri: Uri? = null
-
-                findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Uri>(
-                    ARG_PIC_URI
-                )?.observe(viewLifecycleOwner) { pictureUri ->
-                    lifecycleScope.launch {
-                        if (category != null) dbManagement.putPicture(pictureUri!!, category!!)
-                    }
-                }
-
-                findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Category>(
-                    ARG_CATEGORY
-                )?.observe(viewLifecycleOwner) { category ->
-                    lifecycleScope.launch {
-                        if (pictureUri != null) dbManagement.putPicture(pictureUri!!, category!!)
-                    }
-                }
-
                 val action =
                     DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(
                         categories.toTypedArray(),
@@ -225,9 +204,6 @@ class DisplayDatasetFragment : Fragment() {
             }
         }
     }
-
-    private fun <T> Fragment.getNavigationResult(key: String) =
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<T>(key)
 
 
     companion object {

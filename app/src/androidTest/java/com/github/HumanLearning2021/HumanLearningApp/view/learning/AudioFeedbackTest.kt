@@ -48,7 +48,7 @@ class AudioFeedbackTest {
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
     private lateinit var dataset: Dataset
-    private lateinit var datasetId: String
+    private val datasetId = getFirstDataset(dbManagement).id as String
     private var index = 0
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
@@ -56,42 +56,6 @@ class AudioFeedbackTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        runBlocking {
-            var found = false
-            val datasets = dbManagement.getDatasets()
-            for (ds in datasets) {
-                val dsCats = ds.categories
-                if (dsCats.isNotEmpty() && !found) {
-                    for (i in dsCats.indices) {
-                        val dsPictures = dbManagement.getAllPictures(dsCats.elementAt(i))
-                        if (dsPictures.isNotEmpty() && !found) {
-                            dataset = ds
-                            index = i
-                            found = true
-                        }
-                    }
-                }
-            }
-            if (!found) {
-                val cat = dbManagement.putCategory("${UUID.randomUUID()}")
-                dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
-                val tmp = File.createTempFile("droid", ".png")
-                try {
-                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
-                        tmp.outputStream().use {
-                            img.copyTo(it)
-                        }
-                    }
-                    val uri = Uri.fromFile(tmp)
-                    dbManagement.putPicture(uri, cat)
-                } finally {
-                    tmp.delete()
-                }
-            }
-            categories = emptySet()
-            datasetPictures = emptySet()
-            datasetId = dataset.id as String
-        }
     }
 
     fun makeLearningAudioFeedback(): LearningAudioFeedback {

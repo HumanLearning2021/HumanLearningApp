@@ -50,75 +50,35 @@ class CategoriesEditingFragmentTest{
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    @BindValue @Demo2Database
-    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    @BindValue
+    @Demo2Database
+    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
-    private var datasetPictures = emptySet<CategorizedPicture>()
-    private var categories = emptySet<Category>()
-    private lateinit var dataset: Dataset
-    private lateinit var datasetId: String
-    private var index = 0
+    private val dataset: Dataset = getFirstDataset(dbMgt)
+    private val datasetId: String = getFirstDataset(dbMgt).id as String
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
     @Before
-    fun setup() {
+    fun setUp() {
         hiltRule.inject()
-        runBlocking {
-            var found = false
-            val datasets = dbManagement.getDatasets()
-            for (ds in datasets) {
-                val dsCats = ds.categories
-                if (dsCats.isNotEmpty() && !found) {
-                    for (i in dsCats.indices) {
-                        val dsPictures = dbManagement.getAllPictures(dsCats.elementAt(i))
-                        if (dsPictures.isNotEmpty() && !found) {
-                            dataset = ds
-                            index = i
-                            found = true
-                        }
-                    }
-                }
-            }
-            if (!found) {
-                val cat = dbManagement.putCategory("${UUID.randomUUID()}")
-                dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
-                val tmp = File.createTempFile("droid", ".png")
-                try {
-                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
-                        tmp.outputStream().use {
-                            img.copyTo(it)
-                        }
-                    }
-                    val uri = Uri.fromFile(tmp)
-                    dbManagement.putPicture(uri, cat)
-                } finally {
-                    tmp.delete()
-                }
-            }
-            categories = emptySet()
-            datasetPictures = emptySet()
-            datasetId = dataset.id as String
-        }
+        launchFragment()
     }
 
     @Test
     fun rowViewIsDisplayedWhenAddButtonIsClicked() {
-        launchFragment()
         onView(withId(R.id.button_add)).perform(click())
         onView(withText("")).check(ViewAssertions.matches(isDisplayed()))
     }
 
     @Test
     fun rowButtonViewIsDisplayedWhenAddButtonIsClicked() {
-        launchFragment()
         onView(withId(R.id.button_add)).perform(click())
         onView(withId(R.id.button_add)).check(ViewAssertions.matches(isDisplayed()))
     }
 
     @Test
     fun rowViewIsAddedWhenAddButtonIsClicked() {
-        launchFragment()
         onView(withId(R.id.button_add)).perform(click())
         waitFor(1) // increase if needed
         onView(withId(R.id.parent_linear_layout)).check(
@@ -130,7 +90,6 @@ class CategoriesEditingFragmentTest{
 
     @Test
     fun rowViewIsRemovedWhenRemoveButtonIsClicked() {
-        launchFragment()
         runBlocking {
             waitFor(1) // increase if needed
             val nbCategories = dataset.categories.size
@@ -145,14 +104,13 @@ class CategoriesEditingFragmentTest{
                 )
             )
 
-            val updatedDataset = dbManagement.getDatasetById(dataset.id)!!
+            val updatedDataset = dbMgt.getDatasetById(dataset.id)!!
             assertThat(updatedDataset.categories, hasSize(nbCategories - 1))
         }
     }
 
     @Test
     fun saveButtonGoesToDisplayDatasetActivity() {
-        launchFragment()
         onView(withId(R.id.button_submit_list)).perform(click())
         waitFor(1) // increase if needed
         verify(navController).navigate(CategoriesEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(datasetId))
@@ -171,7 +129,7 @@ class CategoriesEditingFragmentTest{
         onView(withId(R.id.button_submit_list)).perform(click())
         waitFor(1) // increase id needed
         runBlocking {
-            val updatedDataset = dbManagement.getDatasetById(dataset.id as String)!!
+            val updatedDataset = dbMgt.getDatasetById(dataset.id as String)!!
             assert(nbCategories + 1 == updatedDataset.categories.size)
         }
     }

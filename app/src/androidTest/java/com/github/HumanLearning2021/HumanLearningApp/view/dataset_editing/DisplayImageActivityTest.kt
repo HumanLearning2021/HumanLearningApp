@@ -54,11 +54,10 @@ class DisplayImageActivityTest {
 
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
-    private lateinit var dataset: Dataset
+    private val dataset = getFirstDataset(dbMgt)
     private lateinit var datasetId: String
-    private var index = 0
-    private lateinit var categoryWith1Picture : Category
-    private lateinit var categoryWith2Pictures : Category
+    private lateinit var categoryWith1Picture: Category
+    private lateinit var categoryWith2Pictures: Category
 
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
@@ -66,48 +65,13 @@ class DisplayImageActivityTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        runBlocking {
-            var found = false
-            val datasets = dbMgt.getDatasets()
-            for (ds in datasets) {
-                val dsCats = ds.categories
-                if (dsCats.isNotEmpty() && !found) {
-                    for (i in dsCats.indices) {
-                        val dsPictures = dbMgt.getAllPictures(dsCats.elementAt(i))
-                        if (dsPictures.isNotEmpty() && !found) {
-                            dataset = ds
-                            index = i
-                            found = true
-                        }
-                    }
-                }
-            }
-            if (!found) {
-                val cat = dbMgt.putCategory("${UUID.randomUUID()}")
-                dataset = dbMgt.putDataset("${UUID.randomUUID()}", setOf(cat))
-                val tmp = File.createTempFile("droid", ".png")
-                try {
-                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork)
-                        .use { img ->
-                            tmp.outputStream().use {
-                                img.copyTo(it)
-                            }
-                        }
-                    val uri = Uri.fromFile(tmp)
-                    dbMgt.putPicture(uri, cat)
-                } finally {
-                    tmp.delete()
-                }
-            }
-            categories = emptySet()
-            datasetPictures = emptySet()
-            datasetId = dataset.id as String
-            categoryWith1Picture = newCategoryWithNPictures(1)
-            categoryWith2Pictures = newCategoryWithNPictures(2)
-        }
-
-
+        categories = emptySet()
+        datasetPictures = emptySet()
+        datasetId = dataset.id as String
+        categoryWith1Picture = newCategoryWithNPictures(1)
+        categoryWith2Pictures = newCategoryWithNPictures(2)
     }
+
 
     private fun getFirstPicture(category: Category) = runBlocking {
         dbMgt.getAllPictures(category).first()
@@ -129,14 +93,15 @@ class DisplayImageActivityTest {
         // could maybe be made simpler
         val res = ApplicationProvider.getApplicationContext<Context>().resources
         val rId = R.drawable.fork
-        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
-                "://" + res.getResourcePackageName(rId) +
-                "/" + res.getResourceTypeName(rId) +
-                "/" + res.getResourceEntryName(rId)
+        return Uri.parse(
+            ContentResolver.SCHEME_ANDROID_RESOURCE +
+                    "://" + res.getResourcePackageName(rId) +
+                    "/" + res.getResourceTypeName(rId) +
+                    "/" + res.getResourceEntryName(rId)
         )
     }
 
-    private fun newCategoryWithNPictures(N : Int): Category {
+    private fun newCategoryWithNPictures(N: Int): Category {
         require(N > 0)
 
         return runBlocking {
@@ -145,7 +110,7 @@ class DisplayImageActivityTest {
             dbMgt.addCategoryToDataset(dataset, newCategory)
 
             val forkUri = getForkUri()
-            for(i in 1..N){
+            for (i in 1..N) {
                 dbMgt.putPicture(forkUri, newCategory)
             }
             newCategory
@@ -163,7 +128,11 @@ class DisplayImageActivityTest {
         }
         assumeTrue(updatedPicturesInCategory.isEmpty())
 
-        Mockito.verify(navController).navigate(DisplayImageFragmentDirections.actionDisplayImageFragmentToDisplayDatasetFragment(datasetId))
+        Mockito.verify(navController).navigate(
+            DisplayImageFragmentDirections.actionDisplayImageFragmentToDisplayDatasetFragment(
+                datasetId
+            )
+        )
     }
 
     @Test
@@ -177,7 +146,12 @@ class DisplayImageActivityTest {
         }
         assumeTrue(updatedPicturesInCategory.isNotEmpty())
 
-        verify(navController).navigate(DisplayImageFragmentDirections.actionDisplayImageFragmentToDisplayImageSetFragment(datasetId, categoryWith2Pictures))
+        verify(navController).navigate(
+            DisplayImageFragmentDirections.actionDisplayImageFragmentToDisplayImageSetFragment(
+                datasetId,
+                categoryWith2Pictures
+            )
+        )
     }
 
     @Test
@@ -188,8 +162,8 @@ class DisplayImageActivityTest {
         // TODO test that the functionality is correctly implemented
     }
 
-    private fun launchFragmentWithPictureOfCategory(category: Category){
-        val args = bundleOf("datasetId" to datasetId, "picture" to  getFirstPicture(category))
+    private fun launchFragmentWithPictureOfCategory(category: Category) {
+        val args = bundleOf("datasetId" to datasetId, "picture" to getFirstPicture(category))
         launchFragmentInHiltContainer<DisplayImageFragment>(args) {
             Navigation.setViewNavController(requireView(), navController)
         }

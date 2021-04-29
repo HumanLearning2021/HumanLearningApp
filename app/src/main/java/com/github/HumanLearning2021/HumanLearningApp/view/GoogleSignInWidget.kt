@@ -39,14 +39,6 @@ class GoogleSignInWidget : Fragment() {
             onLoginButtonPress()
         }
         updateUi()
-
-        val callback = object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                findNavController().popBackStack()
-            }
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
     private fun onLoginButtonPress() {

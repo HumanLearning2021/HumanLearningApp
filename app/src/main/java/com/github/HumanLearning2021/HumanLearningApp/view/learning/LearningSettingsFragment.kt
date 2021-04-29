@@ -59,14 +59,7 @@ class LearningSettingsFragment: Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(callback)
 
     }
-
-    /*
-    companion object {
-        const val EXTRA_LEARNING_MODE =
-            "com.github.HumanLearning2021.HumanLearningApp.view.EXTRA_LEARNING_MODE"
-    }
-
-     */
+    
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

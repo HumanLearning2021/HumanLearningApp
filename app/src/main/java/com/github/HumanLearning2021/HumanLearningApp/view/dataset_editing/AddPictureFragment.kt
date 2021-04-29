@@ -115,11 +115,8 @@ class AddPictureFragment : Fragment() {
 
     @Suppress("UNUSED_PARAMETER")
     private fun onSave(view: View) {
-        setNavigationResult(ARG_CATEGORY, chosenCategory)
-        setNavigationResult(ARG_PIC_URI, capturedImageUri)
         val action = AddPictureFragmentDirections.actionAddPictureFragmentToDisplayDatasetFragment(datasetId, chosenCategory, capturedImageUri)
         findNavController().navigate(action)
-        //findNavController().popBackStack() //TODO: not sure about this
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -293,9 +290,5 @@ class AddPictureFragment : Fragment() {
 
     private fun notifySaveButton() {
         binding.saveButton.isEnabled = categorySet && imageTaken
-    }
-
-    private fun <T>Fragment.setNavigationResult(key: String, result: T) {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(key, result)
     }
 }

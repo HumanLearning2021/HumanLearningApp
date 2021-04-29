@@ -20,6 +20,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
@@ -55,66 +56,24 @@ class DatasetsOverviewActivityTest {
     @Demo2Database
     val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
-    private var datasetPictures = emptySet<CategorizedPicture>()
-    private var categories = emptySet<Category>()
-    private lateinit var dataset: Dataset
-    private lateinit var datasetId: String
-    private var index = 0
+    private val datasetId: String = getFirstDataset(dbManagement).id as String
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
     @Before
     fun setup() {
         hiltRule.inject()
-        runBlocking {
-            var found = false
-            val datasets = dbManagement.getDatasets()
-            for (ds in datasets) {
-                val dsCats = ds.categories
-                if (dsCats.isNotEmpty() && !found) {
-                    for (i in dsCats.indices) {
-                        val dsPictures = dbManagement.getAllPictures(dsCats.elementAt(i))
-                        if (dsPictures.isNotEmpty() && !found) {
-                            dataset = ds
-                            index = i
-                            found = true
-                        }
-                    }
-                }
-            }
-            if (!found) {
-                val cat = dbManagement.putCategory("${UUID.randomUUID()}")
-                dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
-                val tmp = File.createTempFile("droid", ".png")
-                try {
-                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork)
-                        .use { img ->
-                            tmp.outputStream().use {
-                                img.copyTo(it)
-                            }
-                        }
-                    val uri = Uri.fromFile(tmp)
-                    dbManagement.putPicture(uri, cat)
-                } finally {
-                    tmp.delete()
-                }
-            }
-            categories = emptySet()
-            datasetPictures = emptySet()
-            datasetId = dataset.id as String
-        }
+        launchFragment()
     }
 
     @Test
     fun fragmentIsDisplayedWhenActivityIsLaunched() {
-        launchFragment()
         assertDisplayed(R.id.datasetListFragment)
         assertDisplayed(R.id.createDatasetButton)
     }
 
     @Test
     fun rightActivityIsStartedAfterCreateButtonIsClicked() {
-        launchFragment()
         onView(withId(R.id.createDatasetButton)).perform(click())
         verify(navController).navigate(
             DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment(null)
@@ -124,8 +83,6 @@ class DatasetsOverviewActivityTest {
 
     @Test
     fun whenClickOnDatasetDisplayDatasetActivity() {
-        launchFragment()
-
         onView(withId(R.id.DatasetList_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
@@ -143,7 +100,6 @@ class DatasetsOverviewActivityTest {
 
     @Test
     fun onBackPressedWorks() {
-        launchFragment()
         Espresso.pressBack()
         verify(navController).popBackStack()
     }
