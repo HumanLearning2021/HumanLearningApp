@@ -12,8 +12,6 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/ds_overview_guideline2"
-        android:layout_height="500dp"
-        app:layout_constraintBottom_toTopOf="@+id/createDatasetButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

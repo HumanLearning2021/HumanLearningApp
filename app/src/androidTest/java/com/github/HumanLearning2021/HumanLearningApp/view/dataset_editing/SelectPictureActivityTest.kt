@@ -6,6 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.Keep
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -21,12 +24,18 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.hasName
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions
+import dagger.hilt.android.testing.BindValue
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.runBlocking
 import kotlinx.parcelize.Parcelize
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
@@ -35,31 +44,36 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 
+@UninstallModules(DatabaseManagementModule::class)
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class SelectPictureActivityTest {
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    @BindValue
+    @Demo2Database
+    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+
+    private val datasetId: String = TestUtils.getFirstDataset(dbManagement).id as String
+
     private val catSet = setOf<Category>(
         DummyCategory("cat1", "cat1"),
         DummyCategory("cat2", "cat2"),
         DummyCategory("cat3", "cat3"),
     )
 
+    private val navController: NavController = Mockito.mock(NavController::class.java)
+
+
     @Before
     fun setup() {
-        Intents.init()
+        hiltRule.inject()
+        launchFragment()
     }
-
-    @After
-    fun teardown() {
-        Intents.release()
-    }
-
-    @get:Rule
-    val testRule = ActivityScenarioRule<SelectPictureActivity>(
-        Intent(
-            ApplicationProvider.getApplicationContext(), SelectPictureActivity::class.java
-        ).putExtra("categories", ArrayList(catSet))
-    )
 
     @Test
     fun correctLayoutIsDisplayAfterCreation() {
@@ -79,20 +93,26 @@ class SelectPictureActivityTest {
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
+    /*
+    Don't know how to translate this into fragment world yet
+
     @Test
-    fun intentSentOnSave() {
+    fun correctNavigationOnSave() {
         val imageUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
-        onView(withId(R.id.selectCategoryButton2)).perform(click())
-        onView(withText("cat1")).perform(click())
-        intending(hasAction(Intent.ACTION_OPEN_DOCUMENT)).respondWith(
-            Intent().run {
-                data = imageUri
-                Instrumentation.ActivityResult(SelectPictureActivity.RC_OPEN_PICTURE, this)
-            })
-        onView(withId(R.id.choosePictureButton)).perform(click())
-        onView(withId(R.id.saveButton3)).perform(click())
-        val result = testRule.scenario.result
-        assertThat(result.resultCode, equalTo(Activity.RESULT_OK))
-        assertThat(result.resultData, hasExtraWithKey("result"))
+        runBlocking {
+            val knifeCat = dbManagement.getCategoryByName("knife").first()
+            onView(withId(R.id.selectCategoryButton2)).perform(click())
+            onView(withText("cat1")).perform(click())
+            verify(navController).navigate(SelectPictureFragmentDirections.actionSelectPictureFragmentToAddPictureFragment(catSet.toTypedArray(), datasetId, knifeCat, imageUri))
+        }
+    }
+
+     */
+
+    private fun launchFragment() {
+        val args = bundleOf("categories" to catSet.toTypedArray(), "datasetId" to datasetId)
+        launchFragmentInHiltContainer<SelectPictureFragment>(args) {
+            Navigation.setViewNavController(requireView(), navController)
+        }
     }
 }
