@@ -34,7 +34,6 @@ class LearningFragment: Fragment() {
     private val binding get() = _binding!!
 
 
-
     @Inject
     lateinit var learningPresenter: LearningPresenter
 
@@ -50,6 +49,7 @@ class LearningFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         parentActivity = requireActivity()
+        audioFeedback = LearningAudioFeedback(parentActivity.applicationContext)
         _binding = FragmentLearningBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -62,7 +62,6 @@ class LearningFragment: Fragment() {
             learningPresenter.learningMode = args.learningMode
             learningPresenter.dataset = dataset
             initLearningViews()
-            audioFeedback = LearningAudioFeedback(parentActivity.applicationContext)
         }
 
         val callback = object : OnBackPressedCallback(true){
