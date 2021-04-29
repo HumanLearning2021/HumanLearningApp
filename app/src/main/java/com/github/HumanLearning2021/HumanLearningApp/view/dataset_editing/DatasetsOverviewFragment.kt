@@ -44,7 +44,7 @@ class DatasetsOverviewFragment : Fragment() {
             }
         }
 
-        binding.createDatasetButton.setOnClickListener {
+        binding.createDatasetButton?.setOnClickListener {
             val action = DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment(  )
             findNavController().navigate(action)
         }
