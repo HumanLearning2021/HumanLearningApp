@@ -25,12 +25,12 @@
         android:layout_height="55dp"
         android:layout_marginStart="25dp"
         android:background="#BF1D1D"
-        android:onClick="removeView"
+        android:clickable="false"
+        android:contentDescription="@string/button_to_delete_a_category"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/data_creation_category_name"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_delete"
-        android:contentDescription="@string/button_to_delete_a_category" />
+        app:srcCompat="@android:drawable/ic_menu_delete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

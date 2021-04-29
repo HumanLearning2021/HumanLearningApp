@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:layout_gravity="center_horizontal"
-    tools:context=".view.dataset_editing.AddPictureActivity">
+    tools:context=".view.dataset_editing.TakePictureFragment">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/cameraPreviewView"
