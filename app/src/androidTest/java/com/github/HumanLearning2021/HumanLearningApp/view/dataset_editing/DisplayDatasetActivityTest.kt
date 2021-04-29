@@ -1,6 +1,11 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
@@ -14,6 +19,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
+import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
@@ -33,50 +39,80 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
+import java.io.File
+import java.util.*
+
 
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayDatasetActivityTest {
-    @get:Rule(order = 0)
+    @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
     @BindValue
     @Demo2Database
     val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
-    private val datasetId: String = getFirstDataset(dbMgt).id as String
-    @get:Rule(order = 1)
-    val activityScenarioRule: ActivityScenarioRule<DisplayDatasetActivity> = ActivityScenarioRule(
-        Intent(
-            ApplicationProvider.getApplicationContext(),
-            DisplayDatasetActivity::class.java
-        ).putExtra("dataset_id", datasetId)
-    )
-
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
     private lateinit var dataset: Dataset
+    private lateinit var datasetId: String
     private var index = 0
 
+    private val navController: NavController = Mockito.mock(NavController::class.java)
 
     @Before
-    fun setUp() {
-        hiltRule.inject()  // ensures dbManagement is available
-        dataset = getFirstDataset(dbMgt)
-        Intents.init()
+    fun setup() {
+        hiltRule.inject()
+        runBlocking {
+            var found = false
+            val datasets = dbMgt.getDatasets()
+            for (ds in datasets) {
+                val dsCats = ds.categories
+                if (dsCats.isNotEmpty() && !found) {
+                    for (i in dsCats.indices) {
+                        val dsPictures = dbMgt.getAllPictures(dsCats.elementAt(i))
+                        if (dsPictures.isNotEmpty() && !found) {
+                            dataset = ds
+                            index = i
+                            found = true
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                val cat = dbMgt.putCategory("${UUID.randomUUID()}")
+                dataset = dbMgt.putDataset("${UUID.randomUUID()}", setOf(cat))
+                val tmp = File.createTempFile("droid", ".png")
+                try {
+                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork)
+                        .use { img ->
+                            tmp.outputStream().use {
+                                img.copyTo(it)
+                            }
+                        }
+                    val uri = Uri.fromFile(tmp)
+                    dbMgt.putPicture(uri, cat)
+                } finally {
+                    tmp.delete()
+                }
+            }
+            categories = emptySet()
+            datasetPictures = emptySet()
+            datasetId = dataset.id as String
+        }
     }
 
-    @After
-    fun release(){
-        Intents.release()
-    }
 
     /**
      * Check that the Grid with all the images of the dataset are displayed.
      */
     @Test
     fun datasetGridAndNameAreDisplayed() {
+        launchFragment()
         onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
         onView(withId(R.id.display_dataset_name)).check(matches(isDisplayed()))
     }
@@ -87,6 +123,7 @@ class DisplayDatasetActivityTest {
     @ExperimentalCoroutinesApi
     @Test
     fun whenClickOnCategoryImageDisplayImageSetActivity() {
+        launchFragment()
         runBlocking {
             categories = dataset.categories
             for (cat in categories) {
@@ -100,22 +137,13 @@ class DisplayDatasetActivityTest {
                 .atPosition(0)
                 .perform(click())
 
-            intended(
-                allOf(
-                    hasComponent(DisplayImageSetActivity::class.java.name),
-                    hasExtra(
-                        "category_of_pictures",
-                        categories.elementAt(index)
-                    ),
-                    hasExtra("dataset_id", datasetId),
-                )
-            )
+            verify(navController).navigate(DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToDisplayImageSetFragment(datasetId, categories.elementAt(index)))
         }
-
     }
 
     @Test
     fun modifyingDatasetNameWorks() {
+        launchFragment()
         val newName = "new dataset name"
         runBlocking {
             waitFor(1) // increase if needed
@@ -132,21 +160,19 @@ class DisplayDatasetActivityTest {
         }
     }
 
+
     @Test
     fun clickOnMenuModifyCategoriesWorks() {
+        launchFragment()
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText("Modify categories")).perform(click())
 
-        intended(
-            allOf(
-                hasComponent(CategoriesEditingActivity::class.java.name),
-                hasExtra("dataset_id", datasetId),
-            )
-        )
+        verify(navController).navigate(DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment(datasetId))
     }
 
     @Test
     fun clickOnMenuAddNewPictureWorks() {
+        launchFragment()
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText(R.string.add_new_picture)).perform(click())
 
@@ -181,21 +207,28 @@ class DisplayDatasetActivityTest {
 
     @Test
     fun clickOnMenuButNotOnButtonClosesMenu() {
+        launchFragment()
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         UiDevice.getInstance(getInstrumentation()).click(0, 100)
         onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
     }
 
+
+
     @Test
     fun onBackPressedWorks() {
+        launchFragment()
         Espresso.closeSoftKeyboard()
         val mDevice = UiDevice.getInstance(getInstrumentation())
         mDevice.pressBack()
-        intended(
-            allOf(
-                hasComponent(DatasetsOverviewActivity::class.java.name),
-            )
-        )
+
+        verify(navController).popBackStack()
     }
 
+    private fun launchFragment() {
+        val args = bundleOf("datasetId" to datasetId)
+        launchFragmentInHiltContainer<DisplayDatasetFragment>(args) {
+            Navigation.setViewNavController(requireView(), navController)
+        }
+    }
 }

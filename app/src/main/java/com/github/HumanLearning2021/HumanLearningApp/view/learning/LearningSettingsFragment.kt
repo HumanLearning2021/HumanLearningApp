@@ -1,46 +1,75 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
-
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.widget.Button
+import android.service.autofill.Dataset
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningSettingsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
+class LearningSettingsFragment: Fragment() {
+    private lateinit var parentActivity: FragmentActivity
+    private val args: LearningSettingsFragmentArgs by navArgs()
+    private var _binding: FragmentLearningSettingsBinding? = null
+    private val binding get() = _binding!!
 
-class LearningSettingsActivity : AppCompatActivity() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        parentActivity = requireActivity()
+        _binding = FragmentLearningSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.learningSettingsBtChoosePresentation.setOnClickListener {
+            val action = LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(args.datasetId, LearningMode.PRESENTATION)
+            findNavController().navigate(action)
+        }
+
+        binding.learningSettingsBtChooseRepresentation.setOnClickListener {
+            val action = LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(args.datasetId, LearningMode.REPRESENTATION)
+            findNavController().navigate(action)
+        }
+
+        binding.learningSettingsBtChoosePresentation.tooltipText = getString(R.string.learning_settings_tooltip_presentation)
+        binding.learningSettingsBtChooseRepresentation.tooltipText = getString(R.string.learning_settings_tooltip_representation)
+
+        val callback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                findNavController().popBackStack()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
+
+    }
+
+    /*
     companion object {
         const val EXTRA_LEARNING_MODE =
             "com.github.HumanLearning2021.HumanLearningApp.view.EXTRA_LEARNING_MODE"
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_learning_settings)
-
-        // we reuse the intent coming from LearningDatasetSelectionActivity that
-        // must contain the Dataset that was selected
-        val newIntent = Intent(intent).setClass(this, LearningActivity::class.java)
-
-        val btPres = findViewById<Button>(R.id.learningSettings_btChoosePresentation)
-        val btRep = findViewById<Button>(R.id.learningSettings_btChooseRepresentation)
-
-        btPres.setOnClickListener {
-            newIntent.putExtra(EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
-            startActivity(newIntent)
-        }
-        btRep.setOnClickListener {
-            newIntent.putExtra(EXTRA_LEARNING_MODE, LearningMode.REPRESENTATION)
-            startActivity(newIntent)
-        }
-
-        btPres.tooltipText = getString(R.string.learning_settings_tooltip_presentation)
-        btRep.tooltipText = getString(R.string.learning_settings_tooltip_representation)
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 
@@ -48,3 +77,4 @@ enum class LearningMode {
     PRESENTATION,
     REPRESENTATION;
 }
+

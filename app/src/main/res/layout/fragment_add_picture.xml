@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
-    tools:context=".view.dataset_editing.AddPictureActivity">
+    tools:context=".view.dataset_editing.AddPictureFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -1,66 +1,95 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.databinding.ActivityCategoriesEditingBinding
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentCategoriesEditingBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CategoriesEditingActivity : AppCompatActivity() {
+class CategoriesEditingFragment : Fragment() {
 
     @Inject
     @Demo2Database
     lateinit var dBManagement: DatabaseManagement
 
-    private var _binding: ActivityCategoriesEditingBinding? = null
+    private var _binding: FragmentCategoriesEditingBinding? = null
     private val binding get() = _binding!!
 
     private var dsCategories = emptySet<Category>()
-    private lateinit var datasetId: String
+    private var datasetId: String? = null
     private lateinit var dataset: Dataset
     private lateinit var removedCategory: Category
+    private lateinit var parentActivity: FragmentActivity
     private var new = false
+    private val args: CategoriesEditingFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        _binding = ActivityCategoriesEditingBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        parentActivity = requireActivity()
+        _binding = FragmentCategoriesEditingBinding.inflate(layoutInflater)
+        return binding.root
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         lifecycleScope.launch {
-            val extras = intent.extras
-            new = extras == null
-            if (!new) {
-                datasetId = extras!!["dataset_id"] as String
-                dataset = dBManagement.getDatasetById(datasetId)!!
-                dsCategories = dataset.categories
-                val count = dsCategories.size
-                var v: View?
+            if (arguments != null) {
 
-                for (i in 0 until count) {
-                    addNewView()
-                    v = binding.parentLinearLayout.getChildAt(i)
-                    val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
-                    categoryName.setText(
-                        dsCategories.elementAt(i).name,
-                        TextView.BufferType.EDITABLE
-                    )
+                datasetId = args.datasetId
+                if (datasetId == null) {
+                    new = true
                 }
-            }
+                if (!new) {
+                    dataset = dBManagement.getDatasetById(datasetId!!)!!
+                    dsCategories = dataset.categories
+                    val count = dsCategories.size
+                    var v: View?
 
-            setButtonsListener()
+                    for (i in 0 until count) {
+                        addNewView()
+                        v = binding.parentLinearLayout.getChildAt(i)
+                        val categoryName: EditText =
+                            v.findViewById(R.id.data_creation_category_name)
+                        categoryName.setText(
+                            dsCategories.elementAt(i).name,
+                            TextView.BufferType.EDITABLE
+                        )
+                    }
+                }
+
+
+                setButtonsListener()
+            }
         }
+
+        val callback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                findNavController().popBackStack()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
 
 
     }
@@ -68,7 +97,7 @@ class CategoriesEditingActivity : AppCompatActivity() {
 
     private fun addNewView() {
 
-        val inflater = View.inflate(this, R.layout.row_add_category, null)
+        val inflater = View.inflate(parentActivity, R.layout.row_add_category, null)
         binding.parentLinearLayout.addView(inflater, binding.parentLinearLayout.childCount)
 
     }
@@ -103,7 +132,7 @@ class CategoriesEditingActivity : AppCompatActivity() {
                 newCategories = newCategories.plus(cat)
             }
 
-            if(!new) {
+            if (!new) {
                 for (cat in newCategories) {
                     dataset = dBManagement.addCategoryToDataset(dataset, cat)
                 }
@@ -111,10 +140,11 @@ class CategoriesEditingActivity : AppCompatActivity() {
                 dataset = dBManagement.putDataset("New Dataset", newCategories)
                 datasetId = dataset.id as String
             }
-
-            val intent = Intent(this@CategoriesEditingActivity, DisplayDatasetActivity::class.java)
-            intent.putExtra("dataset_id", datasetId)
-            startActivity(intent)
+            val action =
+                CategoriesEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(
+                    datasetId!!
+                )
+            findNavController().navigate(action)
         }
     }
 
@@ -133,4 +163,5 @@ class CategoriesEditingActivity : AppCompatActivity() {
         }
     }
 }
+
 

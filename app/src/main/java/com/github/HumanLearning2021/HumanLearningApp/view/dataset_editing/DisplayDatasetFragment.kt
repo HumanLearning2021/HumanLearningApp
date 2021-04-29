@@ -3,57 +3,71 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayDatasetBinding
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DisplayDatasetActivity : AppCompatActivity() {
+class DisplayDatasetFragment : Fragment() {
+    private lateinit var parentActivity: FragmentActivity
+
     @Inject
     @Demo2Database
     lateinit var dbManagement: DatabaseManagement
+
+    private val args: DisplayDatasetFragmentArgs by navArgs()
 
     private lateinit var categories: Set<Category>
     private lateinit var datasetId: String
     private lateinit var dataset: Dataset
 
-    private val addPictureContractRegistration =
-        registerForActivityResult(AddPictureActivity.AddPictureContract) { resultPair ->
-            if (resultPair == null) {
-                Toast.makeText(
-                    this,
-                    "The picture has not been saved in the dataset",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                val category = resultPair.first
-                val pictureUri = resultPair.second
-                lifecycleScope.launch {
-                    dbManagement.putPicture(pictureUri, category)
-                }
-            }
-        }
+    private var _binding: FragmentDisplayDatasetBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_display_dataset)
 
-        checkIntentExtras(intent.extras)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        parentActivity = requireActivity()
+        _binding = FragmentDisplayDatasetBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
+        return binding.root
+    }
 
-        var representativePictures = setOf<CategorizedPicture>()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        datasetId = args.datasetId
 
         lifecycleScope.launch {
             dataset = dbManagement.getDatasetById(datasetId)!!
-            findViewById<EditText>(R.id.display_dataset_name).setText(dataset.name)
+            var representativePictures = setOf<CategorizedPicture>()
+            binding.displayDatasetName.setText(dataset.name)
             categories = dataset.categories
             for (cat in categories) {
                 val pictures = dbManagement.getAllPictures(cat)
@@ -68,37 +82,63 @@ class DisplayDatasetActivity : AppCompatActivity() {
             }
 
             val displayDatasetAdapter =
-                DisplayDatasetAdapter(representativePictures, this@DisplayDatasetActivity)
+                DisplayDatasetAdapter(
+                    representativePictures,
+                    parentActivity
+                )
 
-            findViewById<GridView>(R.id.display_dataset_imagesGridView).adapter =
-                displayDatasetAdapter
+            binding.displayDatasetImagesGridView.adapter = displayDatasetAdapter
 
             setGridViewItemListener()
             setTextChangeListener()
         }
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.display_dataset_menu, menu)
-        return true
+        val callback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                findNavController().popBackStack()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val categoriesArray = ArrayList<Category>(categories)
         return when (item.itemId) {
             R.id.display_dataset_menu_modify_categories -> {
-                val intent =
-                    Intent(this@DisplayDatasetActivity, CategoriesEditingActivity::class.java)
-                intent.putExtra("dataset_id", datasetId)
-                startActivity(intent)
+                val action = DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToCategoriesEditingFragment(datasetId)
+                findNavController().navigate(action)
                 true
             }
             //Clicked on Add new Picture button
             else -> {
-                addPictureContractRegistration.launch(categoriesArray)
+
+                //Ugly hack, because I didn't know how to retrive both data at once. See https://issuetracker.google.com/issues/79672220#comment55
+                var category: Category? = null
+                var pictureUri: Uri? = null
+
+                findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Uri>(ARG_PIC_URI)?.observe(viewLifecycleOwner) {pictureUri ->
+                    lifecycleScope.launch{
+                        if(category!=null) dbManagement.putPicture(pictureUri!!, category!!)
+                    }
+                }
+
+                findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Category>(ARG_CATEGORY)?.observe(viewLifecycleOwner) {category ->
+                    lifecycleScope.launch{
+                        if(pictureUri!=null) dbManagement.putPicture(pictureUri!!, category!!)
+                    }
+                }
+
+                val action = DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(categories.toTypedArray())
+                findNavController().navigate(action)
                 true
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.display_dataset_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     class DisplayDatasetAdapter(
@@ -140,42 +180,34 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
     }
 
-    private fun checkIntentExtras(extras: Bundle?) {
-        lifecycleScope.launch {
-            datasetId = if (extras != null && extras["dataset_id"] is String) {
-                intent.getStringExtra("dataset_id")!!
-            } else {
-                "uEwDkGoGADW4hEJoJ6BA"
-            }
-        }
-    }
-
     private fun setGridViewItemListener() {
-        findViewById<GridView>(R.id.display_dataset_imagesGridView).setOnItemClickListener { _, _, i, _ ->
-            val cat = categories.elementAt(i)
-            val intent =
-                Intent(this@DisplayDatasetActivity, DisplayImageSetActivity::class.java)
-            intent.putExtra(
-                "category_of_pictures",
-                cat
-            )
-            intent.putExtra("dataset_id", datasetId)
-            startActivity(intent)
-        }
+        parentActivity.findViewById<GridView>(R.id.display_dataset_imagesGridView)
+            .setOnItemClickListener { adapterView, view, i, l ->
+                val category = categories.elementAt(i)
+                val action = DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToDisplayImageSetFragment(datasetId, category)
+                findNavController().navigate(action)
+            }
     }
 
     private fun setTextChangeListener() {
-        findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
+        parentActivity.findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
             lifecycleScope.launch {
                 dataset = dbManagement.editDatasetName(
                     dataset,
-                    findViewById<EditText>(R.id.display_dataset_name).text.toString()
+                    binding.displayDatasetName.text.toString()
                 )
             }
         }
     }
 
-    override fun onBackPressed() {
-        startActivity(Intent(this, DatasetsOverviewActivity::class.java))
+    private fun <T>Fragment.getNavigationResult(key: String) =
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<T>(key)
+
+
+    companion object {
+        const val ARG_PIC_URI = "pictureUri"
+        const val ARG_CATEGORY = "category"
     }
+
+
 }

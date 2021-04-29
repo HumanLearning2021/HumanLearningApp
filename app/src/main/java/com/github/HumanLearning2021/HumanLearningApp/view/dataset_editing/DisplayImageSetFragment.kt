@@ -12,57 +12,86 @@ import android.widget.BaseAdapter
 import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayImageSetBinding
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DisplayImageSetActivity : AppCompatActivity() {
+class DisplayImageSetFragment: Fragment() {
+    private lateinit var parentActivity: FragmentActivity
+
     @Inject
     @Demo2Database
     lateinit var dBManagement: DatabaseManagement
 
     private var categorizedPicturesList = setOf<CategorizedPicture>()
     private lateinit var datasetId: String
+    private lateinit var category: Category
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_display_image_set)
+    private val args: DisplayImageSetFragmentArgs by navArgs()
+    private var _binding: FragmentDisplayImageSetBinding? = null
+    private val binding get() = _binding!!
 
-        val category =
-            intent.getParcelableExtra<Category>("category_of_pictures") as Category
-        datasetId = intent.getStringExtra("dataset_id")!!
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        parentActivity = requireActivity()
+        _binding = FragmentDisplayImageSetBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        category = args.category
+        datasetId = args.datasetId
 
         lifecycleScope.launch {
             categorizedPicturesList = dBManagement.getAllPictures(category)
             if (categorizedPicturesList.isNotEmpty()) {
-                findViewById<TextView>(R.id.display_image_set_name).text =
+                parentActivity.findViewById<TextView>(R.id.display_image_set_name).text =
                     (categorizedPicturesList.elementAt(0)).category.name
 
                 val displayImageSetAdapter =
                     DisplayImageSetAdapter(
                         categorizedPicturesList,
-                        this@DisplayImageSetActivity
+                        parentActivity
                     )
 
-                findViewById<GridView>(R.id.display_image_set_imagesGridView).adapter =
+                parentActivity.findViewById<GridView>(R.id.display_image_set_imagesGridView).adapter =
                     displayImageSetAdapter
                 setPictureItemListener()
             }
         }
+
+        val callback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                findNavController().popBackStack()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
-    override fun onBackPressed() {
-        startActivity(Intent(this, DisplayDatasetActivity::class.java)
-            .putExtra("dataset_id", datasetId))
-    }
+
 
     class DisplayImageSetAdapter(
         private val images: Set<CategorizedPicture>,
@@ -98,15 +127,8 @@ class DisplayImageSetActivity : AppCompatActivity() {
     }
 
     private fun setPictureItemListener(){
-        findViewById<GridView>(R.id.display_image_set_imagesGridView).setOnItemClickListener { _, _, i, _ ->
-            val intent =
-                Intent(this@DisplayImageSetActivity, DisplayImageActivity::class.java)
-            intent.putExtra(
-                "single_picture",
-                (categorizedPicturesList.elementAt(i)) as Parcelable
-            )
-            intent.putExtra("dataset_id", datasetId)
-            startActivity(intent)
+        binding.displayImageSetImagesGridView.setOnItemClickListener{_, _, i, _ ->
+            val action = DisplayImageSetFragmentDirections.actionDisplayImageSetFragmentToDisplayImageFragment(categorizedPicturesList.elementAt(i), datasetId)
         }
     }
 }

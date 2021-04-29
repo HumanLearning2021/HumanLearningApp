@@ -236,3 +236,5 @@ class AddPictureActivityTest {
     }
 
 }
+
+

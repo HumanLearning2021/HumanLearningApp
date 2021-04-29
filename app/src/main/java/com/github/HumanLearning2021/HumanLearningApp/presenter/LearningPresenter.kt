@@ -34,7 +34,7 @@ class LearningPresenter @Inject constructor(
             LearningMode.PRESENTATION -> dbMgt.getRepresentativePicture(rndCat.id)
         }
 
-        nextPicture!!.displayOn(activity, view)
+        nextPicture?.displayOn(activity, view)
         view.contentDescription = rndCat.name
         view.invalidate()
     }

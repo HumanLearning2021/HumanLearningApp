@@ -1,5 +1,6 @@
-package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
+package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,15 +12,16 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.findFragment
 import androidx.navigation.fragment.findNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDatasetsOverviewBinding
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningDatasetSelectionBinding
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DatasetsOverviewFragment : Fragment() {
-    private var _binding: FragmentDatasetsOverviewBinding? = null
+class LearningDatasetSelectionFragment : Fragment() {
+    private lateinit var parentActivity: FragmentActivity
+
+    private var _binding: FragmentLearningDatasetSelectionBinding?= null
     private val binding get() = _binding!!
-    lateinit var parentActivity: FragmentActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,26 +29,24 @@ class DatasetsOverviewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         parentActivity = requireActivity()
-        _binding = FragmentDatasetsOverviewBinding.inflate(inflater, container, false)
+        _binding = FragmentLearningDatasetSelectionBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        //TODO: use binding
         val dsListFragment =
-            childFragmentManager.findFragmentById(R.id.datasetListFragment)
-
+            childFragmentManager.findFragmentById(R.id.LearningDatasetSelection_dataset_list)
         if (dsListFragment is DatasetListWidget) {
-            dsListFragment.selectedDataset.observe(parentActivity) {
-                Log.d("DataOverview activity", "selected ds is  $it")
-                val action = DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToDisplayDatasetFragment(it.id as String)
+            dsListFragment.selectedDataset.observe(requireActivity()) {
+                Log.d(parentActivity.localClassName, "Selected dataset $it")
+                val action =
+                    LearningDatasetSelectionFragmentDirections.actionLearningDatasetSelectionFragmentToLearningSettingsFragment(
+                        it.id as String
+                    )
                 findNavController().navigate(action)
             }
-        }
-
-        binding.createDatasetButton.setOnClickListener {
-            val action = DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment(  )
-            findNavController().navigate(action)
         }
 
         val callback = object : OnBackPressedCallback(true){
@@ -56,17 +56,10 @@ class DatasetsOverviewFragment : Fragment() {
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(callback)
-
     }
-
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }
-

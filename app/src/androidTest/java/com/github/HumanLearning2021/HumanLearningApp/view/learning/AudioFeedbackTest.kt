@@ -1,27 +1,38 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
+import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.*
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import java.io.File
+import java.util.*
+
 
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
@@ -32,29 +43,71 @@ class AudioFeedbackTest {
 
     @BindValue
     @Demo2Database
-    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
-    @get:Rule
-    val activityScenarioRule: ActivityScenarioRule<LearningActivity> = ActivityScenarioRule(
-        Intent(
-            ApplicationProvider.getApplicationContext(),
-            LearningActivity::class.java
-        )
-            .putExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE, LearningMode.PRESENTATION)
-            .putExtra(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET, getFirstDataset(dbMgt))
-    )
+    private var datasetPictures = emptySet<CategorizedPicture>()
+    private var categories = emptySet<Category>()
+    private lateinit var dataset: Dataset
+    private lateinit var datasetId: String
+    private var index = 0
+
+    private val navController: NavController = Mockito.mock(NavController::class.java)
+
+    @Before
+    fun setup() {
+        hiltRule.inject()
+        runBlocking {
+            var found = false
+            val datasets = dbManagement.getDatasets()
+            for (ds in datasets) {
+                val dsCats = ds.categories
+                if (dsCats.isNotEmpty() && !found) {
+                    for (i in dsCats.indices) {
+                        val dsPictures = dbManagement.getAllPictures(dsCats.elementAt(i))
+                        if (dsPictures.isNotEmpty() && !found) {
+                            dataset = ds
+                            index = i
+                            found = true
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                val cat = dbManagement.putCategory("${UUID.randomUUID()}")
+                dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
+                val tmp = File.createTempFile("droid", ".png")
+                try {
+                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
+                        tmp.outputStream().use {
+                            img.copyTo(it)
+                        }
+                    }
+                    val uri = Uri.fromFile(tmp)
+                    dbManagement.putPicture(uri, cat)
+                } finally {
+                    tmp.delete()
+                }
+            }
+            categories = emptySet()
+            datasetPictures = emptySet()
+            datasetId = dataset.id as String
+        }
+    }
 
     fun makeLearningAudioFeedback(): LearningAudioFeedback {
+        launchFragment()
         return LearningAudioFeedback(getInstrumentation().targetContext)
     }
 
     fun assertBothMPsNotPlaying(af: LearningAudioFeedback) {
+        launchFragment()
         assertThat(af.__testing_getCorrectMP().isPlaying, `is`(false))
         assertThat(af.__testing_getIncorrectMP().isPlaying, `is`(false))
     }
 
     @Test
     fun initPutsMediaPlayersInCorrectState() {
+        launchFragment()
         val af = makeLearningAudioFeedback()
         af.initMediaPlayers()
         assertThat(af.__testing_getCorrectMP(), notNullValue())
@@ -66,6 +119,7 @@ class AudioFeedbackTest {
 
     @Test
     fun canStartAndStopMediaPlayersRapidly() {
+        launchFragment()
         val af = makeLearningAudioFeedback()
         af.initMediaPlayers()
         af.startCorrectFeedback()
@@ -75,5 +129,12 @@ class AudioFeedbackTest {
         af.startIncorrectFeedback()
         assertThat(af.__testing_getIncorrectMP().isPlaying, `is`(true))
         af.releaseMediaPlayers()
+    }
+
+    private fun launchFragment(){
+        val args = bundleOf("datasetId" to datasetId, "learningMode" to LearningMode.PRESENTATION)
+        launchFragmentInHiltContainer<LearningFragment>(args) {
+            Navigation.setViewNavController(requireView(), navController)
+        }
     }
 }

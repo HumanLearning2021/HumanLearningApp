@@ -1,18 +1,22 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipDescription
 import android.os.Bundle
 import android.util.Log
-import android.view.DragEvent
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
@@ -22,9 +26,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LearningActivity : AppCompatActivity() {
+class LearningFragment: Fragment() {
     private lateinit var audioFeedback: LearningAudioFeedback
+    private lateinit var datasetId: String
     private lateinit var dataset: Dataset
+    private val args: LearningFragmentArgs by navArgs()
+    private var _binding: FragmentLearningBinding? = null
+    private val binding get() = _binding!!
+
+
 
     @Inject
     lateinit var learningPresenter: LearningPresenter
@@ -33,25 +43,36 @@ class LearningActivity : AppCompatActivity() {
     @Demo2Database
     lateinit var dbMgt: DatabaseManagement
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_learning)
+    private lateinit var parentActivity: Activity
 
-        val maybeDataset =
-            intent.getParcelableExtra<Dataset>(LearningDatasetSelectionActivity.EXTRA_SELECTED_DATASET)
-        if (maybeDataset != null) {
-            dataset = maybeDataset
-        } else {
-            Log.e(
-                this.localClassName, "The intent launching the LearningActivity didn't contain" +
-                        " a Dataset", IllegalStateException()
-            )
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        parentActivity = requireActivity()
+        _binding = FragmentLearningBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        datasetId = args.datasetId
+        lifecycleScope.launch{
+            dataset = dbMgt.getDatasetById(datasetId)!!
+            learningPresenter.learningMode = args.learningMode
+            learningPresenter.dataset = dataset
+            initLearningViews()
+            audioFeedback = LearningAudioFeedback(parentActivity.applicationContext)
         }
-        learningPresenter.learningMode =
-            intent.getSerializableExtra(LearningSettingsActivity.EXTRA_LEARNING_MODE) as LearningMode
-        learningPresenter.dataset = dataset
-        initLearningViews()
-        audioFeedback = LearningAudioFeedback(applicationContext)
+
+        val callback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                findNavController().popBackStack()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
     override fun onResume() {
@@ -63,6 +84,8 @@ class LearningActivity : AppCompatActivity() {
         super.onPause()
         audioFeedback.releaseMediaPlayers()
     }
+
+
 
     /**
      * This method initializes the image views containing the image to sort and the images
@@ -92,22 +115,27 @@ class LearningActivity : AppCompatActivity() {
 
 
     private fun initImageView(catIvId: Int, cat: Category): ImageView {
-        val catIv = findViewById<ImageView>(catIvId)
+        val catIv = when(catIvId) {
+            R.id.learning_cat_0 -> binding.learningCat0
+            R.id.learning_cat_1 -> binding.learningCat1
+            R.id.learning_cat_2 -> binding.learningCat2
+            else -> binding.learningImToSort
+        }
 
         // TODO (next sprint) make this less hacky
         // The mechanism to verify that the classification is correct is the comparison between
         // the contentDescription of the target ImageView and the text carried in the drag & drop
         // see LearningActivity::dropCallback
         catIv.contentDescription = cat.name
-        Log.d(localClassName, "init contentDescription to ${cat.name}")
+        Log.d(parentActivity.localClassName, "init contentDescription to ${cat.name}")
 
         if (catIvId == R.id.learning_im_to_sort) {
             lifecycleScope.launch {
-                learningPresenter.displayNextPicture(this@LearningActivity, catIv)
+                learningPresenter.displayNextPicture(parentActivity, catIv)
             }
         } else {
             lifecycleScope.launch {
-                learningPresenter.displayTargetPicture(this@LearningActivity, catIv, cat)
+                learningPresenter.displayTargetPicture(parentActivity, catIv, cat)
             }
         }
 
@@ -156,19 +184,20 @@ class LearningActivity : AppCompatActivity() {
     private fun dropCallback(event: DragEvent, v: View): Boolean {
         val item: ClipData.Item = event.clipData.getItemAt(0)
         setOpacity(v, opaque)
-        Log.d(localClassName, "dropped : ${item.text} on category: ${v.contentDescription}")
+        Log.d(parentActivity.localClassName, "dropped : ${item.text} on category: ${v.contentDescription}")
 
         // TODO (next sprint) make this less hacky
         // the classification is considered correct if the text carried by the drag
         // is equal to the contentDescription of the target ImageView
         val res = item.text == v.contentDescription
+        val self = parentActivity
         audioFeedback.stopAndPrepareMediaPlayers()
         if (res) {
             audioFeedback.startCorrectFeedback()
             lifecycleScope.launch {
                 learningPresenter.displayNextPicture(
-                    this@LearningActivity,
-                    findViewById(R.id.learning_im_to_sort),
+                    self,
+                    binding.learningImToSort,
                 )
             }
         } else {
