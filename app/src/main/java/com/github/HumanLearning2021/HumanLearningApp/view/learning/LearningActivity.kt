@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
@@ -189,7 +188,7 @@ class LearningActivity : AppCompatActivity() {
     }
 
     companion object {
-        private fun setOpacity(v: View, opacity: Float){
+        private fun setOpacity(v: View, opacity: Float) {
             v.alpha = opacity
             v.invalidate()
         }

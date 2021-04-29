@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.dataset_editing.DatasetsOverviewActivity">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/datasetsOverview_fragment"
+        class="com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget"
+        android:layout_width="wrap_content"
+        android:layout_height="650dp"
+        app:layout_constraintBottom_toTopOf="@+id/datasetsOverviewButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dsOverviewTitle"
+        tools:layout="@layout/fragment_dataset_list" />
+
+    <Button
+        android:id="@+id/datasetsOverviewButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/DataOverview_CreateButton"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/datasetsOverview_fragment" />
+
+    <TextView
+        android:id="@+id/dsOverviewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/DatasetsOverview_Title"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toTopOf="@+id/datasetsOverview_fragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
