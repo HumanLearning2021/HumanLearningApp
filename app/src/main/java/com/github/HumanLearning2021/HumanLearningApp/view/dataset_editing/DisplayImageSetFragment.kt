@@ -66,10 +66,9 @@ class DisplayImageSetFragment: Fragment() {
 
         lifecycleScope.launch {
             categorizedPicturesList = dBManagement.getAllPictures(category)
+            findViewById<TextView>(R.id.display_image_set_name).text =
+                category.name
             if (categorizedPicturesList.isNotEmpty()) {
-                parentActivity.findViewById<TextView>(R.id.display_image_set_name).text =
-                    (categorizedPicturesList.elementAt(0)).category.name
-
                 val displayImageSetAdapter =
                     DisplayImageSetAdapter(
                         categorizedPicturesList,
@@ -93,7 +92,7 @@ class DisplayImageSetFragment: Fragment() {
 
 
 
-    class DisplayImageSetAdapter(
+    private class DisplayImageSetAdapter(
         private val images: Set<CategorizedPicture>,
         private val context: Activity
     ) : BaseAdapter() {

@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.app.Activity
+import android.util.Log
 import android.widget.ImageView
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
@@ -8,7 +9,6 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import javax.inject.Inject
-
 
 class LearningPresenter @Inject constructor(
     @Demo2Database
@@ -34,7 +34,11 @@ class LearningPresenter @Inject constructor(
             LearningMode.PRESENTATION -> dbMgt.getRepresentativePicture(rndCat.id)
         }
 
-        nextPicture?.displayOn(activity, view)
+        if(nextPicture != null){
+            nextPicture.displayOn(activity, view)
+        }else{
+            Log.e(this::class.java.name, "There is no next picture to display")
+        }
         view.contentDescription = rndCat.name
         view.invalidate()
     }
@@ -51,6 +55,8 @@ class LearningPresenter @Inject constructor(
             rndCat = dataset.categories.random()
             catPicsIds = dbMgt.getPictureIds(rndCat)
         } while (
+            // TODO(Niels) : risk of infinite loop if 2 categories in dataset or no category
+            //  with a picture. To fix
             previousCategory == rndCat || catPicsIds.isEmpty()
         )
         previousCategory = rndCat!!

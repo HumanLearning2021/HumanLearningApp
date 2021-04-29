@@ -1,7 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -108,12 +108,12 @@ class CategoriesEditingFragment : Fragment() {
         lifecycleScope.launch {
             for (i in dsCategories.indices) {
                 if (dsCategories.elementAt(i).name == categoryName.text.toString()) {
+                    binding.parentLinearLayout.removeView(view.parent as View)
                     removedCategory = dsCategories.elementAt(i)
+                    dsCategories = dsCategories.minus(removedCategory)
+                    dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
+                    break
                 }
-            }
-            if (dsCategories.isNotEmpty() && dsCategories.contains(removedCategory)) {
-                dsCategories = dsCategories.minus(removedCategory)
-                dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
             }
             binding.parentLinearLayout.removeView(view.parent as View)
         }
