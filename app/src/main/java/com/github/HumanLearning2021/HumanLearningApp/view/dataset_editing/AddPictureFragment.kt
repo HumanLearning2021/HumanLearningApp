@@ -53,11 +53,21 @@ class AddPictureFragment : Fragment() {
     private lateinit var imageCapture: ImageCapture
     private lateinit var capturedImageUri: Uri
     private lateinit var chosenCategory: Category
+    private lateinit var datasetId: String // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesnt seem to work
     private var imageTaken: Boolean = false
     private var categorySet: Boolean = false
 
     private var _binding: FragmentAddPictureBinding? = null
     private val binding get() = _binding!!
+
+
+
+
+    val callback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            findNavController().popBackStack()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,6 +77,7 @@ class AddPictureFragment : Fragment() {
         super.onCreate(savedInstanceState)
         parentActivity = requireActivity()
 
+        datasetId = args.datasetId
         val givenCategories = args.categories.toList() as ArrayList
         categories = categories.plus(givenCategories)
 
@@ -78,11 +89,7 @@ class AddPictureFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val callback = object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                findNavController().popBackStack()
-            }
-        }
+
         requireActivity().onBackPressedDispatcher.addCallback(callback)
 
         if (cameraIsAvailable()) {
@@ -106,34 +113,13 @@ class AddPictureFragment : Fragment() {
     }
 
 
-    /**
-    The ActivityResultContract which should be used when launching this activity.
-    The launch argument is an Array<String> containing the categories to select from.
-    The return value is a Pair containing the selected category as a first element and the Uri pointing to the image as a second element
-     */
-    object AddPictureContract :
-        ActivityResultContract<ArrayList<Category>, Pair<Category, Uri>?>() {
-        override fun createIntent(context: Context, input: ArrayList<Category>?): Intent =
-            Intent(context, AddPictureActivity::class.java).putParcelableArrayListExtra(
-                "categories",
-                input
-            )
-
-        override fun parseResult(resultCode: Int, result: Intent?): Pair<Category, Uri>? {
-            return if (resultCode != Activity.RESULT_OK) {
-                null
-            } else {
-                val bundle = result!!.extras!!.get("result") as Bundle
-                Pair(bundle["category"] as Category, bundle["image"] as Uri)
-            }
-        }
-    }
-
     @Suppress("UNUSED_PARAMETER")
     private fun onSave(view: View) {
         setNavigationResult(ARG_CATEGORY, chosenCategory)
         setNavigationResult(ARG_PIC_URI, capturedImageUri)
-        findNavController().popBackStack() //TODO: not sure about this
+        val action = AddPictureFragmentDirections.actionAddPictureFragmentToDisplayDatasetFragment(datasetId, chosenCategory, capturedImageUri)
+        findNavController().navigate(action)
+        //findNavController().popBackStack() //TODO: not sure about this
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -207,7 +193,7 @@ class AddPictureFragment : Fragment() {
 
         preview.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
 
-        cameraProvider.bindToLifecycle(parentActivity, cameraSelector, preview, imageCapture)
+        cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
 
         binding.takePictureButton.setOnClickListener(this::onTakePicture)
     }

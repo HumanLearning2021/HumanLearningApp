@@ -62,7 +62,17 @@ class DisplayDatasetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        datasetId = args.datasetId
+        datasetId = args.datasetId!!
+
+        // Ugly hack: if these arguments aren't null, it means the previous fragment was addPicture
+        // and it saved a picture
+        if (args.chosenCategory != null && args.pictureUri != null) {
+            lifecycleScope.launch {
+                dbManagement.putPicture(args.pictureUri!!, args.chosenCategory!!)
+            }
+        }
+
+
 
         lifecycleScope.launch {
             dataset = dbManagement.getDatasetById(datasetId)!!
@@ -81,6 +91,7 @@ class DisplayDatasetFragment : Fragment() {
                 }
             }
 
+
             val displayDatasetAdapter =
                 DisplayDatasetAdapter(
                     representativePictures,
@@ -93,7 +104,7 @@ class DisplayDatasetFragment : Fragment() {
             setTextChangeListener()
         }
 
-        val callback = object : OnBackPressedCallback(true){
+        val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 findNavController().popBackStack()
             }
@@ -106,7 +117,10 @@ class DisplayDatasetFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.display_dataset_menu_modify_categories -> {
-                val action = DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToCategoriesEditingFragment(datasetId)
+                val action =
+                    DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToCategoriesEditingFragment(
+                        datasetId
+                    )
                 findNavController().navigate(action)
                 true
             }
@@ -117,19 +131,27 @@ class DisplayDatasetFragment : Fragment() {
                 var category: Category? = null
                 var pictureUri: Uri? = null
 
-                findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Uri>(ARG_PIC_URI)?.observe(viewLifecycleOwner) {pictureUri ->
-                    lifecycleScope.launch{
-                        if(category!=null) dbManagement.putPicture(pictureUri!!, category!!)
+                findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Uri>(
+                    ARG_PIC_URI
+                )?.observe(viewLifecycleOwner) { pictureUri ->
+                    lifecycleScope.launch {
+                        if (category != null) dbManagement.putPicture(pictureUri!!, category!!)
                     }
                 }
 
-                findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Category>(ARG_CATEGORY)?.observe(viewLifecycleOwner) {category ->
-                    lifecycleScope.launch{
-                        if(pictureUri!=null) dbManagement.putPicture(pictureUri!!, category!!)
+                findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Category>(
+                    ARG_CATEGORY
+                )?.observe(viewLifecycleOwner) { category ->
+                    lifecycleScope.launch {
+                        if (pictureUri != null) dbManagement.putPicture(pictureUri!!, category!!)
                     }
                 }
 
-                val action = DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(categories.toTypedArray())
+                val action =
+                    DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(
+                        categories.toTypedArray(),
+                        datasetId
+                    )
                 findNavController().navigate(action)
                 true
             }
@@ -181,16 +203,20 @@ class DisplayDatasetFragment : Fragment() {
     }
 
     private fun setGridViewItemListener() {
-        parentActivity.findViewById<GridView>(R.id.display_dataset_imagesGridView)
+        binding.displayDatasetImagesGridView
             .setOnItemClickListener { adapterView, view, i, l ->
                 val category = categories.elementAt(i)
-                val action = DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToDisplayImageSetFragment(datasetId, category)
+                val action =
+                    DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToDisplayImageSetFragment(
+                        datasetId,
+                        category
+                    )
                 findNavController().navigate(action)
             }
     }
 
     private fun setTextChangeListener() {
-        parentActivity.findViewById<EditText>(R.id.display_dataset_name).doAfterTextChanged {
+        binding.displayDatasetName.doAfterTextChanged {
             lifecycleScope.launch {
                 dataset = dbManagement.editDatasetName(
                     dataset,
@@ -200,7 +226,7 @@ class DisplayDatasetFragment : Fragment() {
         }
     }
 
-    private fun <T>Fragment.getNavigationResult(key: String) =
+    private fun <T> Fragment.getNavigationResult(key: String) =
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<T>(key)
 
 

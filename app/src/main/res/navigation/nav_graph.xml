@@ -16,9 +16,6 @@
         <action
             android:id="@+id/action_mainFragment_to_datasetsOverviewFragment"
             app:destination="@id/datasetsOverviewFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_displayDatasetFragment"
-            app:destination="@id/displayDatasetFragment" />
     </fragment>
     <fragment
         android:id="@+id/learningDatasetSelectionFragment"
@@ -78,10 +75,22 @@
             app:destination="@id/displayImageSetFragment" />
         <argument
             android:name="datasetId"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
         <action
             android:id="@+id/action_displayDatasetFragment_to_addPictureFragment"
             app:destination="@id/addPictureFragment" />
+        <argument
+            android:name="chosenCategory"
+            app:argType="com.github.HumanLearning2021.HumanLearningApp.model.Category"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="pictureUri"
+            app:argType="android.net.Uri"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/categoriesEditingFragment"
@@ -137,9 +146,13 @@
         tools:layout="@layout/fragment_add_picture" >
         <action
             android:id="@+id/action_addPictureFragment_to_displayDatasetFragment"
-            app:destination="@id/displayDatasetFragment" />
+            app:destination="@id/displayDatasetFragment"
+            app:popUpTo="@id/displayDatasetFragment"/>
         <argument
             android:name="categories"
             app:argType="com.github.HumanLearning2021.HumanLearningApp.model.Category[]" />
+        <argument
+            android:name="datasetId"
+            app:argType="string" />
     </fragment>
 </navigation>
