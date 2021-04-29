@@ -15,7 +15,7 @@ class DatasetsOverviewActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_datasets_overview)
+        setContentView(R.layout.fragment_datasets_overview)
 
         val dsListFragment = supportFragmentManager.findFragmentById(R.id.datasetsOverview_fragment)
         if (dsListFragment is DatasetListWidget) {

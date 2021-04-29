@@ -34,7 +34,7 @@ class DisplayImageSetActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_display_image_set)
+        setContentView(R.layout.fragment_display_image_set)
 
         val category =
             intent.getParcelableExtra<Category>("category_of_pictures") as Category

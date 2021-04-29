@@ -16,7 +16,7 @@ class LearningDatasetSelectionActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_learning_dataset_selection)
+        setContentView(R.layout.fragment_learning_dataset_selection)
 
         val dsListFragment = supportFragmentManager.findFragmentById(R.id.LearningDatasetSelection_dataset_list)
         if (dsListFragment is DatasetListWidget) {

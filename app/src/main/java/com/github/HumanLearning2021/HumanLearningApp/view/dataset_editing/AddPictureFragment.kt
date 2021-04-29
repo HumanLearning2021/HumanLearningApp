@@ -164,7 +164,7 @@ class AddPictureActivity : AppCompatActivity() {
     }
 
     private fun setupActivityLayout() {
-        setContentView(R.layout.activity_camera)
+        setContentView(R.layout.fragment_camera)
         findViewById<Button>(R.id.selectCategoryButton).setOnClickListener(this::onSelectCategoryButton)
         findViewById<Button>(R.id.saveButton).setOnClickListener(this::onSave)
         findViewById<ImageView>(R.id.cameraImageView).isVisible = false

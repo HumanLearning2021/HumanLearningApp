@@ -29,7 +29,7 @@ class DisplayImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_display_image)
+        setContentView(R.layout.fragment_display_image)
 
         picture =
             intent.getParcelableExtra("single_picture")

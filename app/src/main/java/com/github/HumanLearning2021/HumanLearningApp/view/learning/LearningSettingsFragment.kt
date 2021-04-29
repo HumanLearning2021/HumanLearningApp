@@ -21,7 +21,7 @@ class LearningSettingsActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_learning_settings)
+        setContentView(R.layout.fragment_learning_settings)
 
         // we reuse the intent coming from LearningDatasetSelectionActivity that
         // must contain the Dataset that was selected
