@@ -75,7 +75,7 @@ class DisplayImageActivityTest {
         ActivityScenario.launch<DisplayImageActivity>(
             Intent(ApplicationProvider.getApplicationContext(),
                 DisplayImageActivity::class.java)
-                .putExtra("dataset_id", dataset.id as String)
+                .putExtra("dataset_id", dataset.id)
                 .putExtra("single_picture", getFirstPicture(category))
         )
     }
@@ -133,7 +133,7 @@ class DisplayImageActivityTest {
                 IntentMatchers.hasComponent(DisplayDatasetActivity::class.java.name),
                 IntentMatchers.hasExtra(
                     "dataset_id",
-                    dataset.id as String
+                    dataset.id
                 ),
             )
         )
@@ -158,7 +158,7 @@ class DisplayImageActivityTest {
                 ),
                 IntentMatchers.hasExtra(
                     "dataset_id",
-                    dataset.id as String
+                    dataset.id
                 ),
             )
         )

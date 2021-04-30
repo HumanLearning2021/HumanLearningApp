@@ -53,7 +53,7 @@ class CategoriesEditingActivityTest {
             ApplicationProvider.getApplicationContext(),
             CategoriesEditingActivity::class.java
         )
-            .putExtra("dataset_id", dataset.id as String)
+            .putExtra("dataset_id", dataset.id)
     )
 
     @Before
@@ -126,7 +126,7 @@ class CategoriesEditingActivityTest {
         Intents.intended(
             CoreMatchers.allOf(
                 IntentMatchers.hasComponent(DisplayDatasetActivity::class.java.name),
-                IntentMatchers.hasExtra("dataset_id", dataset.id as String),
+                IntentMatchers.hasExtra("dataset_id", dataset.id),
             )
         )
     }
@@ -140,7 +140,7 @@ class CategoriesEditingActivityTest {
         onView(withId(R.id.button_submit_list)).perform(click())
         waitFor(1) // increase id needed
         runBlocking {
-            val updatedDataset = dbMgt.getDatasetById(dataset.id as String)!!
+            val updatedDataset = dbMgt.getDatasetById(dataset.id)!!
             assert(nbCategories + 1 == updatedDataset.categories.size)
         }
     }

@@ -27,7 +27,7 @@ interface DatabaseManagement {
      * category is present in the database.
      * @throws IllegalArgumentException if there is not picture of the provided id in the database
      */
-    suspend fun getPicture(pictureId: Any): CategorizedPicture?
+    suspend fun getPicture(pictureId: Id): CategorizedPicture?
 
     /**
      * A function to retrieve the ids of all the pictures from the database given a category
@@ -36,7 +36,7 @@ interface DatabaseManagement {
      * @return a List of ids. Can be empty if no pictures where found.
      * @throws IllegalArgumentException if the provided category is not present in the database
      */
-    suspend fun getPictureIds(category: Category): List<Any>
+    suspend fun getPictureIds(category: Category): List<Id>
 
     /**
      * Retrieves the picture associated to the specified category as its representative picture
@@ -44,7 +44,7 @@ interface DatabaseManagement {
      * @param categoryId - the id of the category whose representative picture we want to retrieve
      * @return the representative picture as a categorizedPicture, can be null
      */
-    suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture?
+    suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture?
 
     /**
      * A function that allows to put a picture in the underlying database
@@ -62,7 +62,7 @@ interface DatabaseManagement {
      * @param categoryId the id of the desired category
      * @return the desired category if present, null otherwise
      */
-    suspend fun getCategoryById(categoryId: Any): Category?
+    suspend fun getCategoryById(categoryId: Id): Category?
 
     /**
      * A function to retrieve a category from the underlying database
@@ -127,7 +127,7 @@ interface DatabaseManagement {
      * @param id - the name of the desired dataset
      * @return the dataset
      */
-    suspend fun getDatasetById(id: Any): Dataset?
+    suspend fun getDatasetById(id: Id): Dataset?
 
     /**
      * Get the dataset of the specified name from the underlying database
@@ -143,7 +143,7 @@ interface DatabaseManagement {
      * @param id - the name of the dataset to delete
      * @throws IllegalArgumentException if there is no dataset of the specified id in the underlying database
      */
-    suspend fun deleteDataset(id: Any)
+    suspend fun deleteDataset(id: Id)
 
     /**
      * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
@@ -173,7 +173,7 @@ interface DatabaseManagement {
      *
      * @return a set containing the ids off all the available datasets
      */
-    suspend fun getDatasetIds(): Set<Any>
+    suspend fun getDatasetIds(): Set<Id>
 
     /**
      * Remove the category from a dataset
