@@ -45,7 +45,7 @@ class DisplayDatasetActivityTest {
     @Demo2Database
     val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
-    private val datasetId: String = getFirstDataset(dbMgt).id as String
+    private val datasetId: Id = getFirstDataset(dbMgt).id
     @get:Rule(order = 1)
     val activityScenarioRule: ActivityScenarioRule<DisplayDatasetActivity> = ActivityScenarioRule(
         Intent(

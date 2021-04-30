@@ -29,7 +29,7 @@ interface DatabaseService {
      * @return a CategorizedPicture from the desired category. Null if no picture of the desired
      * category is present in the database.
      */
-    suspend fun getPicture(pictureId: Any): CategorizedPicture?
+    suspend fun getPicture(pictureId: Id): CategorizedPicture?
 
     /**
      * A function to retrieve the ids of all the pictures from the database given a category
@@ -38,7 +38,7 @@ interface DatabaseService {
      * @return a List of ids. Can be empty if no pictures where found.
      * @throws IllegalArgumentException if the provided category is not present in the database
      */
-    suspend fun getPictureIds(category: Category): List<Any>
+    suspend fun getPictureIds(category: Category): List<Id>
 
     /**
      * Retrieves the picture associated to the specified category as its representative picture
@@ -46,7 +46,7 @@ interface DatabaseService {
      * @param categoryId - the id of the category whose representative picture we want to retrieve
      * @return the representative picture as a categorizedPicture, can be null
      */
-    suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture?
+    suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture?
 
     /**
      * A function that allows to put a picture in the database
@@ -64,7 +64,7 @@ interface DatabaseService {
      * @param categoryId the id of the desired category
      * @return the desired category if present, null otherwise
      */
-    suspend fun getCategory(categoryId: Any): Category?
+    suspend fun getCategory(id: Id): Category?
 
     /**
      * A function to add a category to the database
@@ -122,7 +122,7 @@ interface DatabaseService {
      * @param id - the id of the desired dataset
      * @return the dataset
      */
-    suspend fun getDataset(id: Any): Dataset?
+    suspend fun getDataset(id: Id): Dataset?
 
     /**
      * Deletes the specified dataset from the database
@@ -130,7 +130,7 @@ interface DatabaseService {
      * @param id - the name of the dataset to delete
      * @throws IllegalArgumentException if there is no dataset of the specified id in the database
      */
-    suspend fun deleteDataset(id: Any)
+    suspend fun deleteDataset(id: Id)
 
     /**
      * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.

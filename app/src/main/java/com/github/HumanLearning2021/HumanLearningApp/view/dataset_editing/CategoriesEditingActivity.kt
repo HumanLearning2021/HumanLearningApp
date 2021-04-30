@@ -13,6 +13,7 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,7 +43,7 @@ class CategoriesEditingActivity : AppCompatActivity() {
             val extras = intent.extras
             new = extras == null
             if (!new) {
-                datasetId = extras!!["dataset_id"] as String
+                datasetId = extras!!["dataset_id"] as Id
                 dataset = dBManagement.getDatasetById(datasetId)!!
                 dsCategories = dataset.categories
                 val count = dsCategories.size
@@ -109,7 +110,7 @@ class CategoriesEditingActivity : AppCompatActivity() {
                 }
             } else {
                 dataset = dBManagement.putDataset("New Dataset", newCategories)
-                datasetId = dataset.id as String
+                datasetId = dataset.id
             }
 
             val intent = Intent(this@CategoriesEditingActivity, DisplayDatasetActivity::class.java)

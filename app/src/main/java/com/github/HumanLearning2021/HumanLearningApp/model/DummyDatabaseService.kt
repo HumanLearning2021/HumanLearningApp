@@ -59,14 +59,13 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         return null
     }
 
-    override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
-        require(pictureId is String)
+    override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
         for (p in pictures)
             if (p.id == pictureId) return p
         return null
     }
 
-    override suspend fun getPictureIds(category: Category): List<Any> {
+    override suspend fun getPictureIds(category: Category): List<Id> {
         require(category is DummyCategory)
         if (!categories.contains(category)) throw IllegalArgumentException(
             "The provided category is not present in the dataset"
@@ -78,7 +77,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         return res
     }
 
-    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
+    override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? {
         return representativePictures[categoryId]
     }
 
@@ -93,9 +92,9 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         return addedPicture
     }
 
-    override suspend fun getCategory(categoryId: Any): Category? {
+    override suspend fun getCategory(id: Id): Category? {
         for (c in categories)
-            if (c.id == categoryId as String) return c
+            if (c.id == id) return c
         return null
     }
 
@@ -159,15 +158,15 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         return dataset
     }
 
-    override suspend fun getDataset(id: Any): Dataset? {
+    override suspend fun getDataset(id: Id): Dataset? {
         for (d in datasets)
-            if (d.name == id as String) return d
+            if (d.name == id) return d
         return null
     }
 
-    override suspend fun deleteDataset(id: Any) {
+    override suspend fun deleteDataset(id: Id) {
         for (d in datasets) {
-            if (d.name == id as String) {
+            if (d.name == id) {
                 datasets.remove(d)
                 return
             }
@@ -180,7 +179,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
             throw IllegalArgumentException("The category name ${category.name} is not present in the database")
 
         }
-        representativePictures[category.id as String] = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
+        representativePictures[category.id] = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
     }
 
 

@@ -23,7 +23,7 @@ class DatasetsOverviewActivity : AppCompatActivity() {
                 Log.d(this.localClassName, "Selected dataset $it")
                 startActivity(
                     Intent(this, DisplayDatasetActivity::class.java)
-                        .putExtra("dataset_id", it.id as String)
+                        .putExtra("dataset_id", it.id)
                 )
             }
         }

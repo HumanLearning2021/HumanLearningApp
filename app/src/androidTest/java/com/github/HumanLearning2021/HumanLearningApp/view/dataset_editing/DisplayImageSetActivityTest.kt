@@ -51,7 +51,7 @@ class DisplayImageSetActivityTest {
     private var dsPictures = emptySet<CategorizedPicture>()
     private lateinit var categories: Set<Category>
     private lateinit var dataset: Dataset
-    private lateinit var datasetId: String
+    private lateinit var datasetId: Id
     private var index = 0
 
     @Before
@@ -89,7 +89,7 @@ class DisplayImageSetActivityTest {
                     tmp.delete()
                 }
             }
-            datasetId = dataset.id as String
+            datasetId = dataset.id
             categories = dataset.categories
             dsPictures = dbManagement.getAllPictures(categories.elementAt(index))
             val intent = Intent()

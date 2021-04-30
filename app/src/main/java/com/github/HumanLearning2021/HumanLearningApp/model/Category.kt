@@ -7,6 +7,6 @@ import android.os.Parcelable
  * id is used to uniquely identify a Category
  */
 interface Category : Parcelable {
-    val id: Any
+    val id: Id
     val name: String
 }
