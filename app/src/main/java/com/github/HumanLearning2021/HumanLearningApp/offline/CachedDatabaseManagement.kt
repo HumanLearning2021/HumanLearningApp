@@ -1,20 +1,13 @@
-package com.github.HumanLearning2021.HumanLearningApp.firestore
+package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
-import com.google.firebase.firestore.FirebaseFirestore
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.parcelize.Parcelize
 import java.lang.IllegalArgumentException
-import javax.inject.Inject
 
-class CachedFirestoreDatabaseManagement internal constructor(
-    private val db: FirestoreDatabaseManagement, private val cache: PictureRepository
+class CachedDatabaseManagement internal constructor(
+    private val db: DatabaseManagement, private val cache: PictureRepository
 ): DatabaseManagement by db {
 
-    val cachedPictures: MutableMap<String, FirestoreCategorizedPicture> = mutableMapOf()
+    internal val cachedPictures: MutableMap<Id, CategorizedPicture> = mutableMapOf()
 
     override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
         val uri = cache.retrievePicture(pictureId)
@@ -50,7 +43,7 @@ class CachedFirestoreDatabaseManagement internal constructor(
         if (pic != null) db.removePicture(pic)
     }
 
-    private suspend fun putIntoCache(picture: FirestoreCategorizedPicture): OfflineCategorizedPicture {
+    private suspend fun putIntoCache(picture: CategorizedPicture): OfflineCategorizedPicture {
         val uri = cache.savePicture(picture)
         cachedPictures[picture.id] = picture
         return Converters.fromPicture(picture, uri)

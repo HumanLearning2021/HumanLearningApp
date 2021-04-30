@@ -373,6 +373,7 @@ class OfflineDatabaseManagementTest {
     }
 
     @Test
+    @Ignore("acting on deleted objects is not supported by DefaultDatabaseManagement")
     fun test_removeCategoryFromDataset_datasetNotPresent() = runBlocking {
         val cat1 = demoManagement.putCategory(getRandomString()) as OfflineCategory
         val cat2 = demoManagement.putCategory(getRandomString()) as OfflineCategory
@@ -382,6 +383,7 @@ class OfflineDatabaseManagementTest {
     }
 
     @Test
+    @Ignore("acting on deleted objects is not supported by DefaultDatabaseManagement")
     fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
         val cat1 = demoManagement.putCategory(getRandomString()) as OfflineCategory
         val cat2 = Converters.fromCategory(fakeCategory)

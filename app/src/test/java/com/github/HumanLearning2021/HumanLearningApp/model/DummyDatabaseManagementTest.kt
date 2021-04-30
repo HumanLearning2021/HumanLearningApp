@@ -121,8 +121,8 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = java.lang.IllegalArgumentException::class)
-    fun removeCategoryThrowsExpectedException() = runBlockingTest {
+    @Test
+    fun removeNonexistentCategory() = runBlockingTest {
         testDatabaseManagement.removeCategory(table)
     }
 
@@ -134,8 +134,8 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = IllegalArgumentException::class)
-    fun removePictureThrowsIllegalArgumentException() = runBlockingTest {
+    @Test
+    fun removeNonexistentPicture() = runBlockingTest {
         testDatabaseManagement.removePicture(DummyCategorizedPicture("tableid", table, Uri.EMPTY))
     }
 
@@ -169,8 +169,8 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = IllegalArgumentException::class)
-    fun deleteDatasetThrowsIllegalArgumentException() = runBlockingTest {
+    @Test
+    fun deleteNonexistentDataset() = runBlockingTest {
         testDatabaseManagement.deleteDataset("someDsId")
     }
 

@@ -56,6 +56,7 @@ interface DatabaseService {
      * @throws IllegalArgumentException if the database does not contain the specified category
      */
     suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
+    suspend fun putRepresentativePicture(picture: CategorizedPicture)
 
     /**
      * A function that allows to put a picture in the database

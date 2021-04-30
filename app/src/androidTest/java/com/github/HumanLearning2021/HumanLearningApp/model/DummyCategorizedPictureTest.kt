@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.ImageView
@@ -20,10 +21,13 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.launch
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 import javax.inject.Inject
 
 @UninstallModules(DatabaseServiceModule::class)
@@ -80,6 +84,28 @@ class DummyCategorizedPictureTest {
             assert(
                 imageView.drawable.toBitmap().getPixel(5, 5) == drawable!!.toBitmap().getPixel(5, 5)
             )
+        }
+    }
+
+    // PNG format signature per https://tools.ietf.org/html/rfc2083#section-3.1
+    private fun pngHeader(): Array<Byte> = arrayOf(137.toByte(), 80, 78, 71, 13, 10, 26, 10)
+    @Test
+    fun copyToWorksAsExpected() {
+        val pictureUri =
+            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
+        val dummyCategory = DummyCategory("Fork", "Fork")
+        val dummyCategorizedPicture = DummyCategorizedPicture("some id", dummyCategory, pictureUri)
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val tmpFile = File.createTempFile("myImage", ".png")
+        try {
+            dummyCategorizedPicture.copyTo(context, tmpFile)
+            assertThat(tmpFile.inputStream().use {
+                val buf = ByteArray(8)
+                it.read(buf)
+                buf },
+                equalTo(pngHeader()))
+        } finally {
+            tmpFile.delete()
         }
     }
 }

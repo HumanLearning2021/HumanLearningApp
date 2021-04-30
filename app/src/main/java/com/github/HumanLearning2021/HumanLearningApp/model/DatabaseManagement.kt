@@ -1,5 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import dagger.Binds
+
 /**
  * Entry point to retrieve data from the underlying database as well as modify it.
  */

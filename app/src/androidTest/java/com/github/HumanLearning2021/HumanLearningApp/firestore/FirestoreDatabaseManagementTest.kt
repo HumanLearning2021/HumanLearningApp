@@ -23,6 +23,7 @@ import org.hamcrest.Matchers.*
 import org.junit.Assert.fail
 import org.junit.Assume.assumeThat
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -348,6 +349,7 @@ class FirestoreDatabaseManagementTest {
     }
 
     @Test
+    @Ignore("acting on deleted objects is not supported by DefaultDatabaseManagement")
     fun test_removeCategoryFromDataset_datasetNotPresent() = runBlocking {
         val cat1 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
         val cat2 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
@@ -357,6 +359,7 @@ class FirestoreDatabaseManagementTest {
     }
 
     @Test
+    @Ignore("acting on deleted objects is not supported by DefaultDatabaseManagement")
     fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
         val cat1 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
         val cat2 = fakeCategory

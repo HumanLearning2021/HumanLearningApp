@@ -181,6 +181,11 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         representativePictures[category.id] = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
     }
 
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+        require(picture is DummyCategorizedPicture)
+        putRepresentativePicture(picture.picture, picture.category)
+    }
+
     override suspend fun getDatasets(): Set<Dataset> {
         return datasets
     }

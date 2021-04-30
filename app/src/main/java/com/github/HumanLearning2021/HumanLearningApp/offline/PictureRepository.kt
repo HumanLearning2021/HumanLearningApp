@@ -3,15 +3,11 @@ package com.github.HumanLearning2021.HumanLearningApp.offline
 import android.content.Context
 import android.net.Uri
 import androidx.core.net.toUri
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategorizedPicture
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.tasks.await
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
 import java.lang.IllegalArgumentException
-import java.lang.NullPointerException
 import java.util.*
 
 open class PictureRepository(private val dbName: String, private val context: Context,
@@ -19,10 +15,9 @@ open class PictureRepository(private val dbName: String, private val context: Co
 ) {
 
     @Throws(Exception::class)
-    suspend fun savePicture(picture: FirestoreCategorizedPicture): Uri {
+     fun savePicture(picture: CategorizedPicture): Uri {
         val file = File(folder, picture.id)
-        val task = Firebase.storage.getReferenceFromUrl(picture.url).getFile(file).await()
-        if (task.error != null) throw task.error!!
+        picture.copyTo(context, file)
         return file.toUri()
     }
 

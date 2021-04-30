@@ -2,12 +2,11 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
+import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
@@ -76,8 +75,8 @@ class UniqueDatabaseManagementTest {
     @Test
     fun offlineAndFirestoreDatabasesContainTheSameElements() = runBlocking {
         val dbName = "demo"
-        val fDbMan: CachedFirestoreDatabaseManagement = uDbMan.accessCloudDatabase(dbName)
-        val oDbman: OfflineDatabaseManagement = uDbMan.downloadDatabase(dbName)
+        val fDbMan = uDbMan.accessCloudDatabase(dbName) as CachedDatabaseManagement
+        val oDbman = uDbMan.downloadDatabase(dbName) as OfflineDatabaseManagement
         assertThat(fDbMan.getDatasets().map { ds -> ds.id }, equalTo(oDbman.getDatasets().map { ds -> ds.id }))
         assertThat(fDbMan.getCategories().map { cat -> cat.id }, equalTo(oDbman.getCategories().map { cat -> cat.id }))
     }

@@ -44,7 +44,7 @@ class OfflineDatabaseService internal constructor(
      * category is present in the database or if the category is not present
      */
     override suspend fun getPicture(category: Category): OfflineCategorizedPicture? {
-        val pics = categoryDao.loadAllPictures(category.id) ?: return null
+        val pics = categoryDao.loadAllPictures(category.id) ?: throw IllegalArgumentException("${category.id} not found in database")
         val randomId = pics.pictures.map { p -> p.pictureId }.random()
         return fromPicture(categoryDao.loadPicture(randomId)!!, categoryDao)
     }
@@ -61,7 +61,7 @@ class OfflineDatabaseService internal constructor(
      * @return a List of ids. Can be empty if no pictures where found or if the category is not contained in the database
      */
     override suspend fun getPictureIds(category: Category): List<String> {
-        val pics = categoryDao.loadAllPictures(category.id) ?: return listOf()
+        val pics = categoryDao.loadAllPictures(category.id) ?: throw IllegalArgumentException("${category.id} not found in database")
         return pics.pictures.map { p -> p.pictureId }
     }
 
@@ -104,7 +104,7 @@ class OfflineDatabaseService internal constructor(
      * @return the pictures categorized with the specified category, empty if the category is not contained in the dataset
      */
     override suspend fun getAllPictures(category: Category): Set<OfflineCategorizedPicture> {
-        val cats = categoryDao.loadAllPictures(category.id) ?: return setOf()
+        val cats = categoryDao.loadAllPictures(category.id) ?: throw IllegalArgumentException("${category.id} not found in database")
         return cats.pictures.map{p -> fromPicture(p, categoryDao)}.toSet()
     }
 
@@ -175,6 +175,11 @@ class OfflineDatabaseService internal constructor(
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
         val cat = categoryDao.loadById(category.id) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
         categoryDao.insertAll(RoomUnlinkedRepresentativePicture(getID(), picture, cat.categoryId))
+    }
+
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+        require(picture is OfflineCategorizedPicture)
+        putRepresentativePicture(picture.picture, picture.category)
     }
 
     override suspend fun getDatasets(): Set<OfflineDataset> {

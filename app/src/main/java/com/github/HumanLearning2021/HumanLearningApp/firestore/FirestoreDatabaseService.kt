@@ -12,6 +12,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
+import java.lang.IllegalArgumentException
 import java.util.*
 
 class FirestoreDatabaseService internal constructor(
@@ -197,6 +198,11 @@ class FirestoreDatabaseService internal constructor(
         putRepresentativePicture(url, category)
     }
 
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+        require(picture is FirestoreCategorizedPicture)
+        putRepresentativePicture(picture.url, picture.category)
+    }
+
     suspend fun putRepresentativePicture(url: String, category: Category) {
         require(category is FirestoreCategory)
         val categoryRef = categories.document(category.id)
@@ -305,6 +311,8 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
         require(category is FirestoreCategory)
+        if (!categories.document(category.id).get().await().exists())
+            throw IllegalArgumentException("The category ${category.id} is not contained in the database")
         val query = pictures.whereEqualTo("category", db.document(category.path)).limit(1)
         val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
         return pic?.toPublic()
