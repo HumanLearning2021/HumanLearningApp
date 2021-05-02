@@ -99,7 +99,9 @@
         tools:layout="@layout/fragment_categories_editing">
         <action
             android:id="@+id/action_categoriesEditingFragment_to_displayDatasetFragment"
-            app:destination="@id/displayDatasetFragment"></action>
+            app:destination="@id/displayDatasetFragment"
+            app:popUpTo="@id/datasetsOverviewFragment"
+            app:popUpToInclusive="false"></action>
         <argument
             android:name="datasetId"
             android:defaultValue="@null"
@@ -203,7 +205,7 @@
         <action
             android:id="@+id/action_addPictureFragment_to_displayDatasetFragment"
             app:destination="@id/displayDatasetFragment"
-            app:popUpTo="@+id/addPictureFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpTo="@+id/datasetsOverviewFragment"
+            app:popUpToInclusive="false"/>
     </fragment>
 </navigation>

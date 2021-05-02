@@ -41,7 +41,7 @@ class AddPictureFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         datasetId = args.datasetId
-        val givenCategories = args.categories.toList() as ArrayList
+        val givenCategories = args.categories.toList()
         categories = categories.plus(givenCategories)
 
         if (args.chosenCategory != null && args.pictureUri != null) {

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -46,20 +47,19 @@ class SelectPictureFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         datasetId = args.datasetId
-        categories = categories.plus(args.categories.toList() as ArrayList)
+        categories = categories.plus(args.categories.toList())
 
         binding.choosePictureButton.setOnClickListener {
             launchOpenPicture()
         }
-        binding.choosePictureButton.setOnClickListener {
-            launchOpenPicture()
-        }
+
         binding.selectCategoryButton2.setOnClickListener {
             onSelectCategoryButton()
         }
 
         binding.saveButton3.setOnClickListener {
-            val action = SelectPictureFragmentDirections.actionSelectPictureFragmentToAddPictureFragment(args.categories, datasetId, selectedCategory!!, selectedPicture!!)
+            val action = SelectPictureFragmentDirections.actionSelectPictureFragmentToAddPictureFragment(categories.toTypedArray(), datasetId, selectedCategory!!, selectedPicture!!)
+            findNavController().navigate(action)
         }
     }
 

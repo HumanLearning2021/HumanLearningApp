@@ -73,7 +73,7 @@ class TakePictureFragment : Fragment() {
         parentActivity = requireActivity()
 
         datasetId = args.datasetId
-        val givenCategories = args.categories.toList() as ArrayList
+        val givenCategories = args.categories.toList()
         categories = categories.plus(givenCategories)
 
         _binding = FragmentTakePictureBinding.inflate(inflater, container, false)
