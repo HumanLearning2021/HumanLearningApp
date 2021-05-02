@@ -7,6 +7,7 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import javax.inject.Inject
 
@@ -48,9 +49,9 @@ class LearningPresenter @Inject constructor(
      * The returned category is guaranteed to be different from the previousCategory
      * The list of picture ids is guaranteed to ben non-empty
      */
-    private suspend fun getRndCategoryWithPictureIds(): Pair<Category, List<Any>> {
+    private suspend fun getRndCategoryWithPictureIds(): Pair<Category, List<Id>> {
         var rndCat: Category?
-        var catPicsIds: List<Any>
+        var catPicsIds: List<Id>
         do {
             rndCat = dataset.categories.random()
             catPicsIds = dbMgt.getPictureIds(rndCat)

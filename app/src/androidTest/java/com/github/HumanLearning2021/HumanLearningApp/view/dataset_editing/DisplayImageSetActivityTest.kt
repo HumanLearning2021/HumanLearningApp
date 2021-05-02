@@ -96,7 +96,7 @@ class DisplayImageSetActivityTest {
                     tmp.delete()
                 }
             }
-            datasetId = dataset.id as String
+            datasetId = dataset.id
             categories = dataset.categories
             dsPictures = dbManagement.getAllPictures(categories.elementAt(index))
         }

@@ -13,7 +13,7 @@ import java.lang.IllegalArgumentException
  * A picture part of the dummy data set.
  */
 @Parcelize
-data class DummyCategorizedPicture(override val id: String, override val category: Category, val picture: Uri
+data class DummyCategorizedPicture(override val id: Id, override val category: Category, val picture: Uri
 ) : CategorizedPicture {
 
     override fun displayOn(activity: Activity, imageView: ImageView) {

@@ -20,12 +20,11 @@ data class DummyDatabaseManagement internal constructor(
         return databaseService.getPicture(category)
     }
 
-    override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
-        require(pictureId is String)
+    override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
         return databaseService.getPicture(pictureId)
     }
 
-    override suspend fun getPictureIds(category: Category): List<Any> {
+    override suspend fun getPictureIds(category: Category): List<Id> {
         require(category is DummyCategory)
         return try {
             databaseService.getPictureIds(category)
@@ -34,8 +33,7 @@ data class DummyDatabaseManagement internal constructor(
         }
     }
 
-    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
-        require(categoryId is String)
+    override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? {
         return databaseService.getRepresentativePicture(categoryId)
     }
 
@@ -48,8 +46,7 @@ data class DummyDatabaseManagement internal constructor(
         }
     }
 
-    override suspend fun getCategoryById(categoryId: Any): Category? {
-        require(categoryId is String)
+    override suspend fun getCategoryById(categoryId: Id): Category? {
         return databaseService.getCategory(categoryId)
     }
 
@@ -103,7 +100,7 @@ data class DummyDatabaseManagement internal constructor(
         return databaseService.putDataset(name, categories)
     }
 
-    override suspend fun getDatasetById(id: Any): Dataset? {
+    override suspend fun getDatasetById(id: Id): Dataset? {
         return databaseService.getDataset(id)
     }
 
@@ -118,8 +115,7 @@ data class DummyDatabaseManagement internal constructor(
         return ImmutableSet.copyOf(res)
     }
 
-    override suspend fun deleteDataset(id: Any) {
-        require(id is String)
+    override suspend fun deleteDataset(id: Id) {
         try {
             databaseService.deleteDataset(id)
         } catch (e: IllegalArgumentException) {
@@ -161,11 +157,11 @@ data class DummyDatabaseManagement internal constructor(
         return res
     }
 
-    override suspend fun getDatasetIds(): Set<Any> {
+    override suspend fun getDatasetIds(): Set<Id> {
         val datasets = databaseService.getDatasets()
         val res: ArrayList<String> = arrayListOf()
         for (d in datasets) {
-            res.add(d.id as String)
+            res.add(d.id)
         }
         return ImmutableSet.copyOf(res)
     }
