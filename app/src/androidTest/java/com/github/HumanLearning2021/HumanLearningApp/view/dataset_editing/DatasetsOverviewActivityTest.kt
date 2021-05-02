@@ -98,7 +98,7 @@ class DatasetsOverviewActivityTest {
     }
 
     @Test
-    fun onBackPressedWorks() {
+    fun backButtonWorks(){
         Espresso.pressBack()
         verify(navController).popBackStack()
     }

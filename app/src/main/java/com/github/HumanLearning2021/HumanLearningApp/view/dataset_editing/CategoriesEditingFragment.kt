@@ -104,6 +104,9 @@ class CategoriesEditingFragment : Fragment() {
 
     }
 
+    /*
+    Remove button not yet linked to fragment
+
     fun removeView(view: View) {
         val categoryName: EditText =
             (view.parent as View).findViewById(R.id.data_creation_category_name)
@@ -120,6 +123,8 @@ class CategoriesEditingFragment : Fragment() {
             binding.parentLinearLayout.removeView(view.parent as View)
         }
     }
+
+     */
 
     private fun saveData() {
         lifecycleScope.launch {

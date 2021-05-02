@@ -102,6 +102,12 @@ class DisplayDatasetActivityTest {
     }
 
     @Test
+    fun backButtonWorks(){
+        Espresso.pressBack()
+        verify(navController).popBackStack()
+    }
+
+    @Test
     fun modifyingDatasetNameWorks() {
         val newName = "new dataset name"
         runBlocking {

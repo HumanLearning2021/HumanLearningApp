@@ -7,6 +7,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -130,6 +131,12 @@ class CategoriesEditingFragmentTest{
             val updatedDataset = dbMgt.getDatasetById(dataset.id as String)!!
             assert(nbCategories + 1 == updatedDataset.categories.size)
         }
+    }
+
+    @Test
+    fun backButtonWorks(){
+        Espresso.pressBack()
+        verify(navController).popBackStack()
     }
 
     private fun launchFragment(){

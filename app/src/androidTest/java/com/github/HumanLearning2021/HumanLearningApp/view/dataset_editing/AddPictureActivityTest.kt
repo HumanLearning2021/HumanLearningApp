@@ -106,6 +106,12 @@ class AddPictureActivityTest {
         verify(navController).navigate(AddPictureFragmentDirections.actionAddPictureFragmentToDisplayDatasetFragment(datasetId, category, pictureUri))
     }
 
+    @Test
+    fun backButtonWorks(){
+        Espresso.pressBack()
+        verify(navController).popBackStack()
+    }
+
 
 
 

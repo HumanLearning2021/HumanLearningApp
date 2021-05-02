@@ -111,21 +111,12 @@ class DisplayDatasetFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.display_dataset_menu_modify_categories -> {
-                val action =
-                    DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToCategoriesEditingFragment(
-                        datasetId
-                    )
-                findNavController().navigate(action)
+                findNavController().navigate(DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToCategoriesEditingFragment(datasetId))
                 true
             }
             //Clicked on Add new Picture button
             else -> {
-                val action =
-                    DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(
-                        categories.toTypedArray(),
-                        datasetId
-                    )
-                findNavController().navigate(action)
+                findNavController().navigate(DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(categories.toTypedArray(), datasetId))
                 true
             }
         }

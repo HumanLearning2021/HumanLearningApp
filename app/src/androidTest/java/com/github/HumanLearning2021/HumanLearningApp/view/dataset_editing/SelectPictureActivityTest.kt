@@ -10,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
@@ -106,6 +107,12 @@ class SelectPictureActivityTest {
         onView(withId(R.id.choosePictureButton)).perform(click())
         onView(withId(R.id.saveButton3)).perform(click())
         verify(navController).navigate(SelectPictureFragmentDirections.actionSelectPictureFragmentToAddPictureFragment(catSet.toTypedArray(), datasetId, catSet.first(), imageUri))
+    }
+
+    @Test
+    fun backButtonWorks(){
+        Espresso.pressBack()
+        verify(navController).popBackStack()
     }
 
 
