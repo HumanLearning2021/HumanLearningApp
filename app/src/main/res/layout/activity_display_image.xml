@@ -8,32 +8,81 @@
 
     <ImageView
         android:id="@+id/display_image_viewImage"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/imagetobedisplayed" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/imagetobedisplayed"
+        app:layout_constraintBottom_toTopOf="@id/display_image_guideline4"
+        app:layout_constraintEnd_toStartOf="@id/display_image_guideline3"
+        app:layout_constraintStart_toEndOf="@id/display_image_guideline2"
+        app:layout_constraintTop_toBottomOf="@id/display_image_guideline1" />
 
     <TextView
         android:id="@+id/display_image_viewCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="34sp"
+        android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/display_image_guideline3"
+        app:layout_constraintStart_toEndOf="@id/display_image_guideline2"
+        app:layout_constraintTop_toBottomOf="@id/display_image_set_representative_picture" />
+
+    <Button
+        android:id="@+id/display_image_set_representative_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/display_image_guideline4"
+        app:layout_constraintBottom_toTopOf="@id/display_image_viewCategory"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/display_image_viewImage" />
+        android:text="@string/setAsRepresentativePicture" />
 
     <ImageButton
         android:id="@+id/display_image_delete_button"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="#BF1D1D"
+        android:contentDescription="@string/buttontoremovepicturefromdataset"
+        android:layout_margin="5dp"
+        app:layout_constraintBottom_toTopOf="@id/display_image_guideline1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/display_image_button_guideline"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_delete"
-        android:contentDescription="@string/buttontoremovepicturefromdataset" />
+        app:srcCompat="@android:drawable/ic_menu_delete" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/display_image_guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/display_image_guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/display_image_guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/display_image_guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.80" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/display_image_button_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

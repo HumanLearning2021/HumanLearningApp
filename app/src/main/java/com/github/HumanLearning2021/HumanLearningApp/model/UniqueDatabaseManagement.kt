@@ -8,13 +8,14 @@ import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabase
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.*
 import com.github.HumanLearning2021.HumanLearningApp.room.*
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 /**
  * @param context: the application context
  */
-class UniqueDatabaseManagement constructor(val context: Context, private val room: RoomOfflineDatabase) {
+class UniqueDatabaseManagement constructor(val context: Context, private val room: RoomOfflineDatabase, private val firestore: FirebaseFirestore) {
 
     private val databaseDao = room.databaseDao()
     private val datasetDao = room.datasetDao()
@@ -35,17 +36,17 @@ class UniqueDatabaseManagement constructor(val context: Context, private val roo
         return if (downloadedDatabases.contains(databaseName)) {
             OfflineDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
         } else {
-            CachedFirestoreDatabaseManagement(databaseName)
+            CachedFirestoreDatabaseManagement(databaseName, firestore)
         }
     }
 
     fun accessCloudDatabase(databaseName: String): CachedFirestoreDatabaseManagement {
-        return CachedFirestoreDatabaseManagement(databaseName)
+        return CachedFirestoreDatabaseManagement(databaseName, firestore)
     }
 
     suspend fun downloadDatabase(databaseName: String): OfflineDatabaseManagement {
         val firestoreDbManagement =
-            FirestoreDatabaseManagement(FirestoreDatabaseService(databaseName))
+            FirestoreDatabaseManagement(FirestoreDatabaseService(databaseName, firestore))
         val pictureRepository = PictureRepository(databaseName, context)
 
         val datasets = firestoreDbManagement.getDatasets()

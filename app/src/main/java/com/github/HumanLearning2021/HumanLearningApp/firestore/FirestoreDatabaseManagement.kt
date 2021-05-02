@@ -18,8 +18,7 @@ open class FirestoreDatabaseManagement internal constructor(
         }
     }
 
-    override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
-        require(pictureId is String)
+    override suspend fun getPicture(pictureId: Id): FirestoreCategorizedPicture? {
         return databaseService.getPicture(pictureId)
     }
 
@@ -32,8 +31,7 @@ open class FirestoreDatabaseManagement internal constructor(
         }
     }
 
-    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
-        require(categoryId is String)
+    override suspend fun getRepresentativePicture(categoryId: Id): FirestoreCategorizedPicture? {
         return databaseService.getRepresentativePicture(categoryId)
     }
 
@@ -46,8 +44,7 @@ open class FirestoreDatabaseManagement internal constructor(
         }
     }
 
-    override suspend fun getCategoryById(categoryId: Any): FirestoreCategory? {
-        require(categoryId is String)
+    override suspend fun getCategoryById(categoryId: Id): FirestoreCategory? {
         return databaseService.getCategory(categoryId)
     }
 
@@ -101,8 +98,7 @@ open class FirestoreDatabaseManagement internal constructor(
         return databaseService.putDataset(name, categories)
     }
 
-    override suspend fun getDatasetById(id: Any): Dataset? {
-        require(id is String)
+    override suspend fun getDatasetById(id: Id): Dataset? {
         return databaseService.getDataset(id)
     }
 
@@ -117,8 +113,7 @@ open class FirestoreDatabaseManagement internal constructor(
         return res.toSet()
     }
 
-    override suspend fun deleteDataset(id: Any) {
-        require(id is String)
+    override suspend fun deleteDataset(id: Id) {
         try {
             databaseService.deleteDataset(id)
         } catch (e: IllegalArgumentException) {
@@ -148,7 +143,7 @@ open class FirestoreDatabaseManagement internal constructor(
         return res.toSet()
     }
 
-    override suspend fun getDatasetIds(): Set<Any> {
+    override suspend fun getDatasetIds(): Set<Id> {
         val datasets = databaseService.getDatasets()
         val res: MutableSet<String> = mutableSetOf()
         for (d in datasets) {

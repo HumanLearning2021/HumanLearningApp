@@ -28,7 +28,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
     private lateinit var dataset: Dataset
 
     private val addPictureContractRegistration =
-        registerForActivityResult(AddPictureActivity.AddPictureContract) { resultPair ->
+        registerForActivityResult(AddPictureActivity.Contract) { resultPair ->
             if (resultPair == null) {
                 Toast.makeText(
                     this,
@@ -57,10 +57,14 @@ class DisplayDatasetActivity : AppCompatActivity() {
             findViewById<EditText>(R.id.display_dataset_name).setText(dataset.name)
             categories = dataset.categories
             for (cat in categories) {
-                var pictures = dbManagement.getAllPictures(cat)
+                val pictures = dbManagement.getAllPictures(cat)
                 if (pictures.isNotEmpty()) {
-                    representativePictures =
-                        representativePictures.plus(dbManagement.getPicture(cat)!!)
+                    val reprPicture = dbManagement.getRepresentativePicture(cat.id)
+                    representativePictures = if (reprPicture == null) {
+                        representativePictures.plus(dbManagement.getPicture(pictures.first().id)!!)
+                    } else {
+                        representativePictures.plus(reprPicture)
+                    }
                 }
             }
 
@@ -84,7 +88,8 @@ class DisplayDatasetActivity : AppCompatActivity() {
         val categoriesArray = ArrayList<Category>(categories)
         return when (item.itemId) {
             R.id.display_dataset_menu_modify_categories -> {
-                val intent = Intent(this@DisplayDatasetActivity, CategoriesEditingActivity::class.java)
+                val intent =
+                    Intent(this@DisplayDatasetActivity, CategoriesEditingActivity::class.java)
                 intent.putExtra("dataset_id", datasetId)
                 startActivity(intent)
                 true
@@ -97,7 +102,7 @@ class DisplayDatasetActivity : AppCompatActivity() {
         }
     }
 
-    class DisplayDatasetAdapter(
+    private class DisplayDatasetAdapter(
         private val images: Set<CategorizedPicture>,
         private val context: Activity
     ) : BaseAdapter() {
@@ -107,7 +112,11 @@ class DisplayDatasetActivity : AppCompatActivity() {
 
         override fun getView(position: Int, view0: View?, viewGroup: ViewGroup?): View {
             val view =
-                view0 ?: layoutInflater.inflate(R.layout.image_and_category_item, viewGroup!!, false)
+                view0 ?: layoutInflater.inflate(
+                    R.layout.image_and_category_item,
+                    viewGroup!!,
+                    false
+                )
 
             val imageCat = view.findViewById<TextView>(R.id.image_and_category_item_imageCategory)
             val imageView = view.findViewById<ImageView>(R.id.image_and_category_item_imageView)
@@ -165,5 +174,9 @@ class DisplayDatasetActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    override fun onBackPressed() {
+        startActivity(Intent(this, DatasetsOverviewActivity::class.java))
     }
 }

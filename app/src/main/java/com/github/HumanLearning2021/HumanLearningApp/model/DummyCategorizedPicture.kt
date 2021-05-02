@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import java.lang.IllegalArgumentException
@@ -12,13 +13,10 @@ import java.lang.IllegalArgumentException
  * A picture part of the dummy data set.
  */
 @Parcelize
-data class DummyCategorizedPicture(override val id: String, override val category: Category, val picture: Uri
+data class DummyCategorizedPicture(override val id: Id, override val category: Category, val picture: Uri
 ) : CategorizedPicture {
 
     override fun displayOn(activity: Activity, imageView: ImageView) {
-        val inputStream = activity.contentResolver.openInputStream(picture)
-        val drawable = Drawable.createFromStream(inputStream, picture.toString())
-        imageView.setImageDrawable(drawable)
-        imageView.setTag(drawable)
+        Glide.with(activity).load(picture).into(imageView)
     }
 }

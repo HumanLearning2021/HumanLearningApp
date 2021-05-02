@@ -1,10 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.net.Uri
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 
@@ -21,7 +18,7 @@ class OfflineDatabaseManagement (
         }
     }
 
-    override suspend fun getPicture(pictureId: Any): CategorizedPicture? {
+    override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
         require(pictureId is String)
         return databaseService.getPicture(pictureId)
     }
@@ -35,7 +32,7 @@ class OfflineDatabaseManagement (
         }
     }
 
-    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
+    override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? {
         require(categoryId is String)
         return databaseService.getRepresentativePicture(categoryId)
     }
@@ -49,7 +46,7 @@ class OfflineDatabaseManagement (
         }
     }
 
-    override suspend fun getCategoryById(categoryId: Any): Category? {
+    override suspend fun getCategoryById(categoryId: Id): Category? {
         require(categoryId is String)
         return databaseService.getCategory(categoryId)
     }
@@ -104,7 +101,7 @@ class OfflineDatabaseManagement (
         return databaseService.putDataset(name, categories)
     }
 
-    override suspend fun getDatasetById(id: Any): Dataset? {
+    override suspend fun getDatasetById(id: Id): Dataset? {
         require(id is String)
         return databaseService.getDataset(id)
     }
@@ -120,7 +117,7 @@ class OfflineDatabaseManagement (
         return res.toSet()
     }
 
-    override suspend fun deleteDataset(id: Any) {
+    override suspend fun deleteDataset(id: Id) {
         require(id is String)
         try {
             databaseService.deleteDataset(id)
@@ -151,7 +148,7 @@ class OfflineDatabaseManagement (
         return res.toSet()
     }
 
-    override suspend fun getDatasetIds(): Set<Any> {
+    override suspend fun getDatasetIds(): Set<Id> {
         val datasets = databaseService.getDatasets()
         val res: MutableSet<String> = mutableSetOf()
         for (d in datasets) {

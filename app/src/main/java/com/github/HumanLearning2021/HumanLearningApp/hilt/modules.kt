@@ -10,6 +10,11 @@ import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseMana
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,19 +69,53 @@ object RoomDatabaseModule {
     ).build()
 }
 
-@Module
-@InstallIn(SingletonComponent::class)
-object FirebaseAuthUIModule {
-    @Provides
-    fun provideAuthUI(app: FirebaseApp) = AuthUI.getInstance(app)
-}
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class EmulatedFirestore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ProductionFirestore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ProductionFirebaseApp
 
 @Module
 @InstallIn(SingletonComponent::class)
 object FirebaseAppModule {
     @Provides
-    fun provideApp() = FirebaseApp.getInstance()
+    @ProductionFirebaseApp
+    fun provideApp(): FirebaseApp = FirebaseApp.getInstance()
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+object FirebaseAuthUIModule {
+    @Provides
+    fun provideAuthUI(@ProductionFirebaseApp app: FirebaseApp) = AuthUI.getInstance(app)
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object EmulationModule {
+    @Provides
+    @ProductionFirestore
+    fun provideNotEmulated(@ProductionFirebaseApp app: FirebaseApp): FirebaseFirestore = Firebase.firestore(app)
+
+    @Provides
+    @EmulatedFirestore
+    @Singleton
+    fun provideEmulated(): FirebaseFirestore {
+        FirebaseFirestore.getInstance().terminate() //TODO("Find out why it is initialized before this instead of just terminating it before restarting")
+        val db = FirebaseFirestore.getInstance()
+        db.useEmulator("10.0.2.2", 8080)
+        val settings = FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build()
+        db.firestoreSettings = settings
+        return db
+    }
+}
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -85,21 +124,6 @@ object DatabaseServiceModule {
     @Provides
     @Singleton  // allows dummy data to persist across activities
     fun provideDummyService(): DatabaseService = DummyDatabaseService()
-
-    @DemoDatabase
-    @Provides
-    fun provideDemoService(app: FirebaseApp): DatabaseService =
-        FirestoreDatabaseService("demo", app)
-
-    @Demo2Database
-    @Provides
-    fun provideDemo2Service(app: FirebaseApp): DatabaseService =
-        FirestoreDatabaseService("demo2", app)
-
-    @ScratchDatabase
-    @Provides
-    fun provideScratchService(app: FirebaseApp): DatabaseService =
-        FirestoreDatabaseService("scratch", app)
 
     @OfflineDemoDatabase
     @Provides
@@ -114,12 +138,20 @@ object DatabaseServiceModule {
     fun provideOfflineScratchService(@ApplicationContext context: Context, @GlobalDatabaseManagement uDb: UniqueDatabaseManagement): DatabaseService =
         runBlocking {
             uDb.downloadDatabase("offlineScratch")
-            OfflineDatabaseService(
-                "offlineScratch",
-                context,
-                RoomDatabaseModule.provideRoomDatabase(context)
-            )
+            OfflineDatabaseService("offlineScratch", context, RoomDatabaseModule.provideRoomDatabase(context))
         }
+
+    @DemoDatabase
+    @Provides
+    fun provideDemoService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("demo", firestore)
+
+    @Demo2Database
+    @Provides
+    fun provideDemo2Service( @ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("demo2", firestore)
+
+    @ScratchDatabase
+    @Provides
+    fun provideScratchService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("scratch", firestore)
 }
 
 @Module

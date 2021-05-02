@@ -6,10 +6,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentId
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
@@ -22,16 +19,15 @@ class FirestoreDatabaseService internal constructor(
      * name of a database within the Firebase App
      */
     dbName: String,
-    app: FirebaseApp? = null
+    firestore: FirebaseFirestore
 ) : DatabaseService {
-    private val app = app ?: Firebase.app
-    private val db = Firebase.firestore(this.app)
+    private val db = firestore
     private val categories = db.collection("/databases/$dbName/categories")
     private val pictures = db.collection("/databases/$dbName/pictures")
     private val datasets = db.collection("/databases/$dbName/datasets")
     private val representativePictures = db.collection("/databases/$dbName/representativePictures")
     private val users = db.collection("/databases/$dbName/users")
-    private val storage = Firebase.storage(this.app)
+    private val storage = Firebase.storage
     private val imagesDir = storage.reference.child("$dbName/images")
 
     companion object {
@@ -172,14 +168,13 @@ class FirestoreDatabaseService internal constructor(
         return documentRef.get().await().toObject(DatasetSchema::class.java)!!.toPublic()
     }
 
-    override suspend fun getDataset(id: Any): FirestoreDataset? {
-        require(id is String)
+    override suspend fun getDataset(id: Id): FirestoreDataset? {
         val ds = datasets.document(id).get().await().toObject(DatasetSchema::class.java)
         return ds?.toPublic()
     }
 
-    override suspend fun deleteDataset(id: Any) {
-        if (!datasets.document(id as String).get().await().exists()) {
+    override suspend fun deleteDataset(id: Id) {
+        if (!datasets.document(id).get().await().exists()) {
             throw java.lang.IllegalArgumentException("Dataset with id $id is not contained in the databse")
         }
         try {
@@ -306,8 +301,7 @@ class FirestoreDatabaseService internal constructor(
         return pic?.toPublic()
     }
 
-    override suspend fun getPicture(pictureId: Any): FirestoreCategorizedPicture? {
-        require(pictureId is String)
+    override suspend fun getPicture(pictureId: Id): FirestoreCategorizedPicture? {
         val pic = pictures.document(pictureId).get().await().toObject(PictureSchema::class.java)
         return pic?.toPublic()
     }
@@ -318,8 +312,7 @@ class FirestoreDatabaseService internal constructor(
         return query.get().await().map { r -> r.id }
     }
 
-    override suspend fun getRepresentativePicture(categoryId: Any): CategorizedPicture? {
-        require(categoryId is String)
+    override suspend fun getRepresentativePicture(categoryId: Id): FirestoreCategorizedPicture? {
         val query = representativePictures.whereEqualTo("category", categories.document(categoryId))
             .limit(1)
         val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
@@ -336,9 +329,8 @@ class FirestoreDatabaseService internal constructor(
         return documentRef.get().await().toObject(PictureSchema::class.java)!!.toPublic()
     }
 
-    override suspend fun getCategory(categoryId: Any): FirestoreCategory? {
-        require(categoryId is String)
-        val cat = categories.document(categoryId).get().await()
+    override suspend fun getCategory(id: Id): FirestoreCategory? {
+        val cat = categories.document(id).get().await()
             .toObject(CategorySchema::class.java)
         return cat?.toPublic()
     }

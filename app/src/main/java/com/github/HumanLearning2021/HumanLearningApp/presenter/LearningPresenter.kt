@@ -1,13 +1,15 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.app.Activity
+import android.util.Log
 import android.widget.ImageView
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import javax.inject.Inject
-
 
 class LearningPresenter @Inject constructor(
     @Demo2Database
@@ -15,10 +17,11 @@ class LearningPresenter @Inject constructor(
 ) {
     // may be set by the view
     var learningMode = LearningMode.PRESENTATION
+
     // must be set by the view
     lateinit var dataset: Dataset
 
-    private var previousCategory : Category? = null
+    private var previousCategory: Category? = null
 
     /**
      * Picks a random picture from the dataset, and displays it on the given view
@@ -32,7 +35,11 @@ class LearningPresenter @Inject constructor(
             LearningMode.PRESENTATION -> dbMgt.getRepresentativePicture(rndCat.id)
         }
 
-        nextPicture!!.displayOn(activity, view)
+        if(nextPicture != null){
+            nextPicture.displayOn(activity, view)
+        }else{
+            Log.e(this::class.java.name, "There is no next picture to display")
+        }
         view.contentDescription = rndCat.name
         view.invalidate()
     }
@@ -42,13 +49,15 @@ class LearningPresenter @Inject constructor(
      * The returned category is guaranteed to be different from the previousCategory
      * The list of picture ids is guaranteed to ben non-empty
      */
-    private suspend fun getRndCategoryWithPictureIds(): Pair<Category, List<Any>> {
+    private suspend fun getRndCategoryWithPictureIds(): Pair<Category, List<Id>> {
         var rndCat: Category?
-        var catPicsIds: List<Any>
+        var catPicsIds: List<Id>
         do {
             rndCat = dataset.categories.random()
             catPicsIds = dbMgt.getPictureIds(rndCat)
         } while (
+            // TODO(Niels) : risk of infinite loop if 2 categories in dataset or no category
+            //  with a picture. To fix
             previousCategory == rndCat || catPicsIds.isEmpty()
         )
         previousCategory = rndCat!!

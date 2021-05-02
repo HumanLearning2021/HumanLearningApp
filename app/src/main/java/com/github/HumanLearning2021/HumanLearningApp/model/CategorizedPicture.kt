@@ -9,7 +9,7 @@ import android.widget.ImageView
  */
 
 interface CategorizedPicture : Parcelable {
-    val id: Any
+    val id: Id
     val category: Category
 
     /**

@@ -9,8 +9,8 @@
     <string name="AddPicture_permissionNeededDialogTitle">Camera required</string>
     <string name="AddPicture_permissionNeededDialogMessage">To use this functionality, access to the camera is required. Either you have denied the app the permission to use it or your device has no camera.</string>
     <string name="DataCreationActivity_DataCreationTitle">Categories List</string>
-    <string name="DataCreationActivity_DataCreationSubmitButton">Submit</string>
-    <string name="DataCreationActivity_DataCreationAddButton">Add</string>
+    <string name="DataCreationActivity_DataCreationSubmitButton">Save changes</string>
+    <string name="DataCreationActivity_DataCreationAddButton">Add new category</string>
     <string name="DataCreationActivity_DataCreationCat">Enter Category</string>
     <string name="AddPicture_errorWhileTakingPictureDialogTitle">Error</string>
     <string name="AddPicture_errorWhileTakingPictureDialogMessage">An error occurred while taking the picture, please try again.</string>
@@ -29,6 +29,7 @@
     <string name="LearningDatasetSelection_title">Select the dataset on which to learn</string>
 
     <string name="main_btLearning">LEARNING</string>
+    <string name="main_btDatasetsOverview">DATASETS OVERVIEW</string>
     <string name="main_btDisplayDataset">DISPLAY DATASET</string>
     <string name="main_btAddImage">ADD IMAGE TO THE DATASET</string>
 
@@ -39,11 +40,17 @@
     <string name="buttontoremovepicturefromdataset">button to remove picture from dataset</string>
     <string name="picturehasbeenremoved">This Picture has been removed from this dataset.</string>
     <string name="DataOverview_CreateButton">Create dataset</string>
-    <string name="DataOverview_Ttile">DataSet Overview</string>
+    <string name="DatasetsOverview_Title">Datasets Overview</string>
+    <string name="setAsRepresentativePicture">Set as representative picture</string>
 
     <string name="SignInFragment_loginStatusSuccessMessage">Welcome %1$s</string>
     <string name="SignInFragment_loginStatusDefaultMessage">Not logged in</string>
 
     <string name="DatasetList_default_ds_name">Dataset name</string>
     <string name="DatasetList_im_content_description">Category representative of the dataset</string>
+    <string name="button_to_delete_a_category">Button to delete a category</string>
+
+    <string name="select_existing_picture">Select Existing Picture</string>
+    <string name="use_camera">Use camera</string>
+    <string name="choose_picture">Choose Picture</string>
 </resources>

@@ -13,6 +13,7 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,6 +32,7 @@ class CategoriesEditingActivity : AppCompatActivity() {
     private lateinit var datasetId: String
     private lateinit var dataset: Dataset
     private lateinit var removedCategory: Category
+    private var new = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +41,9 @@ class CategoriesEditingActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val extras = intent.extras
-            if (extras != null) {
-                datasetId = extras["dataset_id"] as String
+            new = extras == null
+            if (!new) {
+                datasetId = extras!!["dataset_id"] as Id
                 dataset = dBManagement.getDatasetById(datasetId)!!
                 dsCategories = dataset.categories
                 val count = dsCategories.size
@@ -55,9 +58,9 @@ class CategoriesEditingActivity : AppCompatActivity() {
                         TextView.BufferType.EDITABLE
                     )
                 }
-
-                setButtonsListener()
             }
+
+            setButtonsListener()
         }
 
 
@@ -77,12 +80,12 @@ class CategoriesEditingActivity : AppCompatActivity() {
         lifecycleScope.launch {
             for (i in dsCategories.indices) {
                 if (dsCategories.elementAt(i).name == categoryName.text.toString()) {
+                    binding.parentLinearLayout.removeView(view.parent as View)
                     removedCategory = dsCategories.elementAt(i)
+                    dsCategories = dsCategories.minus(removedCategory)
+                    dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
+                    break
                 }
-            }
-            if (dsCategories.isNotEmpty() && dsCategories.contains(removedCategory)) {
-                dsCategories = dsCategories.minus(removedCategory)
-                dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
             }
             binding.parentLinearLayout.removeView(view.parent as View)
         }
@@ -98,13 +101,16 @@ class CategoriesEditingActivity : AppCompatActivity() {
                 v = binding.parentLinearLayout.getChildAt(i)
                 val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
                 val cat = dBManagement.putCategory(categoryName.text.toString())
-                //TODO: Put the generic representative picture
                 newCategories = newCategories.plus(cat)
-
             }
 
-            for (cat in newCategories) {
-                dataset = dBManagement.addCategoryToDataset(dataset, cat)
+            if(!new) {
+                for (cat in newCategories) {
+                    dataset = dBManagement.addCategoryToDataset(dataset, cat)
+                }
+            } else {
+                dataset = dBManagement.putDataset("New Dataset", newCategories)
+                datasetId = dataset.id
             }
 
             val intent = Intent(this@CategoriesEditingActivity, DisplayDatasetActivity::class.java)
@@ -128,4 +134,3 @@ class CategoriesEditingActivity : AppCompatActivity() {
         }
     }
 }
-
