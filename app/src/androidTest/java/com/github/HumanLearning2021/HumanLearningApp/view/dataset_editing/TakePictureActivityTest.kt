@@ -59,6 +59,8 @@ class TakePictureActivityTest {
         DummyCategory("cat3", "cat3"),
     )
 
+    val catSetArray = catSet.toTypedArray()
+
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
     private fun grantCameraPermission() {
@@ -104,12 +106,10 @@ class TakePictureActivityTest {
         onView(withText("cat3")).check(matches(isDisplayed()))
     }
 
-    /*
-
-    Don't know how to translate this into fragment world yet
 
 
     @Test
+    @Ignore // haven't found a way without FragmentScenario, which doesn't seem to be possible with Hilt
     fun correctIntentIsSentOnSave() {
         grantCameraPermission()
         onView(withId(R.id.selectCategoryButton)).perform(click())
@@ -124,20 +124,19 @@ class TakePictureActivityTest {
         )
         onView(withId(R.id.saveButton)).perform(click())
         val imageUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
-        onView(withId(R.id.selectCategoryButton2)).perform(click())
+            Uri.parse("file:///data/user/0/com.github.HumanLearning2021.HumanLearningApp/files")
+        onView(withId(R.id.selectCategoryButton)).perform(click())
         onView(withText("cat1")).perform(click())
         Mockito.verify(navController).navigate(
             TakePictureFragmentDirections.actionTakePictureFragmentToAddPictureFragment(
-                catSet.toTypedArray(),
+                catSetArray,
                 datasetId,
-                catSet.toTypedArray()[0],
+                catSetArray[0],
                 imageUri
             )
         )
     }
 
-     */
 
 
     @Test
@@ -217,9 +216,7 @@ class TakePictureActivityTest {
     }
 
     /*
-
-    Don't know how to transport this into fragment world
-
+    Don't know how to test this without FragmentScenario
     @Test
     fun receiveIntentFromCamera() {
         val imageUri =
@@ -239,6 +236,7 @@ class TakePictureActivityTest {
         MatcherAssert.assertThat(result.resultCode, Matchers.equalTo(Activity.RESULT_OK))
         MatcherAssert.assertThat(result.resultData, IntentMatchers.hasExtraWithKey("result"))
     }
+
 
 
     @Test
@@ -268,11 +266,12 @@ class TakePictureActivityTest {
         }
         onView(withText("Error")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
     }
-
      */
 
+
+
     private fun launchFragment() {
-        val args = bundleOf("categories" to catSet.toTypedArray(), "datasetId" to datasetId)
+        val args = bundleOf("categories" to catSetArray, "datasetId" to datasetId)
         launchFragmentInHiltContainer<TakePictureFragment>(args) {
             Navigation.setViewNavController(requireView(), navController)
         }

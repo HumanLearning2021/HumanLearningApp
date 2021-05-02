@@ -33,11 +33,8 @@ import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
-import org.junit.After
+import org.junit.*
 import org.junit.Assume.assumeTrue
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
@@ -122,12 +119,11 @@ class DisplayDatasetActivityTest {
         }
     }
 
-    /*
-
-    I wasn't yet able to transpose this into fragment framework
-
     @Test
+    @Ignore // haven't found a way without FragmentScenario, which doesn't seem to be possible with Hilt
     fun clickOnMenuModifyCategoriesWorks() {
+        launchFragment()
+
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText("Modify categories")).perform(click())
 
@@ -135,6 +131,7 @@ class DisplayDatasetActivityTest {
     }
 
     @Test
+    @Ignore // haven't found a way without FragmentScenario, which doesn't seem to be possible with Hilt
     fun clickOnMenuAddNewPictureWorks() {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText(R.string.add_new_picture)).perform(click())
@@ -167,6 +164,7 @@ class DisplayDatasetActivityTest {
     }
 
     @Test
+    @Ignore // haven't found a way without FragmentScenario, which doesn't seem to be possible with Hilt
     fun clickOnMenuButNotOnButtonClosesMenu() {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         UiDevice.getInstance(getInstrumentation()).click(0, 100)
@@ -174,7 +172,7 @@ class DisplayDatasetActivityTest {
     }
 
 
-     */
+
 
 
     @Test

@@ -129,6 +129,7 @@ class DisplayImageSetFragment: Fragment() {
     private fun setPictureItemListener(){
         binding.displayImageSetImagesGridView.setOnItemClickListener{_, _, i, _ ->
             val action = DisplayImageSetFragmentDirections.actionDisplayImageSetFragmentToDisplayImageFragment(categorizedPicturesList.elementAt(i), datasetId)
+            findNavController().navigate(action)
         }
     }
 }

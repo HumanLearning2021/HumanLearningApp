@@ -39,10 +39,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.parcelize.Parcelize
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
@@ -94,41 +91,24 @@ class SelectPictureActivityTest {
     }
 
 
-    /*
-    Don't know how to translate this into fragment world yet
 
     @Test
-    fun receiveIntentFromChoose() {
-        val imageUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
-        Intents.intending(hasComponent(SelectPictureActivity::class.qualifiedName)).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                Intent().putExtra(
-                    "result",
-                    bundleOf("category" to DummyCategory("cat1", "cat1"), "image" to imageUri)
-                )
-            )
-        )
-        Espresso.onView(ViewMatchers.withId(R.id.select_existing_picture))
-            .perform(ViewActions.click())
-        val result = testRule.scenario.result
-        MatcherAssert.assertThat(result.resultCode, Matchers.equalTo(Activity.RESULT_OK))
-        MatcherAssert.assertThat(result.resultData, IntentMatchers.hasExtraWithKey("result"))
-    }
-
-    @Test
+    @Ignore // haven't found a way without FragmentScenario, which doesn't seem to be possible with Hilt
     fun correctNavigationOnSave() {
         val imageUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
-        runBlocking {
-            val knifeCat = dbManagement.getCategoryByName("knife").first()
-            onView(withId(R.id.selectCategoryButton2)).perform(click())
-            onView(withText("cat1")).perform(click())
-            verify(navController).navigate(SelectPictureFragmentDirections.actionSelectPictureFragmentToAddPictureFragment(catSet.toTypedArray(), datasetId, knifeCat, imageUri))
-        }
+        onView(withId(R.id.selectCategoryButton2)).perform(click())
+        onView(withText("cat1")).perform(click())
+        intending(hasAction(Intent.ACTION_OPEN_DOCUMENT)).respondWith(
+            Intent().run {
+                data = imageUri
+                Instrumentation.ActivityResult(SelectPictureFragment.RC_OPEN_PICTURE, this)
+            })
+        onView(withId(R.id.choosePictureButton)).perform(click())
+        onView(withId(R.id.saveButton3)).perform(click())
+        verify(navController).navigate(SelectPictureFragmentDirections.actionSelectPictureFragmentToAddPictureFragment(catSet.toTypedArray(), datasetId, catSet.first(), imageUri))
     }
 
-     */
+
 
     private fun launchFragment() {
         val args = bundleOf("categories" to catSet.toTypedArray(), "datasetId" to datasetId)

@@ -131,7 +131,7 @@ class DisplayImageSetActivityTest {
             .perform(click())
 
 
-        verify(navController).navigate(DisplayImageSetFragmentDirections.actionDisplayImageSetFragmentToDisplayImageFragment(dsPictures.elementAt(index), datasetId))
+        verify(navController).navigate(DisplayImageSetFragmentDirections.actionDisplayImageSetFragmentToDisplayImageFragment(dsPictures.elementAt(0), datasetId))
     }
 
     @Test
