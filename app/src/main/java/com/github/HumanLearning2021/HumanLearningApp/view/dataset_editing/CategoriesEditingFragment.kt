@@ -153,9 +153,7 @@ class CategoriesEditingFragment : Fragment() {
                 datasetId = dataset.id
             }
             val action =
-                CategoriesEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(
-                    datasetId!!, null, null
-                )
+                CategoriesEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(datasetId!!)
             findNavController().navigate(action)
         }
     }

@@ -99,9 +99,6 @@ class DisplayImageSetFragment: Fragment() {
 
     }
 
-    
-
-
 
     private class DisplayImageSetAdapter(
         private val images: Set<CategorizedPicture>,

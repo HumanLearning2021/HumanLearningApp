@@ -1,9 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -13,11 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.CameraSelector
@@ -25,24 +20,21 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentAddPictureBinding
-import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayDatasetBinding
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentTakePictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import java.io.File
-import java.util.*
 import java.util.concurrent.Executors
-import kotlin.collections.ArrayList
 
 class TakePictureFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
@@ -51,7 +43,7 @@ class TakePictureFragment : Fragment() {
 
     private var categories = setOf<Category>()
     private lateinit var imageCapture: ImageCapture
-    private lateinit var capturedImageUri: Uri
+    private lateinit var pictureUri: Uri
     private lateinit var chosenCategory: Category
     private lateinit var datasetId: Id // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesnt seem to work
     private var imageTaken: Boolean = false
@@ -59,7 +51,6 @@ class TakePictureFragment : Fragment() {
 
     private var _binding: FragmentTakePictureBinding? = null
     private val binding get() = _binding!!
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -120,8 +111,8 @@ class TakePictureFragment : Fragment() {
 
     @Suppress("UNUSED_PARAMETER")
     private fun onSave(view: View) {
-       val action = TakePictureFragmentDirections.actionTakePictureFragmentToAddPictureFragment(categories.toTypedArray(), datasetId, chosenCategory, capturedImageUri)
-        findNavController().navigate(action)
+        setFragmentResult(AddPictureFragment.REQUEST_KEY, bundleOf("chosenCategory" to chosenCategory, "pictureUri" to pictureUri))
+        findNavController().popBackStack()
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -143,7 +134,7 @@ class TakePictureFragment : Fragment() {
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     parentActivity.runOnUiThread {
-                        capturedImageUri = Uri.fromFile(file)
+                        pictureUri = Uri.fromFile(file)
                         imageTaken = true
                         setCaptureButton()
                         notifySaveButton()
@@ -276,7 +267,7 @@ class TakePictureFragment : Fragment() {
         binding.cameraPreviewView.isVisible = false
         val imageView = binding.cameraImageView
         imageView.isVisible = true
-        imageView.setImageDrawable(Drawable.createFromPath(capturedImageUri.path))
+        imageView.setImageDrawable(Drawable.createFromPath(pictureUri.path))
         button.setOnClickListener(this::resetCaptureButton)
     }
 

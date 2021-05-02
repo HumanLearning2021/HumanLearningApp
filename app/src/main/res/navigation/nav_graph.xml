@@ -81,16 +81,6 @@
         <action
             android:id="@+id/action_displayDatasetFragment_to_addPictureFragment"
             app:destination="@id/addPictureFragment" />
-        <argument
-            android:name="chosenCategory"
-            app:argType="com.github.HumanLearning2021.HumanLearningApp.model.Category"
-            app:nullable="true"
-            android:defaultValue="@null" />
-        <argument
-            android:name="pictureUri"
-            app:argType="android.net.Uri"
-            app:nullable="true"
-            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/categoriesEditingFragment"
@@ -156,9 +146,6 @@
         <argument
             android:name="datasetId"
             app:argType="string" />
-        <action
-            android:id="@+id/action_takePictureFragment_to_addPictureFragment"
-            app:destination="@id/addPictureFragment" />
     </fragment>
     <fragment
         android:id="@+id/selectPictureFragment"
@@ -171,9 +158,6 @@
         <argument
             android:name="datasetId"
             app:argType="string" />
-        <action
-            android:id="@+id/action_selectPictureFragment_to_addPictureFragment"
-            app:destination="@id/addPictureFragment" />
     </fragment>
     <fragment
         android:id="@+id/addPictureFragment"
@@ -192,20 +176,5 @@
         <argument
             android:name="datasetId"
             app:argType="string" />
-        <argument
-            android:name="chosenCategory"
-            app:argType="com.github.HumanLearning2021.HumanLearningApp.model.Category"
-            app:nullable="true"
-            android:defaultValue="@null" />
-        <argument
-            android:name="pictureUri"
-            app:argType="android.net.Uri"
-            app:nullable="true"
-            android:defaultValue="@null" />
-        <action
-            android:id="@+id/action_addPictureFragment_to_displayDatasetFragment"
-            app:destination="@id/displayDatasetFragment"
-            app:popUpTo="@+id/datasetsOverviewFragment"
-            app:popUpToInclusive="false"/>
     </fragment>
 </navigation>

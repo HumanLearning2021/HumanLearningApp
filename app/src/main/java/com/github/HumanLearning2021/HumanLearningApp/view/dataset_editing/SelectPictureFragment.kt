@@ -10,8 +10,10 @@ import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -60,9 +62,10 @@ class SelectPictureFragment : Fragment() {
         }
 
         binding.saveButton3.setOnClickListener {
-            val action = SelectPictureFragmentDirections.actionSelectPictureFragmentToAddPictureFragment(categories.toTypedArray(), datasetId, selectedCategory!!, selectedPicture!!)
-            findNavController().navigate(action)
+            setFragmentResult(AddPictureFragment.REQUEST_KEY, bundleOf("chosenCategory" to selectedCategory!!, "pictureUri" to selectedPicture!!))
+            findNavController().popBackStack()
         }
+
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 

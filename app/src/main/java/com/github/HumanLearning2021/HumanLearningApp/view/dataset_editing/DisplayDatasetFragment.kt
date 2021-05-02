@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -45,6 +46,22 @@ class DisplayDatasetFragment : Fragment() {
     private val binding get() = _binding!!
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setFragmentResultListener(REQUEST_KEY) { requestKey, bundle ->
+            val pictureUri = bundle.getParcelable<Uri>("pictureUri")
+            val chosenCategory = bundle.getParcelable<Category>("chosenCategory")
+            lifecycleScope.launch {
+                dbManagement.putPicture(pictureUri!!, chosenCategory!!)
+            }
+        }
+    }
+
+    companion object {
+        const val REQUEST_KEY = "DisplayDatasetFragmentRequestKey"
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -64,13 +81,6 @@ class DisplayDatasetFragment : Fragment() {
         var representativePictures = setOf<CategorizedPicture>()
 
         lifecycleScope.launch {
-                // Ugly hack: if these arguments aren't null, it means the previous fragment was addPicture
-                // and it saved a picture
-                if (args.chosenCategory != null && args.pictureUri != null){
-                    dbManagement.putPicture(args.pictureUri!!, args.chosenCategory!!)
-
-                }
-
                 dataset = dbManagement.getDatasetById(datasetId)!!
                 binding.displayDatasetName.setText(dataset.name)
                 categories = dataset.categories
@@ -109,6 +119,7 @@ class DisplayDatasetFragment : Fragment() {
             }
             //Clicked on Add new Picture button
             else -> {
+
                 findNavController().navigate(DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(categories.toTypedArray(), datasetId))
                 true
             }

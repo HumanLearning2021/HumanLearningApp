@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -27,6 +29,18 @@ class AddPictureFragment: Fragment() {
     private var _binding: FragmentAddPictureBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setFragmentResultListener(REQUEST_KEY) { requestKey, bundle ->
+            setFragmentResult(DisplayDatasetFragment.REQUEST_KEY, bundle)
+            findNavController().popBackStack()
+        }
+    }
+
+    companion object {
+        const val REQUEST_KEY = "AddPictureFragmentRequestKey"
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,10 +57,7 @@ class AddPictureFragment: Fragment() {
         val givenCategories = args.categories.toList()
         categories = categories.plus(givenCategories)
 
-        if (args.chosenCategory != null && args.pictureUri != null) {
-            val action = AddPictureFragmentDirections.actionAddPictureFragmentToDisplayDatasetFragment(datasetId, args.chosenCategory, args.pictureUri)
-            findNavController().navigate(action)
-        }
+
 
         binding.selectExistingPicture.setOnClickListener{
             val action = AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(args.categories, datasetId)
