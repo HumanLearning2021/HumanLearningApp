@@ -60,11 +60,6 @@ class TakePictureFragment : Fragment() {
     private var _binding: FragmentTakePictureBinding? = null
     private val binding get() = _binding!!
 
-    val callback = object : OnBackPressedCallback(true){
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,13 +75,9 @@ class TakePictureFragment : Fragment() {
         _binding = FragmentTakePictureBinding.inflate(inflater, container, false)
         return binding.root
     }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
 
         if (cameraIsAvailable()) {
             when {
@@ -106,7 +97,25 @@ class TakePictureFragment : Fragment() {
         } else {
             permissionNeededDialog()
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
+
     }
+
+    val callback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            findNavController().popBackStack()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callback.isEnabled = false
+        callback.remove()
+        _binding = null
+
+    }
+
 
 
     @Suppress("UNUSED_PARAMETER")

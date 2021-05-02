@@ -218,6 +218,7 @@ class TakePictureActivityTest {
 
     /*
     Don't know how to test this without FragmentScenario
+
     @Test
     fun receiveIntentFromCamera() {
         val imageUri =

@@ -50,20 +50,25 @@ class LearningSettingsFragment: Fragment() {
         binding.learningSettingsBtChoosePresentation.tooltipText = getString(R.string.learning_settings_tooltip_presentation)
         binding.learningSettingsBtChooseRepresentation.tooltipText = getString(R.string.learning_settings_tooltip_representation)
 
-        val callback = object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                findNavController().popBackStack()
-            }
-        }
-
         requireActivity().onBackPressedDispatcher.addCallback(callback)
 
     }
-    
+
+    val callback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            findNavController().popBackStack()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        callback.isEnabled = false
+        callback.remove()
         _binding = null
+
     }
+
+
 }
 
 enum class LearningMode {

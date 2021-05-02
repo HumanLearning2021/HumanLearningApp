@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -35,12 +36,9 @@ class AddPictureFragment: Fragment() {
         parentActivity = requireActivity()
         _binding = FragmentAddPictureBinding.inflate(inflater, container, false)
         return binding.root
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         datasetId = args.datasetId
         val givenCategories = args.categories.toList()
         categories = categories.plus(givenCategories)
@@ -60,5 +58,20 @@ class AddPictureFragment: Fragment() {
             findNavController().navigate(action)
         }
 
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
+
+    }
+
+    val callback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            findNavController().popBackStack()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callback.isEnabled = false
+        callback.remove()
+        _binding = null
     }
 }

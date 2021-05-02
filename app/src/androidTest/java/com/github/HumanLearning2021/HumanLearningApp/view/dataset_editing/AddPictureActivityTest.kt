@@ -112,9 +112,6 @@ class AddPictureActivityTest {
         verify(navController).popBackStack()
     }
 
-
-
-
     private fun launchFragment(args: Bundle) {
         launchFragmentInHiltContainer<AddPictureFragment>(args) {
             Navigation.setViewNavController(requireView(), navController)

@@ -47,17 +47,22 @@ class LearningDatasetSelectionFragment : Fragment() {
             }
         }
 
-        val callback = object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                findNavController().popBackStack()
-            }
-        }
-
         requireActivity().onBackPressedDispatcher.addCallback(callback)
+    }
+
+    val callback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            findNavController().popBackStack()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        callback.isEnabled = false
+        callback.remove()
         _binding = null
+
     }
+
+
 }

@@ -61,15 +61,17 @@ class DisplayDatasetFragment : Fragment() {
 
         datasetId = args.datasetId!!
 
-            lifecycleScope.launch {
+        var representativePictures = setOf<CategorizedPicture>()
+
+        lifecycleScope.launch {
                 // Ugly hack: if these arguments aren't null, it means the previous fragment was addPicture
                 // and it saved a picture
                 if (args.chosenCategory != null && args.pictureUri != null){
                     dbManagement.putPicture(args.pictureUri!!, args.chosenCategory!!)
 
                 }
+
                 dataset = dbManagement.getDatasetById(datasetId)!!
-                var representativePictures = setOf<CategorizedPicture>()
                 binding.displayDatasetName.setText(dataset.name)
                 categories = dataset.categories
 
@@ -96,16 +98,7 @@ class DisplayDatasetFragment : Fragment() {
                 setGridViewItemListener()
                 setTextChangeListener()
             }
-
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                findNavController().popBackStack()
-            }
-        }
-
         requireActivity().onBackPressedDispatcher.addCallback(callback)
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -126,6 +119,18 @@ class DisplayDatasetFragment : Fragment() {
         inflater.inflate(R.menu.display_dataset_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
+
+    val callback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            findNavController().popBackStack()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callback.isEnabled = false
+        callback.remove()
+   }
 
     private class DisplayDatasetAdapter(
         private val images: Set<CategorizedPicture>,

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
@@ -62,6 +63,7 @@ class SelectPictureFragment : Fragment() {
             val action = SelectPictureFragmentDirections.actionSelectPictureFragmentToAddPictureFragment(categories.toTypedArray(), datasetId, selectedCategory!!, selectedPicture!!)
             findNavController().navigate(action)
         }
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
 
@@ -78,6 +80,20 @@ class SelectPictureFragment : Fragment() {
                 }
             }
         }
+    }
+
+    val callback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            findNavController().popBackStack()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callback.isEnabled = false
+        callback.remove()
+        _binding = null
+
     }
 
     private fun displayPicture(pic: Uri) {
