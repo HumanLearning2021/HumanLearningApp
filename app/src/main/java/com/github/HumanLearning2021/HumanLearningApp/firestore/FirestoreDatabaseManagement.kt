@@ -5,7 +5,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.*
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 
-open class FirestoreDatabaseManagement internal constructor(
+class FirestoreDatabaseManagement internal constructor(
     private val databaseService: FirestoreDatabaseService
 ): DatabaseManagement {
 
