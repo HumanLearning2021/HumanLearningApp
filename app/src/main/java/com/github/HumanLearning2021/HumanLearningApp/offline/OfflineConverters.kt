@@ -19,7 +19,7 @@ object OfflineConverters {
     }
 
     fun fromCategory(category: Category): RoomCategory {
-        return RoomCategory(category.id as String, category.name)
+        return RoomCategory(category.id, category.name)
     }
 
     fun fromDataset(dataset: RoomDataset): OfflineDataset {

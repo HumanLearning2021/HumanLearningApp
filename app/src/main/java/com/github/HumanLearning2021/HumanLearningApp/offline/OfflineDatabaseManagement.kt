@@ -19,7 +19,6 @@ class OfflineDatabaseManagement (
     }
 
     override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
-        require(pictureId is String)
         return databaseService.getPicture(pictureId)
     }
 
@@ -33,7 +32,6 @@ class OfflineDatabaseManagement (
     }
 
     override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? {
-        require(categoryId is String)
         return databaseService.getRepresentativePicture(categoryId)
     }
 
@@ -47,7 +45,6 @@ class OfflineDatabaseManagement (
     }
 
     override suspend fun getCategoryById(categoryId: Id): Category? {
-        require(categoryId is String)
         return databaseService.getCategory(categoryId)
     }
 
@@ -102,7 +99,6 @@ class OfflineDatabaseManagement (
     }
 
     override suspend fun getDatasetById(id: Id): Dataset? {
-        require(id is String)
         return databaseService.getDataset(id)
     }
 
@@ -111,14 +107,13 @@ class OfflineDatabaseManagement (
         val res: MutableSet<OfflineDataset> = mutableSetOf()
         for (d in datasets) {
             if (d.name == datasetName) {
-                res.add(d as OfflineDataset)
+                res.add(d)
             }
         }
         return res.toSet()
     }
 
     override suspend fun deleteDataset(id: Id) {
-        require(id is String)
         try {
             databaseService.deleteDataset(id)
         } catch (e: IllegalArgumentException) {
@@ -152,7 +147,7 @@ class OfflineDatabaseManagement (
         val datasets = databaseService.getDatasets()
         val res: MutableSet<String> = mutableSetOf()
         for (d in datasets) {
-            res.add(d.id as String)
+            res.add(d.id)
         }
         return res.toSet()
     }

@@ -12,7 +12,6 @@ import com.google.firebase.auth.FirebaseUser
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import java.util.*
-import javax.inject.Inject
 
 class OfflineDatabaseService internal constructor(
     val dbName: String,
@@ -45,13 +44,12 @@ class OfflineDatabaseService internal constructor(
      * category is present in the database or if the category is not present
      */
     override suspend fun getPicture(category: Category): OfflineCategorizedPicture? {
-        val pics = categoryDao.loadAllPictures(category.id as String) ?: return null
+        val pics = categoryDao.loadAllPictures(category.id) ?: return null
         val randomId = pics.pictures.map { p -> p.pictureId }.random()
         return fromPicture(categoryDao.loadPicture(randomId)!!, categoryDao)
     }
 
-    override suspend fun getPicture(pictureId: Any): OfflineCategorizedPicture? {
-        require(pictureId is String)
+    override suspend fun getPicture(pictureId: Id): OfflineCategorizedPicture? {
         val pic = categoryDao.loadPicture(pictureId) ?: return null
         return fromPicture(pic, categoryDao)
     }
@@ -63,18 +61,17 @@ class OfflineDatabaseService internal constructor(
      * @return a List of ids. Can be empty if no pictures where found or if the category is not contained in the database
      */
     override suspend fun getPictureIds(category: Category): List<String> {
-        val pics = categoryDao.loadAllPictures(category.id as String) ?: return listOf()
+        val pics = categoryDao.loadAllPictures(category.id) ?: return listOf()
         return pics.pictures.map { p -> p.pictureId }
     }
 
-    override suspend fun getRepresentativePicture(categoryId: Any): OfflineCategorizedPicture? {
-        require(categoryId is String)
+    override suspend fun getRepresentativePicture(categoryId: Id): OfflineCategorizedPicture? {
         val cat = categoryDao.loadRepresentativePicture(categoryId) ?: return null
         return fromPicture(cat, categoryDao)
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): OfflineCategorizedPicture {
-        val cat = categoryDao.loadById(category.id as String) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
+        val cat = categoryDao.loadById(category.id) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
         val pic = RoomPicture(getID(), picture, cat.categoryId)
         val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
         pictureRepository.savePicture(picture)
@@ -83,9 +80,8 @@ class OfflineDatabaseService internal constructor(
         return fromPicture(pic, categoryDao)
     }
 
-    override suspend fun getCategory(categoryId: Any): OfflineCategory? {
-        require(categoryId is String)
-        val cat = categoryDao.loadById(categoryId) ?: return null
+    override suspend fun getCategory(id: Id): OfflineCategory? {
+        val cat = categoryDao.loadById(id) ?: return null
         return fromCategory(cat)
     }
 
@@ -108,7 +104,7 @@ class OfflineDatabaseService internal constructor(
      * @return the pictures categorized with the specified category, empty if the category is not contained in the dataset
      */
     override suspend fun getAllPictures(category: Category): Set<OfflineCategorizedPicture> {
-        val cats = categoryDao.loadAllPictures(category.id as String) ?: return setOf()
+        val cats = categoryDao.loadAllPictures(category.id) ?: return setOf()
         return cats.pictures.map{p -> fromPicture(p, categoryDao)}.toSet()
     }
 
@@ -119,8 +115,8 @@ class OfflineDatabaseService internal constructor(
      */
     override suspend fun removeCategory(category: Category) {
         categoryDao.delete(fromCategory(category))
-        val dbRef = RoomDatabaseCategoriesCrossRef(dbName, category.id as String)
-        val dsRefs = datasetDao.loadAll(category.id as String)
+        val dbRef = RoomDatabaseCategoriesCrossRef(dbName, category.id)
+        val dsRefs = datasetDao.loadAll(category.id)
         databaseDao.delete(dbRef)
         datasetDao.delete(*dsRefs.toTypedArray())
     }
@@ -131,7 +127,7 @@ class OfflineDatabaseService internal constructor(
      * @param picture - the picture to remove from the database
      */
     override suspend fun removePicture(picture: CategorizedPicture) {
-        val pic = categoryDao.loadPicture(picture.id as String)
+        val pic = categoryDao.loadPicture(picture.id)
         if (pic != null) {
             val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
             pictureRepository.deletePicture(pic.pictureId)
@@ -145,7 +141,7 @@ class OfflineDatabaseService internal constructor(
         val ds = RoomDatasetWithoutCategories(id, name)
         val dsRefs = mutableListOf<RoomDatasetCategoriesCrossRef>()
         for (c in categories) {
-            dsRefs.add(RoomDatasetCategoriesCrossRef(id, c.id as String))
+            dsRefs.add(RoomDatasetCategoriesCrossRef(id, c.id))
         }
         val dbRef = RoomDatabaseDatasetsCrossRef(dbName, id)
         val cats = categories.map{c -> fromCategory(c)}
@@ -155,8 +151,7 @@ class OfflineDatabaseService internal constructor(
         return fromDataset(RoomDataset(ds, cats))
     }
 
-    override suspend fun getDataset(id: Any): OfflineDataset? {
-        require(id is String)
+    override suspend fun getDataset(id: Id): OfflineDataset? {
         val ds = datasetDao.loadById(id) ?: return null
         return fromDataset(ds)
     }
@@ -166,8 +161,7 @@ class OfflineDatabaseService internal constructor(
      *
      * @param id - the name of the dataset to delete
      */
-    override suspend fun deleteDataset(id: Any) {
-        require(id is String)
+    override suspend fun deleteDataset(id: Id) {
         val ds = datasetDao.loadById(id)
         if (ds != null) {
             val dsRefs = datasetDao.loadAll(ds.datasetWithoutCategories.datasetId)
@@ -179,7 +173,7 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
-        val cat = categoryDao.loadById(category.id as String) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
+        val cat = categoryDao.loadById(category.id) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
         categoryDao.insertAll(RoomUnlinkedRepresentativePicture(getID(), picture, cat.categoryId))
     }
 
@@ -188,21 +182,21 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): OfflineDataset {
-        datasetDao.delete(RoomDatasetCategoriesCrossRef(dataset.id as String, category.id as String))
-        val ds = datasetDao.loadById(dataset.id as String) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
+        datasetDao.delete(RoomDatasetCategoriesCrossRef(dataset.id, category.id))
+        val ds = datasetDao.loadById(dataset.id) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
         return fromDataset(ds)
     }
 
     override suspend fun editDatasetName(dataset: Dataset, newName: String): OfflineDataset {
-        val ds = datasetDao.loadById(dataset.id as String) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
+        val ds = datasetDao.loadById(dataset.id) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
         val updatedDs = RoomDatasetWithoutCategories(ds.datasetWithoutCategories.datasetId, newName)
         datasetDao.update(updatedDs)
         return fromDataset(RoomDataset(updatedDs, ds.categories))
     }
 
     override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): OfflineDataset {
-        val ds = datasetDao.loadById(dataset.id as String) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
-        val cat = categoryDao.loadById(category.id as String) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
+        val ds = datasetDao.loadById(dataset.id) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
+        val cat = categoryDao.loadById(category.id) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
         datasetDao.insertAll(RoomDatasetCategoriesCrossRef(ds.datasetWithoutCategories.datasetId, cat.categoryId))
         val updatedCats = ds.categories.toMutableList()
         updatedCats.add(cat)

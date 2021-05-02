@@ -36,12 +36,12 @@ class UniqueDatabaseManagement constructor(val context: Context, private val roo
         return if (downloadedDatabases.contains(databaseName)) {
             OfflineDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
         } else {
-            CachedFirestoreDatabaseManagement(databaseName, firestore)
+            CachedFirestoreDatabaseManagement(FirestoreDatabaseManagement(FirestoreDatabaseService(databaseName, firestore)))
         }
     }
 
     fun accessCloudDatabase(databaseName: String): CachedFirestoreDatabaseManagement {
-        return CachedFirestoreDatabaseManagement(databaseName, firestore)
+        return CachedFirestoreDatabaseManagement(FirestoreDatabaseManagement(FirestoreDatabaseService(databaseName, firestore)))
     }
 
     suspend fun downloadDatabase(databaseName: String): OfflineDatabaseManagement {
@@ -66,7 +66,7 @@ class UniqueDatabaseManagement constructor(val context: Context, private val roo
         val roomRepresentativePictures = categories.mapNotNull { cat ->
              firestoreDbManagement.getRepresentativePicture(cat.id)
             }.map { pic ->
-                RoomUnlinkedRepresentativePicture(pic.id as String, pictureRepository.savePicture(pic as FirestoreCategorizedPicture), pic.category.id)
+                RoomUnlinkedRepresentativePicture(pic.id, pictureRepository.savePicture(pic), pic.category.id)
             }
 
         initializeRoomEntities(databaseName, roomDatasets, roomCats, roomPics, roomRepresentativePictures)
@@ -78,14 +78,6 @@ class UniqueDatabaseManagement constructor(val context: Context, private val roo
     fun removeOfflineDatabase(databaseName: String) {
         room.databaseDao().delete(RoomEmptyHLDatabase(databaseName))
         downloadedDatabases.remove(databaseName)
-    }
-
-    suspend fun updateFromCloud(databaseName: String) {
-        TODO("To be implemented next sprint")
-    }
-
-    suspend fun updateTowardsCloud(databaseName: String) {
-        TODO("To be implemented next sprint")
     }
 
     private fun initializeRoomEntities(dbName: String, datasets: List<RoomDatasetWithoutCategories>, categories: List<RoomCategory>, pictures: List<RoomPicture>, representativePictures: List<RoomUnlinkedRepresentativePicture>) {
