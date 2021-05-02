@@ -51,12 +51,12 @@ class AddPictureFragment: Fragment() {
         }
 
         binding.selectExistingPicture.setOnClickListener{
-            val action = AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(categories.toTypedArray(), datasetId)
+            val action = AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(args.categories, datasetId)
             findNavController().navigate(action)
         }
 
         binding.useCamera.setOnClickListener {
-            val action = AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(categories.toTypedArray(), datasetId)
+            val action = AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(args.categories, datasetId)
             findNavController().navigate(action)
         }
 

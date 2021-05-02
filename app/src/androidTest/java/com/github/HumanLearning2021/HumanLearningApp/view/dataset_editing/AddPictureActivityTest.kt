@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -62,80 +63,52 @@ class AddPictureActivityTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        launchFragment()
     }
 
     @Test
     fun correctLayoutIsDisplayAfterCreation() {
+        val args = bundleOf("categories" to catSet.toTypedArray(), "datasetId" to datasetId)
+        launchFragment(args)
         BaristaVisibilityAssertions.assertDisplayed(R.id.select_existing_picture)
         BaristaVisibilityAssertions.assertDisplayed(R.id.use_camera)
+
     }
 
     @Test
-    fun intentSentToChoose() {
+    fun navigateToChoose() {
+        val categories = catSet.toTypedArray()
+        val args = bundleOf("categories" to categories, "datasetId" to datasetId)
+        launchFragment(args)
         Espresso.onView(ViewMatchers.withId(R.id.select_existing_picture))
             .perform(ViewActions.click())
 
-        verify(navController).navigate(AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(catSet.toTypedArray(), datasetId))
+        verify(navController).navigate(AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(categories, datasetId))
     }
 
     @Test
-    fun intentSentToCamera() {
+    fun navigateToCamera() {
+        val categories = catSet.toTypedArray()
+        val args = bundleOf("categories" to categories, "datasetId" to datasetId)
+        launchFragment(args)
         Espresso.onView(ViewMatchers.withId(R.id.use_camera))
             .perform(ViewActions.click())
-
-        verify(navController).navigate(AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(catSet.toTypedArray(), datasetId))
-    }
-
-    /*
-    This can only be tested from the source fragments under the current implementation
-
-    @Test
-    fun receiveIntentFromChoose() {
-        val imageUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
-        Intents.intending(hasComponent(SelectPictureActivity::class.qualifiedName)).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                Intent().putExtra(
-                    "result",
-                    bundleOf("category" to DummyCategory("cat1", "cat1"), "image" to imageUri)
-                )
-            )
-        )
-        Espresso.onView(ViewMatchers.withId(R.id.select_existing_picture))
-            .perform(ViewActions.click())
-        val result = testRule.scenario.result
-        MatcherAssert.assertThat(result.resultCode, Matchers.equalTo(Activity.RESULT_OK))
-        MatcherAssert.assertThat(result.resultData, IntentMatchers.hasExtraWithKey("result"))
+        verify(navController).navigate(AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(categories, datasetId))
     }
 
     @Test
-    fun receiveIntentFromCamera() {
-        val imageUri =
+    fun navigateToDisplayDataset(){
+        val pictureUri =
             Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
-        Intents.intending(hasComponent(TakePictureActivity::class.qualifiedName)).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                Intent().putExtra(
-                    "result",
-                    bundleOf("category" to DummyCategory("cat1", "cat1"), "image" to imageUri)
-                )
-            )
-        )
-        Espresso.onView(ViewMatchers.withId(R.id.use_camera))
-            .perform(ViewActions.click())
-        val result = testRule.scenario.result
-        MatcherAssert.assertThat(result.resultCode, Matchers.equalTo(Activity.RESULT_OK))
-        MatcherAssert.assertThat(result.resultData, IntentMatchers.hasExtraWithKey("result"))
+        val category = catSet.random()
+        val categories = catSet.toTypedArray()
+        val args = bundleOf("categories" to categories, "datasetId" to datasetId, "pictureUri" to pictureUri, "chosenCategory" to category)
+        launchFragment(args)
+        verify(navController).navigate(AddPictureFragmentDirections.actionAddPictureFragmentToDisplayDatasetFragment(datasetId, category, pictureUri!!))
+
     }
 
-     */
 
-
-
-    private fun launchFragment() {
-        val args = bundleOf("categories" to catSet.toTypedArray(), "datasetId" to datasetId)
+    private fun launchFragment(args: Bundle) {
         launchFragmentInHiltContainer<AddPictureFragment>(args) {
             Navigation.setViewNavController(requireView(), navController)
         }

@@ -221,6 +221,27 @@ class TakePictureActivityTest {
     Don't know how to transport this into fragment world
 
     @Test
+    fun receiveIntentFromCamera() {
+        val imageUri =
+            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
+        Intents.intending(hasComponent(TakePictureActivity::class.qualifiedName)).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                Intent().putExtra(
+                    "result",
+                    bundleOf("category" to DummyCategory("cat1", "cat1"), "image" to imageUri)
+                )
+            )
+        )
+        Espresso.onView(ViewMatchers.withId(R.id.use_camera))
+            .perform(ViewActions.click())
+        val result = testRule.scenario.result
+        MatcherAssert.assertThat(result.resultCode, Matchers.equalTo(Activity.RESULT_OK))
+        MatcherAssert.assertThat(result.resultData, IntentMatchers.hasExtraWithKey("result"))
+    }
+
+
+    @Test
     fun permissionNeededDialogShowsCorrectDialog() {
         grantCameraPermission()
         val method: Method =

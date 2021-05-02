@@ -93,8 +93,29 @@ class SelectPictureActivityTest {
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
+
     /*
     Don't know how to translate this into fragment world yet
+
+    @Test
+    fun receiveIntentFromChoose() {
+        val imageUri =
+            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
+        Intents.intending(hasComponent(SelectPictureActivity::class.qualifiedName)).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                Intent().putExtra(
+                    "result",
+                    bundleOf("category" to DummyCategory("cat1", "cat1"), "image" to imageUri)
+                )
+            )
+        )
+        Espresso.onView(ViewMatchers.withId(R.id.select_existing_picture))
+            .perform(ViewActions.click())
+        val result = testRule.scenario.result
+        MatcherAssert.assertThat(result.resultCode, Matchers.equalTo(Activity.RESULT_OK))
+        MatcherAssert.assertThat(result.resultData, IntentMatchers.hasExtraWithKey("result"))
+    }
 
     @Test
     fun correctNavigationOnSave() {
