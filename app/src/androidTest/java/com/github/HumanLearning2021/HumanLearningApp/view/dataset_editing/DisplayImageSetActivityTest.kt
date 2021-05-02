@@ -55,7 +55,7 @@ class DisplayImageSetActivityTest {
     private var dsPictures = emptySet<CategorizedPicture>()
     private lateinit var categories: Set<Category>
     private lateinit var dataset: Dataset
-    private lateinit var datasetId: String
+    private lateinit var datasetId: Id
     private var index = 0
 
     private val navController: NavController = Mockito.mock(NavController::class.java)

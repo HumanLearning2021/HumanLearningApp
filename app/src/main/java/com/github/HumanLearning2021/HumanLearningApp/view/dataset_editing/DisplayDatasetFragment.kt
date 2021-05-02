@@ -21,10 +21,7 @@ import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearnin
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -41,7 +38,7 @@ class DisplayDatasetFragment : Fragment() {
     private val args: DisplayDatasetFragmentArgs by navArgs()
 
     private lateinit var categories: Set<Category>
-    private lateinit var datasetId: String
+    private lateinit var datasetId: Id
     private lateinit var dataset: Dataset
 
     private var _binding: FragmentDisplayDatasetBinding? = null

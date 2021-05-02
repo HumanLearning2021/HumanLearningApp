@@ -12,13 +12,14 @@ import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentAddPictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentTakePictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import kotlinx.coroutines.launch
 
 class AddPictureFragment: Fragment() {
 
     private lateinit var parentActivity: FragmentActivity
     private var categories = setOf<Category>()
-    private lateinit var datasetId: String
+    private lateinit var datasetId: Id
 
     private val args: AddPictureFragmentArgs by navArgs()
 

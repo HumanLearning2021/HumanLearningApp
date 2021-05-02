@@ -56,7 +56,7 @@ class CategoriesEditingFragmentTest{
     val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     private val dataset: Dataset = getFirstDataset(dbMgt)
-    private val datasetId: String = getFirstDataset(dbMgt).id as String
+    private val datasetId: String = getFirstDataset(dbMgt).id
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 

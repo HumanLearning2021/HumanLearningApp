@@ -38,6 +38,7 @@ import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentAddPict
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayDatasetBinding
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentTakePictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import java.io.File
 import java.util.*
 import java.util.concurrent.Executors
@@ -52,7 +53,7 @@ class TakePictureFragment : Fragment() {
     private lateinit var imageCapture: ImageCapture
     private lateinit var capturedImageUri: Uri
     private lateinit var chosenCategory: Category
-    private lateinit var datasetId: String // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesnt seem to work
+    private lateinit var datasetId: Id // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesnt seem to work
     private var imageTaken: Boolean = false
     private var categorySet: Boolean = false
 

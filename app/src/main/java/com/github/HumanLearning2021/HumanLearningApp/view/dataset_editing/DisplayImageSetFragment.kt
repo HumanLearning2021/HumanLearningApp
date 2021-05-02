@@ -27,6 +27,7 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -41,7 +42,7 @@ class DisplayImageSetFragment: Fragment() {
     lateinit var dBManagement: DatabaseManagement
 
     private var categorizedPicturesList = setOf<CategorizedPicture>()
-    private lateinit var datasetId: String
+    private lateinit var datasetId: Id
     private lateinit var category: Category
 
     private val args: DisplayImageSetFragmentArgs by navArgs()

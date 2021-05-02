@@ -19,6 +19,7 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,7 +35,7 @@ class CategoriesEditingFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var dsCategories = emptySet<Category>()
-    private var datasetId: String? = null
+    private var datasetId: Id? = null
     private lateinit var dataset: Dataset
     private lateinit var removedCategory: Category
     private lateinit var parentActivity: FragmentActivity
@@ -139,7 +140,7 @@ class CategoriesEditingFragment : Fragment() {
                 }
             } else {
                 dataset = dBManagement.putDataset("New Dataset", newCategories)
-                datasetId = dataset.id as String
+                datasetId = dataset.id
             }
             val action =
                 CategoriesEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(

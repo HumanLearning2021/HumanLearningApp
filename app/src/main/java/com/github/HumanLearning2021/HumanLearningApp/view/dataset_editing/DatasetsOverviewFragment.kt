@@ -39,7 +39,7 @@ class DatasetsOverviewFragment : Fragment() {
         if (dsListFragment is DatasetListWidget) {
             dsListFragment.selectedDataset.observe(parentActivity) {
                 Log.d("DataOverview activity", "selected ds is  $it")
-                val action = DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToDisplayDatasetFragment(it.id as String)
+                val action = DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToDisplayDatasetFragment(it.id)
                 findNavController().navigate(action)
             }
         }

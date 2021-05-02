@@ -18,6 +18,7 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentAddPictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentSelectPictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 
 
 class SelectPictureFragment : Fragment() {
@@ -25,7 +26,7 @@ class SelectPictureFragment : Fragment() {
     private var selectedPicture: Uri? = null
     private var selectedCategory: Category? = null
     private var categories = setOf<Category>()
-    private lateinit var datasetId: String // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesnt seem to work
+    private lateinit var datasetId: Id // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesnt seem to work
 
     private var _binding: FragmentSelectPictureBinding? = null
     private val binding get() = _binding!!

@@ -62,7 +62,7 @@ class DisplayDatasetActivityTest {
     private var index = 0
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
-    private val datasetId: String = getFirstDataset(dbMgt).id as String
+    private val datasetId: String = getFirstDataset(dbMgt).id
 
     @Before
     fun setup() {

@@ -67,7 +67,7 @@ class DisplayImageActivityTest {
         hiltRule.inject()
         categories = emptySet()
         datasetPictures = emptySet()
-        datasetId = dataset.id as String
+        datasetId = dataset.id
         categoryWith1Picture = newCategoryWithNPictures(1)
         categoryWith2Pictures = newCategoryWithNPictures(2)
     }
