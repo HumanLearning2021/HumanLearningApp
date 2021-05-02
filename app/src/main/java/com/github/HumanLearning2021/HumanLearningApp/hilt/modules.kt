@@ -177,5 +177,5 @@ object DatabaseManagementModule {
     fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement = OfflineDatabaseManagement(db as OfflineDatabaseService)
     @GlobalDatabaseManagement
     @Provides
-    fun provideGlobalDatabaseManagement(@ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase): UniqueDatabaseManagement = UniqueDatabaseManagement(context, room)
+    fun provideGlobalDatabaseManagement(@ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase, @ProductionFirestore firestore: FirebaseFirestore): UniqueDatabaseManagement = UniqueDatabaseManagement(context, room, firestore)
 }
