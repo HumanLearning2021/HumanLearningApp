@@ -5,13 +5,20 @@ import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.hasName
+import com.google.firebase.firestore.FirebaseFirestore
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
@@ -26,9 +33,19 @@ import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
 
+@UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class FirestoreDatabaseServiceTest {
+
+    @Inject
+    @Demo2Database
+    lateinit var demo2DbService: DatabaseService
+
+    @BindValue
+    @Demo2Database
+    lateinit var demo2DbMgt: DatabaseManagement
+
     @Inject
     @DemoDatabase
     lateinit var demoInterface: DatabaseService
@@ -47,6 +64,7 @@ class FirestoreDatabaseServiceTest {
     @Before
     fun setUp() {
         hiltRule.inject()
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")

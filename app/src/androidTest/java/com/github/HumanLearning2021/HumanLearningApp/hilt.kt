@@ -3,6 +3,8 @@ package com.github.HumanLearning2021.HumanLearningApp
 import android.content.Context
 import androidx.room.Room
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.FirebaseApp
@@ -22,6 +24,7 @@ object DatabaseServiceTestModule {
     @DummyDatabase
     @Provides
     fun provideDummyService() = DatabaseServiceModule.provideDummyService()
+
     @DemoDatabase
     @Provides
     fun provideDemoService(@EmulatedFirestore firestore: FirebaseFirestore) = DatabaseServiceModule.provideDemoService(firestore)
@@ -54,4 +57,27 @@ object RoomDatabaseTestModule {
             RoomOfflineDatabase::class.java,
             "general_offline_database"
         ).build()
+}
+
+@TestInstallIn(
+    components = [ SingletonComponent::class ],
+    replaces = [ DatabaseManagementModule::class ]
+)
+@Module
+object DatabaseManagementTestModule {
+    @DemoDatabase
+    @Provides
+    fun provideDemoDatabaseManagement(@DemoDatabase db: DatabaseService): DatabaseManagement = DatabaseManagementModule.provideDemoService(db)
+
+    @ScratchDatabase
+    @Provides
+    fun provideScratchDatabaseManagement(@ScratchDatabase db: DatabaseService): DatabaseManagement = DatabaseManagementModule.provideScratchService(db)
+
+    @OfflineDemoDatabase
+    @Provides
+    fun provideOfflineDemoDatabaseManagement(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement = DatabaseManagementModule.provideOfflineDemoService(db)
+
+    @GlobalDatabaseManagement
+    @Provides
+    fun provideUniqueDatabaseManagement(@ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase, @EmulatedFirestore firestore: FirebaseFirestore): UniqueDatabaseManagement = DatabaseManagementModule.provideGlobalDatabaseManagement(context, room, firestore)
 }

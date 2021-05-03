@@ -5,9 +5,7 @@ import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineDemoDatabase
-import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineScratchDatabase
-import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategory
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
@@ -15,8 +13,10 @@ import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDataset
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
@@ -28,9 +28,18 @@ import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
 
+@UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class OfflineDatabaseManagementTest {
+
+    @Inject
+    @Demo2Database
+    lateinit var demo2DbService: DatabaseService
+
+    @BindValue
+    @Demo2Database
+    lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
     @RoomDatabase
@@ -54,6 +63,7 @@ class OfflineDatabaseManagementTest {
     @Before
     fun setUp() = runBlocking {
         hiltRule.inject()
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")
