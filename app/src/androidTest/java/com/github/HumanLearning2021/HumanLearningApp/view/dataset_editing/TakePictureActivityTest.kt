@@ -69,8 +69,6 @@ class TakePictureActivityTest {
 
     val catSetArray = catSet.toTypedArray()
 
-    var fragmentResult = null
-
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
     private fun grantCameraPermission() {
