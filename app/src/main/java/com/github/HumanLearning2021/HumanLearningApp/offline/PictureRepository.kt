@@ -46,8 +46,9 @@ open class PictureRepository(private val dbName: String, private val context: Co
     }
 
     fun retrievePicture(id: String): Uri? {
-        return if (File("${folder.path}${File.pathSeparator}$id").exists()) {
-            File(folder, id).toUri()
+        val file = File(folder, id)
+        return if (file.exists()) {
+            Uri.fromFile(file)
         } else {
             null
         }

@@ -82,7 +82,6 @@ class FirestoreDatabaseServiceTest {
         }
     }
 
-    @Ignore("find out why the exception is not thrown")
     @Test
     fun test_getAllPictures_throwsIfCategoryNotPresent(): Unit = runBlocking {
         runCatching {
@@ -200,7 +199,6 @@ class FirestoreDatabaseServiceTest {
         assertThat(scratchInterface.getDataset(ds.id), equalTo(null))
     }
 
-    @Ignore("find out why the exception is not thrown")
     @Test
     fun test_putRepresentativePicture_throwsIfCategoryNotPresent() = runBlocking {
         runCatching {
@@ -250,7 +248,7 @@ class FirestoreDatabaseServiceTest {
         })
     }
 
-    @Ignore("find out why the exception is not thrown")
+    @Ignore("It looks like the Emulator does not throw an exception in this case but the production firestore does")
     @Test
     fun test_removeCategoryFromDataset_throwsIfCategoryNotContained(): Unit = runBlocking {
         val ds = demoInterface.getDatasets().first()

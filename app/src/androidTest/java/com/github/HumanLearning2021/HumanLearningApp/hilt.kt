@@ -6,6 +6,7 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -68,6 +69,10 @@ object DatabaseManagementTestModule {
     @DemoDatabase
     @Provides
     fun provideDemoDatabaseManagement(@DemoDatabase db: DatabaseService): DatabaseManagement = DatabaseManagementModule.provideDemoService(db)
+
+    @CachedDemoDatabase
+    @Provides
+    fun provideCachedDemoDatabaseManagement(@DemoDatabase db: DatabaseManagement, @DemoCachePictureRepository repo: PictureRepository): DatabaseManagement = DatabaseManagementModule.provideCachedDemoService(db, repo)
 
     @ScratchDatabase
     @Provides

@@ -1,26 +1,35 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.parcelize.Parcelize
+import java.lang.IllegalArgumentException
+import javax.inject.Inject
 
 class CachedFirestoreDatabaseManagement internal constructor(
-    val db: FirestoreDatabaseManagement
+    private val db: FirestoreDatabaseManagement, private val cache: PictureRepository
 ): DatabaseManagement by db {
 
-    private lateinit var cache: PictureRepository
-    private val cachedPictures: MutableMap<String, FirestoreCategorizedPicture> = mutableMapOf()
+    val cachedPictures: MutableMap<String, FirestoreCategorizedPicture> = mutableMapOf()
 
     override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
         val uri = cache.retrievePicture(pictureId)
         return if (uri == null) {
-           removeFromCache(pictureId)
-            val fPic = getPicture(pictureId) ?: return null
-            putIntoCache(fPic as FirestoreCategorizedPicture)
+            removeFromCache(pictureId)
+            val fPic = db.getPicture(pictureId) ?: return null
+            putIntoCache(fPic)
         } else {
-            Converters.fromPicture(cachedPictures[pictureId]!!, uri)
+            val cPic = cachedPictures[pictureId]
+            if (cPic == null) {
+                val fPic = db.getPicture(pictureId) ?: return null
+                putIntoCache(fPic)
+            } else {
+                Converters.fromPicture(cPic, uri)
+            }
         }
     }
 
@@ -35,10 +44,10 @@ class CachedFirestoreDatabaseManagement internal constructor(
     }
 
     override suspend fun removePicture(picture: CategorizedPicture) {
-        require(picture is FirestoreCategorizedPicture)
         cachedPictures.remove(picture.id)
         cache.deletePicture(picture.id)
-        db.removePicture(picture)
+        val pic = db.getPicture(picture.id)
+        if (pic != null) db.removePicture(pic)
     }
 
     private suspend fun putIntoCache(picture: FirestoreCategorizedPicture): OfflineCategorizedPicture {
@@ -49,6 +58,10 @@ class CachedFirestoreDatabaseManagement internal constructor(
 
     private fun removeFromCache(pictureId: Id) {
         cachedPictures.remove(pictureId)
-        cache.deletePicture(pictureId)
+        try {
+            cache.deletePicture(pictureId)
+        } catch (e: IllegalArgumentException) {
+            // Do nothing since it means that the cache already removed it itself
+        }
     }
 }

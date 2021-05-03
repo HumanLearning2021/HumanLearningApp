@@ -3,11 +3,14 @@ package com.github.HumanLearning2021.HumanLearningApp.hilt
 import android.content.Context
 import androidx.room.Room
 import com.firebase.ui.auth.AuthUI
+import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,6 +37,10 @@ annotation class DemoDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class CachedDemoDatabase
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class Demo2Database
 
 @Qualifier
@@ -55,6 +62,10 @@ annotation class GlobalDatabaseManagement
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class RoomDatabase
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DemoCachePictureRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -116,6 +127,13 @@ object EmulationModule {
     }
 }
 
+@Module
+@InstallIn(SingletonComponent::class)
+object PictureRepositoryModule {
+    @Provides
+    @DemoCachePictureRepository
+    fun provideCachePictureRepository(@ApplicationContext context: Context): PictureRepository = CachePictureRepository("demo", context)
+}
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -160,21 +178,31 @@ object DatabaseManagementModule {
     @DummyDatabase
     @Provides
     fun provideDummyManagement(@DummyDatabase db: DatabaseService): DatabaseManagement = DummyDatabaseManagement(db)
+
     @DemoDatabase
     @Provides
     fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+
+    @CachedDemoDatabase
+    @Provides
+    fun provideCachedDemoService(@DemoDatabase db: DatabaseManagement, @DemoCachePictureRepository repo: PictureRepository): DatabaseManagement = CachedFirestoreDatabaseManagement(db as FirestoreDatabaseManagement, repo)
+
     @Demo2Database
     @Provides
     fun provideDemo2Service(@Demo2Database db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+
     @ScratchDatabase
     @Provides
     fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+
     @OfflineDemoDatabase
     @Provides
     fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement = OfflineDatabaseManagement(db as OfflineDatabaseService)
+
     @OfflineScratchDatabase
     @Provides
     fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement = OfflineDatabaseManagement(db as OfflineDatabaseService)
+
     @GlobalDatabaseManagement
     @Provides
     fun provideGlobalDatabaseManagement(@ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase, @ProductionFirestore firestore: FirebaseFirestore): UniqueDatabaseManagement = UniqueDatabaseManagement(context, room, firestore)
