@@ -71,6 +71,12 @@ class SelectPictureActivityTest {
     fun setup() {
         hiltRule.inject()
         launchFragment()
+        Intents.init()
+    }
+
+    @After
+    fun cleanUp(){
+        Intents.release()
     }
 
     @Test
@@ -93,7 +99,6 @@ class SelectPictureActivityTest {
 
     @Test
     fun correctNavigationOnSave() {
-        Intents.init()
         val imageUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
         onView(withId(R.id.selectCategoryButton2)).perform(click())
         onView(withText("cat1")).perform(click())
@@ -105,7 +110,6 @@ class SelectPictureActivityTest {
         onView(withId(R.id.choosePictureButton)).perform(click())
         onView(withId(R.id.saveButton3)).perform(click())
         verify(navController).popBackStack()
-        Intents.release()
     }
 
     @Test

@@ -191,7 +191,7 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.selectCategoryButton)).perform(click())
             onView(withText(categories.elementAt(index).name)).perform(click())
             onView(withId(R.id.saveButton)).perform(click())
-            waitFor(1) // increase if needed
+            waitFor(100) // increase if needed
             onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
             assert(dbMgt.getAllPictures(categories.elementAt(index)).size == numberOfPictures + 1)
         }

@@ -74,25 +74,6 @@ class AddPictureActivityTest {
     }
 
     @Test
-    //@Ignore // Comparison of arguments in action failed even though they seem to be the same. Suspecting it is because of DummyCategory's equals()
-    fun navigateToChoose() {
-        Espresso.onView(ViewMatchers.withId(R.id.select_existing_picture))
-            .perform(ViewActions.click())
-
-        verify(navController).navigate(AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(categories, datasetId))
-    }
-
-    @Test
-    @Ignore // Comparison of arguments in action failed even though they seem to be the same. Suspecting it is because of DummyCategory's equals()
-    fun navigateToCamera() {
-        Espresso.onView(ViewMatchers.withId(R.id.use_camera))
-            .perform(ViewActions.click())
-
-        verify(navController).navigate(AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(categories, datasetId))
-    }
-
-
-    @Test
     fun backButtonWorks(){
         Espresso.pressBack()
         verify(navController).popBackStack()
