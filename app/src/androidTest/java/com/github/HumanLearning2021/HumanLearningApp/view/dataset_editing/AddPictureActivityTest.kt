@@ -54,18 +54,20 @@ class AddPictureActivityTest {
         DummyCategory("cat3", "cat3"),
     )
 
+    val categories = catSet.toTypedArray()
+
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
 
     @Before
     fun setup() {
         hiltRule.inject()
+        val args = bundleOf("categories" to catSet.toTypedArray(), "datasetId" to datasetId)
+        launchFragment(args)
     }
 
     @Test
     fun correctLayoutIsDisplayAfterCreation() {
-        val args = bundleOf("categories" to catSet.toTypedArray(), "datasetId" to datasetId)
-        launchFragment(args)
         BaristaVisibilityAssertions.assertDisplayed(R.id.select_existing_picture)
         BaristaVisibilityAssertions.assertDisplayed(R.id.use_camera)
 
@@ -74,9 +76,6 @@ class AddPictureActivityTest {
     @Test
     @Ignore // Comparison of arguments in action failed even though they seem to be the same. Suspecting it is because of DummyCategory's equals()
     fun navigateToChoose() {
-        val categories = catSet.toTypedArray()
-        val args = bundleOf("categories" to categories, "datasetId" to datasetId)
-        launchFragment(args)
         Espresso.onView(ViewMatchers.withId(R.id.select_existing_picture))
             .perform(ViewActions.click())
 
@@ -86,9 +85,6 @@ class AddPictureActivityTest {
     @Test
     @Ignore // Comparison of arguments in action failed even though they seem to be the same. Suspecting it is because of DummyCategory's equals()
     fun navigateToCamera() {
-        val categories = catSet.toTypedArray()
-        val args = bundleOf("categories" to categories, "datasetId" to datasetId)
-        launchFragment(args)
         Espresso.onView(ViewMatchers.withId(R.id.use_camera))
             .perform(ViewActions.click())
         verify(navController).navigate(AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(categories, datasetId))

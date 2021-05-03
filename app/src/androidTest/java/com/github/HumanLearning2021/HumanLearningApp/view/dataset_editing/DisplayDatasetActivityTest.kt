@@ -77,16 +77,13 @@ class DisplayDatasetActivityTest {
     fun setup() {
         hiltRule.inject()  // ensures dbManagement is available
         dataset = getFirstDataset(dbMgt)
-        //launchFragment()
-        Intents.init()
+
     }
 
     @After
-    fun cleanUp() {
-        Intents.release()
+    fun cleanUp(){
         activityScenarioRule.scenario.close()
     }
-
 
     /**
      * Check that the Grid with all the images of the dataset are displayed.
@@ -149,6 +146,7 @@ class DisplayDatasetActivityTest {
     }
 
     private fun navigateToDisplayActivity() {
+        Intents.init()
         onView(withId(R.id.goToDatasetsOverviewButton)).perform(click())
         onView(withId(R.id.DatasetList_list))
             .perform(
@@ -169,6 +167,7 @@ class DisplayDatasetActivityTest {
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
             assert(currentFragment?.findNavController()?.currentDestination?.id == R.id.categoriesEditingFragment)
         }
+        Intents.release()
     }
 
     @Test
@@ -196,6 +195,7 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
             assert(dbMgt.getAllPictures(categories.elementAt(index)).size == numberOfPictures + 1)
         }
+        Intents.release()
     }
 
     @Test
@@ -204,6 +204,7 @@ class DisplayDatasetActivityTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         UiDevice.getInstance(getInstrumentation()).click(500, 500)
         onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
+        Intents.release()
     }
 
     @Test
