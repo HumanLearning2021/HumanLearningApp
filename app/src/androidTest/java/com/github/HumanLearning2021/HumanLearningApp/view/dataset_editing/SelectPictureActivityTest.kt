@@ -94,7 +94,7 @@ class SelectPictureActivityTest {
 
 
     @Test
-    @Ignore // haven't found a way without FragmentScenario, which doesn't seem to be possible with Hilt
+    //@Ignore // haven't found a way without FragmentScenario, which doesn't seem to be possible with Hilt
     fun correctNavigationOnSave() {
         val imageUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
         onView(withId(R.id.selectCategoryButton2)).perform(click())
@@ -106,7 +106,7 @@ class SelectPictureActivityTest {
             })
         onView(withId(R.id.choosePictureButton)).perform(click())
         onView(withId(R.id.saveButton3)).perform(click())
-        verify(navController).navigate(SelectPictureFragmentDirections.actionSelectPictureFragmentToAddPictureFragment(catSet.toTypedArray(), datasetId, catSet.first(), imageUri))
+        verify(navController).popBackStack()
     }
 
     @Test

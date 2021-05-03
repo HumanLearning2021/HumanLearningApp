@@ -164,6 +164,8 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
     }
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
 
     //Room
     implementation "androidx.room:room-runtime:2.3.0-rc01"

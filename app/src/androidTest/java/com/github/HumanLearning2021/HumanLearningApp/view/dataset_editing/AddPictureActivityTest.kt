@@ -94,17 +94,6 @@ class AddPictureActivityTest {
         verify(navController).navigate(AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(categories, datasetId))
     }
 
-    @Ignore // Comparison of arguments in action failed even though they seem to be the same. Suspecting it is because of DummyCategory's equals()
-    @Test
-    fun navigateToDisplayDataset(){
-        val pictureUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
-        val category = catSet.random()
-        val categories = catSet.toTypedArray()
-        val args = bundleOf("categories" to categories, "datasetId" to datasetId, "pictureUri" to pictureUri, "chosenCategory" to category)
-        launchFragment(args)
-        verify(navController).navigate(AddPictureFragmentDirections.actionAddPictureFragmentToDisplayDatasetFragment(datasetId, category, pictureUri))
-    }
 
     @Test
     fun backButtonWorks(){

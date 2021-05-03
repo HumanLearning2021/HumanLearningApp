@@ -38,6 +38,7 @@ import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import java.lang.reflect.Method
 
 @UninstallModules(DatabaseManagementModule::class)
@@ -110,7 +111,6 @@ class TakePictureActivityTest {
 
 
     @Test
-    @Ignore // haven't found a way without FragmentScenario, which doesn't seem to be possible with Hilt
     fun correctIntentIsSentOnSave() {
         grantCameraPermission()
         onView(withId(R.id.selectCategoryButton)).perform(click())
@@ -124,18 +124,9 @@ class TakePictureActivityTest {
             )
         )
         onView(withId(R.id.saveButton)).perform(click())
-        val imageUri =
-            Uri.parse("file:///data/user/0/com.github.HumanLearning2021.HumanLearningApp/files")
         onView(withId(R.id.selectCategoryButton)).perform(click())
         onView(withText("cat1")).perform(click())
-        Mockito.verify(navController).navigate(
-            TakePictureFragmentDirections.actionTakePictureFragmentToAddPictureFragment(
-                catSetArray,
-                datasetId,
-                catSetArray[0],
-                imageUri
-            )
-        )
+        verify(navController).popBackStack()
     }
 
 
@@ -238,6 +229,7 @@ class TakePictureActivityTest {
         MatcherAssert.assertThat(result.resultCode, Matchers.equalTo(Activity.RESULT_OK))
         MatcherAssert.assertThat(result.resultData, IntentMatchers.hasExtraWithKey("result"))
     }
+    */
 
 
 
@@ -247,9 +239,8 @@ class TakePictureActivityTest {
         val method: Method =
             TakePictureFragment::class.java.getDeclaredMethod("permissionNeededDialog")
         method.isAccessible = true
-        activityScenarioRule.scenario.onActivity { activity ->
-            method.invoke(activity)
-        }
+        launchFragmentWithPermission()
+
         onView(withText("Camera required")).inRoot(RootMatchers.isDialog()).check(
             matches(
                 isDisplayed()
@@ -257,6 +248,7 @@ class TakePictureActivityTest {
         )
     }
 
+    /*
     @Test
     fun showCaptureErrorDialogShowsCorrectly() {
         grantCameraPermission()
@@ -268,7 +260,9 @@ class TakePictureActivityTest {
         }
         onView(withText("Error")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
     }
+
      */
+
 
     @Test
     fun backButtonWorks(){
@@ -282,6 +276,17 @@ class TakePictureActivityTest {
             Navigation.setViewNavController(requireView(), navController)
         }
     }
+
+    private fun launchFragmentWithPermission() {
+        val args = bundleOf("categories" to catSetArray, "datasetId" to datasetId)
+        launchFragmentInHiltContainer<TakePictureFragment>(args) {
+            Navigation.setViewNavController(requireView(), navController)
+            val method: Method =
+                TakePictureFragment::class.java.getDeclaredMethod("permissionNeededDialog")
+            method.invoke(this)
+        }
+    }
+
 
 
 }

@@ -77,7 +77,6 @@ class DatasetsOverviewActivityTest {
         verify(navController).navigate(
             DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment(null)
         )
-        //onView(withId(R.id.button_submit_list)).perform(click())
     }
 
     @Test

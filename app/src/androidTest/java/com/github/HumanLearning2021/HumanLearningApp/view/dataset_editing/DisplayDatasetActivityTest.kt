@@ -1,18 +1,18 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -26,6 +26,9 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.view.HomeFragment
+import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
+import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -33,12 +36,12 @@ import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
+import org.hamcrest.core.Is
 import org.junit.*
 import org.junit.Assume.assumeTrue
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
-import java.io.File
 import java.util.*
 
 
@@ -49,6 +52,14 @@ class DisplayDatasetActivityTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @get:Rule
+    val activityScenarioRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(
+        Intent(
+            ApplicationProvider.getApplicationContext(),
+            MainActivity::class.java
+        )
+    )
+
     @BindValue
     @Demo2Database
     val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
@@ -58,14 +69,22 @@ class DisplayDatasetActivityTest {
     private lateinit var dataset: Dataset
     private var index = 0
 
-    private val navController: NavController = Mockito.mock(NavController::class.java)
+    private val mockNavController: NavController = Mockito.mock(NavController::class.java)
+
     private val datasetId: String = getFirstDataset(dbMgt).id
 
     @Before
     fun setup() {
         hiltRule.inject()  // ensures dbManagement is available
         dataset = getFirstDataset(dbMgt)
-        launchFragment()
+        //launchFragment()
+        Intents.init()
+    }
+
+    @After
+    fun cleanUp() {
+        Intents.release()
+        activityScenarioRule.scenario.close()
     }
 
 
@@ -74,6 +93,7 @@ class DisplayDatasetActivityTest {
      */
     @Test
     fun datasetGridAndNameAreDisplayed() {
+        launchFragment()
         onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
         onView(withId(R.id.display_dataset_name)).check(matches(isDisplayed()))
     }
@@ -84,6 +104,7 @@ class DisplayDatasetActivityTest {
     @ExperimentalCoroutinesApi
     @Test
     fun whenClickOnCategoryImageDisplayImageSetActivity() {
+        launchFragment()
         runBlocking {
             categories = dataset.categories
             for (cat in categories) {
@@ -97,18 +118,20 @@ class DisplayDatasetActivityTest {
                 .atPosition(0)
                 .perform(click())
 
-            verify(navController).navigate(DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToDisplayImageSetFragment(datasetId, categories.elementAt(index)))
+            verify(
+                mockNavController).navigate(
+                DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToDisplayImageSetFragment(
+                    datasetId, categories.elementAt(
+                        index
+                    )
+                )
+            )
         }
     }
 
     @Test
-    fun backButtonWorks(){
-        Espresso.pressBack()
-        verify(navController).popBackStack()
-    }
-
-    @Test
     fun modifyingDatasetNameWorks() {
+        launchFragment()
         val newName = "new dataset name"
         runBlocking {
             waitFor(1) // increase if needed
@@ -125,38 +148,46 @@ class DisplayDatasetActivityTest {
         }
     }
 
-    @Test
-    @Ignore // haven't found a way without FragmentScenario, which doesn't seem to be possible with Hilt
-    fun clickOnMenuModifyCategoriesWorks() {
-        launchFragment()
-
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        onView(withText("Modify categories")).perform(click())
-
-        verify(navController).navigate(DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToCategoriesEditingFragment(datasetId))
+    private fun navigateToDisplayActivity() {
+        onView(withId(R.id.goToDatasetsOverviewButton)).perform(click())
+        onView(withId(R.id.DatasetList_list))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
+                    0,
+                    click()
+                )
+            )
     }
 
     @Test
-    @Ignore // haven't found a way without FragmentScenario, which doesn't seem to be possible with Hilt
+    fun clickOnMenuModifyCategoriesWorks() {
+        navigateToDisplayActivity()
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText("Modify categories")).perform(click())
+        activityScenarioRule.scenario.onActivity {
+            var currentFragment =
+                it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
+            assert(currentFragment?.findNavController()?.currentDestination?.id == R.id.categoriesEditingFragment)
+        }
+    }
+
+    @Test
     fun clickOnMenuAddNewPictureWorks() {
+        navigateToDisplayActivity()
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText(R.string.add_new_picture)).perform(click())
         onView(withText(R.string.use_camera)).perform(click())
 
-        verify(navController).navigate(DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(categories.toTypedArray(),datasetId))
-
-        Espresso.pressBack()
-        Espresso.pressBack()
+        activityScenarioRule.scenario.onActivity {
+            var currentFragment =
+                it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
+            assert(currentFragment?.findNavController()?.currentDestination?.id == R.id.takePictureFragment)
+        }
 
         categories = dataset.categories
         assumeTrue(categories.isNotEmpty())
         runBlocking {
             val numberOfPictures = dbMgt.getAllPictures(categories.elementAt(index)).size
-
-            openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-            onView(withText(R.string.add_new_picture)).perform(click())
-            onView(withText(R.string.use_camera)).perform(click())
-
             onView(withId(R.id.takePictureButton)).perform(click())
             onView(withId(R.id.selectCategoryButton)).perform(click())
             onView(withText(categories.elementAt(index).name)).perform(click())
@@ -165,35 +196,31 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
             assert(dbMgt.getAllPictures(categories.elementAt(index)).size == numberOfPictures + 1)
         }
-
-
     }
 
     @Test
-    @Ignore // haven't found a way without FragmentScenario, which doesn't seem to be possible with Hilt
     fun clickOnMenuButNotOnButtonClosesMenu() {
+        navigateToDisplayActivity()
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        UiDevice.getInstance(getInstrumentation()).click(0, 100)
+        UiDevice.getInstance(getInstrumentation()).click(500, 500)
         onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
     }
 
-
-
-
-
     @Test
     fun onBackPressedWorks() {
+        launchFragment()
         Espresso.closeSoftKeyboard()
         val mDevice = UiDevice.getInstance(getInstrumentation())
         mDevice.pressBack()
 
-        verify(navController).popBackStack()
+        verify(mockNavController).popBackStack()
     }
 
     private fun launchFragment() {
         val args = bundleOf("datasetId" to datasetId)
         launchFragmentInHiltContainer<DisplayDatasetFragment>(args) {
-            Navigation.setViewNavController(requireView(), navController)
+            Navigation.setViewNavController(requireView(), mockNavController)
         }
     }
+
 }
