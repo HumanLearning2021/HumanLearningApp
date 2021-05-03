@@ -207,7 +207,7 @@ class TakePictureFragment : Fragment() {
     }
 
 
-    fun permissionNeededDialog() {
+    private fun permissionNeededDialog() {
 
         val builder = AlertDialog.Builder(parentActivity)
 

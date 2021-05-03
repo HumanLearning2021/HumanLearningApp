@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
 import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,11 +12,15 @@ import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.repeatedlyUntil
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -33,6 +38,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import kotlinx.parcelize.Parcelize
+import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.not
 import org.junit.*
 import org.junit.runner.RunWith
@@ -62,6 +68,8 @@ class TakePictureActivityTest {
     )
 
     val catSetArray = catSet.toTypedArray()
+
+    var fragmentResult = null
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
@@ -207,14 +215,17 @@ class TakePictureActivityTest {
         onView(withId(R.id.selectCategoryButton)).check(matches(hasTextColor(R.color.black)))
     }
 
+
+
     /*
-    Don't know how to test this without FragmentScenario
+    TODO: convert to fragment
 
     @Test
     fun receiveIntentFromCamera() {
+        Intents.init()
         val imageUri =
             Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
-        Intents.intending(hasComponent(TakePictureActivity::class.qualifiedName)).respondWith(
+        Intents.intending(hasComponent(TakePictureFragment::class.qualifiedName)).respondWith(
             Instrumentation.ActivityResult(
                 Activity.RESULT_OK,
                 Intent().putExtra(
@@ -228,19 +239,15 @@ class TakePictureActivityTest {
         val result = testRule.scenario.result
         MatcherAssert.assertThat(result.resultCode, Matchers.equalTo(Activity.RESULT_OK))
         MatcherAssert.assertThat(result.resultData, IntentMatchers.hasExtraWithKey("result"))
+        Intents.release()
     }
-    */
-
+     */
 
 
     @Test
     fun permissionNeededDialogShowsCorrectDialog() {
         grantCameraPermission()
-        val method: Method =
-            TakePictureFragment::class.java.getDeclaredMethod("permissionNeededDialog")
-        method.isAccessible = true
         launchFragmentWithPermission()
-
         onView(withText("Camera required")).inRoot(RootMatchers.isDialog()).check(
             matches(
                 isDisplayed()
@@ -248,20 +255,15 @@ class TakePictureActivityTest {
         )
     }
 
-    /*
+
     @Test
     fun showCaptureErrorDialogShowsCorrectly() {
         grantCameraPermission()
-        val method: Method =
-            TakePictureFragment::class.java.getDeclaredMethod("showCaptureErrorDialog")
-        method.isAccessible = true
-        activityScenarioRule.scenario.onActivity { activity ->
-            method.invoke(activity)
-        }
+        launchFragmentWithErrorDialog()
         onView(withText("Error")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
     }
 
-     */
+
 
 
     @Test
@@ -283,10 +285,35 @@ class TakePictureActivityTest {
             Navigation.setViewNavController(requireView(), navController)
             val method: Method =
                 TakePictureFragment::class.java.getDeclaredMethod("permissionNeededDialog")
+            method.isAccessible = true
             method.invoke(this)
         }
     }
 
 
+
+    private fun launchFragmentWithErrorDialog() {
+        val args = bundleOf("categories" to catSetArray, "datasetId" to datasetId)
+        launchFragmentInHiltContainer<TakePictureFragment>(args) {
+            Navigation.setViewNavController(requireView(), navController)
+            val method: Method =
+                TakePictureFragment::class.java.getDeclaredMethod("showCaptureErrorDialog")
+            method.isAccessible = true
+            method.invoke(this)
+        }
+    }
+
+    /*
+    private fun launchFragmentForResult() {
+        val args = bundleOf("categories" to catSetArray, "datasetId" to datasetId)
+        launchFragmentInHiltContainer<TakePictureFragment>(args) {
+            Navigation.setViewNavController(requireView(), navController)
+            this.parentFragmentManager.setFragmentResult(AddPictureFragment.REQUEST_KEY, bundleOf("chosenCategory" to chosenCategory, "pictureUri" to pictureUri))
+            assertThat(fragment.result).isEqualTo(expectedResult)
+
+        }
+    }
+
+     */
 
 }
