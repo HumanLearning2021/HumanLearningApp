@@ -1,8 +1,15 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
 import android.content.Intent
+import android.content.res.Resources
+import android.view.KeyEvent
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -69,6 +76,36 @@ class SearchActivityTest {
     fun datasetNamesAreDisplayed() {
        assertDisplayed(R.id.listView)
        assertDisplayed(R.id.searchView)
+    }
+
+    @Test
+    fun searchByKeyWordYieldsCorrectResult(){
+        onView(withId(
+            Resources.getSystem().getIdentifier("search_src_text",
+            "id", "android"))).perform(clearText(),typeText("Kitchen"))
+            .perform(pressKey(KeyEvent.KEYCODE_ENTER))
+
+        onView(withId(R.id.listView)).check(
+            ViewAssertions.matches(
+                ViewMatchers.hasChildCount(1)
+            ))
+
+
+    }
+
+    @Test
+    fun searchNotFoundYieldsNoResult(){
+        onView(withId(
+            Resources.getSystem().getIdentifier("search_src_text",
+                "id", "android"))).perform(clearText(),typeText("toto"))
+            .perform(pressKey(KeyEvent.KEYCODE_ENTER))
+
+        onView(withId(R.id.listView)).check(
+            ViewAssertions.matches(
+                ViewMatchers.hasChildCount(0)
+            ))
+
+
     }
 
 
