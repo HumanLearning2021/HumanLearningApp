@@ -82,7 +82,7 @@ class LearningSettingsActivityTest {
     }
 
     @Test
-    fun pressingReresentationButtonLaunchesLearningActivity(){
+    fun pressingRepresentationButtonLaunchesLearningActivity(){
         onView(withId(R.id.learningSettings_btChooseRepresentation)).perform(click())
         verify(navController).navigate(
             LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(datasetId, LearningMode.REPRESENTATION)
