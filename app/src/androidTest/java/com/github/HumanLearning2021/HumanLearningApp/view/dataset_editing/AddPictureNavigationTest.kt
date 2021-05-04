@@ -97,7 +97,6 @@ class AddPictureNavigationTest {
     }
 
     @Test
-    //@Ignore // Comparison of arguments in action failed even though they seem to be the same. Suspecting it is because of DummyCategory's equals()
     fun navigateToCamera() {
         navigateToAddPictureActivity()
         Espresso.onView(ViewMatchers.withId(R.id.use_camera))
