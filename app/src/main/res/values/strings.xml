@@ -53,4 +53,6 @@
     <string name="select_existing_picture">Select Existing Picture</string>
     <string name="use_camera">Use camera</string>
     <string name="choose_picture">Choose Picture</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
