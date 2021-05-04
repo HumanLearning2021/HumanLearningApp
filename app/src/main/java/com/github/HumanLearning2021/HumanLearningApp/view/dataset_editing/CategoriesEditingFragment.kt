@@ -109,8 +109,7 @@ class CategoriesEditingFragment : Fragment() {
 
     }
 
-    /*
-    Remove button not yet linked to fragment
+
 
     fun removeView(view: View) {
         val categoryName: EditText =
@@ -129,7 +128,7 @@ class CategoriesEditingFragment : Fragment() {
         }
     }
 
-     */
+    
 
     private fun saveData() {
         lifecycleScope.launch {
