@@ -26,9 +26,7 @@ class SearchActivity : AppCompatActivity() {
     @Inject
     @Demo2Database
     lateinit var dbMgt: DatabaseManagement
-
     lateinit var datasetList: List<String>
-
     lateinit var searchView: SearchView
     lateinit var listView: ListView
     lateinit var list: ArrayList<String>
@@ -36,18 +34,11 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
-
         lifecycleScope.launch {
                 datasetList = dbMgt.getDatasetNames().toList()
-
-
         title = "Look up dataset"
         searchView = findViewById(R.id.searchView)
         listView = findViewById(R.id.listView)
-
-
-
             adapter = ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, datasetList)
             listView.adapter = adapter
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -60,7 +51,6 @@ class SearchActivity : AppCompatActivity() {
                     }
                     return false
                 }
-
                 override fun onQueryTextChange(newText: String): Boolean {
                     adapter.filter.filter(newText)
                     return false
