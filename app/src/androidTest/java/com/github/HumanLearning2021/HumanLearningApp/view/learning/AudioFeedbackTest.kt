@@ -56,6 +56,10 @@ class AudioFeedbackTest {
     @Before
     fun setup() {
         hiltRule.inject()
+<<<<<<< HEAD
+=======
+        launchFragment()
+>>>>>>> 1e186249c7a79db3fbb9b5e4579f23ac4cb64b77
     }
 
     fun makeLearningAudioFeedback(): LearningAudioFeedback {

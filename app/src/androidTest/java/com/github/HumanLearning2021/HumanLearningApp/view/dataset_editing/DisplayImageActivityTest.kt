@@ -122,4 +122,5 @@ class DisplayImageActivityTest {
             Navigation.setViewNavController(requireView(), navController)
         }
     }
+
 }

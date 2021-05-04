@@ -56,7 +56,7 @@ class SelectPictureActivityTest {
     @Demo2Database
     val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
-    private val datasetId: String = TestUtils.getFirstDataset(dbManagement).id
+    private val datasetId: Id = TestUtils.getFirstDataset(dbManagement).id
 
     private val catSet = setOf<Category>(
         DummyCategory("cat1", "cat1"),

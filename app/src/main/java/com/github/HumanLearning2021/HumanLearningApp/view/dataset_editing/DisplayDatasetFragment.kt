@@ -143,6 +143,7 @@ class DisplayDatasetFragment : Fragment() {
     private class DisplayDatasetAdapter(
         private val images: ArrayList<Any>,
         private val categories: Set<Category>,
+
         private val context: Activity
     ) : BaseAdapter() {
 
@@ -159,6 +160,7 @@ class DisplayDatasetFragment : Fragment() {
 
             val imageCat = view.findViewById<TextView>(R.id.image_and_category_item_imageCategory)
             val imageView = view.findViewById<ImageView>(R.id.image_and_category_item_imageView)
+
             val picture = images.elementAt(position)
             if(picture is CategorizedPicture) {
                 imageCat?.text = picture.category.name

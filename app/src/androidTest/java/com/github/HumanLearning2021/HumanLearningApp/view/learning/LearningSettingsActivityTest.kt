@@ -46,8 +46,11 @@ import org.mockito.Mockito.verify
 import java.io.File
 import java.util.*
 
+<<<<<<< HEAD
 //With @UninstallModules(DatabaseManagementModule::class) -> missing binding
 //With @BindValue -> Double binding
+=======
+>>>>>>> 1e186249c7a79db3fbb9b5e4579f23ac4cb64b77
 
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
@@ -60,7 +63,11 @@ class LearningSettingsActivityTest {
     @BindValue @Demo2Database
     val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
+<<<<<<< HEAD
     private val datasetId = TestUtils.getFirstDataset(dbManagement).id as String
+=======
+    private val datasetId = TestUtils.getFirstDataset(dbManagement).id
+>>>>>>> 1e186249c7a79db3fbb9b5e4579f23ac4cb64b77
 
 
     val navController = mock(NavController::class.java)
@@ -84,7 +91,11 @@ class LearningSettingsActivityTest {
     }
 
     @Test
+<<<<<<< HEAD
     fun pressingReresentationButtonLaunchesLearningActivity(){
+=======
+    fun pressingRepresentationButtonLaunchesLearningActivity(){
+>>>>>>> 1e186249c7a79db3fbb9b5e4579f23ac4cb64b77
         onView(withId(R.id.learningSettings_btChooseRepresentation)).perform(click())
         verify(navController).navigate(
             LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(datasetId, LearningMode.REPRESENTATION)
@@ -136,4 +147,8 @@ class LearningSettingsActivityTest {
         }
 
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1e186249c7a79db3fbb9b5e4579f23ac4cb64b77

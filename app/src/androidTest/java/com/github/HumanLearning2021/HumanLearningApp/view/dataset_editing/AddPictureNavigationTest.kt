@@ -65,7 +65,8 @@ class AddPictureNavigationTest {
     val categories = catSet.toTypedArray()
 
     val navController = TestNavHostController(
-        ApplicationProvider.getApplicationContext())
+        ApplicationProvider.getApplicationContext()
+    )
 
     @Before
     fun setup() {
@@ -80,10 +81,7 @@ class AddPictureNavigationTest {
     }
 
 
-
-
     @Test
-    //@Ignore // Comparison of arguments in action failed even though they seem to be the same. Suspecting it is because of DummyCategory's equals()
     fun navigateToChoose() {
         navigateToAddPictureActivity()
 
@@ -98,7 +96,6 @@ class AddPictureNavigationTest {
     }
 
     @Test
-    //@Ignore // Comparison of arguments in action failed even though they seem to be the same. Suspecting it is because of DummyCategory's equals()
     fun navigateToCamera() {
         navigateToAddPictureActivity()
         Espresso.onView(ViewMatchers.withId(R.id.use_camera))
@@ -113,7 +110,7 @@ class AddPictureNavigationTest {
     }
 
 
-    private fun launchFragment(args:Bundle) {
+    private fun launchFragment(args: Bundle) {
         launchFragmentInHiltContainer<DisplayDatasetFragment>(args) {
             navController.setGraph(R.navigation.nav_graph)
             Navigation.setViewNavController(requireView(), navController)
@@ -134,6 +131,4 @@ class AddPictureNavigationTest {
         onView(ViewMatchers.withText(R.string.add_new_picture)).perform(click())
 
     }
-
-
 }

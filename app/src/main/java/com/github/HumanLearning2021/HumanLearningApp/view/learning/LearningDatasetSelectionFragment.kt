@@ -20,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class LearningDatasetSelectionFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
 
-    private var _binding: FragmentLearningDatasetSelectionBinding?= null
+    private var _binding: FragmentLearningDatasetSelectionBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -41,7 +41,7 @@ class LearningDatasetSelectionFragment : Fragment() {
                 Log.d(parentActivity.localClassName, "Selected dataset $it")
                 val action =
                     LearningDatasetSelectionFragmentDirections.actionLearningDatasetSelectionFragmentToLearningSettingsFragment(
-                        it.id as String
+                        it.id
                     )
                 findNavController().navigate(action)
             }
@@ -50,7 +50,7 @@ class LearningDatasetSelectionFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
-    val callback = object : OnBackPressedCallback(true){
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             findNavController().popBackStack()
         }
@@ -63,6 +63,4 @@ class LearningDatasetSelectionFragment : Fragment() {
         _binding = null
 
     }
-
-
 }
