@@ -41,7 +41,7 @@ class LearningDatasetSelectionFragment : Fragment() {
                 Log.d(parentActivity.localClassName, "Selected dataset $it")
                 val action =
                     LearningDatasetSelectionFragmentDirections.actionLearningDatasetSelectionFragmentToLearningSettingsFragment(
-                        it.id as String
+                        it.id
                     )
                 findNavController().navigate(action)
             }
