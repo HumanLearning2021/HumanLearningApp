@@ -46,8 +46,6 @@ import org.mockito.Mockito.verify
 import java.io.File
 import java.util.*
 
-//With @UninstallModules(DatabaseManagementModule::class) -> missing binding
-//With @BindValue -> Double binding
 
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
