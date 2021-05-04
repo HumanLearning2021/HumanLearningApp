@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/delete_pictures"
+        android:title="@string/delete_selected_pictures"
+        android:icon="@android:drawable/ic_menu_delete"
+        />
+
+    <item
+        android:id="@+id/set_representative_picture"
+        android:title="@string/set_as_representative_picture"
+        android:icon="@android:drawable/btn_star_big_off"
+        />
+</menu>

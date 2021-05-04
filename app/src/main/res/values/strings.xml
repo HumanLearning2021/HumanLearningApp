@@ -53,4 +53,6 @@
     <string name="select_existing_picture">Select Existing Picture</string>
     <string name="use_camera">Use camera</string>
     <string name="choose_picture">Choose Picture</string>
+    <string name="delete_selected_pictures">Delete selected pictures</string>
+    <string name="set_as_representative_picture">Set as representative picture</string>
 </resources>
