@@ -49,6 +49,15 @@ interface DatabaseService {
     suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture?
 
     /**
+     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
+     *
+     * @param picture - the picture to put as a representative
+     * @param category - the category whose representative picture we want to change
+     * @throws IllegalArgumentException if the database does not contain the specified category
+     */
+    suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
+
+    /**
      * A function that allows to put a picture in the database
      *
      * @param picture the picture to put in the database
@@ -131,15 +140,6 @@ interface DatabaseService {
      * @throws IllegalArgumentException if there is no dataset of the specified id in the database
      */
     suspend fun deleteDataset(id: Id)
-
-    /**
-     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
-     *
-     * @param picture - the picture to put as a representative
-     * @param category - the category whose representative picture we want to change
-     * @throws IllegalArgumentException if the database does not contain the specified category
-     */
-    suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
 
     /**
      * Retrieves all of the available datasets
