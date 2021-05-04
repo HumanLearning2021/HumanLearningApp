@@ -83,7 +83,6 @@ class AddPictureNavigationTest {
 
 
     @Test
-    //@Ignore // Comparison of arguments in action failed even though they seem to be the same. Suspecting it is because of DummyCategory's equals()
     fun navigateToChoose() {
         navigateToAddPictureActivity()
 
