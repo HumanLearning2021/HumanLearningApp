@@ -58,7 +58,7 @@ class LearningSettingsActivityTest {
     @BindValue @Demo2Database
     val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
-    private val datasetId = TestUtils.getFirstDataset(dbManagement).id as String
+    private val datasetId = TestUtils.getFirstDataset(dbManagement).id
 
 
     val navController = mock(NavController::class.java)
