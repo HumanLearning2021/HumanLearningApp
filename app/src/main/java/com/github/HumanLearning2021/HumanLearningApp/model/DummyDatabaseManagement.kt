@@ -125,7 +125,7 @@ data class DummyDatabaseManagement internal constructor(
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
         require(category is DummyCategory)
-        return try {
+        try {
             databaseService.putRepresentativePicture(picture, category)
         } catch (e: IllegalArgumentException) {
             throw e
