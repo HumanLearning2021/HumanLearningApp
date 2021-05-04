@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment
+    package com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click

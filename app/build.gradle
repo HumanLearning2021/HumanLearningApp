@@ -5,6 +5,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id "androidx.navigation.safeargs.kotlin"
 }
 
 // load keystore password from secret file
@@ -43,6 +44,10 @@ android {
 
     buildFeatures {
         viewBinding true
+    }
+    
+    viewBinding {
+        enabled = true
     }
 
     buildTypes {
@@ -158,6 +163,9 @@ dependencies {
     androidTestImplementation('com.schibsted.spain:barista:3.8.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
 
     //Room
     implementation "androidx.room:room-runtime:2.3.0-rc01"
@@ -166,6 +174,9 @@ dependencies {
     // Fix Room incremental Processing
     annotationProcessor "androidx.room:room-compiler:2.3.0-rc01"
 
+    // Navigation Component dependencies
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
 
