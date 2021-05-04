@@ -83,9 +83,7 @@ class AddPictureNavigationTest {
     @Test
     fun navigateToChoose() {
         navigateToAddPictureActivity()
-
         onView(withId(R.id.select_existing_picture)).perform(click())
-
         activityScenarioRule.scenario.onActivity {
             var currentFragmentContainer =
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
