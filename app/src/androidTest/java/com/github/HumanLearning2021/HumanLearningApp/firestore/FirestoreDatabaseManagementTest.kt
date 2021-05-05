@@ -66,8 +66,8 @@ class FirestoreDatabaseManagementTest {
         demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")
-        fakeDataset = FirestoreDataset("oopsy/oopsy", "oopsy", "oopsy", setOf())
+        fakeCategory =  FirestoreCategory("oopsy", "oopsy")
+        fakeDataset = FirestoreDataset("oopsy", "oopsy", setOf())
     }
 
     private fun getRandomString() = "${UUID.randomUUID()}"
@@ -75,7 +75,7 @@ class FirestoreDatabaseManagementTest {
     @Test
     fun test_getPicture_categoryNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.getPicture(FirestoreCategory("path", getRandomString(), getRandomString()))
+            scratchManagement.getPicture(FirestoreCategory(getRandomString(), getRandomString()))
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -108,7 +108,7 @@ class FirestoreDatabaseManagementTest {
         runCatching {
             val tmp = File.createTempFile("meow", ".png")
             val uri = Uri.fromFile(tmp)
-            scratchManagement.putPicture(uri, FirestoreCategory("path", getRandomString(), getRandomString()))
+            scratchManagement.putPicture(uri, FirestoreCategory(getRandomString(), getRandomString()))
             tmp.delete()
         }.fold({
             fail("unexpected successful completion")
@@ -297,7 +297,7 @@ class FirestoreDatabaseManagementTest {
     @Test
     fun test_putRepresentativePicture_fromCategorizedPicture_pictureNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.putRepresentativePicture(FirestoreCategorizedPicture("${UUID.randomUUID()}", "some/path", fakeCategory, "url"))
+            scratchManagement.putRepresentativePicture(FirestoreCategorizedPicture("${UUID.randomUUID()}",  fakeCategory, "url"))
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -352,7 +352,7 @@ class FirestoreDatabaseManagementTest {
     fun test_removeCategoryFromDataset_datasetNotPresent() = runBlocking {
         val cat1 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
         val cat2 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
-        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf(cat1, cat2))
+        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
         val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
         assertThat(res.categories, equalTo(setOf(cat1)))
     }
@@ -362,7 +362,7 @@ class FirestoreDatabaseManagementTest {
     fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
         val cat1 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
         val cat2 = fakeCategory
-        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf(cat1, cat2))
+        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
         val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
         assertThat(res.categories, equalTo(setOf(cat1)))
     }
@@ -381,7 +381,7 @@ class FirestoreDatabaseManagementTest {
 
     @Test
     fun test_editDatasetName_datasetNotPresent() = runBlocking {
-        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
+        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf())
         runCatching {
             scratchManagement.editDatasetName(fakeDs, getRandomString())
         }.fold({
@@ -403,7 +403,7 @@ class FirestoreDatabaseManagementTest {
 
     @Test
     fun test_addCategoryToDataset_categoryNotPresent() = runBlocking {
-        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
+        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf())
         runCatching {
             scratchManagement.addCategoryToDataset(fakeDs, fakeCategory)
         }.fold({

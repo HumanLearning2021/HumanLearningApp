@@ -20,10 +20,9 @@ import java.io.InputStream
 @Parcelize
 data class FirestoreCategorizedPicture internal constructor(
     override val id: Id,
-    override val path: String,
     override val category: FirestoreCategory,
     val url: String,
-) : CategorizedPicture, FirestoreDocument {
+) : CategorizedPicture {
 
     override fun displayOn(activity: Activity, imageView: ImageView) {
         Glide.with(activity)

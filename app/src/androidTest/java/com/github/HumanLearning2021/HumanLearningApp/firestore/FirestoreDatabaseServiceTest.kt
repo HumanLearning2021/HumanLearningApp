@@ -66,8 +66,8 @@ class FirestoreDatabaseServiceTest {
         demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")
-        fakeDataset = FirestoreDataset("oopsy/oopsy", "oopsy", "oopsy", setOf())
+        fakeCategory =  FirestoreCategory("oopsy", "oopsy")
+        fakeDataset = FirestoreDataset("oopsy", "oopsy", setOf())
     }
 
     @Test
@@ -115,7 +115,7 @@ class FirestoreDatabaseServiceTest {
     @Test
     fun test_removePicture_throwsIfPictureNotPresent(): Unit = runBlocking {
         runCatching {
-            scratchInterface.removePicture(FirestoreCategorizedPicture("some id", "path", fakeCategory, "some url"))
+            scratchInterface.removePicture(FirestoreCategorizedPicture("some id", fakeCategory, "some url"))
         }.fold({
             fail("unexpected successful completion")
         }, {

@@ -63,8 +63,8 @@ class OfflineDatabaseManagementTest {
         demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")
-        fakeDataset = FirestoreDataset("oopsy/oopsy", "oopsy", "oopsy", setOf())
+        fakeCategory =  FirestoreCategory("oopsy", "oopsy")
+        fakeDataset = FirestoreDataset("oopsy", "oopsy", setOf())
     }
 
     @After
@@ -78,7 +78,7 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_getPicture_categoryNotPresent() = runBlocking {
         runCatching {
-            demoManagement.getPicture(FirestoreCategory("path", getRandomString(), getRandomString()))
+            demoManagement.getPicture(FirestoreCategory(getRandomString(), getRandomString()))
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
@@ -128,7 +128,7 @@ class OfflineDatabaseManagementTest {
         runCatching {
             val tmp = File.createTempFile("meow", ".png")
             val uri = Uri.fromFile(tmp)
-            demoManagement.putPicture(uri, FirestoreCategory("path", getRandomString(), getRandomString()))
+            demoManagement.putPicture(uri, FirestoreCategory(getRandomString(), getRandomString()))
             tmp.delete()
         }.fold({
             Assert.fail("unexpected successful completion")
@@ -393,7 +393,7 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_editDatasetName_datasetNotPresent() = runBlocking {
-        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
+        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf())
         runCatching {
             demoManagement.editDatasetName(fakeDs, getRandomString())
         }.fold({
@@ -415,7 +415,7 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_addCategoryToDataset_categoryNotPresent() = runBlocking {
-        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
+        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf())
         runCatching {
             demoManagement.addCategoryToDataset(fakeDs, fakeCategory)
         }.fold({

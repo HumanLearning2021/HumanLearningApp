@@ -5,9 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FirestoreUser(
-    override val path: String,
     override val displayName: String?,
     override val email: String?,
     override val uid: String,
     override val type: User.Type,
-) : FirestoreDocument, User
+) : User

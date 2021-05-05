@@ -6,8 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class FirestoreDataset(
-    override val path: String,
     override val id: Id,
     override val name: String,
     override val categories: Set<FirestoreCategory>
-) : Dataset, FirestoreDocument
+) : Dataset
