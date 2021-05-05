@@ -68,7 +68,7 @@ class GeneralNavigationTest {
 
 
     @Test // this one used to cause trouble
-    fun navigateToDisplayDatasetAndThenNavigateUpGoesToDatasetsOverview(){
+    fun navigateToDisplayDatasetAndThenNavigateUpGoesToDatasetsOverview() {
         navigateToDisplayDataset()
         assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
         onView(withContentDescription("Navigate up")).perform(click());
@@ -77,12 +77,16 @@ class GeneralNavigationTest {
     }
 
     @Test
-    fun createDatasetAndNavigateUpGoesToDatasetsOverview(){
-
+    fun createDatasetAndNavigateUpGoesToDatasetsOverview() {
+        onView(withId(R.id.datasetsOverviewFragment)).perform(click())
+        onView(withId(R.id.createDatasetButton)).perform(click())
+        assertCurrentFragmentIsCorrect(R.id.categoriesEditingFragment)
+        onView(withContentDescription("Navigate up")).perform(click());
+        assertCurrentFragmentIsCorrect(R.id.datasetsOverviewFragment)
     }
 
     @Test
-    fun openingNavigationAndClickingOnLoginWorks(){
+    fun openingNavigationAndClickingOnLoginWorks() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.drawer_layout)).check(matches(isOpen()));
         onView(withId(R.id.googleSignInWidget)).perform(click())
@@ -90,19 +94,19 @@ class GeneralNavigationTest {
     }
 
     @Test
-    fun bottomNavigationCanNavigateToLearning(){
+    fun bottomNavigationCanNavigateToLearning() {
         onView(withId(R.id.learningDatasetSelectionFragment)).perform(click())
         assertCurrentFragmentIsCorrect(R.id.learningDatasetSelectionFragment)
     }
 
     @Test
-    fun bottomNavigationCanNavigateToDatasetEditing(){
+    fun bottomNavigationCanNavigateToDatasetEditing() {
         onView(withId(R.id.learningDatasetSelectionFragment)).perform(click())
         assertCurrentFragmentIsCorrect(R.id.learningDatasetSelectionFragment)
     }
 
     @Test
-    fun buttonOnHomeToLearningWorks(){
+    fun buttonOnHomeToLearningWorks() {
         onView(withId(R.id.startLearningButton)).perform(click())
         assertCurrentFragmentIsCorrect(R.id.learningDatasetSelectionFragment)
     }
@@ -118,7 +122,7 @@ class GeneralNavigationTest {
             )
     }
 
-    private fun assertCurrentFragmentIsCorrect(expected: Int){
+    private fun assertCurrentFragmentIsCorrect(expected: Int) {
         activityScenarioRule.scenario.onActivity {
             var currentFragmentContainer =
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
