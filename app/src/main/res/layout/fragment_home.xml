@@ -6,35 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".view.HomeFragment">
 
-    <Button
-        android:id="@+id/goToLearningButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="@string/main_btLearning"
-        app:layout_constraintBottom_toTopOf="@+id/goToDatasetsOverviewButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/goToDatasetsOverviewButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="@string/main_btDatasetsOverview"
-        app:layout_constraintBottom_toTopOf="@+id/MainActivitySignInFragment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/MainActivitySignInFragment"
-        android:name="com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInWidget"
+        android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="@string/startLearning"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/goToDatasetsOverviewButton" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
+
+    <ImageView
+        android:id="@+id/imageViewLogo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="100dp"
+        android:src="@drawable/logocropped400cngdpi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

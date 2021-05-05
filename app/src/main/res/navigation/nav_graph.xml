@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/datasetsOverviewFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/learningDatasetSelectionFragment"
@@ -170,4 +170,13 @@
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInWidget"
         android:label="fragment_google_sign_in"
         tools:layout="@layout/fragment_google_sign_in" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_learningDatasetSelectionFragment"
+            app:destination="@id/learningDatasetSelectionFragment" />
+    </fragment>
 </navigation>

@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.datasetsOverviewFragment, R.id.learningDatasetSelectionFragment),
+            setOf(R.id.datasetsOverviewFragment, R.id.learningDatasetSelectionFragment, R.id.homeFragment),
             findViewById<DrawerLayout>(R.id.drawer_layout)
         )
         setSupportActionBar(toolbar)
