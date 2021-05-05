@@ -3,7 +3,8 @@
 ## Preparation
 
 Do the path in the application at least once before to see if anything crashes.
-Predownload an image if the demo is done on an emulator. Then add this image during the demo instead of taking one.
+
+Predownload an image if the demo is done on an emulator, then add this image during the demo instead of taking one.
 
 ## Script
 
