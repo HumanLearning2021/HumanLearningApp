@@ -29,7 +29,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
-import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
 
@@ -89,7 +88,7 @@ class FirestoreDatabaseServiceTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -100,7 +99,7 @@ class FirestoreDatabaseServiceTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -120,7 +119,7 @@ class FirestoreDatabaseServiceTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -186,7 +185,7 @@ class FirestoreDatabaseServiceTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -206,7 +205,7 @@ class FirestoreDatabaseServiceTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -244,11 +243,10 @@ class FirestoreDatabaseServiceTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
-    @Ignore("It looks like the Emulator does not throw an exception in this case but the production firestore does")
     @Test
     fun test_removeCategoryFromDataset_throwsIfCategoryNotContained(): Unit = runBlocking {
         val ds = demoInterface.getDatasets().first()
@@ -257,7 +255,7 @@ class FirestoreDatabaseServiceTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -282,7 +280,7 @@ class FirestoreDatabaseServiceTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 

@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import java.lang.IllegalArgumentException
 
 class CachedDatabaseManagement internal constructor(
     private val db: DatabaseManagement, private val cache: PictureRepository
@@ -53,7 +52,7 @@ class CachedDatabaseManagement internal constructor(
         cachedPictures.remove(pictureId)
         try {
             cache.deletePicture(pictureId)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: DatabaseService.NotFoundException) {
             // Do nothing since it means that the cache already removed it itself
         }
     }

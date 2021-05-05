@@ -17,7 +17,7 @@ interface DatabaseManagement {
      * @param category the category of the image to be retrieved
      * @return a CategorizedPicture from the desired category. Null if no picture of the desired
      * category is present in the database.
-     * @throws IllegalArgumentException if the provided category is not present in the database
+     * @throws DatabaseService.NotFoundException if the provided category is not present in the database
      */
     suspend fun getPicture(category: Category): CategorizedPicture?
 
@@ -27,7 +27,7 @@ interface DatabaseManagement {
      * @param category the category of the image to be retrieved
      * @return a CategorizedPicture from the desired category. Null if no picture of the desired
      * category is present in the database.
-     * @throws IllegalArgumentException if there is not picture of the provided id in the database
+     * @throws DatabaseService.NotFoundException if there is not picture of the provided id in the database
      */
     suspend fun getPicture(pictureId: Id): CategorizedPicture?
 
@@ -36,7 +36,7 @@ interface DatabaseManagement {
      *
      * @param category the category of image to be retrieved
      * @return a List of ids. Can be empty if no pictures where found.
-     * @throws IllegalArgumentException if the provided category is not present in the database
+     * @throws DatabaseService.NotFoundException if the provided category is not present in the database
      */
     suspend fun getPictureIds(category: Category): List<Id>
 
@@ -54,7 +54,7 @@ interface DatabaseManagement {
      * @param picture - the picture to put as a representative
      * @param category - the category whose representative picture we want to change
      * @return the previous representative picture, null if there was none
-     * @throws IllegalArgumentException if the underlying database does not contain the specified category
+     * @throws DatabaseService.NotFoundException if the underlying database does not contain the specified category
      */
     suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
 
@@ -63,7 +63,7 @@ interface DatabaseManagement {
      * removing it from the pictures of the category in the process.
      *
      * @param picture - the categorized picture to set as representative picture
-     * @throws IllegalArgumentException if the underlying database does not contain the specified picture
+     * @throws DatabaseService.NotFoundException if the underlying database does not contain the specified picture
      */
     suspend fun putRepresentativePicture(picture: CategorizedPicture)
 
@@ -112,7 +112,7 @@ interface DatabaseManagement {
      *
      * @param category - the category whose pictures we want to retrieve
      * @return the pictures categorized with the specified category
-     * @throws IllegalArgumentException if the underlying database does not contain the specified category
+     * @throws DatabaseService.NotFoundException if the underlying database does not contain the specified category
      */
     suspend fun getAllPictures(category: Category): Set<CategorizedPicture>
 
@@ -120,7 +120,7 @@ interface DatabaseManagement {
      * Remove the category from the underlying database
      *
      * @param category - the category to remove from the underlying database
-     * @throws IllegalArgumentException if the underlying database does not contain the specified category
+     * @throws DatabaseService.NotFoundException if the underlying database does not contain the specified category
      */
     suspend fun removeCategory(category: Category)
 
@@ -128,7 +128,7 @@ interface DatabaseManagement {
      * Removes the corresponding picture from the underlying database
      *
      * @param picture - the picture to remove from the underlying database
-     * @throws IllegalArgumentException if the underlying database does not contain the specified picture
+     * @throws DatabaseService.NotFoundException if the underlying database does not contain the specified picture
      */
     suspend fun removePicture(picture: CategorizedPicture)
 
@@ -161,7 +161,7 @@ interface DatabaseManagement {
      * Deletes the specified dataset from the underlying database
      *
      * @param id - the name of the dataset to delete
-     * @throws IllegalArgumentException if there is no dataset of the specified id in the underlying database
+     * @throws DatabaseService.NotFoundException if there is no dataset of the specified id in the underlying database
      */
     suspend fun deleteDataset(id: Id)
 
@@ -192,7 +192,7 @@ interface DatabaseManagement {
      * @param dataset - the dataset from which to remove the category
      * @param category - the category to remove from the dataset
      * @return the dataset with the category removed
-     * @throws IllegalArgumentException if the database does not contain the specified category
+     * @throws DatabaseService.NotFoundException if the database does not contain the specified category
      */
     suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): Dataset
 
@@ -211,8 +211,8 @@ interface DatabaseManagement {
      * @param dataset - the dataset where the category should be put
      * @param category - the category to add
      * @return the dataset with the new category added
-     * @throws IllegalArgumentException if the database does not contain the specified dataset
-     * @throws IllegalArgumentException if the database does not contain the specified category
+     * @throws DatabaseService.NotFoundException if the database does not contain the specified dataset
+     * @throws DatabaseService.NotFoundException if the database does not contain the specified category
      */
     suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset
 }

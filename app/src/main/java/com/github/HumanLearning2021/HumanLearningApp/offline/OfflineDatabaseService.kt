@@ -9,7 +9,6 @@ import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineConverters.f
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineConverters.fromUser
 import com.github.HumanLearning2021.HumanLearningApp.room.*
 import com.google.firebase.auth.FirebaseUser
-import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import java.util.*
 
@@ -44,7 +43,7 @@ class OfflineDatabaseService internal constructor(
      * category is present in the database or if the category is not present
      */
     override suspend fun getPicture(category: Category): OfflineCategorizedPicture? {
-        val pics = categoryDao.loadAllPictures(category.id) ?: throw IllegalArgumentException("${category.id} not found in database")
+        val pics = categoryDao.loadAllPictures(category.id) ?: throw DatabaseService.NotFoundException(category.id)
         val randomId = pics.pictures.map { p -> p.pictureId }.random()
         return fromPicture(categoryDao.loadPicture(randomId)!!, categoryDao)
     }
@@ -61,7 +60,7 @@ class OfflineDatabaseService internal constructor(
      * @return a List of ids. Can be empty if no pictures where found or if the category is not contained in the database
      */
     override suspend fun getPictureIds(category: Category): List<String> {
-        val pics = categoryDao.loadAllPictures(category.id) ?: throw IllegalArgumentException("${category.id} not found in database")
+        val pics = categoryDao.loadAllPictures(category.id) ?: throw DatabaseService.NotFoundException(category.id)
         return pics.pictures.map { p -> p.pictureId }
     }
 
@@ -71,7 +70,7 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): OfflineCategorizedPicture {
-        val cat = categoryDao.loadById(category.id) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
+        val cat = categoryDao.loadById(category.id) ?: throw DatabaseService.NotFoundException(category.id)
         val pic = RoomPicture(getID(), picture, cat.categoryId)
         val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
         pictureRepository.savePicture(picture)
@@ -104,7 +103,7 @@ class OfflineDatabaseService internal constructor(
      * @return the pictures categorized with the specified category, empty if the category is not contained in the dataset
      */
     override suspend fun getAllPictures(category: Category): Set<OfflineCategorizedPicture> {
-        val cats = categoryDao.loadAllPictures(category.id) ?: throw IllegalArgumentException("${category.id} not found in database")
+        val cats = categoryDao.loadAllPictures(category.id) ?: throw DatabaseService.NotFoundException(category.id)
         return cats.pictures.map{p -> fromPicture(p, categoryDao)}.toSet()
     }
 
@@ -173,7 +172,7 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
-        val cat = categoryDao.loadById(category.id) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
+        val cat = categoryDao.loadById(category.id) ?: throw DatabaseService.NotFoundException(category.id)
         categoryDao.insertAll(RoomUnlinkedRepresentativePicture(getID(), picture, cat.categoryId))
     }
 
@@ -188,20 +187,20 @@ class OfflineDatabaseService internal constructor(
 
     override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): OfflineDataset {
         datasetDao.delete(RoomDatasetCategoriesCrossRef(dataset.id, category.id))
-        val ds = datasetDao.loadById(dataset.id) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
+        val ds = datasetDao.loadById(dataset.id) ?: throw DatabaseService.NotFoundException(dataset.id)
         return fromDataset(ds)
     }
 
     override suspend fun editDatasetName(dataset: Dataset, newName: String): OfflineDataset {
-        val ds = datasetDao.loadById(dataset.id) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
+        val ds = datasetDao.loadById(dataset.id) ?: throw DatabaseService.NotFoundException(dataset.id)
         val updatedDs = RoomDatasetWithoutCategories(ds.datasetWithoutCategories.datasetId, newName)
         datasetDao.update(updatedDs)
         return fromDataset(RoomDataset(updatedDs, ds.categories))
     }
 
     override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): OfflineDataset {
-        val ds = datasetDao.loadById(dataset.id) ?: throw IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database")
-        val cat = categoryDao.loadById(category.id) ?: throw IllegalArgumentException("The category with id ${category.id} is not contained in the database")
+        val ds = datasetDao.loadById(dataset.id) ?: throw DatabaseService.NotFoundException(dataset.id)
+        val cat = categoryDao.loadById(category.id) ?: throw DatabaseService.NotFoundException(category.id)
         datasetDao.insertAll(RoomDatasetCategoriesCrossRef(ds.datasetWithoutCategories.datasetId, cat.categoryId))
         val updatedCats = ds.categories.toMutableList()
         updatedCats.add(cat)

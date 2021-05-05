@@ -28,7 +28,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
-import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
 
@@ -80,7 +79,7 @@ class FirestoreDatabaseManagementTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -114,7 +113,7 @@ class FirestoreDatabaseManagementTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -173,7 +172,7 @@ class FirestoreDatabaseManagementTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -222,7 +221,7 @@ class FirestoreDatabaseManagementTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -271,7 +270,7 @@ class FirestoreDatabaseManagementTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -302,7 +301,7 @@ class FirestoreDatabaseManagementTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -388,7 +387,7 @@ class FirestoreDatabaseManagementTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -410,7 +409,7 @@ class FirestoreDatabaseManagementTest {
         }.fold({
             fail("unexpected successful completion")
         }, {
-            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+            assertThat(it, instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 }

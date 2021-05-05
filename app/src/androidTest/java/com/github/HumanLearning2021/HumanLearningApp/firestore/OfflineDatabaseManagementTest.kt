@@ -1,16 +1,14 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategory
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDataset
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
+import com.github.HumanLearning2021.HumanLearningApp.offline.*
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
@@ -24,7 +22,6 @@ import org.hamcrest.Matchers
 import org.junit.*
 import org.junit.runner.RunWith
 import java.io.File
-import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
 
@@ -85,7 +82,7 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -136,7 +133,7 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -195,7 +192,7 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -244,7 +241,7 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -284,7 +281,7 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -311,17 +308,6 @@ class OfflineDatabaseManagementTest {
             Matchers.equalTo(null)
         )
         )
-    }
-
-    @Test
-    fun test_putRepresentativePicture_fromCategorizedPicture_pictureNotPresent() = runBlocking {
-        runCatching {
-            demoManagement.putRepresentativePicture(FirestoreCategorizedPicture("${UUID.randomUUID()}", "some/path", fakeCategory, "url"))
-        }.fold({
-            Assert.fail("unexpected successful completion")
-        }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
-        })
     }
 
     @Test
@@ -413,7 +399,7 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -435,7 +421,7 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 }

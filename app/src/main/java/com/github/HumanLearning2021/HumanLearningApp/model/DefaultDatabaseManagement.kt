@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
 import java.lang.Exception
-import java.lang.IllegalArgumentException
 
 @Deprecated("replaced by DefaultDatabaseManagement")
 typealias DummyDatabaseManagement = DefaultDatabaseManagement
@@ -13,7 +12,7 @@ class DefaultDatabaseManagement internal constructor(
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         return try {
             databaseService.getPicture(category)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: DatabaseService.NotFoundException) {
             throw e
         }
     }
@@ -25,7 +24,7 @@ class DefaultDatabaseManagement internal constructor(
     override suspend fun getPictureIds(category: Category): List<Id> {
         return try {
             databaseService.getPictureIds(category)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: DatabaseService.NotFoundException) {
             throw e
         }
     }
@@ -37,7 +36,7 @@ class DefaultDatabaseManagement internal constructor(
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
         return try {
             databaseService.putPicture(picture, category)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: DatabaseService.NotFoundException) {
            throw e
         }
     }
@@ -68,7 +67,7 @@ class DefaultDatabaseManagement internal constructor(
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
         return try {
             databaseService.getAllPictures(category)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: DatabaseService.NotFoundException) {
             throw e
         }
     }
@@ -76,7 +75,7 @@ class DefaultDatabaseManagement internal constructor(
     override suspend fun removeCategory(category: Category) {
         try {
             databaseService.removeCategory(category)
-        } catch (e: Exception) {
+        } catch (e: DatabaseService.NotFoundException) {
             //do nothing since this means that the category is not in the database which is the same as having it removed
         }
     }
@@ -84,7 +83,7 @@ class DefaultDatabaseManagement internal constructor(
     override suspend fun removePicture(picture: CategorizedPicture) {
         try {
             databaseService.removePicture(picture)
-        } catch (e: Exception) {
+        } catch (e: DatabaseService.NotFoundException) {
             //do nothing since this means that the picture is not in the database which is the same as having it removed
         }
     }
@@ -111,7 +110,7 @@ class DefaultDatabaseManagement internal constructor(
     override suspend fun deleteDataset(id: Id) {
         try {
             databaseService.deleteDataset(id)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: DatabaseService.NotFoundException) {
             //do nothing since this means that the dataset is not in the database which is the same as having it removed
         }
     }
@@ -119,7 +118,7 @@ class DefaultDatabaseManagement internal constructor(
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
         try {
             databaseService.putRepresentativePicture(picture, category)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: DatabaseService.NotFoundException) {
             throw e
         }
     }
@@ -129,7 +128,7 @@ class DefaultDatabaseManagement internal constructor(
      * removing it from the pictures of the category in the process.
      *
      * @param picture - the categorized picture to set as representative picture
-     * @throws IllegalArgumentException if the underlying database does not contain the specified picture
+     * @throws DatabaseService.NotFoundException if the underlying database does not contain the specified picture
      */
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         databaseService.putRepresentativePicture(picture)
@@ -161,7 +160,7 @@ class DefaultDatabaseManagement internal constructor(
     override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): Dataset {
         return try {
             databaseService.removeCategoryFromDataset(dataset, category)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: DatabaseService.NotFoundException) {
             throw e
         }
     }
@@ -169,7 +168,7 @@ class DefaultDatabaseManagement internal constructor(
     override suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset {
         return try {
             databaseService.editDatasetName(dataset, newName)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: DatabaseService.NotFoundException) {
             throw e
         }
     }
@@ -177,7 +176,7 @@ class DefaultDatabaseManagement internal constructor(
     override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset {
         return try {
             databaseService.addCategoryToDataset(dataset, category)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: DatabaseService.NotFoundException) {
             throw e
         }
     }
