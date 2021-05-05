@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.fragment.app.testing.launchFragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
@@ -46,12 +47,6 @@ import org.mockito.Mockito.verify
 import java.io.File
 import java.util.*
 
-<<<<<<< HEAD
-//With @UninstallModules(DatabaseManagementModule::class) -> missing binding
-//With @BindValue -> Double binding
-=======
->>>>>>> 1e186249c7a79db3fbb9b5e4579f23ac4cb64b77
-
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -60,15 +55,11 @@ class LearningSettingsActivityTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    @BindValue @Demo2Database
+    @BindValue
+    @Demo2Database
     val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
-<<<<<<< HEAD
-    private val datasetId = TestUtils.getFirstDataset(dbManagement).id as String
-=======
     private val datasetId = TestUtils.getFirstDataset(dbManagement).id
->>>>>>> 1e186249c7a79db3fbb9b5e4579f23ac4cb64b77
-
 
     val navController = mock(NavController::class.java)
 
@@ -80,25 +71,27 @@ class LearningSettingsActivityTest {
     }
 
     @Test
-    fun pressingPresentationButtonLaunchesLearningActivity(){
+    fun pressingPresentationButtonLaunchesLearningActivity() {
 
         onView(withId(R.id.learningSettings_btChoosePresentation)).perform(click())
 
 
         verify(navController).navigate(
-            LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(datasetId, LearningMode.PRESENTATION)
+            LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
+                datasetId,
+                LearningMode.PRESENTATION
+            )
         )
     }
 
     @Test
-<<<<<<< HEAD
-    fun pressingReresentationButtonLaunchesLearningActivity(){
-=======
-    fun pressingRepresentationButtonLaunchesLearningActivity(){
->>>>>>> 1e186249c7a79db3fbb9b5e4579f23ac4cb64b77
+    fun pressingRepresentationButtonLaunchesLearningActivity() {
         onView(withId(R.id.learningSettings_btChooseRepresentation)).perform(click())
         verify(navController).navigate(
-            LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(datasetId, LearningMode.REPRESENTATION)
+            LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
+                datasetId,
+                LearningMode.REPRESENTATION
+            )
         )
     }
 
@@ -118,7 +111,7 @@ class LearningSettingsActivityTest {
     }
 
     @Test
-    fun staticUITests(){
+    fun staticUITests() {
         learningModeTooltipsAreCorrect()
         bothButtonsAndTVAreDisplayed()
     }
@@ -139,7 +132,7 @@ class LearningSettingsActivityTest {
         }
     }
 
-    private fun launchFragment(){
+    private fun launchFragment() {
         val args = bundleOf("datasetId" to datasetId)
 
         launchFragmentInHiltContainer<LearningSettingsFragment>(fragmentArgs = args) {
@@ -147,8 +140,4 @@ class LearningSettingsActivityTest {
         }
 
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 1e186249c7a79db3fbb9b5e4579f23ac4cb64b77
