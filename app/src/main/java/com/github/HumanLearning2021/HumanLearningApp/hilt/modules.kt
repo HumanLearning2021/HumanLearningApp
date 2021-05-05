@@ -95,12 +95,15 @@ object DatabaseServiceModule {
     @Provides
     @Singleton  // allows dummy data to persist across activities
     fun provideDummyService(): DatabaseService = DummyDatabaseService()
+
     @DemoDatabase
     @Provides
+
     fun provideDemoService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("demo", firestore)
     @Demo2Database
     @Provides
     fun provideDemo2Service( @ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("demo2", firestore)
+  
     @ScratchDatabase
     @Provides
     fun provideScratchService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("scratch", firestore)
@@ -112,12 +115,15 @@ object DatabaseManagementModule {
     @DummyDatabase
     @Provides
     fun provideDummyManagement(@DummyDatabase db: DatabaseService): DatabaseManagement = DummyDatabaseManagement(db)
+
     @DemoDatabase
     @Provides
     fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+
     @Demo2Database
     @Provides
     fun provideDemo2Service(@Demo2Database db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+
     @ScratchDatabase
     @Provides
     fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
