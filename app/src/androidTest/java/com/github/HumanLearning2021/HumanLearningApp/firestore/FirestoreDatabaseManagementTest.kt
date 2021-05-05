@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.hasName
@@ -16,6 +17,7 @@ import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.Assert.fail
+import org.junit.Assume.assumeThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -275,8 +277,42 @@ class FirestoreDatabaseManagementTest {
         } finally {
             tmp.delete()
         }
-
         assertThat(scratchManagement.getRepresentativePicture(cat.id), not(equalTo(null)))
+    }
+
+    @Test
+    fun test_putRepresentativePicture_fromCategorizedPicture_pictureNotPresent() = runBlocking {
+        runCatching {
+            scratchManagement.putRepresentativePicture(FirestoreCategorizedPicture("${UUID.randomUUID()}", "some/path", fakeCategory, "url"))
+        }.fold({
+            fail("unexpected successful completion")
+        }, {
+            assertThat(it, instanceOf(IllegalArgumentException::class.java))
+        })
+    }
+
+    @Test
+    fun test_putRepresentativePicture_fromCategorizedPicture() = runBlocking {
+        val randomCategoryName = getRandomString()
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        val cat = scratchManagement.putCategory(randomCategoryName)
+        val tmp = File.createTempFile("droid", ".png")
+        var pic: CategorizedPicture
+        try {
+            ctx.resources.openRawResource(R.drawable.fork).use { img ->
+                tmp.outputStream().use {
+                    img.copyTo(it)
+                }
+            }
+            val uri = Uri.fromFile(tmp)
+            pic = scratchManagement.putPicture(uri, cat)
+        } finally {
+            tmp.delete()
+        }
+        assumeThat(scratchManagement.getPictureIds(pic.category), hasItem(pic.id))
+        scratchManagement.putRepresentativePicture(pic)
+        assertThat(scratchManagement.getRepresentativePicture(cat.id), not(equalTo(null)))
+        assertThat(scratchManagement.getPictureIds(pic.category), not(hasItem(pic.id)))
     }
 
     @Test
