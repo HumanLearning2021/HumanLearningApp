@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -103,12 +105,10 @@ class CategoriesEditingFragment : Fragment() {
 
 
     private fun addNewView() {
-
-        val inflater = View.inflate(parentActivity, R.layout.row_add_category, null)
-        binding.parentLinearLayout.addView(inflater, binding.parentLinearLayout.childCount)
-
+        val viewToAdd = View.inflate(parentActivity, R.layout.row_add_category, null)
+        binding.parentLinearLayout.addView(viewToAdd, binding.parentLinearLayout.childCount)
+        viewToAdd.findViewById<ImageButton>(R.id.button_remove).setOnClickListener { removeView(it) }
     }
-
 
 
     fun removeView(view: View) {
@@ -128,7 +128,7 @@ class CategoriesEditingFragment : Fragment() {
         }
     }
 
-    
+
 
     private fun saveData() {
         lifecycleScope.launch {
