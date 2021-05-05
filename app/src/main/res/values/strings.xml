@@ -55,4 +55,5 @@
     <string name="choose_picture">Choose Picture</string>
     <string name="menu_goto_learning">Learning</string>
     <string name="goto_dataset_editing">Dataset Editing</string>
+    <string name="login">Login</string>
 </resources>

@@ -165,4 +165,9 @@
             android:name="datasetId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/googleSignInWidget"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInWidget"
+        android:label="fragment_google_sign_in"
+        tools:layout="@layout/fragment_google_sign_in" />
 </navigation>
