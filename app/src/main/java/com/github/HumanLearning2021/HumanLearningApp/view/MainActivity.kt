@@ -30,28 +30,14 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
         navController = navHostFragment.navController
 
-        appBarConfiguration = AppBarConfiguration(navController.graph)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.datasetsOverviewFragment, R.id.learningDatasetSelectionFragment)
+        )
         setSupportActionBar(toolbar)
         toolbar.setupWithNavController(navController, appBarConfiguration)
 
         findViewById<BottomNavigationView>(R.id.bottom_nav).setupWithNavController(navController)
 
-        /*
-        BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            when(item.itemId){
-                R.id.menu_goto_learning -> {
-                    navController.navigate(R.id.learningDatasetSelectionFragment)
-                    true
-                }
-                //R.id.menu_goto_dataset_editing
-                else-> {
-                    navController.navigate(R.id.datasetsOverviewFragment)
-                    true
-                }
-            }
-        }
-
-         */
     }
 
 

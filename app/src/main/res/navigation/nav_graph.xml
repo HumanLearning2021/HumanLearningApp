@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/learningDatasetSelectionFragment">
+    app:startDestination="@id/datasetsOverviewFragment">
 
     <fragment
         android:id="@+id/learningDatasetSelectionFragment"
@@ -150,8 +150,8 @@
     <fragment
         android:id="@+id/addPictureFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.AddPictureFragment"
-        android:label="fragment_add_picture"
-        tools:layout="@layout/fragment_add_picture" >
+        android:label="Add a new picture"
+        tools:layout="@layout/fragment_add_picture">
         <action
             android:id="@+id/action_addPictureFragment_to_selectPictureFragment"
             app:destination="@id/selectPictureFragment" />
