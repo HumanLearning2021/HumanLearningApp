@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -113,35 +114,37 @@ class LearningFragment: Fragment() {
                 initTargetCategory(R.id.learning_cat_1, cats.elementAt(1))
                 initTargetCategory(R.id.learning_cat_2, cats.elementAt(2))
 
-                initImageToSort(R.id.learning_im_to_sort, cat0)
+                initImageToSort(R.id.learning_to_sort, cat0)
             }
 
         }
     }
 
 
-    private fun initImageView(catIvId: Int, cat: Category): ImageView {
+    private fun initImageView(catIvId: Int, cat: Category): ImageView? {
         val catIv = when(catIvId) {
             R.id.learning_cat_0 -> binding.learningCat0
             R.id.learning_cat_1 -> binding.learningCat1
-            R.id.learning_cat_2 -> binding.learningCat2
-            else -> binding.learningImToSort
+            R.id.learning_cat_2-> binding.learningCat2
+            else -> binding.learningToSort
         }
 
         // TODO (next sprint) make this less hacky
         // The mechanism to verify that the classification is correct is the comparison between
         // the contentDescription of the target ImageView and the text carried in the drag & drop
         // see LearningActivity::dropCallback
-        catIv.contentDescription = cat.name
-        Log.d(parentActivity.localClassName, "init contentDescription to ${cat.name}")
+        if (catIv != null) {
+            catIv.contentDescription = cat.name
+            Log.d(parentActivity.localClassName, "init contentDescription to ${cat.name}")
 
-        if (catIvId == R.id.learning_im_to_sort) {
-            lifecycleScope.launch {
-                learningPresenter.displayNextPicture(parentActivity, catIv)
-            }
-        } else {
-            lifecycleScope.launch {
-                learningPresenter.displayTargetPicture(parentActivity, catIv, cat)
+            if (catIvId == R.id.learning_to_sort) {
+                lifecycleScope.launch {
+                    learningPresenter.displayNextPicture(parentActivity, catIv)
+                }
+            } else {
+                lifecycleScope.launch {
+                    learningPresenter.displayTargetPicture(parentActivity, catIv, cat)
+                }
             }
         }
 
@@ -153,14 +156,14 @@ class LearningFragment: Fragment() {
      * This method initializes the image view containing the image to sort
      */
     private fun initImageToSort(catIvId: Int, cat: Category) {
-        initImageView(catIvId, cat).setOnTouchListener(Companion::onImageToSortTouched)
+        initImageView(catIvId, cat)?.setOnTouchListener{e, v -> onImageToSortTouched(e, v)}
     }
 
     /**
      * This method initializes an image view representing a target category
      */
     private fun initTargetCategory(catIvId: Int, cat: Category) {
-        initImageView(catIvId, cat).setOnDragListener(targetOnDragListener)
+        initImageView(catIvId, cat)?.setOnDragListener(targetOnDragListener)
     }
 
     private val opaque = 1.0f
@@ -201,10 +204,12 @@ class LearningFragment: Fragment() {
         if (res) {
             audioFeedback.startCorrectFeedback()
             lifecycleScope.launch {
-                learningPresenter.displayNextPicture(
-                    self,
-                    binding.learningImToSort,
-                )
+                binding.learningToSort?.let {
+                    learningPresenter.displayNextPicture(
+                        self,
+                        it,
+                    )
+                }
             }
         } else {
             audioFeedback.startIncorrectFeedback()
@@ -222,29 +227,29 @@ class LearningFragment: Fragment() {
         return true
     }
 
+    private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
+        val clipDataLabel = "My Clip Data"
+        return when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                // TODO (next sprint) change this to setCurrentCategory in presenter
+                val item = ClipData.Item(view.contentDescription)
+                val dragData = ClipData(
+                    clipDataLabel,
+                    arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
+                    item
+                )
+                val shadow = View.DragShadowBuilder(view)
+                view.startDragAndDrop(dragData, shadow, null, 0)
+                true
+            }
+            else -> false
+        }
+    }
     companion object {
         private fun setOpacity(v: View, opacity: Float) {
             v.alpha = opacity
             v.invalidate()
         }
 
-        private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
-            val clipDataLabel = "My Clip Data"
-            return when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    // TODO (next sprint) change this to setCurrentCategory in presenter
-                    val item = ClipData.Item(view.contentDescription)
-                    val dragData = ClipData(
-                        clipDataLabel,
-                        arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
-                        item
-                    )
-                    val shadow = View.DragShadowBuilder(view)
-                    view.startDragAndDrop(dragData, shadow, null, 0)
-                    true
-                }
-                else -> false
-            }
-        }
     }
 }
