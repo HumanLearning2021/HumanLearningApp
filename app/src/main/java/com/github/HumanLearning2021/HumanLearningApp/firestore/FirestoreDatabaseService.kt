@@ -194,6 +194,15 @@ class FirestoreDatabaseService internal constructor(
         val imageRef = imagesDir.child(id)
         imageRef.putFile(picture).await()
         val url = "gs://${imageRef.bucket}/${imageRef.path}"
+        putRepresentativePicture(url, category)
+    }
+
+    suspend fun putRepresentativePicture(url: String, category: Category) {
+        require(category is FirestoreCategory)
+        val categoryRef = categories.document(category.id)
+        if (!categoryRef.get().await().exists()) {
+            throw java.lang.IllegalArgumentException("The database ${this.db} does not contain the category with ${category.id}")
+        }
         val data = PictureSchema(categoryRef, url)
         try {
             representativePictures.add(data).await()

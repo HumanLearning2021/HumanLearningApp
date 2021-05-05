@@ -314,6 +314,47 @@ class OfflineDatabaseManagementTest {
     }
 
     @Test
+    fun test_putRepresentativePicture_fromCategorizedPicture_pictureNotPresent() = runBlocking {
+        runCatching {
+            demoManagement.putRepresentativePicture(FirestoreCategorizedPicture("${UUID.randomUUID()}", "some/path", fakeCategory, "url"))
+        }.fold({
+            Assert.fail("unexpected successful completion")
+        }, {
+            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+        })
+    }
+
+    @Test
+    fun test_putRepresentativePicture_fromCategorizedPicture() = runBlocking {
+        val randomCategoryName = getRandomString()
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        val cat = demoManagement.putCategory(randomCategoryName)
+        val tmp = File.createTempFile("droid", ".png")
+        var pic: CategorizedPicture
+        try {
+            ctx.resources.openRawResource(R.drawable.fork).use { img ->
+                tmp.outputStream().use {
+                    img.copyTo(it)
+                }
+            }
+            val uri = Uri.fromFile(tmp)
+            pic = demoManagement.putPicture(uri, cat)
+        } finally {
+            tmp.delete()
+        }
+        Assume.assumeThat(demoManagement.getPictureIds(pic.category), Matchers.hasItem(pic.id))
+        demoManagement.putRepresentativePicture(pic)
+        MatcherAssert.assertThat(
+            demoManagement.getRepresentativePicture(cat.id),
+            Matchers.not(Matchers.equalTo(null))
+        )
+        MatcherAssert.assertThat(
+            demoManagement.getPictureIds(pic.category),
+            Matchers.not(Matchers.hasItem(pic.id))
+        )
+    }
+
+    @Test
     fun test_getDatasets() = runBlocking {
         MatcherAssert.assertThat(demoManagement.getDatasets().size, Matchers.equalTo(1))
         MatcherAssert.assertThat(demoManagement.getDatasets().first().name, Matchers.equalTo("Fruit"))

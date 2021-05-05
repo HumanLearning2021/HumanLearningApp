@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.net.Uri
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import java.lang.Exception
 import java.lang.IllegalArgumentException
@@ -125,6 +126,20 @@ class OfflineDatabaseManagement (
         require(category is OfflineCategory)
         try {
             databaseService.putRepresentativePicture(picture, category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
+    }
+
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+        require(picture is OfflineCategorizedPicture)
+        try {
+            databaseService.putRepresentativePicture(picture.picture, picture.category)
+            try {
+                databaseService.removePicture(picture)
+            } catch (e: IllegalArgumentException) {
+                //do nothing because this means that the database is already in the expected state
+            }
         } catch (e: IllegalArgumentException) {
             throw e
         }

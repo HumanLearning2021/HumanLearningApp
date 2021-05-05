@@ -129,13 +129,15 @@ data class DummyDatabaseManagement internal constructor(
         }
     }
 
-    suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         require(picture is DummyCategorizedPicture)
         try {
-            databaseService.putRepresentativePicture(
-                picture.picture,
-                picture.category
-            )
+            putRepresentativePicture(picture.picture, picture.category)
+            try {
+                databaseService.removePicture(picture)
+            } catch (e: IllegalArgumentException) {
+                //do nothing since in this case the database is already in the state we want
+            }
         } catch (e: IllegalArgumentException) {
             throw e
         }
