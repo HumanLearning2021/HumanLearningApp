@@ -53,4 +53,6 @@
     <string name="select_existing_picture">Select Existing Picture</string>
     <string name="use_camera">Use camera</string>
     <string name="choose_picture">Choose Picture</string>
+    <string name="menu_goto_learning">Learning</string>
+    <string name="goto_dataset_editing">Dataset Editing</string>
 </resources>

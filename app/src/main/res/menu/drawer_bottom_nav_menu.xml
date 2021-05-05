@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_goto_learning"
+        android:icon="@drawable/ic_baseline_book_24"
+        android:title="@string/menu_goto_learning"/>
+    <item
+        android:id="@+id/goto_dataset_editing"
+        android:icon="@drawable/ic_baseline_photo_24"
+        android:title="@string/goto_dataset_editing"/>
+
+</menu>

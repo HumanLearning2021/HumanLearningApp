@@ -8,6 +8,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomnavigation.BottomNavigationMenu
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -29,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setSupportActionBar(toolbar)
         toolbar.setupWithNavController(navController, appBarConfiguration)
+
+        findViewById<BottomNavigationView>(R.id.bottom_nav).setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
