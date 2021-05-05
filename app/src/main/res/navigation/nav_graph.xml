@@ -3,24 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/HomeFragment">
+    app:startDestination="@id/learningDatasetSelectionFragment">
 
-    <fragment
-        android:id="@+id/HomeFragment"
-        android:name="com.github.HumanLearning2021.HumanLearningApp.view.HomeFragment"
-        android:label="Home"
-        tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_mainFragment_to_learningDatasetSelectionFragment"
-            app:destination="@id/learningDatasetSelectionFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_datasetsOverviewFragment"
-            app:destination="@id/datasetsOverviewFragment" />
-    </fragment>
     <fragment
         android:id="@+id/learningDatasetSelectionFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningDatasetSelectionFragment"
-        android:label="Select a dataset"
+        android:label="Select a dataset to start learning"
         tools:layout="@layout/fragment_learning_dataset_selection">
         <action
             android:id="@+id/action_learningDatasetSelectionFragment_to_learningSettingsFragment"

@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentHomeBinding
 
+/*
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -50,3 +51,5 @@ class HomeFragment : Fragment() {
     }
 
 }
+
+ */

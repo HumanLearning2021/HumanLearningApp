@@ -1,6 +1,8 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
@@ -33,7 +35,26 @@ class MainActivity : AppCompatActivity() {
         toolbar.setupWithNavController(navController, appBarConfiguration)
 
         findViewById<BottomNavigationView>(R.id.bottom_nav).setupWithNavController(navController)
+
+        /*
+        BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when(item.itemId){
+                R.id.menu_goto_learning -> {
+                    navController.navigate(R.id.learningDatasetSelectionFragment)
+                    true
+                }
+                //R.id.menu_goto_dataset_editing
+                else-> {
+                    navController.navigate(R.id.datasetsOverviewFragment)
+                    true
+                }
+            }
+        }
+
+         */
     }
+
+
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
