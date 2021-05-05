@@ -21,3 +21,6 @@ This sprint I implemented the Navigation component, using the fragments I made l
 
 ## Vial, Nicolas
 This week reworked all the interfaces so that we can use the application on phone and tablet in portrait or landscape mode while keeping a nice interface. I didn't encounter any big problems for this task. I then used a lot of time on Thursday to help Martin with his PR which is complicated to merge but we are finally very close to get it right. 
+
+## Scrum Master
+This week was a good week in terms of collaboration and productivity. We merged quite a few PR's, even though 3 were still outstanding. For the most part, we have found a good workflow, which makes it pleasant to work on the app.
