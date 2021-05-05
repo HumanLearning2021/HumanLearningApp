@@ -8,5 +8,5 @@ import kotlinx.parcelize.Parcelize
 class OfflineDataset(
     override val id: String,
     override val name: String,
-    override val categories: Set<Category>
+    override val categories: Set<OfflineCategory>
 ) : Dataset

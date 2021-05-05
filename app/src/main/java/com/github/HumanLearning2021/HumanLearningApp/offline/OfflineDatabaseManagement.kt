@@ -174,7 +174,7 @@ class OfflineDatabaseManagement (
             databaseService.removeCategoryFromDataset(dataset, category)
         } catch (e: IllegalArgumentException) {
             val newCats = mutableListOf<OfflineCategory>()
-            newCats.addAll(dataset.categories as Set<OfflineCategory>)
+            newCats.addAll(dataset.categories)
             newCats.remove(category)
             return OfflineDataset(dataset.id, dataset.name, newCats.toSet())
         }
