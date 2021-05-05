@@ -2,11 +2,13 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
+import android.util.TypedValue
 import android.view.*
-import android.widget.*
+import android.widget.AbsListView
+import android.widget.BaseAdapter
+import android.widget.GridView
+import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
@@ -16,18 +18,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayImageSetBinding
-import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
-import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class DisplayImageSetFragment : Fragment() {
@@ -154,6 +153,12 @@ class DisplayImageSetFragment : Fragment() {
     private fun setGridViewMultipleChoiceModeListener() {
         binding.displayImageSetImagesGridView.setMultiChoiceModeListener(object :
             AbsListView.MultiChoiceModeListener {
+
+            val tenDp = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 10f,
+                this@DisplayImageSetFragment.resources.displayMetrics
+            )
+
             override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
                 val inflater = mode!!.menuInflater
                 inflater!!.inflate(R.menu.display_imageset_menu, menu)
@@ -172,18 +177,20 @@ class DisplayImageSetFragment : Fragment() {
                                 categorizedPicturesList = categorizedPicturesList.minus(pic)
                                 dBManagement.removePicture(pic)
                             }
+                            categorizedPicturesSelectedList = emptySet()
                             numberOfSelectedPictures = 0
                             mode!!.finish()
                         }
                     R.id.set_representative_picture ->
-                        if (numberOfSelectedPictures == 1) {
-                            //TODO: SET REPRESENTATIVE PICTURE
-                        } else {
-                            Toast.makeText(
-                                context,
-                                "To much pictures selected. Please select only one to set as representative picture of the category",
-                                Toast.LENGTH_LONG
-                            ).show()
+                        lifecycleScope.launch {
+                            val pic = categorizedPicturesSelectedList.first()
+                            dBManagement.putRepresentativePicture(
+                                pic
+                            )
+                            categorizedPicturesList = categorizedPicturesList.minus(pic)
+                            categorizedPicturesSelectedList = emptySet()
+                            numberOfSelectedPictures = 0
+                            mode!!.finish()
                         }
                     else -> {
 
@@ -195,6 +202,7 @@ class DisplayImageSetFragment : Fragment() {
             override fun onDestroyActionMode(mode: ActionMode?) {
                 for (i in categorizedPicturesList.indices) {
                     binding.displayImageSetImagesGridView[i].alpha = 1F
+                    binding.displayImageSetImagesGridView[i].elevation = tenDp
                 }
                 displayImageSetAdapter.updatePictures(categorizedPicturesList)
                 displayImageSetAdapter.notifyDataSetChanged()
@@ -209,7 +217,8 @@ class DisplayImageSetFragment : Fragment() {
                 if (checked) {
                     numberOfSelectedPictures += 1
                     mode!!.title = "$numberOfSelectedPictures selected pictures"
-                    binding.displayImageSetImagesGridView[position].alpha = 0.5F
+                    binding.displayImageSetImagesGridView[position].alpha = 0.35F
+                    binding.displayImageSetImagesGridView[position].elevation = 0F
                     categorizedPicturesSelectedList =
                         categorizedPicturesSelectedList.plus(
                             categorizedPicturesList.elementAt(
@@ -219,6 +228,7 @@ class DisplayImageSetFragment : Fragment() {
                 } else {
                     numberOfSelectedPictures -= 1
                     binding.displayImageSetImagesGridView[position].alpha = 1F
+                    binding.displayImageSetImagesGridView[position].elevation = tenDp
                     mode!!.title = "$numberOfSelectedPictures selected pictures"
                     categorizedPicturesSelectedList =
                         categorizedPicturesSelectedList.minus(
@@ -227,6 +237,8 @@ class DisplayImageSetFragment : Fragment() {
                             )
                         )
                 }
+
+                mode.menu[1].isVisible = numberOfSelectedPictures == 1
             }
 
         })

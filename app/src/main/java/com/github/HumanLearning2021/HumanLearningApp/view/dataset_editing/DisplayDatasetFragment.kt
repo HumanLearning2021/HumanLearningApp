@@ -1,14 +1,14 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -18,15 +18,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayDatasetBinding
-import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class DisplayDatasetFragment : Fragment() {
@@ -112,12 +109,37 @@ class DisplayDatasetFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.display_dataset_menu_modify_categories -> {
-                findNavController().navigate(DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToCategoriesEditingFragment(datasetId))
+                findNavController().navigate(
+                    DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToCategoriesEditingFragment(
+                        datasetId
+                    )
+                )
+                true
+            }
+            R.id.display_dataset_menu_delete_dataset -> {
+                AlertDialog.Builder(this.context)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Deleting dataset")
+                    .setMessage("Are you sure you want to delete this dataset?")
+                    .setPositiveButton("Yes"
+                    ) { _, _ ->
+                        lifecycleScope.launch {
+                            dbManagement.deleteDataset(datasetId)
+                            findNavController().popBackStack()
+                        }
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
                 true
             }
             //Clicked on Add new Picture button
             else -> {
-                findNavController().navigate(DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(categories.toTypedArray(), datasetId))
+                findNavController().navigate(
+                    DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(
+                        categories.toTypedArray(),
+                        datasetId
+                    )
+                )
                 true
             }
         }
