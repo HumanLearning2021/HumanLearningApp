@@ -374,8 +374,8 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_removeCategoryFromDataset_datasetNotPresent() = runBlocking {
-        val cat1 = demoManagement.putCategory(getRandomString())
-        val cat2 = demoManagement.putCategory(getRandomString())
+        val cat1 = demoManagement.putCategory(getRandomString()) as OfflineCategory
+        val cat2 = demoManagement.putCategory(getRandomString()) as OfflineCategory
         val fakeDs = OfflineDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
         val res = demoManagement.removeCategoryFromDataset(fakeDs, cat2)
         MatcherAssert.assertThat(res.categories, Matchers.equalTo(setOf(cat1)))
@@ -383,7 +383,7 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
-        val cat1 = demoManagement.putCategory(getRandomString())
+        val cat1 = demoManagement.putCategory(getRandomString()) as OfflineCategory
         val cat2 = Converters.fromCategory(fakeCategory)
         val fakeDs = OfflineDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
         val res = demoManagement.removeCategoryFromDataset(fakeDs, cat2)
