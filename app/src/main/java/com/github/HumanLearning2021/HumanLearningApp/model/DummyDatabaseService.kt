@@ -177,11 +177,9 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
         if (!categories.contains(category)) {
             throw IllegalArgumentException("The category name ${category.name} is not present in the database")
-
         }
         representativePictures[category.id] = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
     }
-
 
     override suspend fun getDatasets(): Set<Dataset> {
         return datasets
