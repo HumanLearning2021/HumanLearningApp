@@ -26,7 +26,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.startButton.setOnClickListener {
+        binding.startLearningButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToLearningDatasetSelectionFragment())
         }
     }

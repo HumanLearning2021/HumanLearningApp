@@ -8,6 +8,6 @@
     <item
         android:id="@+id/datasetsOverviewFragment"
         android:icon="@drawable/ic_baseline_photo_24"
-        android:title="@string/goto_dataset_editing"/>
+        android:title="@string/menu_goto_dataset_editing"/>
 </menu>
 

@@ -57,4 +57,5 @@
     <string name="goto_dataset_editing">Dataset Editing</string>
     <string name="login">Login</string>
     <string name="startLearning">START LEARNING!</string>
+    <string name="menu_goto_dataset_editing">Dataset Editing</string>
 </resources>
