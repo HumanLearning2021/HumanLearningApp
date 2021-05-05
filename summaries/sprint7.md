@@ -1,4 +1,4 @@
-# Week 6 sprint retrospective
+# Week 7 sprint retrospective
 
 ## Scrum master (LENWEITER)
 
@@ -6,6 +6,7 @@
 This week I finished my work on uploading existing pictures to the app. I had to request help on a tricky UI problem from Nicolas, and he helped me.
 
 ## Jaakik, Marouane
+This week, I have struggled to link the firestore database to the search activity , although I made it work with the dummy databast. Some tests were failing and the app quits abruptly, I will work o solving these issues during the next sprint. 
 
 ## Konrad, Jonas Franz
 This week I integrated the firebase emulator into our project. This way we no longer use the production firebase. Making it work locally was pretty straight forward but installing it on the CI took a lot of trial an error because the documentation for Cirrus is very poor in my opinion.  Also I had a problem where the emulator would start on the CI but if I wanted to start it with a given state for the database it would crash despite working locally. This was due to a bug in the emulator; if a state is exported on Windows it can't be imported in Unix, which took a long time to figure out. In the end it all works well but took way longer than expected because I had to figure out how to configure the CI, how to best install the emulator on it and how to build Docker images.
