@@ -5,14 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.GridView
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.*
+import android.widget.*
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -34,7 +30,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DisplayImageSetFragment: Fragment() {
+class DisplayImageSetFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
 
     @Inject
@@ -42,6 +38,9 @@ class DisplayImageSetFragment: Fragment() {
     lateinit var dBManagement: DatabaseManagement
 
     private var categorizedPicturesList = setOf<CategorizedPicture>()
+    private var categorizedPicturesSelectedList = setOf<CategorizedPicture>()
+    private var numberOfSelectedPictures = 0
+    private lateinit var displayImageSetAdapter: DisplayImageSetAdapter
     private lateinit var datasetId: Id
     private lateinit var category: Category
 
@@ -53,7 +52,7 @@ class DisplayImageSetFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         _binding = FragmentDisplayImageSetBinding.inflate(inflater, container, false)
         return binding.root
@@ -70,7 +69,7 @@ class DisplayImageSetFragment: Fragment() {
             binding.displayImageSetName.text =
                 category.name
             if (categorizedPicturesList.isNotEmpty()) {
-                val displayImageSetAdapter =
+                displayImageSetAdapter =
                     DisplayImageSetAdapter(
                         categorizedPicturesList,
                         parentActivity
@@ -81,10 +80,12 @@ class DisplayImageSetFragment: Fragment() {
                 setPictureItemListener()
             }
         }
+        binding.displayImageSetImagesGridView.choiceMode = GridView.CHOICE_MODE_MULTIPLE_MODAL
+        setGridViewMultipleChoiceModeListener()
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
-    val callback = object : OnBackPressedCallback(true){
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             findNavController().popBackStack()
         }
@@ -101,9 +102,11 @@ class DisplayImageSetFragment: Fragment() {
 
 
     private class DisplayImageSetAdapter(
-        private val images: Set<CategorizedPicture>,
+        pictures: Set<CategorizedPicture>,
         private val context: Activity
     ) : BaseAdapter() {
+
+        var adapterPictures = pictures
 
         private var layoutInflater =
             context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -114,13 +117,13 @@ class DisplayImageSetFragment: Fragment() {
 
             val imageView = view.findViewById<ImageView>(R.id.image_item_imageView)
 
-            images.elementAt(position).displayOn(context, imageView as ImageView)
+            adapterPictures.elementAt(position).displayOn(context, imageView as ImageView)
 
             return view
         }
 
         override fun getItem(position: Int): Any {
-            return images.elementAt(position)
+            return adapterPictures.elementAt(position)
         }
 
         override fun getItemId(position: Int): Long {
@@ -128,15 +131,104 @@ class DisplayImageSetFragment: Fragment() {
         }
 
         override fun getCount(): Int {
-            return images.size
+            return adapterPictures.size
         }
 
+        fun updatePictures(newPictures: Set<CategorizedPicture>) {
+            adapterPictures = newPictures
+            notifyDataSetChanged()
+        }
     }
 
-    private fun setPictureItemListener(){
-        binding.displayImageSetImagesGridView.setOnItemClickListener{_, _, i, _ ->
-            val action = DisplayImageSetFragmentDirections.actionDisplayImageSetFragmentToDisplayImageFragment(categorizedPicturesList.elementAt(i), datasetId)
+    private fun setPictureItemListener() {
+        binding.displayImageSetImagesGridView.setOnItemClickListener { _, _, i, _ ->
+            val action =
+                DisplayImageSetFragmentDirections.actionDisplayImageSetFragmentToDisplayImageFragment(
+                    categorizedPicturesList.elementAt(i),
+                    datasetId
+                )
             findNavController().navigate(action)
         }
+    }
+
+    private fun setGridViewMultipleChoiceModeListener() {
+        binding.displayImageSetImagesGridView.setMultiChoiceModeListener(object :
+            AbsListView.MultiChoiceModeListener {
+            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                val inflater = mode!!.menuInflater
+                inflater!!.inflate(R.menu.display_imageset_menu, menu)
+                return true
+            }
+
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                return false
+            }
+
+            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+                when (item!!.itemId) {
+                    R.id.delete_pictures ->
+                        lifecycleScope.launch {
+                            for (pic in categorizedPicturesSelectedList) {
+                                categorizedPicturesList = categorizedPicturesList.minus(pic)
+                                dBManagement.removePicture(pic)
+                            }
+                            numberOfSelectedPictures = 0
+                            mode!!.finish()
+                        }
+                    R.id.set_representative_picture ->
+                        if (numberOfSelectedPictures == 1) {
+                            //TODO: SET REPRESENTATIVE PICTURE
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "To much pictures selected. Please select only one to set as representative picture of the category",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    else -> {
+
+                    }
+                }
+                return true
+            }
+
+            override fun onDestroyActionMode(mode: ActionMode?) {
+                for (i in categorizedPicturesList.indices) {
+                    binding.displayImageSetImagesGridView[i].alpha = 1F
+                }
+                displayImageSetAdapter.updatePictures(categorizedPicturesList)
+                displayImageSetAdapter.notifyDataSetChanged()
+            }
+
+            override fun onItemCheckedStateChanged(
+                mode: ActionMode?,
+                position: Int,
+                id: Long,
+                checked: Boolean
+            ) {
+                if (checked) {
+                    numberOfSelectedPictures += 1
+                    mode!!.title = "$numberOfSelectedPictures selected pictures"
+                    binding.displayImageSetImagesGridView[position].alpha = 0.5F
+                    categorizedPicturesSelectedList =
+                        categorizedPicturesSelectedList.plus(
+                            categorizedPicturesList.elementAt(
+                                position
+                            )
+                        )
+                } else {
+                    numberOfSelectedPictures -= 1
+                    binding.displayImageSetImagesGridView[position].alpha = 1F
+                    mode!!.title = "$numberOfSelectedPictures selected pictures"
+                    categorizedPicturesSelectedList =
+                        categorizedPicturesSelectedList.minus(
+                            categorizedPicturesList.elementAt(
+                                position
+                            )
+                        )
+                }
+            }
+
+        })
     }
 }
