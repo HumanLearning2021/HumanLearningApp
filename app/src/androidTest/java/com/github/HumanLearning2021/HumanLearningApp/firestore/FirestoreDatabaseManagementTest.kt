@@ -348,26 +348,6 @@ class FirestoreDatabaseManagementTest {
     }
 
     @Test
-    @Ignore("acting on deleted objects is not supported by DefaultDatabaseManagement")
-    fun test_removeCategoryFromDataset_datasetNotPresent() = runBlocking {
-        val cat1 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
-        val cat2 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
-        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
-        val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
-        assertThat(res.categories, equalTo(setOf(cat1)))
-    }
-
-    @Test
-    @Ignore("acting on deleted objects is not supported by DefaultDatabaseManagement")
-    fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
-        val cat1 = scratchManagement.putCategory(getRandomString()) as FirestoreCategory
-        val cat2 = fakeCategory
-        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
-        val res = scratchManagement.removeCategoryFromDataset(fakeDs, cat2)
-        assertThat(res.categories, equalTo(setOf(cat1)))
-    }
-
-    @Test
     fun test_removeCategoryFromDataset() = runBlocking {
         val cat1 = scratchManagement.putCategory(getRandomString())
         val cat2 = scratchManagement.putCategory(getRandomString())
