@@ -71,7 +71,7 @@ class GeneralNavigationTest {
     fun navigateToDisplayDatasetAndThenNavigateUpGoesToDatasetsOverview() {
         navigateToDisplayDataset()
         assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
-        onView(withContentDescription("Navigate up")).perform(click());
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
         assertCurrentFragmentIsCorrect(R.id.datasetsOverviewFragment)
 
     }
@@ -81,7 +81,7 @@ class GeneralNavigationTest {
         onView(withId(R.id.datasetsOverviewFragment)).perform(click())
         onView(withId(R.id.createDatasetButton)).perform(click())
         assertCurrentFragmentIsCorrect(R.id.categoriesEditingFragment)
-        onView(withContentDescription("Navigate up")).perform(click());
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
         assertCurrentFragmentIsCorrect(R.id.datasetsOverviewFragment)
     }
 
