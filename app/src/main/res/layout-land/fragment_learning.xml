@@ -7,7 +7,7 @@
     tools:context=".view.learning.LearningFragment">
 
     <ImageView
-        android:id="@+id/learning_im_to_sort"
+        android:id="@+id/learning_to_sort"
         android:layout_width="@dimen/learning_image_size_land"
         android:layout_height="@dimen/learning_image_size_land"
         android:background="@color/white"
@@ -18,7 +18,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/learning_guideline1"
-        app:srcCompat="@color/blue" />
+        app:srcCompat="@drawable/default_representative_picture" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -38,7 +38,7 @@
             app:layout_constraintEnd_toStartOf="@+id/learning_cat_1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@color/red" />
+            app:srcCompat="@drawable/default_representative_picture" />
 
         <ImageView
             android:id="@+id/learning_cat_1"
@@ -51,7 +51,7 @@
             app:layout_constraintEnd_toStartOf="@+id/learning_cat_2"
             app:layout_constraintStart_toEndOf="@+id/learning_cat_0"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@color/green" />
+            app:srcCompat="@drawable/default_representative_picture" />
 
         <ImageView
             android:id="@+id/learning_cat_2"
@@ -64,7 +64,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/learning_cat_1"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@color/blue" />
+            app:srcCompat="@drawable/default_representative_picture" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

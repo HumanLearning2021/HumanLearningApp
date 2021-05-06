@@ -1,11 +1,8 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategory
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.google.common.collect.ImmutableSet
 import java.lang.IllegalArgumentException
-import javax.inject.Inject
 
 /**
  * Dummy implementation of a database manager
@@ -132,13 +129,15 @@ data class DummyDatabaseManagement internal constructor(
         }
     }
 
-    suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         require(picture is DummyCategorizedPicture)
         try {
-            databaseService.putRepresentativePicture(
-                picture.picture,
-                picture.category
-            )
+            putRepresentativePicture(picture.picture, picture.category)
+            try {
+                databaseService.removePicture(picture)
+            } catch (e: IllegalArgumentException) {
+                //do nothing since in this case the database is already in the state we want
+            }
         } catch (e: IllegalArgumentException) {
             throw e
         }

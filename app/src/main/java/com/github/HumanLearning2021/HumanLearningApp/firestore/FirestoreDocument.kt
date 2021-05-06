@@ -7,5 +7,5 @@ interface FirestoreDocument {
     /**
      * Path of the document within the firestore database
      */
-    abstract val path: String
+    val path: String
 }

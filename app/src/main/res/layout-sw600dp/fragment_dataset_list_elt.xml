@@ -30,7 +30,7 @@
         app:layout_constraintEnd_toStartOf="@id/ds_list_elt_guideline1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/DatasetList_elt_text"
-        app:srcCompat="@color/red"
+        app:srcCompat="@drawable/default_representative_picture"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
@@ -44,7 +44,7 @@
         app:layout_constraintEnd_toStartOf="@id/ds_list_elt_guideline2"
         app:layout_constraintStart_toEndOf="@id/ds_list_elt_guideline1"
         app:layout_constraintTop_toBottomOf="@+id/DatasetList_elt_text"
-        app:srcCompat="@color/green"
+        app:srcCompat="@drawable/default_representative_picture"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ds_list_elt_guideline2"
         app:layout_constraintTop_toBottomOf="@+id/DatasetList_elt_text"
-        app:srcCompat="@color/blue"
+        app:srcCompat="@drawable/default_representative_picture"
         tools:srcCompat="@tools:sample/avatars" />
 
     <androidx.constraintlayout.widget.Guideline

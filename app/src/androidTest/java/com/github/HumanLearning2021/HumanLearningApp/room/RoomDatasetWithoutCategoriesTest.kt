@@ -16,14 +16,18 @@ import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class RoomDatasetWithoutCategoriesTest {
+    private var dbName = "some name"
     private lateinit var db: RoomOfflineDatabase
     private lateinit var datasetDao: DatasetDao
+    private lateinit var databaseDao: DatabaseDao
 
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
         datasetDao = db.datasetDao()
+        databaseDao = db.databaseDao()
+        databaseDao.insertAll(RoomEmptyHLDatabase(dbName))
     }
 
     @After
@@ -40,28 +44,33 @@ class RoomDatasetWithoutCategoriesTest {
     @Test
     fun insertThenLoadDataset() {
         val testDataset = getRandomDatasetWithoutCategories()
+        val ref = RoomDatabaseDatasetsCrossRef(dbName, testDataset.datasetId)
 
         datasetDao.insertAll(testDataset)
+        databaseDao.insertAll(ref)
 
-        val res = datasetDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.datasets
         assertThat(res, hasSize(1))
-        assertThat(res.first(), equalTo(asDataset(testDataset)))
+        assertThat(res.first(), equalTo(testDataset))
     }
 
     @Test
     fun insertThenLoadDatasets() {
         val numberOfDatasets = (2..50).random()
         val testDatasets = mutableListOf<RoomDatasetWithoutCategories>()
+        val refs = mutableListOf<RoomDatabaseDatasetsCrossRef>()
         for (i in 0 until numberOfDatasets) {
-            testDatasets.add(getRandomDatasetWithoutCategories())
+            val ds = getRandomDatasetWithoutCategories()
+            testDatasets.add(ds)
+            refs.add(RoomDatabaseDatasetsCrossRef(dbName, ds.datasetId))
         }
 
         datasetDao.insertAll(*testDatasets.toTypedArray())
-
-        val res = datasetDao.loadAll()
+        databaseDao.insertAll(*refs.toTypedArray())
+        val res = databaseDao.loadByName(dbName)!!.datasets
 
         assertThat(res, hasSize(numberOfDatasets))
-        assertThat(res, containsInAnyOrder(*asDatasets(testDatasets).toTypedArray()))
+        assertThat(res, containsInAnyOrder(*testDatasets.toTypedArray()))
     }
 
     @Test
@@ -115,7 +124,7 @@ class RoomDatasetWithoutCategoriesTest {
 
         val deletionDataset = testDatasets.random()
         datasetDao.delete(deletionDataset)
-        val res = datasetDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.datasets
 
         assertThat(res, CoreMatchers.not(contains(asDataset(deletionDataset))))
     }
@@ -124,15 +133,19 @@ class RoomDatasetWithoutCategoriesTest {
     fun updatingDatasetWorks() {
         val numberOfDatasets = (1..10).random()
         val testDatasets = mutableListOf<RoomDatasetWithoutCategories>()
+        val refs = mutableListOf<RoomDatabaseDatasetsCrossRef>()
         for (i in 0 until numberOfDatasets) {
-            testDatasets.add(getRandomDatasetWithoutCategories())
+            val ds = getRandomDatasetWithoutCategories()
+            testDatasets.add(ds)
+            refs.add(RoomDatabaseDatasetsCrossRef(dbName, ds.datasetId))
         }
 
         datasetDao.insertAll(*testDatasets.toTypedArray())
+        databaseDao.insertAll(*refs.toTypedArray())
         val toUpdateDataset = testDatasets.random()
         val updatedDataset = RoomDatasetWithoutCategories(toUpdateDataset.datasetId, getRandomString())
         datasetDao.update(updatedDataset)
-        val res = datasetDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.datasets
 
         assertThat(res, hasSize(numberOfDatasets))
         assertThat(res, CoreMatchers.not(contains(toUpdateDataset)))

@@ -47,12 +47,30 @@ interface DatabaseManagement {
     suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture?
 
     /**
+     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
+     *
+     * @param picture - the picture to put as a representative
+     * @param category - the category whose representative picture we want to change
+     * @return the previous representative picture, null if there was none
+     * @throws IllegalArgumentException if the underlying database does not contain the specified category
+     */
+    suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
+
+    /**
+     * Sets a categorized picture as the representative picture of the category it is assigned to,
+     * removing it from the pictures of the category in the process.
+     *
+     * @param picture - the categorized picture to set as representative picture
+     * @throws IllegalArgumentException if the underlying database does not contain the specified picture
+     */
+    suspend fun putRepresentativePicture(picture: CategorizedPicture)
+
+    /**
      * A function that allows to put a picture in the underlying database
      *
      * @param picture the picture to put in the underlying database
      * @param category the category to which the picture belongs
      * @return a Categorized picture built using 'picture' and 'category'
-     * @throws IllegalArgumentException if the category provided is not present in the underlying database
      */
     suspend fun putPicture(picture: android.net.Uri, category: Category): CategorizedPicture
 
@@ -144,15 +162,6 @@ interface DatabaseManagement {
      * @throws IllegalArgumentException if there is no dataset of the specified id in the underlying database
      */
     suspend fun deleteDataset(id: Id)
-
-    /**
-     * Adds a representative picture to the category. If there is already a representative picture assigned it will be overwritten.
-     *
-     * @param picture - the picture to put as a representative
-     * @param category - the category whose representative picture we want to change
-     * @throws IllegalArgumentException if the underlying database does not contain the specified category
-     */
-    suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
 
     /**
      * Retrieves all of the available datasets

@@ -1,14 +1,14 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -18,15 +18,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayDatasetBinding
-import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class DisplayDatasetFragment : Fragment() {
@@ -48,7 +45,7 @@ class DisplayDatasetFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setFragmentResultListener(REQUEST_KEY) { requestKey, bundle ->
+        setFragmentResultListener(REQUEST_KEY) { _, bundle ->
             val pictureUri = bundle.getParcelable<Uri>("pictureUri")
             val chosenCategory = bundle.getParcelable<Category>("chosenCategory")
             lifecycleScope.launch {
@@ -66,7 +63,7 @@ class DisplayDatasetFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         _binding = FragmentDisplayDatasetBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
@@ -78,49 +75,71 @@ class DisplayDatasetFragment : Fragment() {
 
         datasetId = args.datasetId!!
 
-        var representativePictures = setOf<CategorizedPicture>()
+        val representativePictures = ArrayList<Any>()
 
         lifecycleScope.launch {
-                dataset = dbManagement.getDatasetById(datasetId)!!
-                binding.displayDatasetName.setText(dataset.name)
-                categories = dataset.categories
+            dataset = dbManagement.getDatasetById(datasetId)!!
+            binding.displayDatasetName.setText(dataset.name)
+            categories = dataset.categories
 
-                for (cat in categories) {
-                    val pictures = dbManagement.getAllPictures(cat)
-                    if (pictures.isNotEmpty()) {
-                        val reprPicture = dbManagement.getRepresentativePicture(cat.id)
-                        representativePictures = if (reprPicture == null) {
-                            representativePictures.plus(dbManagement.getPicture(pictures.first().id)!!)
-                        } else {
-                            representativePictures.plus(reprPicture)
-                        }
-                    }
+            for (cat in categories) {
+                val reprPicture = dbManagement.getRepresentativePicture(cat.id)
+                if (reprPicture == null) {
+                    representativePictures.add(0)
+                } else {
+                    representativePictures.add(reprPicture)
                 }
-
-                val displayDatasetAdapter =
-                    DisplayDatasetAdapter(
-                        representativePictures,
-                        parentActivity
-                    )
-
-                binding.displayDatasetImagesGridView.adapter = displayDatasetAdapter
-
-                setGridViewItemListener()
-                setTextChangeListener()
             }
+
+            val displayDatasetAdapter =
+                DisplayDatasetAdapter(
+                    representativePictures,
+                    categories,
+                    parentActivity
+                )
+
+            binding.displayDatasetImagesGridView.adapter = displayDatasetAdapter
+
+            setGridViewItemListener()
+            setTextChangeListener()
+        }
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.display_dataset_menu_modify_categories -> {
-                findNavController().navigate(DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToCategoriesEditingFragment(datasetId))
+                findNavController().navigate(
+                    DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToCategoriesEditingFragment(
+                        datasetId
+                    )
+                )
+                true
+            }
+            R.id.display_dataset_menu_delete_dataset -> {
+                AlertDialog.Builder(this.context)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(getString(R.string.deletingDataset))
+                    .setMessage(getString(R.string.deleteConfirmationMessage))
+                    .setPositiveButton(getString(R.string.Yes)
+                    ) { _, _ ->
+                        lifecycleScope.launch {
+                            dbManagement.deleteDataset(datasetId)
+                            findNavController().popBackStack()
+                        }
+                    }
+                    .setNegativeButton(getString(R.string.No), null)
+                    .show()
                 true
             }
             //Clicked on Add new Picture button
             else -> {
-
-                findNavController().navigate(DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(categories.toTypedArray(), datasetId))
+                findNavController().navigate(
+                    DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToAddPictureFragment(
+                        categories.toTypedArray(),
+                        datasetId
+                    )
+                )
                 true
             }
         }
@@ -141,10 +160,12 @@ class DisplayDatasetFragment : Fragment() {
         super.onDestroyView()
         callback.isEnabled = false
         callback.remove()
-   }
+    }
 
     private class DisplayDatasetAdapter(
-        private val images: Set<CategorizedPicture>,
+        private val images: ArrayList<Any>,
+        private val categories: Set<Category>,
+
         private val context: Activity
     ) : BaseAdapter() {
 
@@ -162,8 +183,17 @@ class DisplayDatasetFragment : Fragment() {
             val imageCat = view.findViewById<TextView>(R.id.image_and_category_item_imageCategory)
             val imageView = view.findViewById<ImageView>(R.id.image_and_category_item_imageView)
 
-            imageCat?.text = images.elementAt(position).category.name
-            images.elementAt(position).displayOn(context, imageView as ImageView)
+            val picture = images.elementAt(position)
+            if(picture is CategorizedPicture) {
+                imageCat?.text = picture.category.name
+                picture.displayOn(
+                    context,
+                    imageView as ImageView
+                )
+            } else {
+                imageCat?.text = categories.elementAt(position).name
+                imageView.setImageResource(R.drawable.default_representative_picture)
+            }
 
             return view
         }
@@ -184,7 +214,7 @@ class DisplayDatasetFragment : Fragment() {
 
     private fun setGridViewItemListener() {
         binding.displayDatasetImagesGridView
-            .setOnItemClickListener { adapterView, view, i, l ->
+            .setOnItemClickListener { _, _, i, _ ->
                 val category = categories.elementAt(i)
                 val action =
                     DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToDisplayImageSetFragment(

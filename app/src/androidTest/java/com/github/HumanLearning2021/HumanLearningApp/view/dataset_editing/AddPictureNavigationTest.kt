@@ -63,7 +63,8 @@ class AddPictureNavigationTest {
     val categories = catSet.toTypedArray()
 
     val navController = TestNavHostController(
-        ApplicationProvider.getApplicationContext())
+        ApplicationProvider.getApplicationContext()
+    )
 
     @Before
     fun setup() {

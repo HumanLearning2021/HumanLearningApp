@@ -11,18 +11,33 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.launch
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
+@UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DummyCategorizedPictureTest {
+
+    @Inject
+    @Demo2Database
+    lateinit var demo2DbService: DatabaseService
+
+    @BindValue
+    @Demo2Database
+    lateinit var demo2DbMgt: DatabaseManagement
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -33,6 +48,7 @@ class DummyCategorizedPictureTest {
     @Before
     fun setUp() {
         hiltRule.inject()
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         testRule.launchActivity(
             Intent(
                 ApplicationProvider.getApplicationContext(),
