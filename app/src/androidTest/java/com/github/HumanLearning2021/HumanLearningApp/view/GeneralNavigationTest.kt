@@ -28,6 +28,7 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -127,7 +128,7 @@ class GeneralNavigationTest {
             var currentFragmentContainer =
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
             val currentFragment = currentFragmentContainer?.findNavController()?.currentDestination
-            assert(currentFragment?.id == expected)
+            assertThat(currentFragment?.id, equalTo(expected))
         }
     }
 

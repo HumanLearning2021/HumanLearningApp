@@ -59,7 +59,6 @@
     <string name="startLearning">START LEARNING!</string>
     <string name="menu_goto_dataset_editing">Dataset Editing</string>
 
-
     <string name="nav_graph_label_home">Home</string>
     <string name="nav_graph_label_datasets_overview">Datasets Overview</string>
     <string name="nav_graph_label_login">Login</string>
