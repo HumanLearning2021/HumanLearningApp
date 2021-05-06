@@ -57,7 +57,7 @@ class RoomDatasetTest {
         datasetDao.insertAll(dataset)
         datasetDao.insertAll(*crossRefs.toTypedArray())
 
-        val res = datasetDao.loadById(dataset.datasetId).categories
+        val res = datasetDao.loadById(dataset.datasetId)!!.categories
 
         assertThat(res, containsInAnyOrder(*categories.toTypedArray()))
     }
@@ -75,12 +75,12 @@ class RoomDatasetTest {
         datasetDao.insertAll(dataset)
         datasetDao.insertAll(*crossRefs.toTypedArray())
 
-        val check = datasetDao.loadById(dataset.datasetId).categories
+        val check = datasetDao.loadById(dataset.datasetId)!!.categories
         require(check.containsAll(categories))
 
         datasetDao.delete(RoomDatasetCategoriesCrossRef(dataset.datasetId, categories.first().categoryId))
 
-        val res = datasetDao.loadById(dataset.datasetId).categories
+        val res = datasetDao.loadById(dataset.datasetId)!!.categories
 
         val remainingCategories = listOf(categories[1], categories[2])
         assertThat(res, hasSize(remainingCategories.size))

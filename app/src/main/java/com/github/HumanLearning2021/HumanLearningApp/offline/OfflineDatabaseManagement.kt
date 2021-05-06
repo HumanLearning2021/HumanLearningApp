@@ -1,28 +1,30 @@
-package com.github.HumanLearning2021.HumanLearningApp.model
+package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.net.Uri
-import com.google.common.collect.ImmutableSet
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.*
+import java.lang.Exception
 import java.lang.IllegalArgumentException
 
-/**
- * Dummy implementation of a database manager
- * Dataset & category names and ids are equivalent
- */
-data class DummyDatabaseManagement internal constructor(
-    private val databaseService: DatabaseService
-    ): DatabaseManagement {
+class OfflineDatabaseManagement (
+    private val databaseService: OfflineDatabaseService
+): DatabaseManagement {
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
-        require(category is DummyCategory)
-        return databaseService.getPicture(category)
+        require(category is OfflineCategory)
+        return try {
+            databaseService.getPicture(category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
     }
 
     override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
         return databaseService.getPicture(pictureId)
     }
 
-    override suspend fun getPictureIds(category: Category): List<Id> {
-        require(category is DummyCategory)
+    override suspend fun getPictureIds(category: Category): List<String> {
+        require(category is OfflineCategory)
         return try {
             databaseService.getPictureIds(category)
         } catch (e: IllegalArgumentException) {
@@ -35,11 +37,11 @@ data class DummyDatabaseManagement internal constructor(
     }
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
-        require(category is DummyCategory)
+        require(category is OfflineCategory)
         return try {
-           databaseService.putPicture(picture, category)
+            databaseService.putPicture(picture, category)
         } catch (e: IllegalArgumentException) {
-           throw e
+            throw e
         }
     }
 
@@ -49,13 +51,13 @@ data class DummyDatabaseManagement internal constructor(
 
     override suspend fun getCategoryByName(categoryName: String): Collection<Category> {
         val categories = databaseService.getCategories()
-        val res: MutableSet<Category> = mutableSetOf()
+        val res: MutableSet<OfflineCategory> = mutableSetOf()
         for (c in categories) {
             if (c.name == categoryName) {
                 res.add(c)
             }
         }
-        return ImmutableSet.copyOf(res)
+        return res.toSet()
     }
 
     override suspend fun putCategory(categoryName: String): Category {
@@ -67,7 +69,7 @@ data class DummyDatabaseManagement internal constructor(
     }
 
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
-        require(category is DummyCategory)
+        require(category is OfflineCategory)
         return try {
             databaseService.getAllPictures(category)
         } catch (e: IllegalArgumentException) {
@@ -76,20 +78,20 @@ data class DummyDatabaseManagement internal constructor(
     }
 
     override suspend fun removeCategory(category: Category) {
-        require(category is DummyCategory)
+        require(category is OfflineCategory)
         try {
             databaseService.removeCategory(category)
-        } catch (e: IllegalArgumentException) {
-            throw e
+        } catch (e: Exception) {
+            //do nothing since this means that the category is not in the database which is the same as having it removed
         }
     }
 
     override suspend fun removePicture(picture: CategorizedPicture) {
-        require(picture is DummyCategorizedPicture)
+        require(picture is OfflineCategorizedPicture)
         try {
             databaseService.removePicture(picture)
-        } catch (e: IllegalArgumentException) {
-            throw e
+        } catch (e: Exception) {
+            //do nothing since this means that the picture is not in the database which is the same as having it removed
         }
     }
 
@@ -103,25 +105,25 @@ data class DummyDatabaseManagement internal constructor(
 
     override suspend fun getDatasetByName(datasetName: String): Collection<Dataset> {
         val datasets = databaseService.getDatasets()
-        val res: MutableSet<Dataset> = mutableSetOf()
+        val res: MutableSet<OfflineDataset> = mutableSetOf()
         for (d in datasets) {
             if (d.name == datasetName) {
                 res.add(d)
             }
         }
-        return ImmutableSet.copyOf(res)
+        return res.toSet()
     }
 
     override suspend fun deleteDataset(id: Id) {
         try {
             databaseService.deleteDataset(id)
         } catch (e: IllegalArgumentException) {
-            throw e
+            //do nothing since this means that the dataset is not in the database which is the same as having it removed
         }
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
-        require(category is DummyCategory)
+        require(category is OfflineCategory)
         try {
             databaseService.putRepresentativePicture(picture, category)
         } catch (e: IllegalArgumentException) {
@@ -130,13 +132,13 @@ data class DummyDatabaseManagement internal constructor(
     }
 
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
-        require(picture is DummyCategorizedPicture)
+        require(picture is OfflineCategorizedPicture)
         try {
-            putRepresentativePicture(picture.picture, picture.category)
+            databaseService.putRepresentativePicture(picture.picture, picture.category)
             try {
                 databaseService.removePicture(picture)
             } catch (e: IllegalArgumentException) {
-                //do nothing since in this case the database is already in the state we want
+                //do nothing because this means that the database is already in the expected state
             }
         } catch (e: IllegalArgumentException) {
             throw e
@@ -149,34 +151,37 @@ data class DummyDatabaseManagement internal constructor(
 
     override suspend fun getDatasetNames(): Collection<String> {
         val datasets = databaseService.getDatasets()
-        val res: ArrayList<String> = arrayListOf()
+        val res: MutableSet<String> = mutableSetOf()
         for (d in datasets) {
             res.add(d.name)
         }
-        return res
+        return res.toSet()
     }
 
     override suspend fun getDatasetIds(): Set<Id> {
         val datasets = databaseService.getDatasets()
-        val res: ArrayList<String> = arrayListOf()
+        val res: MutableSet<String> = mutableSetOf()
         for (d in datasets) {
             res.add(d.id)
         }
-        return ImmutableSet.copyOf(res)
+        return res.toSet()
     }
 
     override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): Dataset {
-        require(dataset is DummyDataset)
-        require(category is DummyCategory)
+        require(dataset is OfflineDataset)
+        require(category is OfflineCategory)
         return try {
             databaseService.removeCategoryFromDataset(dataset, category)
         } catch (e: IllegalArgumentException) {
-            throw e
+            val newCats = mutableListOf<OfflineCategory>()
+            newCats.addAll(dataset.categories)
+            newCats.remove(category)
+            return OfflineDataset(dataset.id, dataset.name, newCats.toSet())
         }
     }
 
     override suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset {
-        require(dataset is DummyDataset)
+        require(dataset is OfflineDataset)
         return try {
             databaseService.editDatasetName(dataset, newName)
         } catch (e: IllegalArgumentException) {
@@ -185,8 +190,8 @@ data class DummyDatabaseManagement internal constructor(
     }
 
     override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset {
-        require(dataset is DummyDataset)
-        require(category is DummyCategory)
+        require(dataset is OfflineDataset)
+        require(category is OfflineCategory)
         return try {
             databaseService.addCategoryToDataset(dataset, category)
         } catch (e: IllegalArgumentException) {

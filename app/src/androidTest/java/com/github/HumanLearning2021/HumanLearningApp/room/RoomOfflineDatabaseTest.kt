@@ -14,10 +14,12 @@ import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class RoomOfflineDatabaseTest {
+    private val dbName = "some name"
     private lateinit var db: RoomOfflineDatabase
     private lateinit var categoryDao: CategoryDao
     private lateinit var datasetDao: DatasetDao
     private lateinit var userDao: UserDao
+    private lateinit var databaseDao: DatabaseDao
 
     @Before
     fun createDb() {
@@ -26,6 +28,8 @@ class RoomOfflineDatabaseTest {
         categoryDao = db.categoryDao()
         datasetDao = db.datasetDao()
         userDao = db.userDao()
+        databaseDao = db.databaseDao()
+        databaseDao.insertAll(RoomEmptyHLDatabase(dbName))
     }
 
     @After
@@ -40,11 +44,12 @@ class RoomOfflineDatabaseTest {
         val ds2 = RoomDatasetWithoutCategories("id2", "dataset 2")
 
         datasetDao.insertAll(ds1, ds2)
+        databaseDao.insertAll(RoomDatabaseDatasetsCrossRef(dbName, ds1.datasetId), RoomDatabaseDatasetsCrossRef(dbName, ds2.datasetId))
 
-        val res = datasetDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.datasets
 
         assertThat(res.size, equalTo(2))
-        assert(res.contains(RoomDataset(ds1, listOf())))
-        assert(res.contains(RoomDataset(ds2, listOf())))
+        assert(res.contains(ds1))
+        assert(res.contains(ds2))
     }
 }

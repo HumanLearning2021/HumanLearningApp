@@ -9,11 +9,19 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
+import com.google.firebase.firestore.FirebaseFirestore
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.notNullValue
@@ -26,9 +34,19 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
 
+@UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class FirestoreCategorizedPictureTest {
+
+    @Inject
+    @Demo2Database
+    lateinit var demo2DbService: DatabaseService
+
+    @BindValue
+    @Demo2Database
+    lateinit var demo2DbMgt: DatabaseManagement
+
     @Inject
     @DemoDatabase
     lateinit var db: DatabaseService
@@ -42,6 +60,7 @@ class FirestoreCategorizedPictureTest {
     @Before
     fun setUp() {
         hiltRule.inject()  // to get db set up
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).apply {
             if (!isScreenOn)
                 wakeUp()
