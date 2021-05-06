@@ -79,7 +79,7 @@
     <string name="nav_graph_label_display_image_set">Dataset Images</string>
     <string name="nav_graph_label_display_image"></string>
     <string name="nav_graph_label_add_picture">Add a New Picture</string>
-    <string name="nav_graph_label_take_picture"></string>
-    <string name="nav_graph_label_select_picture"></string>
+    <string name="nav_graph_label_take_picture">Select a Picture</string>
+    <string name="nav_graph_label_select_picture">Take a Picture</string>
 </resources>
 
