@@ -96,14 +96,12 @@ class FirestoreDatabaseService internal constructor(
         lateinit var self: DocumentReference
         var displayName: String? = null
         var email: String? = null
-        var userPrivilege : String? = null
         fun toPublic() = FirestoreUser(
             path = self.path,
             displayName = displayName,
             email = email,
             uid = self.id.takeWhile { it != '@' },
             type = User.Type.valueOf(self.id.takeLastWhile { it != '@' }),
-            userPrivilege = userPrivilege
         )
     }
 
