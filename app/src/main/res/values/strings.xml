@@ -49,25 +49,24 @@
     <string name="Yes">Yes</string>
     <string name="No">No</string>
     <string name="numberOfSelectedPicturesText">%d selected pictures</string>
-
     <string name="SignInFragment_loginStatusSuccessMessage">Welcome %1$s</string>
     <string name="SignInFragment_loginStatusDefaultMessage">Not logged in</string>
-
     <string name="DatasetList_default_ds_name">Dataset name</string>
     <string name="DatasetList_im_content_description">Category representative of the dataset</string>
     <string name="button_to_delete_a_category">Button to delete a category</string>
-
     <string name="select_existing_picture">Select Existing Picture</string>
     <string name="use_camera">Use camera</string>
     <string name="choose_picture">Choose Picture</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delete_selected_pictures">Delete selected pictures</string>
     <string name="set_as_representative_picture">Set as representative picture</string>
+    <string name="SearchTitle">look up dataset</string>
+    <string name="SearchNoMatch">No Match Found</string>
     <string name="menu_goto_learning">Learning</string>
     <string name="goto_dataset_editing">Dataset Editing</string>
     <string name="login">Login</string>
     <string name="startLearning">START LEARNING!</string>
     <string name="menu_goto_dataset_editing">Dataset Editing</string>
-
     <string name="nav_graph_label_home">Home</string>
     <string name="nav_graph_label_datasets_overview">Datasets Overview</string>
     <string name="nav_graph_label_login">Login</string>
