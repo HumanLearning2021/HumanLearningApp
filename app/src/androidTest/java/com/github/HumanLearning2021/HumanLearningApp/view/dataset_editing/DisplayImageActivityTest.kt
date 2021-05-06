@@ -86,7 +86,6 @@ class DisplayImageActivityTest {
             .check(matches(isDisplayed()))
         onView(withId(R.id.display_image_viewCategory))
             .check(matches(isDisplayed()))
-        onView(withId(R.id.display_image_delete_button)).check(matches(isDisplayed()))
     }
 
     private fun getForkUri(): Uri {
@@ -117,55 +116,11 @@ class DisplayImageActivityTest {
         }
     }
 
-    @Test
-    fun deleteLastImageOfCategory() {
-        launchFragmentWithPictureOfCategory(categoryWith1Picture)
-
-        onView(withId(R.id.display_image_delete_button)).perform(click())
-        waitFor(1) // increase if needed
-        val updatedPicturesInCategory = runBlocking {
-            dbMgt.getAllPictures(categoryWith1Picture)
-        }
-        assumeTrue(updatedPicturesInCategory.isEmpty())
-
-        Mockito.verify(navController).navigate(
-            DisplayImageFragmentDirections.actionDisplayImageFragmentToDisplayDatasetFragment(
-                datasetId
-            )
-        )
-    }
-
-    @Test
-    fun deleteNotLastImageInCategory() {
-        launchFragmentWithPictureOfCategory(categoryWith2Pictures)
-
-        onView(withId(R.id.display_image_delete_button)).perform(click())
-        waitFor(1) // increase if needed
-        val updatedPicturesInCategory = runBlocking {
-            dbMgt.getAllPictures(categoryWith1Picture)
-        }
-        assumeTrue(updatedPicturesInCategory.isNotEmpty())
-
-        verify(navController).navigate(
-            DisplayImageFragmentDirections.actionDisplayImageFragmentToDisplayImageSetFragment(
-                datasetId,
-                categoryWith2Pictures
-            )
-        )
-    }
-
-    @Test
-    fun setAsRepresentativePictureButtonWorks() {
-        launchFragmentWithPictureOfCategory(categoryWith2Pictures)
-
-        onView(withId(R.id.display_image_set_representative_picture)).perform(click())
-        // TODO test that the functionality is correctly implemented
-    }
-
     private fun launchFragmentWithPictureOfCategory(category: Category) {
         val args = bundleOf("datasetId" to datasetId, "picture" to getFirstPicture(category))
         launchFragmentInHiltContainer<DisplayImageFragment>(args) {
             Navigation.setViewNavController(requireView(), navController)
         }
     }
+
 }

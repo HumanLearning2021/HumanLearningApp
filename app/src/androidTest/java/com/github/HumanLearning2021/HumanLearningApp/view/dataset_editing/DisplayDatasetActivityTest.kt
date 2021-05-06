@@ -164,7 +164,7 @@ class DisplayDatasetActivityTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText("Modify categories")).perform(click())
         activityScenarioRule.scenario.onActivity {
-            var currentFragment =
+            val currentFragment =
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
             assert(currentFragment?.findNavController()?.currentDestination?.id == R.id.categoriesEditingFragment)
         }
@@ -178,7 +178,7 @@ class DisplayDatasetActivityTest {
         onView(withText(R.string.use_camera)).perform(click())
 
         activityScenarioRule.scenario.onActivity {
-            var currentFragment =
+            val currentFragment =
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
             assert(currentFragment?.findNavController()?.currentDestination?.id == R.id.takePictureFragment)
         }
@@ -191,9 +191,35 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.selectCategoryButton)).perform(click())
             onView(withText(categories.elementAt(index).name)).perform(click())
             onView(withId(R.id.saveButton)).perform(click())
-            waitFor(100) // increase if needed
+            waitFor(150) // increase if needed
             onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
             assert(dbMgt.getAllPictures(categories.elementAt(index)).size == numberOfPictures + 1)
+        }
+    }
+
+    @Test
+    fun clickOnMenuDeleteDatasetWorks() {
+        navigateToDisplayActivity()
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText(R.string.delete_dataset)).perform(click())
+        onView(withText("No")).perform(click())
+
+        runBlocking {
+
+            val numberOfDatasets = dbMgt.getDatasets().size
+
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+            onView(withText(R.string.delete_dataset)).perform(click())
+            onView(withText("Yes")).perform(click())
+
+            activityScenarioRule.scenario.onActivity {
+                val currentFragment =
+                    it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
+                assert(currentFragment?.findNavController()?.currentDestination?.id == R.id.datasetsOverviewFragment)
+            }
+
+            val numberOfDatasetsAfter = dbMgt.getDatasets().size
+            assert(numberOfDatasets - 1 == numberOfDatasetsAfter)
         }
     }
 

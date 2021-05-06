@@ -31,7 +31,7 @@
             android:scaleType="centerCrop"
             android:layout_height="match_parent"
             android:padding="@dimen/learning_image_border_width"
-            app:srcCompat="@color/blue" />
+            app:srcCompat="@drawable/default_representative_picture" />
     </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,7 +48,6 @@
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/learning_image_corner_radius"
 
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/learning_cat_1_cv"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +60,7 @@
                 android:scaleType="centerCrop"
                 android:layout_height="match_parent"
                 android:padding="@dimen/learning_image_border_width"
-                app:srcCompat="@color/blue" />
+                app:srcCompat="@drawable/default_representative_picture" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -83,7 +82,7 @@
                 android:scaleType="centerCrop"
                 android:layout_height="match_parent"
                 android:padding="@dimen/learning_image_border_width"
-                app:srcCompat="@color/blue" />
+                app:srcCompat="@drawable/default_representative_picture" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -105,7 +104,7 @@
                 android:scaleType="centerCrop"
                 android:layout_height="match_parent"
                 android:padding="@dimen/learning_image_border_width"
-                app:srcCompat="@color/blue" />
+                app:srcCompat="@drawable/default_representative_picture" />
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

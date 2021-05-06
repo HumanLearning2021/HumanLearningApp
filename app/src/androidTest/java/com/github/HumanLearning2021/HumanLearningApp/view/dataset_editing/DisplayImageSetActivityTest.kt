@@ -11,6 +11,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.longClick
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -138,6 +139,41 @@ class DisplayImageSetActivityTest {
     fun onBackPressedWorks() {
         Espresso.pressBack()
         verify(navController).popBackStack()
+    }
+
+    @Test
+    fun deletePicturesWorks() {
+        runBlocking {
+            val nbOfPictures = dbManagement.getAllPictures(categories.elementAt(0)).size
+
+            for (i in 0..2) {
+                onData(CoreMatchers.anything())
+                    .inAdapterView(withId(R.id.display_image_set_imagesGridView))
+                    .atPosition(0)
+                    .perform(longClick())
+            }
+            onView(withId(R.id.delete_pictures)).perform(click())
+            val nbOfPicturesAfterDelete = dbManagement.getAllPictures(categories.elementAt(0)).size
+            assert(nbOfPictures - 1 == nbOfPicturesAfterDelete)
+        }
+    }
+
+    @Test
+    fun setRepresentativePictureWorks() {
+        runBlocking {
+            val reprPicture = dbManagement.getRepresentativePicture(categories.elementAt(0).id)
+            val nbOfPictures = dbManagement.getAllPictures(categories.elementAt(0)).size
+            onData(CoreMatchers.anything())
+                .inAdapterView(withId(R.id.display_image_set_imagesGridView))
+                .atPosition(0)
+                .perform(longClick())
+
+            onView(withId(R.id.set_representative_picture)).perform(click())
+            val reprPictureAfterClick = dbManagement.getRepresentativePicture(categories.elementAt(0).id)
+            val nbOfPicturesAfterDelete = dbManagement.getAllPictures(categories.elementAt(0)).size
+            assert(nbOfPictures - 1 == nbOfPicturesAfterDelete)
+            assert(reprPicture != reprPictureAfterClick)
+        }
     }
 
     private fun launchFragment(){

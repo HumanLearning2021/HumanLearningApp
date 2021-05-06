@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.fragment.app.testing.launchFragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
@@ -46,7 +47,6 @@ import org.mockito.Mockito.verify
 import java.io.File
 import java.util.*
 
-
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -55,11 +55,11 @@ class LearningSettingsActivityTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    @BindValue @Demo2Database
+    @BindValue
+    @Demo2Database
     val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
     private val datasetId = TestUtils.getFirstDataset(dbManagement).id
-
 
     val navController = mock(NavController::class.java)
 
@@ -71,21 +71,27 @@ class LearningSettingsActivityTest {
     }
 
     @Test
-    fun pressingPresentationButtonLaunchesLearningActivity(){
+    fun pressingPresentationButtonLaunchesLearningActivity() {
 
         onView(withId(R.id.learningSettings_btChoosePresentation)).perform(click())
 
 
         verify(navController).navigate(
-            LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(datasetId, LearningMode.PRESENTATION)
+            LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
+                datasetId,
+                LearningMode.PRESENTATION
+            )
         )
     }
 
     @Test
-    fun pressingRepresentationButtonLaunchesLearningActivity(){
+    fun pressingRepresentationButtonLaunchesLearningActivity() {
         onView(withId(R.id.learningSettings_btChooseRepresentation)).perform(click())
         verify(navController).navigate(
-            LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(datasetId, LearningMode.REPRESENTATION)
+            LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
+                datasetId,
+                LearningMode.REPRESENTATION
+            )
         )
     }
 
@@ -105,7 +111,7 @@ class LearningSettingsActivityTest {
     }
 
     @Test
-    fun staticUITests(){
+    fun staticUITests() {
         learningModeTooltipsAreCorrect()
         bothButtonsAndTVAreDisplayed()
     }
@@ -126,7 +132,7 @@ class LearningSettingsActivityTest {
         }
     }
 
-    private fun launchFragment(){
+    private fun launchFragment() {
         val args = bundleOf("datasetId" to datasetId)
 
         launchFragmentInHiltContainer<LearningSettingsFragment>(fragmentArgs = args) {

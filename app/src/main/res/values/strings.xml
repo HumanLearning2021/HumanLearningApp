@@ -36,6 +36,7 @@
 
     <string name="modify_categories">Modify categories</string>
     <string name="add_new_picture">Add new picture</string>
+    <string name="delete_dataset">Delete dataset</string>
     <string name="dataset_name">Dataset Name</string>
     <string name="imagetobedisplayed">image to be displayed</string>
     <string name="buttontoremovepicturefromdataset">button to remove picture from dataset</string>
@@ -43,6 +44,11 @@
     <string name="DataOverview_CreateButton">Create dataset</string>
     <string name="DatasetsOverview_Title">Datasets Overview</string>
     <string name="setAsRepresentativePicture">Set as representative picture</string>
+    <string name="deletingDataset">Deleting dataset</string>
+    <string name="deleteConfirmationMessage">Are you sure you want to delete this dataset?</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="numberOfSelectedPicturesText">%d selected pictures</string>
 
     <string name="SignInFragment_loginStatusSuccessMessage">Welcome %1$s</string>
     <string name="SignInFragment_loginStatusDefaultMessage">Not logged in</string>
@@ -54,4 +60,6 @@
     <string name="select_existing_picture">Select Existing Picture</string>
     <string name="use_camera">Use camera</string>
     <string name="choose_picture">Choose Picture</string>
+    <string name="delete_selected_pictures">Delete selected pictures</string>
+    <string name="set_as_representative_picture">Set as representative picture</string>
 </resources>

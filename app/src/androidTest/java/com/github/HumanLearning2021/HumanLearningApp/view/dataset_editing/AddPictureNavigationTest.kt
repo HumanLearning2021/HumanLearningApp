@@ -65,7 +65,8 @@ class AddPictureNavigationTest {
     val categories = catSet.toTypedArray()
 
     val navController = TestNavHostController(
-        ApplicationProvider.getApplicationContext())
+        ApplicationProvider.getApplicationContext()
+    )
 
     @Before
     fun setup() {
@@ -78,8 +79,6 @@ class AddPictureNavigationTest {
         Intents.release()
         activityScenarioRule.scenario.close()
     }
-
-
 
 
     @Test
@@ -111,7 +110,7 @@ class AddPictureNavigationTest {
     }
 
 
-    private fun launchFragment(args:Bundle) {
+    private fun launchFragment(args: Bundle) {
         launchFragmentInHiltContainer<DisplayDatasetFragment>(args) {
             navController.setGraph(R.navigation.nav_graph)
             Navigation.setViewNavController(requireView(), navController)
@@ -132,6 +131,4 @@ class AddPictureNavigationTest {
         onView(ViewMatchers.withText(R.string.add_new_picture)).perform(click())
 
     }
-
-
 }
