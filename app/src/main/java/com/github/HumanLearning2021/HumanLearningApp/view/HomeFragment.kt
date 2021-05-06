@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentHomeBinding
 
+
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -25,23 +26,10 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.goToLearningButton.setOnClickListener {
-            // Use action and not fragment ID in order to get compile-time argument safety
-            val action =
-                HomeFragmentDirections.actionMainFragmentToLearningDatasetSelectionFragment()
-            findNavController().navigate(action)
-        }
-
-        binding.goToDatasetsOverviewButton.setOnClickListener {
-            val action = HomeFragmentDirections.actionMainFragmentToDatasetsOverviewFragment()
-            findNavController().navigate(action)
+        binding.startLearningButton.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToLearningDatasetSelectionFragment())
         }
     }
-
-
-
-
 
 
     override fun onDestroyView() {
@@ -50,3 +38,4 @@ class HomeFragment : Fragment() {
     }
 
 }
+

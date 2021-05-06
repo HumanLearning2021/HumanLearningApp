@@ -3,12 +3,10 @@ package com.github.HumanLearning2021.HumanLearningApp.hilt
 import android.content.Context
 import androidx.room.Room
 import com.firebase.ui.auth.AuthUI
-import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
@@ -17,7 +15,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -177,31 +174,31 @@ object DatabaseServiceModule {
 object DatabaseManagementModule {
     @DummyDatabase
     @Provides
-    fun provideDummyManagement(@DummyDatabase db: DatabaseService): DatabaseManagement = DummyDatabaseManagement(db)
+    fun provideDummyManagement(@DummyDatabase db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @DemoDatabase
     @Provides
-    fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+    fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @CachedDemoDatabase
     @Provides
-    fun provideCachedDemoService(@DemoDatabase db: DatabaseManagement, @DemoCachePictureRepository repo: PictureRepository): DatabaseManagement = CachedFirestoreDatabaseManagement(db as FirestoreDatabaseManagement, repo)
+    fun provideCachedDemoService(@DemoDatabase db: DatabaseManagement, @DemoCachePictureRepository repo: PictureRepository): DatabaseManagement = CachedDatabaseManagement(db, repo)
 
     @Demo2Database
     @Provides
-    fun provideDemo2Service(@Demo2Database db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+    fun provideDemo2Service(@Demo2Database db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @ScratchDatabase
     @Provides
-    fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement = FirestoreDatabaseManagement(db as FirestoreDatabaseService)
+    fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @OfflineDemoDatabase
     @Provides
-    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement = OfflineDatabaseManagement(db as OfflineDatabaseService)
+    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @OfflineScratchDatabase
     @Provides
-    fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement = OfflineDatabaseManagement(db as OfflineDatabaseService)
+    fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @GlobalDatabaseManagement
     @Provides

@@ -5,15 +5,15 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -26,7 +26,6 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.view.HomeFragment
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import dagger.hilt.android.testing.BindValue
@@ -36,13 +35,11 @@ import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
-import org.hamcrest.core.Is
 import org.junit.*
 import org.junit.Assume.assumeTrue
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
-import java.util.*
 
 
 @UninstallModules(DatabaseManagementModule::class)
@@ -147,20 +144,20 @@ class DisplayDatasetActivityTest {
         }
     }
 
-    private fun navigateToDisplayActivity() {
-        onView(withId(R.id.goToDatasetsOverviewButton)).perform(click())
-        onView(withId(R.id.DatasetList_list))
+    private fun navigateToDisplayDatasetFragment() {
+        onView(withId(R.id.datasetsOverviewFragment)).perform(click())
+        Espresso.onView(ViewMatchers.withId(R.id.DatasetList_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
-                    click()
+                    ViewActions.click()
                 )
             )
     }
 
     @Test
     fun clickOnMenuModifyCategoriesWorks() {
-        navigateToDisplayActivity()
+        navigateToDisplayDatasetFragment()
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText("Modify categories")).perform(click())
         activityScenarioRule.scenario.onActivity {
@@ -172,7 +169,7 @@ class DisplayDatasetActivityTest {
 
     @Test
     fun clickOnMenuAddNewPictureWorks() {
-        navigateToDisplayActivity()
+        navigateToDisplayDatasetFragment()
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText(R.string.add_new_picture)).perform(click())
         onView(withText(R.string.use_camera)).perform(click())
@@ -190,6 +187,7 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.takePictureButton)).perform(click())
             onView(withId(R.id.selectCategoryButton)).perform(click())
             onView(withText(categories.elementAt(index).name)).perform(click())
+            waitFor(300) // increase if needed
             onView(withId(R.id.saveButton)).perform(click())
             waitFor(150) // increase if needed
             onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
@@ -199,7 +197,7 @@ class DisplayDatasetActivityTest {
 
     @Test
     fun clickOnMenuDeleteDatasetWorks() {
-        navigateToDisplayActivity()
+        navigateToDisplayDatasetFragment()
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText(R.string.delete_dataset)).perform(click())
         onView(withText("No")).perform(click())
@@ -225,7 +223,7 @@ class DisplayDatasetActivityTest {
 
     @Test
     fun clickOnMenuButNotOnButtonClosesMenu() {
-        navigateToDisplayActivity()
+        navigateToDisplayDatasetFragment()
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         UiDevice.getInstance(getInstrumentation()).click(0, 100)
         onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))

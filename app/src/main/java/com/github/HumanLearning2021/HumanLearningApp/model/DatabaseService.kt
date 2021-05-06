@@ -1,12 +1,15 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import com.google.firebase.auth.FirebaseUser
+import java.lang.Exception
 
 
 /**
  * An interface representing the part of the model interacting with data sets
  */
 interface DatabaseService {
+
+    data class NotFoundException(val id: Id): Exception("${id} not found in database")
 
     @Deprecated(
         "Pictures now have an identifying id which should be used. If a random picture is wanted, first retrieve all the ids, select one among them at random then retrieve the picture.",
@@ -18,7 +21,7 @@ interface DatabaseService {
      * @param category the category of the image to be retrieved
      * @return a CategorizedPicture from the desired category. Null if no picture of the desired
      * category is present in the database.
-     * @throws IllegalArgumentException if the provided category is not present in the database
+     * @throws DatabaseService.NotFoundException if the provided category is not present in the database
      */
     suspend fun getPicture(category: Category): CategorizedPicture?
 
@@ -36,7 +39,7 @@ interface DatabaseService {
      *
      * @param category the category of image to be retrieved
      * @return a List of ids. Can be empty if no pictures where found.
-     * @throws IllegalArgumentException if the provided category is not present in the database
+     * @throws NotFoundException if the provided category is not present in the database
      */
     suspend fun getPictureIds(category: Category): List<Id>
 
@@ -53,9 +56,10 @@ interface DatabaseService {
      *
      * @param picture - the picture to put as a representative
      * @param category - the category whose representative picture we want to change
-     * @throws IllegalArgumentException if the database does not contain the specified category
+     * @throws NotFoundException if the database does not contain the specified category
      */
     suspend fun putRepresentativePicture(picture: android.net.Uri, category: Category)
+    suspend fun putRepresentativePicture(picture: CategorizedPicture)
 
     /**
      * A function that allows to put a picture in the database
@@ -63,7 +67,7 @@ interface DatabaseService {
      * @param picture the picture to put in the database
      * @param category the category to which the picture belongs
      * @return a Categorized picture built using 'picture' and 'category'
-     * @throws IllegalArgumentException if the category provided is not present in the database
+     * @throws NotFoundException if the category provided is not present in the database
      */
     suspend fun putPicture(picture: android.net.Uri, category: Category): CategorizedPicture
 
@@ -95,7 +99,7 @@ interface DatabaseService {
      *
      * @param category - the category whose pictures we want to retrieve
      * @return the pictures categorized with the specified category
-     * @throws IllegalArgumentException if the database does not contain the specified category
+     * @throws NotFoundException if the database does not contain the specified category
      */
     suspend fun getAllPictures(category: Category): Set<CategorizedPicture>
 
@@ -103,7 +107,7 @@ interface DatabaseService {
      * Remove the category from the database and from all the datasets contained in this database and using this category
      *
      * @param category - the category to remove from the database
-     * @throws IllegalArgumentException if the database does not contain the specified category
+     * @throws NotFoundException if the database does not contain the specified category
      */
     suspend fun removeCategory(category: Category)
 
@@ -111,7 +115,7 @@ interface DatabaseService {
      * Removes the corresponding picture from the database
      *
      * @param picture - the picture to remove from the database
-     * @throws IllegalArgumentException if the database does not contain the specified picture
+     * @throws NotFoundException if the database does not contain the specified picture
      */
     suspend fun removePicture(picture: CategorizedPicture)
 
@@ -137,7 +141,7 @@ interface DatabaseService {
      * Deletes the specified dataset from the database
      *
      * @param id - the name of the dataset to delete
-     * @throws IllegalArgumentException if there is no dataset of the specified id in the database
+     * @throws NotFoundException if there is no dataset of the specified id in the database
      */
     suspend fun deleteDataset(id: Id)
 
@@ -154,8 +158,8 @@ interface DatabaseService {
      * @param dataset - the dataset from which to remove the category
      * @param category - the category to remove from the dataset
      * @return the dataset with the category removed
-     * @throws IllegalArgumentException if the database does not contain the specified category
-     * @throws IllegalArgumentException if the database does not contain the specified dataset
+     * @throws NotFoundException if the database does not contain the specified category
+     * @throws NotFoundException if the database does not contain the specified dataset
      */
     suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): Dataset
 
@@ -165,7 +169,7 @@ interface DatabaseService {
      * @param dataset - the dataset whose name to change
      * @param newName - the new name the dataset should take
      * @return the dataset with its name changed
-     * @throws IllegalArgumentException if the database does not contain the specified dataset
+     * @throws NotFoundException if the database does not contain the specified dataset
      */
     suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset
 
@@ -175,8 +179,8 @@ interface DatabaseService {
      * @param dataset - the dataset where the category should be put
      * @param category - the category to add
      * @return the dataset with the new category added
-     * @throws IllegalArgumentException if the database does not contain the specified dataset
-     * @throws IllegalArgumentException if the database does not contain the specified category
+     * @throws NotFoundException if the database does not contain the specified dataset
+     * @throws NotFoundException if the database does not contain the specified category
      */
     suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset
 

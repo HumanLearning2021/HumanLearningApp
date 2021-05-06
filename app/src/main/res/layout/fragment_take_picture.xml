@@ -45,24 +45,26 @@
         android:id="@+id/selectCategoryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="@string/AddPicture_selectCategoryButtonText"
+        app:layout_constraintBottom_toTopOf="@id/camera_guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/takePictureButton"
-        app:layout_constraintBottom_toTopOf="@id/camera_guideline2"
         tools:ignore="ButtonStyle" />
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:background="@color/purple_500"
-        app:layout_constraintTop_toBottomOf="@id/camera_guideline2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:enabled="false"
-        android:text="@string/AddPicture_saveButtonText" />
+        android:text="@string/AddPicture_saveButtonText"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/camera_guideline2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/camera_guideline1"

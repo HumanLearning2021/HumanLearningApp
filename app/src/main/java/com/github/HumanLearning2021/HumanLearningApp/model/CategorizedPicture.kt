@@ -1,8 +1,12 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.app.Activity
+import android.content.Context
 import android.os.Parcelable
 import android.widget.ImageView
+import androidx.annotation.MainThread
+import java.io.File
+import java.io.InputStream
 
 /**
  * Interface representing a categorized picture
@@ -20,4 +24,9 @@ interface CategorizedPicture : Parcelable {
      *
      */
     fun displayOn(activity: Activity, imageView: ImageView)
+
+    /**
+     * copy image data to a file.
+     */
+    fun copyTo(context: Context, dest: File)
 }

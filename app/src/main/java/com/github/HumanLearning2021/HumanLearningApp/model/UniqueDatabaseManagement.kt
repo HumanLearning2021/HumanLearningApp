@@ -1,16 +1,10 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.content.Context
-import androidx.room.Room
-import com.github.HumanLearning2021.HumanLearningApp.firestore.CachedFirestoreDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreCategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.*
 import com.github.HumanLearning2021.HumanLearningApp.room.*
 import com.google.firebase.firestore.FirebaseFirestore
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
 /**
  * @param context: the application context
@@ -34,19 +28,19 @@ class UniqueDatabaseManagement constructor(val context: Context, private val roo
 
     fun accessDatabase(databaseName: String): DatabaseManagement {
         return if (downloadedDatabases.contains(databaseName)) {
-            OfflineDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
+            DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
         } else {
-            CachedFirestoreDatabaseManagement(FirestoreDatabaseManagement(FirestoreDatabaseService(databaseName, firestore)), CachePictureRepository(databaseName, context))
+            CachedDatabaseManagement(DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore)), CachePictureRepository(databaseName, context))
         }
     }
 
-    fun accessCloudDatabase(databaseName: String): CachedFirestoreDatabaseManagement {
-        return CachedFirestoreDatabaseManagement(FirestoreDatabaseManagement(FirestoreDatabaseService(databaseName, firestore)), CachePictureRepository(databaseName, context))
+    fun accessCloudDatabase(databaseName: String): DatabaseManagement {
+        return CachedDatabaseManagement(DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore)), CachePictureRepository(databaseName, context))
     }
 
-    suspend fun downloadDatabase(databaseName: String): OfflineDatabaseManagement {
+    suspend fun downloadDatabase(databaseName: String): DatabaseManagement {
         val firestoreDbManagement =
-            FirestoreDatabaseManagement(FirestoreDatabaseService(databaseName, firestore))
+            DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore))
         val pictureRepository = PictureRepository(databaseName, context)
 
         val datasets = firestoreDbManagement.getDatasets()
@@ -72,7 +66,7 @@ class UniqueDatabaseManagement constructor(val context: Context, private val roo
         initializeRoomEntities(databaseName, roomDatasets, roomCats, roomPics, roomRepresentativePictures)
         initializeRoomCrossRefs(dbDsRefs, dbCatRefs, dbPicRefs, dsCatRefs)
         downloadedDatabases.add(databaseName)
-        return OfflineDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
+        return DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
     }
 
     fun removeOfflineDatabase(databaseName: String) {

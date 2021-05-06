@@ -50,9 +50,8 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         require(category is DummyCategory)
-        if (!categories.contains(category)) throw IllegalArgumentException(
-            "The provided category is not present in the dataset"
-        )
+        if (!categories.contains(category))
+            throw DatabaseService.NotFoundException(category.id)
 
         for (p in pictures)
             if (p.category == category) return p
@@ -67,9 +66,8 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     override suspend fun getPictureIds(category: Category): List<Id> {
         require(category is DummyCategory)
-        if (!categories.contains(category)) throw IllegalArgumentException(
-            "The provided category is not present in the dataset"
-        )
+        if (!categories.contains(category))
+            throw DatabaseService.NotFoundException(category.id)
 
         val res = mutableListOf<String>()
         for (p in pictures)
@@ -83,8 +81,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
         require(category is DummyCategory)
-        if(!categories.contains(category)) throw IllegalArgumentException("The provided category" +
-                "is not present in the dataset")
+        if(!categories.contains(category)) throw DatabaseService.NotFoundException(category.id)
 
         val addedPicture = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
         pictures.add(addedPicture)
@@ -111,7 +108,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
         require(category is DummyCategory)
         if (!categories.contains(category)) {
-            throw IllegalArgumentException("The category ${category.name} is not present in the database")
+            throw DatabaseService.NotFoundException(category.id)
         }
         val res: MutableSet<CategorizedPicture> = mutableSetOf()
         for (p in pictures) {
@@ -137,7 +134,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
             }
         } else {
-            throw IllegalArgumentException("The category name ${category.name} is not present in the database")
+            throw DatabaseService.NotFoundException(category.id)
         }
     }
 
@@ -149,7 +146,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
                 return
             }
         }
-        throw IllegalArgumentException("The specified picture is not present in the database")
+        throw DatabaseService.NotFoundException(picture.id)
     }
 
     override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
@@ -171,14 +168,19 @@ class DummyDatabaseService internal constructor() : DatabaseService {
                 return
             }
         }
-        throw IllegalArgumentException("The dataset with id $id is not present in the database")
+        throw DatabaseService.NotFoundException(id)
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
         if (!categories.contains(category)) {
-            throw IllegalArgumentException("The category name ${category.name} is not present in the database")
+            throw DatabaseService.NotFoundException(category.id)
         }
         representativePictures[category.id] = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
+    }
+
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+        require(picture is DummyCategorizedPicture)
+        putRepresentativePicture(picture.picture, picture.category)
     }
 
     override suspend fun getDatasets(): Set<Dataset> {
@@ -189,7 +191,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         require(dataset is DummyDataset)
         require(category is DummyCategory)
         if (!datasets.contains(dataset)) {
-            throw IllegalArgumentException("The underlying database does not contain the dataset ${dataset.id}")
+            throw DatabaseService.NotFoundException(dataset.id)
         }
         val dsCategories = dataset.categories
         for (c in dsCategories) {
@@ -207,13 +209,13 @@ class DummyDatabaseService internal constructor() : DatabaseService {
                 return newDs
             }
         }
-        throw IllegalArgumentException("The category ${category.id} named ${category.name} is not present in the dataset")
+        throw DatabaseService.NotFoundException(category.id)
     }
 
     override suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset {
         require(dataset is DummyDataset)
         if (!datasets.contains(dataset)) {
-            throw IllegalArgumentException("The underlying database does not contain the dataset ${dataset.name}")
+            throw DatabaseService.NotFoundException(dataset.id)
         }
         val newDs = DummyDataset(dataset.id, newName, dataset.categories)
         this.datasets.apply {
@@ -227,14 +229,13 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         require(dataset is DummyDataset)
         require(category is DummyCategory)
         if (!categories.contains(category)) {
-            throw java.lang.IllegalArgumentException("The underlying database does not " +
-                    "contain the category ${category.name}")
+            throw DatabaseService.NotFoundException(category.id)
         }
         // calling datasets.contains(dataset) returned false for obviously equal datasets
         // TODO : discuss this
 //        if (!datasets.contains(dataset)) {
         if (datasets.find{it == dataset} == null) {
-            throw IllegalArgumentException("The underlying database:\n $datasets\n\n does not " +
+            throw DatabaseService.NotFoundException("The underlying database:\n $datasets\n\n does not " +
                     "contain the dataset \n $dataset")
         }
         return if (dataset.categories.contains(category)) {

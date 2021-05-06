@@ -1,10 +1,9 @@
-package com.github.HumanLearning2021.HumanLearningApp.firestore
+package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategorizedPicture
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -24,7 +23,7 @@ import javax.inject.Inject
 @UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class CachedFirestoreDatabaseManagementTest {
+class CachedDatabaseManagementTest {
 
     @Inject
     @Demo2Database
@@ -57,7 +56,7 @@ class CachedFirestoreDatabaseManagementTest {
         val pic = demoInterface.getPicture(ids.random())
         assert(pic is OfflineCategorizedPicture)
         assertThat(pic, not(equalTo(null)))
-        assertThat((demoInterface as CachedFirestoreDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
+        assertThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
     }
 
     @Test
@@ -65,9 +64,9 @@ class CachedFirestoreDatabaseManagementTest {
         val ids = demoInterface.getPictureIds(demoInterface.getCategoryById(appleCategoryId)!!)
         val pic = demoInterface.getPicture(ids.random())
         assumeThat(pic, not(equalTo(null)))
-        assumeThat((demoInterface as CachedFirestoreDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
+        assumeThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
         demoInterface.removePicture(pic)
-        assertThat((demoInterface as CachedFirestoreDatabaseManagement).cachedPictures.keys, not(hasItem(pic.id)))
+        assertThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, not(hasItem(pic.id)))
     }
 
     @Test
@@ -75,7 +74,7 @@ class CachedFirestoreDatabaseManagementTest {
         val ids = demoInterface.getPictureIds(demoInterface.getCategoryById(appleCategoryId)!!)
         val pic = demoInterface.getPicture(ids.random())
         assumeThat(pic, not(equalTo(null)))
-        assumeThat((demoInterface as CachedFirestoreDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
+        assumeThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
         val pic2 = demoInterface.getPicture(pic.id)
         assertThat(pic2, not(equalTo(null)))
     }
@@ -84,16 +83,16 @@ class CachedFirestoreDatabaseManagementTest {
     fun getReprPicturePutsItIntoCache() = runBlocking {
         val pic = demoInterface.getRepresentativePicture("pear")
         assumeThat(pic, not(equalTo(null)))
-        assertThat((demoInterface as CachedFirestoreDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
+        assertThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
     }
 
     @Test
     fun getPictureDeprecatedPutsItIntoCache() = runBlocking {
         val pic = demoInterface.getPicture(demoInterface.getCategoryById(appleCategoryId)!!)
         assumeThat(pic, not(equalTo(null)))
-        assumeThat((demoInterface as CachedFirestoreDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
+        assumeThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
         demoInterface.removePicture(pic)
-        assertThat((demoInterface as CachedFirestoreDatabaseManagement).cachedPictures.keys, not(hasItem(pic.id)))
+        assertThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, not(hasItem(pic.id)))
 
     }
 }

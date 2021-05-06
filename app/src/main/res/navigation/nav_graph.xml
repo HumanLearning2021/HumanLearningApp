@@ -3,24 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/HomeFragment">
+    app:startDestination="@id/homeFragment">
 
-    <fragment
-        android:id="@+id/HomeFragment"
-        android:name="com.github.HumanLearning2021.HumanLearningApp.view.HomeFragment"
-        android:label="Home"
-        tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_mainFragment_to_learningDatasetSelectionFragment"
-            app:destination="@id/learningDatasetSelectionFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_datasetsOverviewFragment"
-            app:destination="@id/datasetsOverviewFragment" />
-    </fragment>
     <fragment
         android:id="@+id/learningDatasetSelectionFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningDatasetSelectionFragment"
-        android:label="Select a dataset"
+        android:label="@string/nav_graph_label_learning_dataset_selection"
         tools:layout="@layout/fragment_learning_dataset_selection">
         <action
             android:id="@+id/action_learningDatasetSelectionFragment_to_learningSettingsFragment"
@@ -29,7 +17,7 @@
     <fragment
         android:id="@+id/datasetsOverviewFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.DatasetsOverviewFragment"
-        android:label="Datasets Overiew"
+        android:label="@string/nav_graph_label_datasets_overview"
         tools:layout="@layout/fragment_datasets_overview">
         <action
             android:id="@+id/action_datasetsOverviewFragment_to_displayDatasetFragment"
@@ -41,7 +29,7 @@
     <fragment
         android:id="@+id/learningSettingsFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningSettingsFragment"
-        android:label="Learning Settings"
+        android:label="@string/nav_graph_label_learning_settings"
         tools:layout="@layout/fragment_learning_settings">
         <argument
             android:name="datasetId"
@@ -53,7 +41,7 @@
     <fragment
         android:id="@+id/learningFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningFragment"
-        android:label="Learning"
+        android:label="@string/nav_graph_label_learning"
         tools:layout="@layout/fragment_learning">
         <argument
             android:name="datasetId"
@@ -65,7 +53,7 @@
     <fragment
         android:id="@+id/displayDatasetFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.DisplayDatasetFragment"
-        android:label="Display Dataset"
+        android:label="@string/nav_graph_label_display_dataset"
         tools:layout="@layout/fragment_display_dataset">
         <action
             android:id="@+id/action_displayDatasetFragment_to_categoriesEditingFragment"
@@ -75,9 +63,9 @@
             app:destination="@id/displayImageSetFragment" />
         <argument
             android:name="datasetId"
+            android:defaultValue="@null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <action
             android:id="@+id/action_displayDatasetFragment_to_addPictureFragment"
             app:destination="@id/addPictureFragment" />
@@ -85,7 +73,7 @@
     <fragment
         android:id="@+id/categoriesEditingFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.CategoriesEditingFragment"
-        android:label="Edit Categories"
+        android:label="@string/nav_graph_label_categories_editing"
         tools:layout="@layout/fragment_categories_editing">
         <action
             android:id="@+id/action_categoriesEditingFragment_to_displayDatasetFragment"
@@ -101,7 +89,7 @@
     <fragment
         android:id="@+id/displayImageSetFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.DisplayImageSetFragment"
-        android:label="Display Images"
+        android:label="nav_graph_label_display_image_set"
         tools:layout="@layout/fragment_display_image_set">
         <action
             android:id="@+id/action_displayImageSetFragment_to_displayImageFragment"
@@ -116,18 +104,18 @@
     <fragment
         android:id="@+id/displayImageFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.DisplayImageFragment"
-        android:label="Display Image"
+        android:label="@string/nav_graph_label_display_image"
         tools:layout="@layout/fragment_display_image">
         <action
             android:id="@+id/action_displayImageFragment_to_displayImageSetFragment"
             app:destination="@id/displayImageSetFragment"
             app:popUpTo="@+id/displayImageSetFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_displayImageFragment_to_displayDatasetFragment"
             app:destination="@id/displayDatasetFragment"
             app:popUpTo="@+id/displayDatasetFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
         <argument
             android:name="picture"
             app:argType="com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture" />
@@ -138,8 +126,8 @@
     <fragment
         android:id="@+id/takePictureFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.TakePictureFragment"
-        android:label="fragment_add_picture"
-        tools:layout="@layout/fragment_take_picture" >
+        android:label="@string/nav_graph_label_take_picture"
+        tools:layout="@layout/fragment_take_picture">
         <argument
             android:name="categories"
             app:argType="com.github.HumanLearning2021.HumanLearningApp.model.Category[]" />
@@ -150,8 +138,8 @@
     <fragment
         android:id="@+id/selectPictureFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.SelectPictureFragment"
-        android:label="fragment_select_picture"
-        tools:layout="@layout/fragment_select_picture" >
+        android:label="@string/nav_graph_label_select_picture"
+        tools:layout="@layout/fragment_select_picture">
         <argument
             android:name="categories"
             app:argType="com.github.HumanLearning2021.HumanLearningApp.model.Category[]" />
@@ -162,8 +150,8 @@
     <fragment
         android:id="@+id/addPictureFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.AddPictureFragment"
-        android:label="fragment_add_picture"
-        tools:layout="@layout/fragment_add_picture" >
+        android:label="@string/nav_graph_label_add_picture"
+        tools:layout="@layout/fragment_add_picture">
         <action
             android:id="@+id/action_addPictureFragment_to_selectPictureFragment"
             app:destination="@id/selectPictureFragment" />
@@ -176,5 +164,19 @@
         <argument
             android:name="datasetId"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/googleSignInWidget"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInWidget"
+        android:label="@string/nav_graph_label_login"
+        tools:layout="@layout/fragment_google_sign_in" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.HomeFragment"
+        android:label="@string/nav_graph_label_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_learningDatasetSelectionFragment"
+            app:destination="@id/learningDatasetSelectionFragment" />
     </fragment>
 </navigation>
