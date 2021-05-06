@@ -36,7 +36,6 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
         lifecycleScope.launch {
                 datasetList = dbMgt.getDatasetNames().toList()
-        title = "Look up dataset"
         searchView = findViewById(R.id.searchView)
         listView = findViewById(R.id.listView)
             adapter = ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, datasetList)
@@ -46,7 +45,7 @@ class SearchActivity : AppCompatActivity() {
                     if (datasetList.contains(query)) {
                         adapter.filter.filter(query)
                     } else {
-                        Toast.makeText(this@SearchActivity, "No Match found", Toast.LENGTH_LONG)
+                        Toast.makeText(this@SearchActivity, getString(R.string.SearchNoMatch) , Toast.LENGTH_LONG)
                             .show()
                     }
                     return false
