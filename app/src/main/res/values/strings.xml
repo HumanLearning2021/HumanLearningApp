@@ -43,6 +43,11 @@
     <string name="DataOverview_CreateButton">Create dataset</string>
     <string name="DatasetsOverview_Title">Datasets Overview</string>
     <string name="setAsRepresentativePicture">Set as representative picture</string>
+    <string name="deletingDataset">Deleting dataset</string>
+    <string name="deleteConfirmationMessage">Are you sure you want to delete this dataset?</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="numberOfSelectedPicturesText">%d selected pictures</string>
 
     <string name="SignInFragment_loginStatusSuccessMessage">Welcome %1$s</string>
     <string name="SignInFragment_loginStatusDefaultMessage">Not logged in</string>

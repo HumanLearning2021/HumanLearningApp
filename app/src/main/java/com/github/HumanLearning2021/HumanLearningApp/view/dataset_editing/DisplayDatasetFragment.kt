@@ -119,16 +119,16 @@ class DisplayDatasetFragment : Fragment() {
             R.id.display_dataset_menu_delete_dataset -> {
                 AlertDialog.Builder(this.context)
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Deleting dataset")
-                    .setMessage("Are you sure you want to delete this dataset?")
-                    .setPositiveButton("Yes"
+                    .setTitle(getString(R.string.deletingDataset))
+                    .setMessage(getString(R.string.deleteConfirmationMessage))
+                    .setPositiveButton(getString(R.string.Yes)
                     ) { _, _ ->
                         lifecycleScope.launch {
                             dbManagement.deleteDataset(datasetId)
                             findNavController().popBackStack()
                         }
                     }
-                    .setNegativeButton("No", null)
+                    .setNegativeButton(getString(R.string.No), null)
                     .show()
                 true
             }
