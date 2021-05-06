@@ -1,9 +1,14 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -39,9 +44,19 @@ abstract class DemoDatabaseServiceTest {
     }
 }
 
+@UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class FirestoreDemoDatabaseServiceTest : DemoDatabaseServiceTest() {
+
+    @Inject
+    @Demo2Database
+    lateinit var demo2DbService: DatabaseService
+
+    @BindValue
+    @Demo2Database
+    lateinit var demo2DbMgt: DatabaseManagement
+
     @Inject
     @DemoDatabase
     override lateinit var db: DatabaseService
@@ -52,5 +67,6 @@ class FirestoreDemoDatabaseServiceTest : DemoDatabaseServiceTest() {
     @Before
     fun setUpDb() {
         hiltRule.inject()
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
     }
 }
