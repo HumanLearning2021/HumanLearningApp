@@ -66,7 +66,7 @@ class LearningTest {
 
     @Test
     fun allImageViewsAreDisplayed() {
-        assertDisplayed(R.id.learning_im_to_sort)
+        assertDisplayed(R.id.learning_to_sort)
         assertDisplayed(R.id.learning_cat_0)
         assertDisplayed(R.id.learning_cat_1)
         assertDisplayed(R.id.learning_cat_2)

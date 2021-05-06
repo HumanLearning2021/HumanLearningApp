@@ -7,7 +7,7 @@
     tools:context=".view.learning.LearningFragment">
 
     <ImageView
-        android:id="@+id/learning_im_to_sort"
+        android:id="@+id/learning_to_sort"
         android:layout_width="@dimen/learning_image_size_land"
         android:layout_height="@dimen/learning_image_size_land"
         android:background="@color/white"
