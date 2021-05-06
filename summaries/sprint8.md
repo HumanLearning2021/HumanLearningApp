@@ -15,5 +15,5 @@ This week I worked on making the learning UI clearer to the learner. I had very 
 ## Lenweiter, Martin
 
 ## Vial, Nicolas
-
+This week, I worked on improving the dataset management interface to make it more logical and simple to use. I also added the possibility to put a new representative picture with the help of Jonas. Everything went very well for these tasks. There are still one or two graphical details that can be improved but I didn't have time to refine them. I also added a default picture in cases where no representative picture was selected before.
 ## Overall Team: Lessons Learned
