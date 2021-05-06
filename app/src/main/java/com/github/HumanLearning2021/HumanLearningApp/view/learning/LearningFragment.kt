@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -121,7 +120,7 @@ class LearningFragment: Fragment() {
     }
 
 
-    private fun initImageView(catIvId: Int, cat: Category): ImageView? {
+    private fun initImageView(catIvId: Int, cat: Category): ImageView {
         val catIv = when(catIvId) {
             R.id.learning_cat_0 -> binding.learningCat0
             R.id.learning_cat_1 -> binding.learningCat1
@@ -129,22 +128,20 @@ class LearningFragment: Fragment() {
             else -> binding.learningToSort
         }
 
-        // TODO (next sprint) make this less hacky
+        // TODO (next sprint) make this more robust
         // The mechanism to verify that the classification is correct is the comparison between
         // the contentDescription of the target ImageView and the text carried in the drag & drop
         // see LearningActivity::dropCallback
-        if (catIv != null) {
-            catIv.contentDescription = cat.name
-            Log.d(parentActivity.localClassName, "init contentDescription to ${cat.name}")
+        catIv.contentDescription = cat.name
+        Log.d(parentActivity.localClassName, "init contentDescription to ${cat.name}")
 
-            if (catIvId == R.id.learning_to_sort) {
-                lifecycleScope.launch {
-                    learningPresenter.displayNextPicture(parentActivity, catIv)
-                }
-            } else {
-                lifecycleScope.launch {
-                    learningPresenter.displayTargetPicture(parentActivity, catIv, cat)
-                }
+        if (catIvId == R.id.learning_to_sort) {
+            lifecycleScope.launch {
+                learningPresenter.displayNextPicture(parentActivity, catIv)
+            }
+        } else {
+            lifecycleScope.launch {
+                learningPresenter.displayTargetPicture(parentActivity, catIv, cat)
             }
         }
 
@@ -156,14 +153,14 @@ class LearningFragment: Fragment() {
      * This method initializes the image view containing the image to sort
      */
     private fun initImageToSort(catIvId: Int, cat: Category) {
-        initImageView(catIvId, cat)?.setOnTouchListener{e, v -> onImageToSortTouched(e, v)}
+        initImageView(catIvId, cat).setOnTouchListener{ e, v -> onImageToSortTouched(e, v)}
     }
 
     /**
      * This method initializes an image view representing a target category
      */
     private fun initTargetCategory(catIvId: Int, cat: Category) {
-        initImageView(catIvId, cat)?.setOnDragListener(targetOnDragListener)
+        initImageView(catIvId, cat).setOnDragListener(targetOnDragListener)
     }
 
     private val opaque = 1.0f
@@ -195,7 +192,7 @@ class LearningFragment: Fragment() {
         setOpacity(v, opaque)
         Log.d(parentActivity.localClassName, "dropped : ${item.text} on category: ${v.contentDescription}")
 
-        // TODO (next sprint) make this less hacky
+        // TODO (future sprint) make this more robust
         // the classification is considered correct if the text carried by the drag
         // is equal to the contentDescription of the target ImageView
         val res = item.text == v.contentDescription
@@ -204,7 +201,7 @@ class LearningFragment: Fragment() {
         if (res) {
             audioFeedback.startCorrectFeedback()
             lifecycleScope.launch {
-                binding.learningToSort?.let {
+                binding.learningToSort.let {
                     learningPresenter.displayNextPicture(
                         self,
                         it,
@@ -228,13 +225,12 @@ class LearningFragment: Fragment() {
     }
 
     private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
-        val clipDataLabel = "My Clip Data"
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                // TODO (next sprint) change this to setCurrentCategory in presenter
+                // TODO (future sprint) make verification mechanism more robust
                 val item = ClipData.Item(view.contentDescription)
                 val dragData = ClipData(
-                    clipDataLabel,
+                    getString(R.string.learning_clipdata_label),
                     arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
                     item
                 )
