@@ -129,9 +129,9 @@ class TakePictureActivityTest {
                 10
             )
         )
-        onView(withId(R.id.saveButton)).perform(click())
         onView(withId(R.id.selectCategoryButton)).perform(click())
         onView(withText("cat1")).perform(click())
+        onView(withId(R.id.saveButton)).perform(click())
         verify(navController).popBackStack()
     }
 
