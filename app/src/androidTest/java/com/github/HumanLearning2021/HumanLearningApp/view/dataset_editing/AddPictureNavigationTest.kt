@@ -54,8 +54,6 @@ class AddPictureNavigationTest {
     @Demo2Database
     val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
-    private val datasetId: Id = TestUtils.getFirstDataset(dbManagement).id
-
     private val catSet = setOf<Category>(
         DummyCategory("cat1", "cat1"),
         DummyCategory("cat2", "cat2"),
@@ -80,19 +78,11 @@ class AddPictureNavigationTest {
         activityScenarioRule.scenario.close()
     }
 
-
     @Test
     fun navigateToChoose() {
         navigateToAddPictureActivity()
-
         onView(withId(R.id.select_existing_picture)).perform(click())
-
-        activityScenarioRule.scenario.onActivity {
-            var currentFragmentContainer =
-                it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
-            val currentFragment = currentFragmentContainer?.findNavController()?.currentDestination
-            assert(currentFragment?.id == R.id.selectPictureFragment)
-        }
+        assertCurrentFragmentIsCorrect(R.id.selectPictureFragment)
     }
 
     @Test
@@ -101,25 +91,12 @@ class AddPictureNavigationTest {
         Espresso.onView(ViewMatchers.withId(R.id.use_camera))
             .perform(ViewActions.click())
 
-        activityScenarioRule.scenario.onActivity {
-            var currentFragmentContainer =
-                it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
-            val currentFragment = currentFragmentContainer?.findNavController()?.currentDestination
-            assert(currentFragment?.id == R.id.takePictureFragment)
-        }
+        assertCurrentFragmentIsCorrect(R.id.takePictureFragment)
     }
 
-
-    private fun launchFragment(args: Bundle) {
-        launchFragmentInHiltContainer<DisplayDatasetFragment>(args) {
-            navController.setGraph(R.navigation.nav_graph)
-            Navigation.setViewNavController(requireView(), navController)
-        }
-    }
 
     private fun navigateToAddPictureActivity() {
-        Espresso.onView(ViewMatchers.withId(R.id.goToDatasetsOverviewButton))
-            .perform(ViewActions.click())
+        onView(withId(R.id.datasetsOverviewFragment)).perform(click())
         Espresso.onView(ViewMatchers.withId(R.id.DatasetList_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
@@ -131,4 +108,15 @@ class AddPictureNavigationTest {
         onView(ViewMatchers.withText(R.string.add_new_picture)).perform(click())
 
     }
+
+    private fun assertCurrentFragmentIsCorrect(expected: Int){
+        activityScenarioRule.scenario.onActivity {
+            var currentFragmentContainer =
+                it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
+            val currentFragment = currentFragmentContainer?.findNavController()?.currentDestination
+            assert(currentFragment?.id == expected)
+        }
+    }
+
+
 }

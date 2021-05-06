@@ -62,4 +62,24 @@
     <string name="choose_picture">Choose Picture</string>
     <string name="delete_selected_pictures">Delete selected pictures</string>
     <string name="set_as_representative_picture">Set as representative picture</string>
+    <string name="menu_goto_learning">Learning</string>
+    <string name="goto_dataset_editing">Dataset Editing</string>
+    <string name="login">Login</string>
+    <string name="startLearning">START LEARNING!</string>
+    <string name="menu_goto_dataset_editing">Dataset Editing</string>
+
+    <string name="nav_graph_label_home">Home</string>
+    <string name="nav_graph_label_datasets_overview">Datasets Overview</string>
+    <string name="nav_graph_label_login">Login</string>
+    <string name="nav_graph_label_learning_dataset_selection">Select a Dataset</string>
+    <string name="nav_graph_label_learning_settings">Learning Settings</string>
+    <string name="nav_graph_label_learning">Learning</string>
+    <string name="nav_graph_label_categories_editing">Edit Categories</string>
+    <string name="nav_graph_label_display_dataset">Display Datasets</string>
+    <string name="nav_graph_label_display_image_set">Dataset Images</string>
+    <string name="nav_graph_label_display_image"></string>
+    <string name="nav_graph_label_add_picture">Add a New Picture</string>
+    <string name="nav_graph_label_take_picture">Take a Picture</string>
+    <string name="nav_graph_label_select_picture">Select a Picture</string>
 </resources>
+
