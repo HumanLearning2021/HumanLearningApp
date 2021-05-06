@@ -6,7 +6,8 @@ import androidx.room.TypeConverters
 
 @TypeConverters(RoomTypeConverters::class)
 @Database(
-    entities = [RoomCategory::class, RoomDatasetWithoutCategories::class, RoomUser::class, RoomPicture::class, RoomUnlinkedRepresentativePicture::class, RoomDatasetCategoriesCrossRef::class],
+    entities = [RoomCategory::class, RoomDatasetWithoutCategories::class, RoomUser::class, RoomPicture::class, RoomUnlinkedRepresentativePicture::class,
+        RoomDatasetCategoriesCrossRef::class, RoomEmptyHLDatabase::class, RoomDatabaseDatasetsCrossRef::class, RoomDatabaseCategoriesCrossRef::class, RoomDatabasePicturesCrossRef::class],
     version = 1,
     exportSchema = false
 )
@@ -14,4 +15,5 @@ abstract class RoomOfflineDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun datasetDao(): DatasetDao
     abstract fun userDao(): UserDao
+    abstract fun databaseDao(): DatabaseDao
 }

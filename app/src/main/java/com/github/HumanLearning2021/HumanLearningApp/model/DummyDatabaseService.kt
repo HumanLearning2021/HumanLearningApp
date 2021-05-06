@@ -34,9 +34,9 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     private val knifeRepPic = DummyCategorizedPicture("knifePic1Id", knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife_rep))
     private val spoonRepPic = DummyCategorizedPicture("spoonPic1Id", spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon_rep))
 
-    private val pictures: MutableSet<CategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
-    private val categories: MutableSet<Category> = mutableSetOf(fork, knife, spoon)
-    private val datasets: MutableSet<Dataset> =
+    private val pictures: MutableSet<DummyCategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
+    private val categories: MutableSet<DummyCategory> = mutableSetOf(fork, knife, spoon)
+    private val datasets: MutableSet<DummyDataset> =
         mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
     private val representativePictures: MutableMap<String, CategorizedPicture> = mutableMapOf()
     private val users = mutableMapOf<Pair<User.Type, String>, User>()
@@ -177,17 +177,15 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
         if (!categories.contains(category)) {
             throw IllegalArgumentException("The category name ${category.name} is not present in the database")
-
         }
         representativePictures[category.id] = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
     }
-
 
     override suspend fun getDatasets(): Set<Dataset> {
         return datasets
     }
 
-    override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): Dataset {
+    override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): DummyDataset {
         require(dataset is DummyDataset)
         require(category is DummyCategory)
         if (!datasets.contains(dataset)) {

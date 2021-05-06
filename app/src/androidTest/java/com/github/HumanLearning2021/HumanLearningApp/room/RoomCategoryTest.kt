@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.room
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,14 +22,18 @@ import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class RoomCategoryTest {
+    private val dbName = "some name"
     private lateinit var db: RoomOfflineDatabase
     private lateinit var categoryDao: CategoryDao
+    private lateinit var databaseDao: DatabaseDao
 
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
         categoryDao = db.categoryDao()
+        databaseDao = db.databaseDao()
+        databaseDao.insertAll(RoomEmptyHLDatabase(dbName))
     }
 
     @After
@@ -46,13 +51,16 @@ class RoomCategoryTest {
     fun insertThenLoadCategories() {
         val numberOfCategories = (2..50).random()
         val testCategories = mutableListOf<RoomCategory>()
+        val refs = mutableListOf<RoomDatabaseCategoriesCrossRef>()
         for (i in 0 until numberOfCategories) {
-            testCategories.add(getRandomCategory())
+            val cat = getRandomCategory()
+            testCategories.add(cat)
+            refs.add(RoomDatabaseCategoriesCrossRef(dbName, cat.categoryId))
         }
 
         categoryDao.insertAll(*testCategories.toTypedArray())
-
-        val res = categoryDao.loadAll()
+        databaseDao.insertAll(*refs.toTypedArray())
+        val res = databaseDao.loadByName(dbName)!!.categories
 
         MatcherAssert.assertThat(res, Matchers.hasSize(numberOfCategories))
         MatcherAssert.assertThat(res, Matchers.containsInAnyOrder(*testCategories.toTypedArray()))
@@ -71,10 +79,29 @@ class RoomCategoryTest {
         categoryDao.insertAll(category)
         categoryDao.insertAll(*testPictures.toTypedArray())
 
-        val res = categoryDao.loadAllPictures(category.categoryId).pictures
+        val res = categoryDao.loadAllPictures(category.categoryId)!!.pictures
 
         MatcherAssert.assertThat(res, Matchers.hasSize(numberOfPictures))
         MatcherAssert.assertThat(res, Matchers.containsInAnyOrder(*testPictures.toTypedArray()))
+    }
+
+    @Test
+    fun loadPictureById() {
+        val numberOfPictures = (2..10).random()
+        val category = getRandomCategory()
+        val testPictures = mutableListOf<RoomPicture>()
+        for (i in 0 until numberOfPictures) {
+            val pic = getRandomPicture(category.categoryId)
+            testPictures.add(pic)
+        }
+        val loadPicture = testPictures.random()
+
+        categoryDao.insertAll(category)
+        categoryDao.insertAll(*testPictures.toTypedArray())
+
+        val res = categoryDao.loadPicture(loadPicture.pictureId)
+
+        MatcherAssert.assertThat(res, equalTo(loadPicture))
     }
 
     @Test
@@ -97,7 +124,7 @@ class RoomCategoryTest {
         categoryDao.insertAll(*tmpCats.toTypedArray())
         categoryDao.insertAll(*testPictures.toTypedArray())
 
-        val res = categoryDao.loadAllPictures(category.categoryId).pictures
+        val res = categoryDao.loadAllPictures(category.categoryId)!!.pictures
 
         MatcherAssert.assertThat(res, Matchers.hasSize(expectedPictures.size))
         MatcherAssert.assertThat(res, Matchers.containsInAnyOrder(*expectedPictures.toTypedArray()))
@@ -156,15 +183,19 @@ class RoomCategoryTest {
     fun updateCategoryWorks() {
         val numberOfCategories = (1..10).random()
         val testCategories = mutableListOf<RoomCategory>()
+        val refs = mutableListOf<RoomDatabaseCategoriesCrossRef>()
         for (i in 0 until numberOfCategories) {
-            testCategories.add(getRandomCategory())
+            val cat = getRandomCategory()
+            testCategories.add(cat)
+            refs.add(RoomDatabaseCategoriesCrossRef(dbName, cat.categoryId))
         }
 
         categoryDao.insertAll(*testCategories.toTypedArray())
+        databaseDao.insertAll(*refs.toTypedArray())
         val toUpdateCategory = testCategories.random()
         val updatedCategory = RoomCategory(toUpdateCategory.categoryId, getRandomString())
         categoryDao.update(updatedCategory)
-        val res = categoryDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.categories
 
         MatcherAssert.assertThat(res, Matchers.hasSize(numberOfCategories))
         MatcherAssert.assertThat(res, CoreMatchers.not(Matchers.contains(toUpdateCategory)))
@@ -189,7 +220,7 @@ class RoomCategoryTest {
         val deletionPicture = testPictures.random()
         val requestCat = deletionPicture.categoryId
         categoryDao.delete(deletionPicture)
-        val res = categoryDao.loadAllPictures(requestCat).pictures
+        val res = categoryDao.loadAllPictures(requestCat)!!.pictures
 
         MatcherAssert.assertThat(res, hasSize(numberOfPictures-1))
         MatcherAssert.assertThat(res, not(contains(deletionPicture)))
@@ -207,8 +238,8 @@ class RoomCategoryTest {
 
         val deletionCategory = testCategories.random()
         categoryDao.delete(deletionCategory)
-        val res = categoryDao.loadAll()
+        val res = databaseDao.loadByName(dbName)!!.categories
 
-        MatcherAssert.assertThat(res, CoreMatchers.not(Matchers.contains(deletionCategory)))
+        MatcherAssert.assertThat(res, not(contains(deletionCategory)))
     }
 }

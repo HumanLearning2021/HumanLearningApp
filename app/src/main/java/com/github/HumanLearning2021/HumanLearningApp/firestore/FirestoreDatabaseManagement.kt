@@ -9,7 +9,7 @@ class FirestoreDatabaseManagement internal constructor(
     private val databaseService: FirestoreDatabaseService
 ): DatabaseManagement {
 
-    override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
+    override suspend fun getPicture(category: Category): CategorizedPicture? {
         require(category is FirestoreCategory)
         return try {
             databaseService.getPicture(category)
@@ -125,6 +125,20 @@ class FirestoreDatabaseManagement internal constructor(
         require(category is FirestoreCategory)
         try {
             databaseService.putRepresentativePicture(picture, category)
+        } catch (e: IllegalArgumentException) {
+            throw e
+        }
+    }
+
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+        require(picture is FirestoreCategorizedPicture)
+        try {
+            databaseService.putRepresentativePicture(picture.url, picture.category)
+            try {
+                databaseService.removePicture(picture)
+            } catch (e: IllegalArgumentException) {
+                throw IllegalArgumentException("The underlying database does not contain the picture with id ${picture.id}")
+            }
         } catch (e: IllegalArgumentException) {
             throw e
         }

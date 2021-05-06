@@ -1,52 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.MainActivity">
 
-    <Button
-        android:id="@+id/goToDisplayDatasetButton"
-        android:layout_width="300dp"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="launchToDisplayDatasetActivity"
-        android:text="@string/main_btDisplayDataset"
-        app:layout_constraintBottom_toTopOf="@+id/goToDatasetsOverviewButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/goToLearningButton" />
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <Button
-        android:id="@+id/goToLearningButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:onClick="launchToLearningActivity"
-        android:text="@string/main_btLearning"
-        app:layout_constraintBottom_toTopOf="@+id/goToDisplayDatasetButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/goToDatasetsOverviewButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:onClick="launchToDatasetsOverviewActivity"
-        android:text="@string/main_btDatasetsOverview"
-        app:layout_constraintBottom_toTopOf="@+id/MainActivitySignInFragment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/goToDisplayDatasetButton" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/MainActivitySignInFragment"
-        android:name="com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInWidget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/goToDatasetsOverviewButton" />
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:id="@+id/nav_host_fragment_container"
+        app:navGraph="@navigation/nav_graph"
+        app:defaultNavHost="true"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

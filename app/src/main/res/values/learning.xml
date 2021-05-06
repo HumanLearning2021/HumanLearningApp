@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="learning_image_size">128dp</dimen>
+    <dimen name="learning_image_size">100dp</dimen>
     <dimen name="learning_image_size_land">110dp</dimen>
     <dimen name="learning_image_size_tablet">220dp</dimen>
     <dimen name="learning_image_size_tablet_land">180dp</dimen>
+
+    <dimen name="learning_image_border_width">10dp</dimen>
+    <dimen name="learning_image_corner_radius">8dp</dimen>
 </resources>

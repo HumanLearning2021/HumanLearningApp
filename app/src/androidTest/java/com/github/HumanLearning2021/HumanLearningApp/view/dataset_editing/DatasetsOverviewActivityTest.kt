@@ -1,6 +1,11 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -13,13 +18,13 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
@@ -27,57 +32,51 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
+import java.io.File
+import java.util.*
+
 
 @UninstallModules(DatabaseManagementModule::class)
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class DatasetsOverviewActivityTest {
-
     @get:Rule
-    var hiltRule = HiltAndroidRule(this)
-    @get:Rule
-    val activityScenarioRule: ActivityScenarioRule<DatasetsOverviewActivity> = ActivityScenarioRule(
-        Intent(
-            ApplicationProvider.getApplicationContext(),
-            DatasetsOverviewActivity::class.java
-        )
-    )
+    val hiltRule = HiltAndroidRule(this)
 
     @BindValue
     @Demo2Database
-    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+
+    private val datasetId: String = getFirstDataset(dbManagement).id
+    private val navController: NavController = Mockito.mock(NavController::class.java)
 
     @Before
-    fun setUp() {
-        Intents.init()
-        val delayBeforeTestStart: Long = 1 // increase if needed
-        waitFor(delayBeforeTestStart)
+    fun setup() {
+        hiltRule.inject()
+        launchFragment()
     }
-
-    @After
-    fun cleanUp() {
-        Intents.release()
-        activityScenarioRule.scenario.close()
-    }
-
 
     @Test
     fun fragmentIsDisplayedWhenActivityIsLaunched() {
-        assertDisplayed(R.id.datasetsOverview_fragment)
-        assertDisplayed(R.id.datasetsOverviewButton)
+        assertDisplayed(R.id.datasetListFragment)
+        assertDisplayed(R.id.createDatasetButton)
     }
 
     @Test
     fun rightActivityIsStartedAfterCreateButtonIsClicked() {
-        onView(withId(R.id.datasetsOverviewButton)).perform(click())
-        intended(hasComponent(CategoriesEditingActivity::class.java.name))
-        onView(withId(R.id.button_submit_list)).perform(click())
+        onView(withId(R.id.createDatasetButton)).perform(click())
+        verify(navController).navigate(
+            DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment(null)
+        )
     }
 
     @Test
@@ -90,21 +89,24 @@ class DatasetsOverviewActivityTest {
                 )
             )
 
-        intended(CoreMatchers.allOf(
-            hasComponent(DisplayDatasetActivity::class.java.name),
-            IntentMatchers.hasExtraWithKey("dataset_id")
-        ))
-    }
-
-    @Test
-    fun onBackPressedWorks() {
-        Espresso.pressBack()
-        intended(
-            CoreMatchers.allOf(
-                hasComponent(MainActivity::class.java.name),
+        verify(navController).navigate(
+            DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToDisplayDatasetFragment(
+                datasetId
             )
         )
     }
 
+    @Test
+    fun backButtonWorks(){
+        Espresso.pressBack()
+        verify(navController).popBackStack()
+    }
 
+
+    private fun launchFragment() {
+        val args = bundleOf("datasetId" to datasetId)
+        launchFragmentInHiltContainer<DatasetsOverviewFragment>(args) {
+            Navigation.setViewNavController(requireView(), navController)
+        }
+    }
 }

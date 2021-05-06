@@ -3,11 +3,15 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.longClick
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -15,6 +19,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
@@ -31,18 +36,18 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import java.io.File
 import java.util.*
+
 
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayImageSetActivityTest {
-
     @get:Rule
-    var hiltRule = HiltAndroidRule(this)
-    @get:Rule
-    var activityRuleIntent = IntentsTestRule(DisplayImageSetActivity::class.java, false, false)
+    val hiltRule = HiltAndroidRule(this)
 
     @BindValue
     @Demo2Database
@@ -53,6 +58,9 @@ class DisplayImageSetActivityTest {
     private lateinit var dataset: Dataset
     private lateinit var datasetId: Id
     private var index = 0
+
+    private val navController: NavController = Mockito.mock(NavController::class.java)
+
 
     @Before
     fun setUp() {
@@ -92,12 +100,8 @@ class DisplayImageSetActivityTest {
             datasetId = dataset.id
             categories = dataset.categories
             dsPictures = dbManagement.getAllPictures(categories.elementAt(index))
-            val intent = Intent()
-            intent.putExtra("category_of_pictures", (categories.elementAt(index)))
-            intent.putExtra("dataset_id", datasetId)
-            activityRuleIntent.launchActivity(intent)
-            waitFor(1) // increase if needed
         }
+        launchFragment()
     }
 
     @Test
@@ -127,28 +131,57 @@ class DisplayImageSetActivityTest {
             .atPosition(0)
             .perform(click())
 
-        Intents.intended(
-            CoreMatchers.allOf(
-                IntentMatchers.hasComponent(DisplayImageActivity::class.java.name),
-                IntentMatchers.hasExtra(
-                    "single_picture",
-                    dsPictures.elementAt(0)
-                ),
-                IntentMatchers.hasExtra("dataset_id", datasetId),
-            )
-        )
 
+        verify(navController).navigate(DisplayImageSetFragmentDirections.actionDisplayImageSetFragmentToDisplayImageFragment(dsPictures.elementAt(0), datasetId))
     }
 
     @Test
     fun onBackPressedWorks() {
         Espresso.pressBack()
-        Intents.intended(
-            CoreMatchers.allOf(
-                IntentMatchers.hasComponent(DisplayDatasetActivity::class.java.name),
-                IntentMatchers.hasExtra("dataset_id", datasetId),
-            )
-        )
+        verify(navController).popBackStack()
     }
 
+    @Test
+    fun deletePicturesWorks() {
+        runBlocking {
+            val nbOfPictures = dbManagement.getAllPictures(categories.elementAt(0)).size
+
+            for (i in 0..2) {
+                onData(CoreMatchers.anything())
+                    .inAdapterView(withId(R.id.display_image_set_imagesGridView))
+                    .atPosition(0)
+                    .perform(longClick())
+            }
+            onView(withId(R.id.delete_pictures)).perform(click())
+            val nbOfPicturesAfterDelete = dbManagement.getAllPictures(categories.elementAt(0)).size
+            assert(nbOfPictures - 1 == nbOfPicturesAfterDelete)
+        }
+    }
+
+    @Test
+    fun setRepresentativePictureWorks() {
+        runBlocking {
+            val reprPicture = dbManagement.getRepresentativePicture(categories.elementAt(0).id)
+            val nbOfPictures = dbManagement.getAllPictures(categories.elementAt(0)).size
+            onData(CoreMatchers.anything())
+                .inAdapterView(withId(R.id.display_image_set_imagesGridView))
+                .atPosition(0)
+                .perform(longClick())
+
+            onView(withId(R.id.set_representative_picture)).perform(click())
+            val reprPictureAfterClick = dbManagement.getRepresentativePicture(categories.elementAt(0).id)
+            val nbOfPicturesAfterDelete = dbManagement.getAllPictures(categories.elementAt(0)).size
+            assert(nbOfPictures - 1 == nbOfPicturesAfterDelete)
+            assert(reprPicture != reprPictureAfterClick)
+        }
+    }
+
+    private fun launchFragment(){
+        val args = bundleOf("datasetId" to datasetId, "category" to categories.elementAt(index))
+        launchFragmentInHiltContainer<DisplayImageSetFragment>(args) {
+            Navigation.setViewNavController(requireView(), navController)
+        }
+    }
 }
+
+

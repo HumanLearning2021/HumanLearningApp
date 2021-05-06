@@ -30,6 +30,13 @@ class FirestoreDatabaseService internal constructor(
     private val storage = Firebase.storage
     private val imagesDir = storage.reference.child("$dbName/images")
 
+    companion object {
+        suspend fun getDatabaseNames(app: FirebaseApp? = null): List<String> {
+            val res = Firebase.firestore(app ?: Firebase.app).collection("databases").get().await()
+            return res.documents.map { doc -> doc.id }
+        }
+    }
+
     private class CategorySchema() {
         @DocumentId
         lateinit var self: DocumentReference
@@ -189,6 +196,15 @@ class FirestoreDatabaseService internal constructor(
         val imageRef = imagesDir.child(id)
         imageRef.putFile(picture).await()
         val url = "gs://${imageRef.bucket}/${imageRef.path}"
+        putRepresentativePicture(url, category)
+    }
+
+    suspend fun putRepresentativePicture(url: String, category: Category) {
+        require(category is FirestoreCategory)
+        val categoryRef = categories.document(category.id)
+        if (!categoryRef.get().await().exists()) {
+            throw java.lang.IllegalArgumentException("The database ${this.db} does not contain the category with ${category.id}")
+        }
         val data = PictureSchema(categoryRef, url)
         try {
             representativePictures.add(data).await()
