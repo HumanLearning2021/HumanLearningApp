@@ -5,7 +5,7 @@
 ## Bettens, Louis
 
 ## Jaakik, Marouane
-
+This, I finaly managed to merge the Search activity and make it work with the firestore Database. I have also looked into my other task With Martin and Louis, about having different user accounts for learner and administrator and discussed some ideas. Because This task needed Martin's PR as a starting point we decided to leave it for next sprint. 
 ## Konrad, Jonas Franz
 This week I fixed the testing issues on the pr #101 which was that some tests wanted Demo2 to be injected as the dummy database and some as the scratch database. I managed to get the two injections to coexist. This pr was finally merged this week. I also added some methods to the databaseServices and managements as requested by Nicolas. Some housekeeping was done as well (e.g add database rules to the emulator).
 
