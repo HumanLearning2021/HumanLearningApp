@@ -131,6 +131,7 @@ class TakePictureActivityTest {
         )
         onView(withId(R.id.selectCategoryButton)).perform(click())
         onView(withText("cat1")).perform(click())
+        Thread.sleep(100)
         onView(withId(R.id.saveButton)).perform(click())
         verify(navController).popBackStack()
     }
