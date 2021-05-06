@@ -132,7 +132,7 @@ class TakePictureActivityTest {
         )
         onView(withId(R.id.selectCategoryButton)).perform(click())
         onView(withText("cat1")).perform(click())
-        waitFor(150)
+        waitFor(300)
         onView(withId(R.id.saveButton)).perform(click())
         verify(navController).popBackStack()
     }
