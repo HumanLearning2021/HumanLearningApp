@@ -37,8 +37,8 @@ class DummyDatabaseManagementTest {
 
     @ExperimentalCoroutinesApi
     @Suppress("DEPRECATION")
-    @Test(expected = IllegalArgumentException::class)
-    fun getPictureThrowsIllegalArgumentException() = runBlockingTest {
+    @Test(expected = DatabaseService.NotFoundException::class)
+    fun getPictureThrowsNotFoundException() = runBlockingTest {
         testDatabaseManagement.getPicture(table)
     }
 
@@ -59,8 +59,8 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = IllegalArgumentException::class)
-    fun putPictureThrowsIllegalArgumentException() = runBlockingTest {
+    @Test(expected = DatabaseService.NotFoundException::class)
+    fun putPictureThrowsNotFoundException() = runBlockingTest {
         testDatabaseManagement.putPicture(Uri.EMPTY, table)
     }
 
@@ -108,7 +108,7 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = java.lang.IllegalArgumentException::class)
+    @Test(expected = DatabaseService.NotFoundException::class)
     fun getAllPicturesThrowsException() = runBlockingTest {
         testDatabaseManagement.getAllPictures(table)
     }
@@ -121,8 +121,8 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = java.lang.IllegalArgumentException::class)
-    fun removeCategoryThrowsExpectedException() = runBlockingTest {
+    @Test
+    fun removeNonexistentCategory() = runBlockingTest {
         testDatabaseManagement.removeCategory(table)
     }
 
@@ -134,8 +134,8 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = IllegalArgumentException::class)
-    fun removePictureThrowsIllegalArgumentException() = runBlockingTest {
+    @Test
+    fun removeNonexistentPicture() = runBlockingTest {
         testDatabaseManagement.removePicture(DummyCategorizedPicture("tableid", table, Uri.EMPTY))
     }
 
@@ -169,8 +169,8 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = IllegalArgumentException::class)
-    fun deleteDatasetThrowsIllegalArgumentException() = runBlockingTest {
+    @Test
+    fun deleteNonexistentDataset() = runBlockingTest {
         testDatabaseManagement.deleteDataset("someDsId")
     }
 
@@ -183,7 +183,7 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = java.lang.IllegalArgumentException::class)
+    @Test(expected = DatabaseService.NotFoundException::class)
     fun putRepresentativePictureThrowsExpectedException() = runBlockingTest {
         testDatabaseManagement.putRepresentativePicture(Uri.EMPTY, table)
     }
@@ -196,7 +196,7 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = java.lang.IllegalArgumentException::class)
+    @Test(expected = DatabaseService.NotFoundException::class)
     fun putRepresentativePictureOverloadThrowsExpectedException() = runBlockingTest {
         testDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture("tableid", table, Uri.EMPTY))
     }
@@ -227,8 +227,8 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = java.lang.IllegalArgumentException::class)
-    fun removeCategoryFromDatasetThrowsIllegalArgumentExceptionIfCategoryNotInDb() = runBlockingTest {
+    @Test(expected = DatabaseService.NotFoundException::class)
+    fun removeCategoryFromDatasetThrowsNotFoundExceptionIfCategoryNotInDb() = runBlockingTest {
         val name = "Utensils"
         val fork = DummyCategory("Fork", "Fork")
         val dataset = DummyDataset(name, name, setOf())
@@ -236,8 +236,8 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = java.lang.IllegalArgumentException::class)
-    fun removeCategoryFromDatasetThrowsIllegalArgumentExceptionIfDatasetNotInDb() = runBlockingTest {
+    @Test(expected = DatabaseService.NotFoundException::class)
+    fun removeCategoryFromDatasetThrowsNotFoundExceptionIfDatasetNotInDb() = runBlockingTest {
         testDatabaseManagement.removeCategoryFromDataset(DummyDataset("some_id", "some_name", setOf()), fork)
     }
 
@@ -269,7 +269,7 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = java.lang.IllegalArgumentException::class)
+    @Test(expected = DatabaseService.NotFoundException::class)
     fun addCategoryToDatasetThrowsIfCategoryNotInDatabase() = runBlockingTest {
         val fork = DummyCategory("Fork", "Fork")
         val knife = DummyCategory("Knife", "Knife")
@@ -279,7 +279,7 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = java.lang.IllegalArgumentException::class)
+    @Test(expected = DatabaseService.NotFoundException::class)
     fun addCategoryToDatasetThrowsIfDatasetNotInDatabase() = runBlockingTest {
         testDatabaseManagement.addCategoryToDataset(DummyDataset("some_id", "some_name", setOf()), spoon)
     }
@@ -305,7 +305,7 @@ class DummyDatabaseManagementTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test(expected = java.lang.IllegalArgumentException::class)
+    @Test(expected = DatabaseService.NotFoundException::class)
     fun getPictureIdsThrows() = runBlockingTest {
         testDatabaseManagement.getPictureIds(table)
     }

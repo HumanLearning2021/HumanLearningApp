@@ -46,7 +46,7 @@ class FirestoreDatabaseService internal constructor(
             this.name = name
         }
 
-        fun toPublic() = FirestoreCategory(self.path, self.id, name)
+        fun toPublic() = FirestoreCategory(self.id, name)
     }
 
     private class PictureSchema() {
@@ -63,7 +63,7 @@ class FirestoreDatabaseService internal constructor(
         suspend fun toPublic(): FirestoreCategorizedPicture {
             val cat = category.get().await().toObject(CategorySchema::class.java)
             requireNotNull(cat, { "category not found" })
-            return FirestoreCategorizedPicture(self.id, self.path, cat.toPublic(), url)
+            return FirestoreCategorizedPicture(self.id, cat.toPublic(), url)
         }
     }
 
@@ -87,7 +87,7 @@ class FirestoreDatabaseService internal constructor(
                     add(catRef.await().toObject(CategorySchema::class.java)!!.toPublic())
                 }
             }
-            return FirestoreDataset(self.path, self.id, name, cats)
+            return FirestoreDataset(self.id, name, cats)
         }
     }
 
@@ -97,7 +97,6 @@ class FirestoreDatabaseService internal constructor(
         var displayName: String? = null
         var email: String? = null
         fun toPublic() = FirestoreUser(
-            path = self.path,
             displayName = displayName,
             email = email,
             uid = self.id.takeWhile { it != '@' },
@@ -119,9 +118,9 @@ class FirestoreDatabaseService internal constructor(
     override suspend fun getAllPictures(category: Category): Set<FirestoreCategorizedPicture> {
         require(category is FirestoreCategory)
         if (!categories.document(category.id).get().await().exists()) {
-            throw java.lang.IllegalArgumentException("Category with id ${category.id} is not present in the database")
+            throw DatabaseService.NotFoundException(category.id)
         }
-        val query = pictures.whereEqualTo("category", db.document(category.path))
+        val query = pictures.whereEqualTo("category", categories.document(category.id))
         val pics = query.get().await().toObjects(PictureSchema::class.java)
         return pics.map { pic -> pic.toPublic() }.toSet()
     }
@@ -130,7 +129,7 @@ class FirestoreDatabaseService internal constructor(
         require(category is FirestoreCategory)
         val ref = categories.document(category.id)
         if (!ref.get().await().exists()) {
-            throw java.lang.IllegalArgumentException("The database ${this.db} does not contain the category ${category.id}")
+            throw DatabaseService.NotFoundException(category.id)
         }
         try {
             ref.delete().await()
@@ -141,9 +140,9 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun removePicture(picture: CategorizedPicture) {
         require(picture is FirestoreCategorizedPicture)
-        val ref = db.document(picture.path)
+        val ref = pictures.document(picture.id)
         if (!ref.get().await().exists()) {
-            throw java.lang.IllegalArgumentException("The database ${this.db} does not contain the picture ${picture.url}")
+            throw DatabaseService.NotFoundException(picture.id)
         }
         try {
             ref.delete().await()
@@ -157,11 +156,11 @@ class FirestoreDatabaseService internal constructor(
         }
     }
 
-    override suspend fun putDataset(name: String, categories: Set<Category>): FirestoreDataset {
+    override suspend fun putDataset(name: String, cats: Set<Category>): FirestoreDataset {
         val catRefs: MutableSet<DocumentReference> = mutableSetOf()
-        for (cat in categories) {
+        for (cat in cats) {
             require(cat is FirestoreCategory)
-            catRefs.add(db.document(cat.path))
+            catRefs.add(categories.document(cat.id))
         }
         val data = DatasetSchema(name, catRefs.toList())
         val documentRef = datasets.add(data).await()
@@ -175,7 +174,7 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun deleteDataset(id: Id) {
         if (!datasets.document(id).get().await().exists()) {
-            throw java.lang.IllegalArgumentException("Dataset with id $id is not contained in the databse")
+            throw DatabaseService.NotFoundException(id)
         }
         try {
             datasets.document(id).delete().await()
@@ -188,7 +187,7 @@ class FirestoreDatabaseService internal constructor(
         require(category is FirestoreCategory)
         val categoryRef = categories.document(category.id)
         if (!categoryRef.get().await().exists()) {
-            throw java.lang.IllegalArgumentException("The database ${this.db} does not contain the category with ${category.id}")
+            throw DatabaseService.NotFoundException(category.id)
         }
         val id = "${UUID.randomUUID()}"
         val imageRef = imagesDir.child(id)
@@ -197,11 +196,16 @@ class FirestoreDatabaseService internal constructor(
         putRepresentativePicture(url, category)
     }
 
-    suspend fun putRepresentativePicture(url: String, category: Category) {
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
+        require(picture is FirestoreCategorizedPicture)
+        putRepresentativePicture(picture.url, picture.category)
+    }
+
+    private suspend fun putRepresentativePicture(url: String, category: Category) {
         require(category is FirestoreCategory)
         val categoryRef = categories.document(category.id)
         if (!categoryRef.get().await().exists()) {
-            throw java.lang.IllegalArgumentException("The database ${this.db} does not contain the category with ${category.id}")
+            throw DatabaseService.NotFoundException(category.id)
         }
         val data = PictureSchema(categoryRef, url)
         try {
@@ -236,6 +240,8 @@ class FirestoreDatabaseService internal constructor(
     ): FirestoreDataset {
         require(dataset is FirestoreDataset)
         require(category is FirestoreCategory)
+        if (!categories.document(category.id).get().await().exists())
+            throw DatabaseService.NotFoundException(category.id)
         try {
             datasets.document(dataset.id)
                 .update("categories", FieldValue.arrayRemove(categories.document(category.id)))
@@ -246,18 +252,22 @@ class FirestoreDatabaseService internal constructor(
                 "Removing category ${category.id} from dataset ${dataset.id} failed",
                 e
             )
-            throw java.lang.IllegalArgumentException("The category ${category.id} is not contained in the dataset ${dataset.id} or said dataset is not contained in this database")
         }
-        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!
-            .toPublic()
+        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)?.toPublic() ?: throw DatabaseService.NotFoundException(dataset.id)
     }
 
     override suspend fun editDatasetName(dataset: Dataset, newName: String): FirestoreDataset {
         require(dataset is FirestoreDataset)
+        if (!datasets.document(dataset.id).get().await().exists())
+            throw DatabaseService.NotFoundException(dataset.id)
         try {
             datasets.document(dataset.id).update("name", newName).await()
         } catch (e: FirebaseFirestoreException) {
-            throw java.lang.IllegalArgumentException("The dataset with id ${dataset.id} is not contained in the database $this")
+            Log.w(
+                this.toString(),
+                "Renaming ${dataset.id} failed",
+                e
+            )
         }
         return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!
             .toPublic()
@@ -269,6 +279,8 @@ class FirestoreDatabaseService internal constructor(
     ): FirestoreDataset {
         require(dataset is FirestoreDataset)
         require(category is FirestoreCategory)
+        if (!datasets.document(dataset.id).get().await().exists())
+            throw DatabaseService.NotFoundException(dataset.id)
         try {
             datasets.document(dataset.id)
                 .update("categories", FieldValue.arrayUnion(categories.document(category.id)))
@@ -279,7 +291,6 @@ class FirestoreDatabaseService internal constructor(
                 "Adding category ${category.id} to dataset ${dataset.id} failed",
                 e
             )
-            throw java.lang.IllegalArgumentException("The category ${category.id} is not contained in the database")
         }
         return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!
             .toPublic()
@@ -305,7 +316,9 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
         require(category is FirestoreCategory)
-        val query = pictures.whereEqualTo("category", db.document(category.path)).limit(1)
+        if (!categories.document(category.id).get().await().exists())
+            throw DatabaseService.NotFoundException(category.id)
+        val query = pictures.whereEqualTo("category", categories.document(category.id)).limit(1)
         val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
         return pic?.toPublic()
     }
@@ -317,7 +330,7 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun getPictureIds(category: Category): List<String> {
         require(category is FirestoreCategory)
-        val query = pictures.whereEqualTo("category", db.document(category.path))
+        val query = pictures.whereEqualTo("category", categories.document(category.id))
         return query.get().await().map { r -> r.id }
     }
 
@@ -332,8 +345,10 @@ class FirestoreDatabaseService internal constructor(
         require(category is FirestoreCategory)
         val id = "${UUID.randomUUID()}"
         val ref = imagesDir.child(id)
+        if (!categories.document(category.id).get().await().exists())
+            throw DatabaseService.NotFoundException(category.id)
         ref.putFile(picture).await()
-        val data = PictureSchema(db.document(category.path), "gs://${ref.bucket}/${ref.path}")
+        val data = PictureSchema(categories.document(category.id), "gs://${ref.bucket}/${ref.path}")
         val documentRef = pictures.add(data).await()
         return documentRef.get().await().toObject(PictureSchema::class.java)!!.toPublic()
     }

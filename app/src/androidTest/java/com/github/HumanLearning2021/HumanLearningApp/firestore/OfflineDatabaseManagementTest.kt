@@ -1,16 +1,14 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategory
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDataset
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
+import com.github.HumanLearning2021.HumanLearningApp.offline.*
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
@@ -24,7 +22,6 @@ import org.hamcrest.Matchers
 import org.junit.*
 import org.junit.runner.RunWith
 import java.io.File
-import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
 
@@ -66,8 +63,8 @@ class OfflineDatabaseManagementTest {
         demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory =  FirestoreCategory("oopsy/oopsy", "oopsy", "oopsy")
-        fakeDataset = FirestoreDataset("oopsy/oopsy", "oopsy", "oopsy", setOf())
+        fakeCategory =  FirestoreCategory("oopsy", "oopsy")
+        fakeDataset = FirestoreDataset("oopsy", "oopsy", setOf())
     }
 
     @After
@@ -81,11 +78,11 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_getPicture_categoryNotPresent() = runBlocking {
         runCatching {
-            demoManagement.getPicture(FirestoreCategory("path", getRandomString(), getRandomString()))
+            demoManagement.getPicture(FirestoreCategory(getRandomString(), getRandomString()))
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -131,12 +128,12 @@ class OfflineDatabaseManagementTest {
         runCatching {
             val tmp = File.createTempFile("meow", ".png")
             val uri = Uri.fromFile(tmp)
-            demoManagement.putPicture(uri, FirestoreCategory("path", getRandomString(), getRandomString()))
+            demoManagement.putPicture(uri, FirestoreCategory(getRandomString(), getRandomString()))
             tmp.delete()
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -195,7 +192,7 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -244,7 +241,7 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -284,7 +281,7 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -311,17 +308,6 @@ class OfflineDatabaseManagementTest {
             Matchers.equalTo(null)
         )
         )
-    }
-
-    @Test
-    fun test_putRepresentativePicture_fromCategorizedPicture_pictureNotPresent() = runBlocking {
-        runCatching {
-            demoManagement.putRepresentativePicture(FirestoreCategorizedPicture("${UUID.randomUUID()}", "some/path", fakeCategory, "url"))
-        }.fold({
-            Assert.fail("unexpected successful completion")
-        }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
-        })
     }
 
     @Test
@@ -373,24 +359,6 @@ class OfflineDatabaseManagementTest {
     }
 
     @Test
-    fun test_removeCategoryFromDataset_datasetNotPresent() = runBlocking {
-        val cat1 = demoManagement.putCategory(getRandomString()) as OfflineCategory
-        val cat2 = demoManagement.putCategory(getRandomString()) as OfflineCategory
-        val fakeDs = OfflineDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
-        val res = demoManagement.removeCategoryFromDataset(fakeDs, cat2)
-        MatcherAssert.assertThat(res.categories, Matchers.equalTo(setOf(cat1)))
-    }
-
-    @Test
-    fun test_removeCategoryFromDataset_categoryNotPresent() = runBlocking {
-        val cat1 = demoManagement.putCategory(getRandomString()) as OfflineCategory
-        val cat2 = Converters.fromCategory(fakeCategory)
-        val fakeDs = OfflineDataset(getRandomString(), getRandomString(), setOf(cat1, cat2))
-        val res = demoManagement.removeCategoryFromDataset(fakeDs, cat2)
-        MatcherAssert.assertThat(res.categories, Matchers.equalTo(setOf(cat1)))
-    }
-
-    @Test
     fun test_removeCategoryFromDataset() = runBlocking {
         val cat1 = demoManagement.putCategory(getRandomString())
         val cat2 = demoManagement.putCategory(getRandomString())
@@ -405,13 +373,13 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_editDatasetName_datasetNotPresent() = runBlocking {
-        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
+        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf())
         runCatching {
             demoManagement.editDatasetName(fakeDs, getRandomString())
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 
@@ -427,13 +395,13 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_addCategoryToDataset_categoryNotPresent() = runBlocking {
-        val fakeDs = FirestoreDataset("path", getRandomString(), getRandomString(), setOf())
+        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf())
         runCatching {
             demoManagement.addCategoryToDataset(fakeDs, fakeCategory)
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(IllegalArgumentException::class.java))
+            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
         })
     }
 }
