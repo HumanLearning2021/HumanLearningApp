@@ -15,14 +15,14 @@ The problem now is that the same people do not have good abstraction capabilites
 A method to teach this abstraction is picture matching, which would traditionally require printing lots of images. With our app you can do all of this digitally, which greatly simplifies the process.
 So let's learn!
 
-I have a tablet here with a big screen so I can see the images better. Let's see what datasets are available to me...
+Let's see what datasets are available to me...
 
-_goes and looks at dataset overview_
+_goes and looks at datasets overview (In the learning part)_ 
 
-But there are only very few images... I want to have more objects to match! This is why I am going to go and augment my dataset.
+_goes in representation mode and start learning and remark that a picture shouldn't be in this dataset_
 
-_adds picture and shows it added afterwards_
-
-Now let's learn some abstraction!
-
-_goes and learns in representation mode_
+ This picture shouldn't be in this dataset and I don't have enough pictures to learn well... Let's see what is going on.
+ 
+ _goes in datasets overview, select the good dataset, first add a new picture from the storage, then go check to see if the picture has been added. There is also the picture that should not be in this dataset, delete it._
+ 
+ Nice, now it is perfect ! I can go back to learning with my improved dataset.
