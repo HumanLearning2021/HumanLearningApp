@@ -3,6 +3,7 @@
 ## Scrum master (Jonas Konrad)
 
 ## Bettens, Louis
+This week I was responsible for refactoring the `DatabaseManagement` layer of the application to avoid code duplication. I was able to rely on our test suite to check for regressions. I was also assigned the task of merging or clarifying the purpose of the "demo" and "demo2" databases but did not have the time to get to this task.
 
 ## Jaakik, Marouane
 This, I finaly managed to merge the Search activity and make it work with the firestore Database. I have also looked into my other task With Martin and Louis, about having different user accounts for learner and administrator and discussed some ideas. Because This task needed Martin's PR as a starting point we decided to leave it for next sprint. 
