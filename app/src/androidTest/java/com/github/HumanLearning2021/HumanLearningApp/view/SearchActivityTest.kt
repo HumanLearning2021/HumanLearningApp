@@ -38,7 +38,6 @@ import org.junit.runner.RunWith
 class SearchActivityTest {
 
 
-
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
@@ -56,8 +55,6 @@ class SearchActivityTest {
     val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
 
 
-
-
     @Before
     fun setUp() {
         Intents.init()
@@ -73,40 +70,51 @@ class SearchActivityTest {
 
     @Test
     fun datasetNamesAreDisplayed() {
-       assertDisplayed(R.id.listView)
-       assertDisplayed(R.id.searchView)
+        assertDisplayed(R.id.listView)
+        assertDisplayed(R.id.searchView)
     }
 
     @Test
-    fun searchByKeyWordYieldsCorrectResult(){
-        onView(withId(
-            Resources.getSystem().getIdentifier("search_src_text",
-            "id", "android"))).perform(clearText(),typeText("Kitchen"))
+    fun searchByKeyWordYieldsCorrectResult() {
+        onView(
+            withId(
+                Resources.getSystem().getIdentifier(
+                    "search_src_text",
+                    "id", "android"
+                )
+            )
+        ).perform(clearText(), typeText("Kitchen"))
             .perform(pressKey(KeyEvent.KEYCODE_ENTER))
 
         onView(withId(R.id.listView)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(1)
-            ))
+            )
+        )
 
 
     }
 
     @Test
-    fun searchNotFoundYieldsNoResult(){
-        onView(withId(
-            Resources.getSystem().getIdentifier("search_src_text",
-                "id", "android"))).perform(clearText(),typeText("toto"))
+    fun searchNotFoundYieldsNoResult() {
+        onView(
+            withId(
+                Resources.getSystem().getIdentifier(
+                    "search_src_text",
+                    "id", "android"
+                )
+            )
+        ).perform(clearText(), typeText("toto"))
             .perform(pressKey(KeyEvent.KEYCODE_ENTER))
 
         onView(withId(R.id.listView)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(0)
-            ))
+            )
+        )
 
 
     }
-
 
 
 }

@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-
 @AndroidEntryPoint
 class SearchActivity : AppCompatActivity() {
 
@@ -34,28 +33,39 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
         lifecycleScope.launch {
-                datasetList = dbMgt.getDatasetNames().toList()
-        searchView = findViewById(R.id.searchView)
-        listView = findViewById(R.id.listView)
-            adapter = ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, datasetList)
+            datasetList = dbMgt.getDatasetNames().toList()
+            searchView = findViewById(R.id.searchView)
+            listView = findViewById(R.id.listView)
+            adapter = ArrayAdapter<String>(
+                getApplicationContext(),
+                android.R.layout.simple_list_item_1,
+                datasetList
+            )
             listView.adapter = adapter
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
                     if (datasetList.contains(query)) {
                         adapter.filter.filter(query)
                     } else {
-                        Toast.makeText(this@SearchActivity, getString(R.string.SearchNoMatch) , Toast.LENGTH_LONG)
+                        Toast.makeText(
+                            this@SearchActivity,
+                            getString(R.string.SearchNoMatch),
+                            Toast.LENGTH_LONG
+                        )
                             .show()
                     }
                     return false
                 }
+
                 override fun onQueryTextChange(newText: String): Boolean {
                     adapter.filter.filter(newText)
                     return false
                 }
             })
 
-    }}
+        }
+    }
 }
 
