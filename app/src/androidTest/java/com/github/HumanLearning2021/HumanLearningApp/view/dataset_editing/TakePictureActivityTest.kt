@@ -27,6 +27,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.*
@@ -131,7 +132,7 @@ class TakePictureActivityTest {
         )
         onView(withId(R.id.selectCategoryButton)).perform(click())
         onView(withText("cat1")).perform(click())
-        Thread.sleep(100)
+        waitFor(150)
         onView(withId(R.id.saveButton)).perform(click())
         verify(navController).popBackStack()
     }

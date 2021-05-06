@@ -187,6 +187,7 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.takePictureButton)).perform(click())
             onView(withId(R.id.selectCategoryButton)).perform(click())
             onView(withText(categories.elementAt(index).name)).perform(click())
+            waitFor(150) // increase if needed
             onView(withId(R.id.saveButton)).perform(click())
             waitFor(150) // increase if needed
             onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
