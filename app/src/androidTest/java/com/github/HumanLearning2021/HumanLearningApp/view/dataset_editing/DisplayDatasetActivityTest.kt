@@ -196,7 +196,7 @@ class DisplayDatasetActivityTest {
 
     @Test
     fun clickOnMenuDeleteDatasetWorks() {
-        navigateToDisplayActivity()
+        navigateToDisplayDatasetFragment()
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText(R.string.delete_dataset)).perform(click())
         onView(withText("No")).perform(click())
