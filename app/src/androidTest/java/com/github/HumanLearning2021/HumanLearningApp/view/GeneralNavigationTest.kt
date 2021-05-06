@@ -74,7 +74,6 @@ class GeneralNavigationTest {
         assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
         assertCurrentFragmentIsCorrect(R.id.datasetsOverviewFragment)
-
     }
 
     @Test
