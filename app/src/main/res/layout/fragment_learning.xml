@@ -6,19 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".view.learning.LearningFragment">
 
-    <ImageView
-        android:id="@+id/learning_im_to_sort"
+    <!-- Sadly this file contains a lot of copy pasted things (The CardViews with ImageView inside)
+        But I don't know how to avoid this for the time being. Maybe a fragment?
+        <include layout="..."> didn't compile
+        (said there were duplicate ids, but in reality not).
+    -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/learning_to_sort_cv"
         android:layout_width="@dimen/learning_image_size"
         android:layout_height="@dimen/learning_image_size"
-        android:background="@color/white"
-        android:contentDescription="@string/learning_im_to_sort_descr"
-        android:longClickable="true"
+        app:cardBackgroundColor="@color/light_green"
+        app:cardCornerRadius="@dimen/learning_image_corner_radius"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/learning_guideline1"
-        app:srcCompat="@drawable/default_representative_picture" />
+        >
+
+        <ImageView
+            android:id="@+id/learning_to_sort"
+            android:layout_width="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_height="match_parent"
+            android:padding="@dimen/learning_image_border_width"
+            app:srcCompat="@drawable/default_representative_picture" />
+    </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -27,44 +41,71 @@
         app:layout_constraintBottom_toTopOf="@id/learning_guideline1"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/learning_cat_0"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/learning_cat_0_cv"
             android:layout_width="@dimen/learning_image_size"
             android:layout_height="@dimen/learning_image_size"
-            android:background="@color/white"
-            android:contentDescription="@string/learning_cat_0_descr"
-            android:scaleType="centerCrop"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/learning_image_corner_radius"
+
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/learning_cat_1"
+            app:layout_constraintEnd_toStartOf="@+id/learning_cat_1_cv"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/default_representative_picture" />
+            >
 
-        <ImageView
-            android:id="@+id/learning_cat_1"
+            <ImageView
+                android:id="@+id/learning_cat_0"
+                android:layout_width="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_height="match_parent"
+                android:padding="@dimen/learning_image_border_width"
+                app:srcCompat="@drawable/default_representative_picture" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/learning_cat_1_cv"
             android:layout_width="@dimen/learning_image_size"
             android:layout_height="@dimen/learning_image_size"
-            android:background="@color/white"
-            android:contentDescription="@string/learning_cat_1_descr"
-            android:scaleType="centerCrop"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/learning_image_corner_radius"
+
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/learning_cat_2"
-            app:layout_constraintStart_toEndOf="@+id/learning_cat_0"
+            app:layout_constraintEnd_toStartOf="@+id/learning_cat_2_cv"
+            app:layout_constraintStart_toEndOf="@+id/learning_cat_0_cv"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/default_representative_picture" />
+            >
 
-        <ImageView
-            android:id="@+id/learning_cat_2"
+            <ImageView
+                android:id="@+id/learning_cat_1"
+                android:layout_width="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_height="match_parent"
+                android:padding="@dimen/learning_image_border_width"
+                app:srcCompat="@drawable/default_representative_picture" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/learning_cat_2_cv"
             android:layout_width="@dimen/learning_image_size"
             android:layout_height="@dimen/learning_image_size"
-            android:background="@color/white"
-            android:contentDescription="@string/learning_cat_2_descr"
-            android:scaleType="centerCrop"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/learning_image_corner_radius"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/learning_cat_1"
+            app:layout_constraintStart_toEndOf="@+id/learning_cat_1_cv"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/default_representative_picture" />
+            >
+
+            <ImageView
+                android:id="@+id/learning_cat_2"
+                android:layout_width="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_height="match_parent"
+                android:padding="@dimen/learning_image_border_width"
+                app:srcCompat="@drawable/default_representative_picture" />
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
