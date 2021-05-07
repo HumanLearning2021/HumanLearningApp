@@ -9,7 +9,7 @@ import android.os.Parcelable
  * @property name Human readable name of the Dataset
  * @property categories Set of Category included in the Dataset
  */
-interface Dataset: Parcelable {
+interface Dataset : Parcelable {
     val id: Id
     val name: String
     val categories: Set<Category>

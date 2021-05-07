@@ -10,21 +10,15 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.hasName
-import com.google.firebase.firestore.FirebaseFirestore
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.Assert.fail
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -66,14 +60,14 @@ class FirestoreDatabaseServiceTest {
         demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory =  FirestoreCategory("oopsy", "oopsy")
+        fakeCategory = FirestoreCategory("oopsy", "oopsy")
         fakeDataset = FirestoreDataset("oopsy", "oopsy", setOf())
     }
 
     @Test
     fun test_getAllPictures() = runBlocking {
         val appleCategory = demoInterface.getCategory(appleCategoryId)
-        requireNotNull(appleCategory, {"apple category not found in demo database"})
+        requireNotNull(appleCategory, { "apple category not found in demo database" })
         val pics = demoInterface.getAllPictures(appleCategory)
         assertThat(pics, hasSize(5))
         for (p in pics) {
@@ -107,7 +101,10 @@ class FirestoreDatabaseServiceTest {
     fun test_putThenRemoveCategory() = runBlocking {
         val randomCategoryName = "${UUID.randomUUID()}"
         val testCategory = scratchInterface.putCategory(randomCategoryName)
-        assertThat(scratchInterface.getCategory(testCategory.id), hasName(equalTo(randomCategoryName)))
+        assertThat(
+            scratchInterface.getCategory(testCategory.id),
+            hasName(equalTo(randomCategoryName))
+        )
         scratchInterface.removeCategory(testCategory)
         assertThat(scratchInterface.getCategory(testCategory.id), equalTo(null))
     }
@@ -115,7 +112,13 @@ class FirestoreDatabaseServiceTest {
     @Test
     fun test_removePicture_throwsIfPictureNotPresent(): Unit = runBlocking {
         runCatching {
-            scratchInterface.removePicture(FirestoreCategorizedPicture("some id", fakeCategory, "some url"))
+            scratchInterface.removePicture(
+                FirestoreCategorizedPicture(
+                    "some id",
+                    fakeCategory,
+                    "some url"
+                )
+            )
         }.fold({
             fail("unexpected successful completion")
         }, {

@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 
@@ -18,12 +19,12 @@ class DummyCategoryTest {
     }
 
     @Test
-    fun testEqualsExact(){
+    fun testEqualsExact() {
         assertEquals(spoon1, spoon3)
     }
 
     @Test
-    fun testEqualsNotEqual(){
+    fun testEqualsNotEqual() {
         assertNotEquals(spoon1, knife)
     }
 }

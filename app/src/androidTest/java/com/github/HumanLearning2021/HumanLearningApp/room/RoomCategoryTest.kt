@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.room
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -43,9 +42,18 @@ class RoomCategoryTest {
     }
 
     private fun getRandomString() = "${UUID.randomUUID()}"
-    private fun getRandomCategory(name: String = getRandomString()) = RoomCategory(getRandomString(), name)
-    private fun getRandomPicture(categoryId: String = getRandomString()) = RoomPicture(getRandomString(), Uri.parse(getRandomString()), categoryId)
-    private fun getRandomRepresentativePicture(categoryId: String = getRandomString()) = RoomUnlinkedRepresentativePicture(getRandomString(), Uri.parse(getRandomString()), categoryId)
+    private fun getRandomCategory(name: String = getRandomString()) =
+        RoomCategory(getRandomString(), name)
+
+    private fun getRandomPicture(categoryId: String = getRandomString()) =
+        RoomPicture(getRandomString(), Uri.parse(getRandomString()), categoryId)
+
+    private fun getRandomRepresentativePicture(categoryId: String = getRandomString()) =
+        RoomUnlinkedRepresentativePicture(
+            getRandomString(),
+            Uri.parse(getRandomString()),
+            categoryId
+        )
 
     @Test
     fun insertThenLoadCategories() {
@@ -131,7 +139,7 @@ class RoomCategoryTest {
     }
 
 
-        @Test
+    @Test
     fun loadRepresentativePicture() {
         val category = getRandomCategory()
         val representativePicture = getRandomRepresentativePicture(category.categoryId)
@@ -141,7 +149,15 @@ class RoomCategoryTest {
 
         val res = categoryDao.loadRepresentativePicture(category.categoryId)
 
-        MatcherAssert.assertThat(res, equalTo(RoomRepresentativePicture(representativePicture.categoryId, representativePicture)))
+        MatcherAssert.assertThat(
+            res,
+            equalTo(
+                RoomRepresentativePicture(
+                    representativePicture.categoryId,
+                    representativePicture
+                )
+            )
+        )
     }
 
     @Test
@@ -168,7 +184,11 @@ class RoomCategoryTest {
             testCategories.add(getRandomCategory())
         }
         val commonName = "name"
-        val loadCategories = listOf(getRandomCategory(commonName), getRandomCategory(commonName), getRandomCategory(commonName))
+        val loadCategories = listOf(
+            getRandomCategory(commonName),
+            getRandomCategory(commonName),
+            getRandomCategory(commonName)
+        )
         testCategories.addAll(loadCategories)
 
         categoryDao.insertAll(*testCategories.toTypedArray())
@@ -222,7 +242,7 @@ class RoomCategoryTest {
         categoryDao.delete(deletionPicture)
         val res = categoryDao.loadAllPictures(requestCat)!!.pictures
 
-        MatcherAssert.assertThat(res, hasSize(numberOfPictures-1))
+        MatcherAssert.assertThat(res, hasSize(numberOfPictures - 1))
         MatcherAssert.assertThat(res, not(contains(deletionPicture)))
     }
 

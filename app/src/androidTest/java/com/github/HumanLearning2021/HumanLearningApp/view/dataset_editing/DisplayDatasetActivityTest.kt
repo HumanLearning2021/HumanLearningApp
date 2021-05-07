@@ -34,9 +34,13 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers.*
-import org.junit.*
+import org.hamcrest.CoreMatchers.anything
+import org.hamcrest.CoreMatchers.containsString
+import org.junit.After
 import org.junit.Assume.assumeTrue
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
@@ -59,7 +63,7 @@ class DisplayDatasetActivityTest {
 
     @BindValue
     @Demo2Database
-    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
@@ -115,7 +119,8 @@ class DisplayDatasetActivityTest {
                 .perform(click())
 
             verify(
-                mockNavController).navigate(
+                mockNavController
+            ).navigate(
                 DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToDisplayImageSetFragment(
                     datasetId, categories.elementAt(
                         index

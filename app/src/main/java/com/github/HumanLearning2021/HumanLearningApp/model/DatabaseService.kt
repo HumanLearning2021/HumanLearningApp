@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import com.google.firebase.auth.FirebaseUser
-import java.lang.Exception
 
 
 /**
@@ -9,7 +8,7 @@ import java.lang.Exception
  */
 interface DatabaseService {
 
-    data class NotFoundException(val id: Id): Exception("${id} not found in database")
+    data class NotFoundException(val id: Id) : Exception("${id} not found in database")
 
     @Deprecated(
         "Pictures now have an identifying id which should be used. If a random picture is wanted, first retrieve all the ids, select one among them at random then retrieve the picture.",

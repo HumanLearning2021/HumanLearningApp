@@ -16,12 +16,11 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import dagger.hilt.android.testing.BindValue
@@ -53,7 +52,7 @@ class GeneralNavigationTest {
 
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
     @Before
     fun setup() {
@@ -87,8 +86,8 @@ class GeneralNavigationTest {
 
     @Test
     fun openingNavigationAndClickingOnLoginWorks() {
-        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        onView(withId(R.id.drawer_layout)).check(matches(isOpen()));
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open())
+        onView(withId(R.id.drawer_layout)).check(matches(isOpen()))
         onView(withId(R.id.googleSignInWidget)).perform(click())
         assertCurrentFragmentIsCorrect(R.id.googleSignInWidget)
     }

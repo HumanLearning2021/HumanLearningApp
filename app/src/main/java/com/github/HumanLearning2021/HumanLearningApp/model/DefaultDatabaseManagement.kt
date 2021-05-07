@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
-import java.lang.Exception
 
 @Deprecated(
     "replaced by DefaultDatabaseManagement",
@@ -14,7 +13,7 @@ typealias DummyDatabaseManagement = DefaultDatabaseManagement
 
 class DefaultDatabaseManagement internal constructor(
     private val databaseService: DatabaseService
-): DatabaseManagement {
+) : DatabaseManagement {
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         return try {
             databaseService.getPicture(category)
@@ -43,7 +42,7 @@ class DefaultDatabaseManagement internal constructor(
         return try {
             databaseService.putPicture(picture, category)
         } catch (e: DatabaseService.NotFoundException) {
-           throw e
+            throw e
         }
     }
 
@@ -110,7 +109,7 @@ class DefaultDatabaseManagement internal constructor(
                 res.add(d)
             }
         }
-       return res.toSet()
+        return res.toSet()
     }
 
     override suspend fun deleteDataset(id: Id) {

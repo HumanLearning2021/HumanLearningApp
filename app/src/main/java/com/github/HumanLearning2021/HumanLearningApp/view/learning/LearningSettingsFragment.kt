@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.os.Build
 import android.os.Bundle
-import android.service.autofill.Dataset
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,7 @@ import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearnin
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LearningSettingsFragment: Fragment() {
+class LearningSettingsFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
     private val args: LearningSettingsFragmentArgs by navArgs()
     private var _binding: FragmentLearningSettingsBinding? = null
@@ -38,23 +37,33 @@ class LearningSettingsFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.learningSettingsBtChoosePresentation.setOnClickListener {
-            val action = LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(args.datasetId, LearningMode.PRESENTATION)
+            val action =
+                LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
+                    args.datasetId,
+                    LearningMode.PRESENTATION
+                )
             findNavController().navigate(action)
         }
 
         binding.learningSettingsBtChooseRepresentation.setOnClickListener {
-            val action = LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(args.datasetId, LearningMode.REPRESENTATION)
+            val action =
+                LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
+                    args.datasetId,
+                    LearningMode.REPRESENTATION
+                )
             findNavController().navigate(action)
         }
 
-        binding.learningSettingsBtChoosePresentation.tooltipText = getString(R.string.learning_settings_tooltip_presentation)
-        binding.learningSettingsBtChooseRepresentation.tooltipText = getString(R.string.learning_settings_tooltip_representation)
+        binding.learningSettingsBtChoosePresentation.tooltipText =
+            getString(R.string.learning_settings_tooltip_presentation)
+        binding.learningSettingsBtChooseRepresentation.tooltipText =
+            getString(R.string.learning_settings_tooltip_representation)
 
         requireActivity().onBackPressedDispatcher.addCallback(callback)
 
     }
 
-    val callback = object : OnBackPressedCallback(true){
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             findNavController().popBackStack()
         }

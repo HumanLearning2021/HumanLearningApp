@@ -1,28 +1,16 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.repeatedlyUntil
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -37,11 +25,12 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.runBlocking
 import kotlinx.parcelize.Parcelize
-import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.not
-import org.junit.*
+import org.junit.Before
+import org.junit.FixMethodOrder
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.mockito.Mockito
@@ -58,7 +47,7 @@ class TakePictureActivityTest {
 
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
     private val datasetId: String = TestUtils.getFirstDataset(dbManagement).id
 
@@ -116,7 +105,6 @@ class TakePictureActivityTest {
     }
 
 
-
     @Test
     fun correctIntentIsSentOnSave() {
         grantCameraPermission()
@@ -136,7 +124,6 @@ class TakePictureActivityTest {
         onView(withId(R.id.saveButton)).perform(click())
         verify(navController).popBackStack()
     }
-
 
 
     @Test
@@ -216,7 +203,6 @@ class TakePictureActivityTest {
     }
 
 
-
     /*
     TODO: convert to fragment
 
@@ -264,10 +250,8 @@ class TakePictureActivityTest {
     }
 
 
-
-
     @Test
-    fun backButtonWorks(){
+    fun backButtonWorks() {
         Espresso.pressBack()
         Mockito.verify(navController).popBackStack()
     }
@@ -289,7 +273,6 @@ class TakePictureActivityTest {
             method.invoke(this)
         }
     }
-
 
 
     private fun launchFragmentWithErrorDialog() {
