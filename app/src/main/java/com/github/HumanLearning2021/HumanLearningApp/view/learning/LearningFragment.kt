@@ -32,7 +32,6 @@ class LearningFragment : Fragment() {
     private val binding get() = _binding!!
 
 
-    @Inject
     lateinit var learningPresenter: LearningPresenter
 
     @Inject
@@ -45,7 +44,7 @@ class LearningFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         audioFeedback = LearningAudioFeedback(parentActivity.applicationContext)
         _binding = FragmentLearningBinding.inflate(inflater, container, false)
@@ -57,8 +56,7 @@ class LearningFragment : Fragment() {
         datasetId = args.datasetId
         lifecycleScope.launch {
             dataset = dbMgt.getDatasetById(datasetId)!!
-            learningPresenter.learningMode = args.learningMode
-            learningPresenter.dataset = dataset
+            learningPresenter = LearningPresenter(dbMgt, args.learningMode, dataset)
             initLearningViews()
         }
         requireActivity().onBackPressedDispatcher.addCallback(callback)

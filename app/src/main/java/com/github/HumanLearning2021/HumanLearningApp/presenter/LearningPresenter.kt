@@ -3,34 +3,44 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 import android.app.Activity
 import android.util.Log
 import android.widget.ImageView
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
-import javax.inject.Inject
 
-class LearningPresenter @Inject constructor(
-    @Demo2Database
+
+/**
+ * Presenter for the learning fragment
+ * @param dbMgt database manager used to retrieve data for learning
+ * @param learningMode learning mode. Influences which pictures are displayed for example.
+ * @param dataset dataset used for the learning
+ * @param auth The authentication presenter, used to save statistics for the current user
+ */
+class LearningPresenter(
     private val dbMgt: DatabaseManagement,
+    private val learningMode: LearningMode,
+    private val dataset: Dataset,
     private val auth: AuthenticationPresenter,
 ) {
-    // may be set by the view
-    var learningMode = LearningMode.PRESENTATION
-
-    // must be set by the view
-    lateinit var dataset: Dataset
-
-    private var previousCategory: Category? = null
 
     /**
      * Picks a random picture from the dataset, and displays it on the given view
+     * @param activity activity on which the image is going to be displayed
      * @param view The view on which to display the chosen picture. Normally has id R.id.learning_im_to_sort
      */
     suspend fun displayNextPicture(activity: Activity, view: ImageView) {
-        val (rndCat, catPicsIds) = getRndCategoryWithPictureIds()
+        val rndCat = getRndCategory()
+        val rndCatPicIds = dbMgt.getPictureIds(rndCat)
+        val rndCatRepr = dbMgt.getRepresentativePicture(rndCat.id)
 
         val nextPicture = when (learningMode) {
-            LearningMode.REPRESENTATION -> dbMgt.getPicture(catPicsIds.random())
-            LearningMode.PRESENTATION -> dbMgt.getRepresentativePicture(rndCat.id)
+            LearningMode.REPRESENTATION ->
+                if (rndCatPicIds.isEmpty()) {
+                    // if there is no picture in the category, use the representative
+                    rndCatRepr
+                } else {
+                    // otherwise, take a random picture in belonging to the category
+                    dbMgt.getPicture(rndCatPicIds.random())
+                }
+            LearningMode.PRESENTATION -> rndCatRepr
         }
 
         if (nextPicture != null) {
@@ -43,24 +53,11 @@ class LearningPresenter @Inject constructor(
     }
 
     /**
-     * Returns a random category of the dataset, with the corresponding list of picture *ids*.
-     * The returned category is guaranteed to be different from the previousCategory
-     * The list of picture ids is guaranteed to ben non-empty
+     * Returns a random category of the dataset
      */
-    private suspend fun getRndCategoryWithPictureIds(): Pair<Category, List<Id>> {
-        var rndCat: Category?
-        var catPicsIds: List<Id>
-        do {
-            rndCat = dataset.categories.random()
-            catPicsIds = dbMgt.getPictureIds(rndCat)
-        } while (
-        // TODO(Niels) : risk of infinite loop if 2 categories in dataset or no category
-        //  with a picture. To fix
-            previousCategory == rndCat || catPicsIds.isEmpty()
-        )
-        previousCategory = rndCat!!
-        return Pair(rndCat, catPicsIds)
-    }
+
+    private fun getRndCategory(): Category = dataset.categories.random()
+
 
     /**
      * Displays the representative of the given category on the given ImageView
