@@ -1,4 +1,4 @@
-    package com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment
+package com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -12,7 +12,7 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -33,7 +33,7 @@ class DatasetListWidgetTest {
 
     @BindValue
     @Demo2Database
-    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
     private val dummyDatasets = runBlocking { dbMgt.getDatasets() }
 

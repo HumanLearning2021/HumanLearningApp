@@ -27,9 +27,12 @@ class DummyDatabaseManagementTest {
     private val spoon = DummyCategory("Spoon", "Spoon")
     private val table = DummyCategory("Table", "Table")
 
-    private val forkUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.fork)
-    private val knifeUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.knife)
-    private val spoonUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+ R.drawable.spoon)
+    private val forkUri =
+        Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
+    private val knifeUri =
+        Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
+    private val spoonUri =
+        Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.spoon)
 
     private val forkPic = DummyCategorizedPicture("forkpicid", fork, forkUri)
     private val knifePic = DummyCategorizedPicture("knifepicid", knife, knifeUri)
@@ -198,13 +201,25 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun putRepresentativePictureOverloadThrowsExpectedException() = runBlockingTest {
-        testDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture("tableid", table, Uri.EMPTY))
+        testDatabaseManagement.putRepresentativePicture(
+            DummyCategorizedPicture(
+                "tableid",
+                table,
+                Uri.EMPTY
+            )
+        )
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun putRepresentativePictureOverloadWorks() = runBlockingTest {
-        testDatabaseManagement.putRepresentativePicture(DummyCategorizedPicture("forkid", fork, Uri.EMPTY))
+        testDatabaseManagement.putRepresentativePicture(
+            DummyCategorizedPicture(
+                "forkid",
+                fork,
+                Uri.EMPTY
+            )
+        )
         assert(testDatabaseManagement.getRepresentativePicture(fork.id) != null)
     }
 
@@ -238,7 +253,13 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun removeCategoryFromDatasetThrowsNotFoundExceptionIfDatasetNotInDb() = runBlockingTest {
-        testDatabaseManagement.removeCategoryFromDataset(DummyDataset("some_id", "some_name", setOf()), fork)
+        testDatabaseManagement.removeCategoryFromDataset(
+            DummyDataset(
+                "some_id",
+                "some_name",
+                setOf()
+            ), fork
+        )
     }
 
     @ExperimentalCoroutinesApi
@@ -281,7 +302,10 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun addCategoryToDatasetThrowsIfDatasetNotInDatabase() = runBlockingTest {
-        testDatabaseManagement.addCategoryToDataset(DummyDataset("some_id", "some_name", setOf()), spoon)
+        testDatabaseManagement.addCategoryToDataset(
+            DummyDataset("some_id", "some_name", setOf()),
+            spoon
+        )
     }
 
     @ExperimentalCoroutinesApi

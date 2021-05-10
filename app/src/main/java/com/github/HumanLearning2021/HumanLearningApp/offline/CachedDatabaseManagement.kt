@@ -4,7 +4,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.*
 
 class CachedDatabaseManagement internal constructor(
     private val db: DatabaseManagement, private val cache: PictureRepository
-): DatabaseManagement by db {
+) : DatabaseManagement by db {
 
     internal val cachedPictures: MutableMap<Id, CategorizedPicture> = mutableMapOf()
 

@@ -3,7 +3,6 @@ package com.github.HumanLearning2021.HumanLearningApp.room
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 
 @Entity(
     primaryKeys = ["databaseName", "datasetId"],
@@ -14,7 +13,7 @@ import androidx.room.Index
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class RoomDatabaseDatasetsCrossRef (
+data class RoomDatabaseDatasetsCrossRef(
     @ColumnInfo(index = true) val databaseName: String,
     @ColumnInfo(index = true) val datasetId: String,
 )
@@ -28,7 +27,7 @@ data class RoomDatabaseDatasetsCrossRef (
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class RoomDatabaseCategoriesCrossRef (
+data class RoomDatabaseCategoriesCrossRef(
     @ColumnInfo(index = true) val databaseName: String,
     @ColumnInfo(index = true) val categoryId: String,
 )
@@ -42,7 +41,7 @@ data class RoomDatabaseCategoriesCrossRef (
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class RoomDatabasePicturesCrossRef (
+data class RoomDatabasePicturesCrossRef(
     val databaseName: String,
     @ColumnInfo(index = true) val pictureId: String,
 )
