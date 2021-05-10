@@ -5,10 +5,10 @@ import androidx.room.Room
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureStorage
 import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureStorage
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -129,7 +129,7 @@ object EmulationModule {
 object PictureRepositoryModule {
     @Provides
     @DemoCachePictureRepository
-    fun provideCachePictureRepository(@ApplicationContext context: Context): PictureRepository = CachePictureRepository("demo", context)
+    fun provideCachePictureRepository(@ApplicationContext context: Context): PictureStorage = CachePictureStorage("demo", context)
 }
 
 @Module
@@ -182,7 +182,7 @@ object DatabaseManagementModule {
 
     @CachedDemoDatabase
     @Provides
-    fun provideCachedDemoService(@DemoDatabase db: DatabaseManagement, @DemoCachePictureRepository repo: PictureRepository): DatabaseManagement = CachedDatabaseManagement(db, repo)
+    fun provideCachedDemoService(@DemoDatabase db: DatabaseManagement, @DemoCachePictureRepository repo: PictureStorage): DatabaseManagement = CachedDatabaseManagement(db, repo)
 
     @Demo2Database
     @Provides

@@ -18,14 +18,14 @@ class OfflineDatabaseService internal constructor(
     val room: RoomOfflineDatabase
 ): DatabaseService {
 
-    private val pictureRepository: PictureRepository
+    private val pictureStorage: PictureStorage
     private val databaseDao: DatabaseDao
     private val datasetDao: DatasetDao
     private val categoryDao: CategoryDao
     private val userDao: UserDao
 
     init {
-        pictureRepository = PictureRepository(dbName, context)
+        pictureStorage = PictureStorage(dbName, context)
         databaseDao = room.databaseDao()
         databaseDao.loadByName(dbName) ?: throw IllegalStateException("The database $dbName has not yet been downloaded.")
         datasetDao = room.datasetDao()
@@ -73,7 +73,7 @@ class OfflineDatabaseService internal constructor(
         val cat = categoryDao.loadById(category.id) ?: throw DatabaseService.NotFoundException(category.id)
         val pic = RoomPicture(getID(), picture, cat.categoryId)
         val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
-        pictureRepository.savePicture(picture)
+        pictureStorage.savePicture(picture)
         categoryDao.insertAll(pic)
         databaseDao.insertAll(ref)
         return fromPicture(pic, categoryDao)
@@ -129,7 +129,7 @@ class OfflineDatabaseService internal constructor(
         val pic = categoryDao.loadPicture(picture.id)
         if (pic != null) {
             val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
-            pictureRepository.deletePicture(pic.pictureId)
+            pictureStorage.deletePicture(pic.pictureId)
             categoryDao.delete(pic)
             databaseDao.delete(ref)
         }

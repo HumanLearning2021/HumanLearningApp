@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.content.Context
-import android.content.res.Resources
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -70,7 +69,7 @@ class OfflineDatabaseManagementTest {
     @After
     fun teardown() {
         room.clearAllTables()
-        PictureRepository("demo", context).clear()
+        PictureStorage("demo", context).clear()
     }
 
     private fun getRandomString() = "${UUID.randomUUID()}"
