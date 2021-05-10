@@ -1,9 +1,9 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.SearchView
+import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +28,7 @@ class DatasetListWidget : Fragment() {
     lateinit var dbMgt: DatabaseManagement
 
     private val mutableSelectedDataset = SingleLiveData<Dataset>()
+    private lateinit var adapter: DatasetListRecyclerViewAdapter
 
     /**
      * LiveData representing the Dataset that has been clicked last
@@ -41,23 +41,37 @@ class DatasetListWidget : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_dataset_list, container, false)
-
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = LinearLayoutManager(context)
-                adapter = activity?.let { fragActivity ->
-                    DatasetListRecyclerViewAdapter(
-                        lifecycleScope = lifecycleScope,
-                        hostActivity = fragActivity,
-                        dbMgt = dbMgt,
-                    ) {
-                        mutableSelectedDataset.value = it
-                    }
-                }
-            }
+        val view = inflater.inflate(R.layout.fragment_dataset_list, container, false) as RecyclerView
+        adapter = DatasetListRecyclerViewAdapter(
+            lifecycleScope = lifecycleScope,
+            hostActivity = requireActivity(),
+            dbMgt = dbMgt,
+        ) {
+            mutableSelectedDataset.value = it
         }
+
+        view.adapter = adapter
+        setHasOptionsMenu(true)
         return view
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                adapter.filter.filter(query)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                adapter.filter.filter(newText)
+                return false
+            }
+        })
+        super.onCreateOptionsMenu(menu, inflater)
     }
 }
 

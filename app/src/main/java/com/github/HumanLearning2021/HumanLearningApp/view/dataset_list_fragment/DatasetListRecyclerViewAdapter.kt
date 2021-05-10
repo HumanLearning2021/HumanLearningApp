@@ -4,6 +4,8 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +19,7 @@ class DatasetListRecyclerViewAdapter(
     private val lifecycleScope: LifecycleCoroutineScope,
     private val dbMgt: DatabaseManagement,
     private val itemClickedCallback: (Dataset) -> Unit
-) : RecyclerView.Adapter<DatasetListRecyclerViewAdapter.ListItemViewHolder>() {
+) : RecyclerView.Adapter<DatasetListRecyclerViewAdapter.ListItemViewHolder>(), Filterable {
 
     /**
      * Defines the number of categories shown on one ListItemViewHolder
@@ -25,10 +27,12 @@ class DatasetListRecyclerViewAdapter(
     private val NB_REPRESENTATIVES_SHOWN = 3
 
     private lateinit var datasetList: List<Dataset>
+    private lateinit var originalDatasetList: List<Dataset>
 
     init {
         lifecycleScope.launch {
             datasetList = dbMgt.getDatasets().toList()
+            originalDatasetList = datasetList
             notifyDataSetChanged()
         }
     }
@@ -87,6 +91,23 @@ class DatasetListRecyclerViewAdapter(
     inner class ListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindDataset(ds: Dataset) {
             itemView.setOnClickListener { itemClickedCallback(ds) }
+        }
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filterPattern = constraint.toString().toLowerCase().trim()
+                val filteredList = originalDatasetList.filter {
+                    it.name.toLowerCase().contains(filterPattern)
+                }
+                return FilterResults().apply { values = filteredList }
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                datasetList = results?.values as ArrayList<Dataset>
+                notifyDataSetChanged()
+            }
         }
     }
 }
