@@ -1,13 +1,11 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipDescription
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +14,10 @@ import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.Event
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -57,10 +58,24 @@ class LearningFragment : Fragment() {
         lifecycleScope.launch {
             dataset = dbMgt.getDatasetById(datasetId)!!
             learningPresenter = LearningPresenter(dbMgt, args.learningMode, dataset)
-            initLearningViews()
+//            initLearningViews()
+            learningPresenter.updateCurrentCategory(parentActivity, binding.learningToSort)
+            learningPresenter.updateTargetCategories(parentActivity,
+                with(binding) { listOf(learningCat0, learningCat1, learningCat2) }
+            )
+            // sets the listeners for the image views of the sorting
+            setEventListeners()
         }
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
+
+    private fun setEventListeners() = with(binding) {
+        learningToSort.setOnTouchListener { e, v -> onImageToSortTouched(e, v) }
+        learningCat0.setOnDragListener(targetOnDragListener)
+        learningCat1.setOnDragListener(targetOnDragListener)
+        learningCat2.setOnDragListener(targetOnDragListener)
+    }
+
 
     val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -86,76 +101,6 @@ class LearningFragment : Fragment() {
         audioFeedback.releaseMediaPlayers()
     }
 
-
-    /**
-     * This method initializes the image views containing the image to sort and the images
-     * representing the target categories.
-     */
-    private fun initLearningViews() {
-        lifecycleScope.launch {
-            val cats = dataset.categories
-            if (cats.size < 3) {
-                // TODO : maybe allow fewer categories in the future
-                Log.e(
-                    this.javaClass.name, "There are fewer than 3 categories in the dataset",
-                    IllegalStateException()
-                )
-            } else {
-                val cat0 = cats.elementAt(0)
-
-                initTargetCategory(R.id.learning_cat_0, cat0)
-                initTargetCategory(R.id.learning_cat_1, cats.elementAt(1))
-                initTargetCategory(R.id.learning_cat_2, cats.elementAt(2))
-
-                initImageToSort(R.id.learning_to_sort, cat0)
-            }
-
-        }
-    }
-
-
-    private fun initImageView(catIvId: Int, cat: Category): ImageView {
-        val catIv = when (catIvId) {
-            R.id.learning_cat_0 -> binding.learningCat0
-            R.id.learning_cat_1 -> binding.learningCat1
-            R.id.learning_cat_2 -> binding.learningCat2
-            else -> binding.learningToSort
-        }
-
-        // TODO (next sprint) make this more robust
-        // The mechanism to verify that the classification is correct is the comparison between
-        // the contentDescription of the target ImageView and the text carried in the drag & drop
-        // see LearningActivity::dropCallback
-        catIv.contentDescription = cat.name
-        Log.d(parentActivity.localClassName, "init contentDescription to ${cat.name}")
-
-        if (catIvId == R.id.learning_to_sort) {
-            lifecycleScope.launch {
-                learningPresenter.displayNextPicture(parentActivity, catIv)
-            }
-        } else {
-            lifecycleScope.launch {
-                learningPresenter.displayTargetPicture(parentActivity, catIv, cat)
-            }
-        }
-
-        return catIv
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    /**
-     * This method initializes the image view containing the image to sort
-     */
-    private fun initImageToSort(catIvId: Int, cat: Category) {
-        initImageView(catIvId, cat).setOnTouchListener { e, v -> onImageToSortTouched(e, v) }
-    }
-
-    /**
-     * This method initializes an image view representing a target category
-     */
-    private fun initTargetCategory(catIvId: Int, cat: Category) {
-        initImageView(catIvId, cat).setOnDragListener(targetOnDragListener)
-    }
 
     private val opaque = 1.0f
     private val halfOpaque = opaque / 2
@@ -189,17 +134,14 @@ class LearningFragment : Fragment() {
             "dropped : ${item.text} on category: ${v.contentDescription}"
         )
 
-        // TODO (future sprint) make this more robust
-        // the classification is considered correct if the text carried by the drag
-        // is equal to the contentDescription of the target ImageView
-        val res = item.text == v.contentDescription
+        val sortingCorrect = learningPresenter.isSortingCorrect(v)
         val self = parentActivity
         audioFeedback.stopAndPrepareMediaPlayers()
-        if (res) {
+        if (sortingCorrect) {
             audioFeedback.startCorrectFeedback()
             lifecycleScope.launch {
                 binding.learningToSort.let {
-                    learningPresenter.displayNextPicture(
+                    learningPresenter.updateCurrentCategory(
                         self,
                         it,
                     )
@@ -212,7 +154,7 @@ class LearningFragment : Fragment() {
                 learningPresenter.saveEvent(Event.MISTAKE)
             }
         }
-        return res
+        return sortingCorrect
     }
 
     /**
