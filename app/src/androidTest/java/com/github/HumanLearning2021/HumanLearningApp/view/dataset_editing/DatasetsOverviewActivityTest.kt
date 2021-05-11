@@ -54,7 +54,7 @@ class DatasetsOverviewActivityTest {
 
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
     private val datasetId: String = getFirstDataset(dbManagement).id
     private val navController: NavController = Mockito.mock(NavController::class.java)

@@ -99,7 +99,7 @@ class DatasetListRecyclerViewAdapter(
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val filterPattern = constraint.toString().toLowerCase().trim()
                 val filteredList = originalDatasetList.filter {
-                    it.name.toLowerCase().contains(filterPattern)
+                    it.name.toLowerCase().startsWith(filterPattern)
                 }
                 return FilterResults().apply { values = filteredList }
             }

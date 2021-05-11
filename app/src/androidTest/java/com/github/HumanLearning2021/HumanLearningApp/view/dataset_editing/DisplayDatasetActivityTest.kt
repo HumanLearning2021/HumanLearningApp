@@ -59,7 +59,7 @@ class DisplayDatasetActivityTest {
 
     @BindValue
     @Demo2Database
-    val dbMgt: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
