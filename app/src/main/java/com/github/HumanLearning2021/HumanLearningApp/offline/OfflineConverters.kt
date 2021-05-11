@@ -9,7 +9,10 @@ object OfflineConverters {
         return OfflineCategorizedPicture(picture.pictureId, cat, picture.uri)
     }
 
-    fun fromPicture(picture: RoomRepresentativePicture, categoryDao: CategoryDao): OfflineCategorizedPicture {
+    fun fromPicture(
+        picture: RoomRepresentativePicture,
+        categoryDao: CategoryDao
+    ): OfflineCategorizedPicture {
         val cat = fromCategory(categoryDao.loadById(picture.picture.categoryId)!!)
         return OfflineCategorizedPicture(picture.picture.pictureId, cat, picture.picture.uri)
     }
@@ -24,7 +27,11 @@ object OfflineConverters {
 
     fun fromDataset(dataset: RoomDataset): OfflineDataset {
         val cats = dataset.categories.map { c -> fromCategory(c) }.toSet()
-        return OfflineDataset(dataset.datasetWithoutCategories.datasetId, dataset.datasetWithoutCategories.name, cats)
+        return OfflineDataset(
+            dataset.datasetWithoutCategories.datasetId,
+            dataset.datasetWithoutCategories.name,
+            cats
+        )
     }
 
     fun fromUser(user: RoomUser): OfflineUser {

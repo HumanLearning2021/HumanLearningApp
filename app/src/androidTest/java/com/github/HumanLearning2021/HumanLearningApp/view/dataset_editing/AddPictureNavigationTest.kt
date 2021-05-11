@@ -1,9 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.content.Intent
-import android.os.Bundle
-import androidx.core.os.bundleOf
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
@@ -18,22 +15,21 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.TestUtils
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.view.HomeFragmentDirections
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
@@ -52,7 +48,7 @@ class AddPictureNavigationTest {
 
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
     private val catSet = setOf<Category>(
         DummyCategory("cat1", "cat1"),
@@ -109,7 +105,7 @@ class AddPictureNavigationTest {
 
     }
 
-    private fun assertCurrentFragmentIsCorrect(expected: Int){
+    private fun assertCurrentFragmentIsCorrect(expected: Int) {
         activityScenarioRule.scenario.onActivity {
             var currentFragmentContainer =
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)

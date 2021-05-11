@@ -37,9 +37,12 @@ class RoomDatasetWithoutCategoriesTest {
     }
 
     private fun getRandomString() = "${UUID.randomUUID()}"
-    private fun getRandomDatasetWithoutCategories() = RoomDatasetWithoutCategories(getRandomString(), getRandomString())
+    private fun getRandomDatasetWithoutCategories() =
+        RoomDatasetWithoutCategories(getRandomString(), getRandomString())
+
     private fun asDataset(ds: RoomDatasetWithoutCategories) = RoomDataset(ds, listOf())
-    private fun asDatasets(dss: List<RoomDatasetWithoutCategories>) = dss.map { ds -> asDataset(ds) }
+    private fun asDatasets(dss: List<RoomDatasetWithoutCategories>) =
+        dss.map { ds -> asDataset(ds) }
 
     @Test
     fun insertThenLoadDataset() {
@@ -143,13 +146,15 @@ class RoomDatasetWithoutCategoriesTest {
         datasetDao.insertAll(*testDatasets.toTypedArray())
         databaseDao.insertAll(*refs.toTypedArray())
         val toUpdateDataset = testDatasets.random()
-        val updatedDataset = RoomDatasetWithoutCategories(toUpdateDataset.datasetId, getRandomString())
+        val updatedDataset =
+            RoomDatasetWithoutCategories(toUpdateDataset.datasetId, getRandomString())
         datasetDao.update(updatedDataset)
         val res = databaseDao.loadByName(dbName)!!.datasets
 
         assertThat(res, hasSize(numberOfDatasets))
         assertThat(res, CoreMatchers.not(contains(toUpdateDataset)))
-        assertThat(datasetDao.loadById(updatedDataset.datasetId),
+        assertThat(
+            datasetDao.loadById(updatedDataset.datasetId),
             CoreMatchers.equalTo(asDataset(updatedDataset))
         )
     }

@@ -1,29 +1,21 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
-import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import androidx.annotation.Keep
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.BundleMatchers
-import androidx.test.espresso.intent.matcher.BundleMatchers.hasEntry
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -36,11 +28,10 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.runBlocking
-import kotlinx.parcelize.Parcelize
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
@@ -54,7 +45,7 @@ class SelectPictureActivityTest {
 
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
     private val datasetId: Id = TestUtils.getFirstDataset(dbManagement).id
 
@@ -75,7 +66,7 @@ class SelectPictureActivityTest {
     }
 
     @After
-    fun cleanUp(){
+    fun cleanUp() {
         Intents.release()
     }
 
@@ -99,7 +90,8 @@ class SelectPictureActivityTest {
 
     @Test
     fun correctNavigationOnSave() {
-        val imageUri = Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
+        val imageUri =
+            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
         onView(withId(R.id.selectCategoryButton2)).perform(click())
         onView(withText("cat1")).perform(click())
         intending(hasAction(Intent.ACTION_OPEN_DOCUMENT)).respondWith(
@@ -113,11 +105,11 @@ class SelectPictureActivityTest {
     }
 
     @Test
-    fun backButtonWorks(){
+    fun backButtonWorks() {
         Espresso.pressBack()
         verify(navController).popBackStack()
     }
-    
+
     private fun launchFragment() {
         val args = bundleOf("categories" to catSet.toTypedArray(), "datasetId" to datasetId)
         launchFragmentInHiltContainer<SelectPictureFragment>(args) {

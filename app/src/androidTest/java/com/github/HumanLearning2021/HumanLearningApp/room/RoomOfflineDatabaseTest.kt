@@ -44,7 +44,10 @@ class RoomOfflineDatabaseTest {
         val ds2 = RoomDatasetWithoutCategories("id2", "dataset 2")
 
         datasetDao.insertAll(ds1, ds2)
-        databaseDao.insertAll(RoomDatabaseDatasetsCrossRef(dbName, ds1.datasetId), RoomDatabaseDatasetsCrossRef(dbName, ds2.datasetId))
+        databaseDao.insertAll(
+            RoomDatabaseDatasetsCrossRef(dbName, ds1.datasetId),
+            RoomDatabaseDatasetsCrossRef(dbName, ds2.datasetId)
+        )
 
         val res = databaseDao.loadByName(dbName)!!.datasets
 

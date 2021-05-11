@@ -7,7 +7,6 @@ import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.findFragment
 import androidx.navigation.fragment.findNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDatasetsOverviewBinding
@@ -38,19 +37,23 @@ class DatasetsOverviewFragment : Fragment() {
         if (dsListFragment is DatasetListWidget) {
             dsListFragment.selectedDataset.observe(parentActivity) {
                 Log.d("DataOverview activity", "selected ds is  $it")
-                val action = DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToDisplayDatasetFragment(it.id)
+                val action =
+                    DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToDisplayDatasetFragment(
+                        it.id
+                    )
                 findNavController().navigate(action)
             }
         }
 
         binding.createDatasetButton?.setOnClickListener {
-            val action = DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment(  )
+            val action =
+                DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment()
             findNavController().navigate(action)
         }
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
-    val callback = object : OnBackPressedCallback(true){
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             findNavController().popBackStack()
         }

@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 import com.github.HumanLearning2021.HumanLearningApp.model.User
 
 @Entity(tableName = "HLDatabase")
-data class RoomEmptyHLDatabase (
+data class RoomEmptyHLDatabase(
     @PrimaryKey val databaseName: String,
 )
 
