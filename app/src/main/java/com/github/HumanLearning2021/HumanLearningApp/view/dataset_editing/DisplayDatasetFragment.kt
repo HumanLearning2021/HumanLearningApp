@@ -3,11 +3,12 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.*
+import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -121,7 +122,8 @@ class DisplayDatasetFragment : Fragment() {
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle(getString(R.string.deletingDataset))
                     .setMessage(getString(R.string.deleteConfirmationMessage))
-                    .setPositiveButton(getString(R.string.Yes)
+                    .setPositiveButton(
+                        getString(R.string.Yes)
                     ) { _, _ ->
                         lifecycleScope.launch {
                             dbManagement.deleteDataset(datasetId)
@@ -150,7 +152,7 @@ class DisplayDatasetFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    val callback = object : OnBackPressedCallback(true){
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             findNavController().popBackStack()
         }
@@ -184,7 +186,7 @@ class DisplayDatasetFragment : Fragment() {
             val imageView = view.findViewById<ImageView>(R.id.image_and_category_item_imageView)
 
             val picture = images.elementAt(position)
-            if(picture is CategorizedPicture) {
+            if (picture is CategorizedPicture) {
                 imageCat?.text = picture.category.name
                 picture.displayOn(
                     context,

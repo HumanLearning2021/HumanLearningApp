@@ -95,6 +95,7 @@ class DummyCategorizedPictureTest {
 
     // PNG format signature per https://tools.ietf.org/html/rfc2083#section-3.1
     private fun pngHeader(): Array<Byte> = arrayOf(137.toByte(), 80, 78, 71, 13, 10, 26, 10)
+
     @Test
     fun copyToWorksAsExpected() {
         val pictureUri =
@@ -105,11 +106,14 @@ class DummyCategorizedPictureTest {
         val tmpFile = File.createTempFile("myImage", ".png")
         try {
             dummyCategorizedPicture.copyTo(context, tmpFile)
-            assertThat(tmpFile.inputStream().use {
-                val buf = ByteArray(8)
-                it.read(buf)
-                buf },
-                equalTo(pngHeader()))
+            assertThat(
+                tmpFile.inputStream().use {
+                    val buf = ByteArray(8)
+                    it.read(buf)
+                    buf
+                },
+                equalTo(pngHeader())
+            )
         } finally {
             tmpFile.delete()
         }

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
@@ -18,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentAddPictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentSelectPictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
@@ -62,13 +60,15 @@ class SelectPictureFragment : Fragment() {
         }
 
         binding.saveButton3.setOnClickListener {
-            setFragmentResult(AddPictureFragment.REQUEST_KEY, bundleOf("chosenCategory" to selectedCategory!!, "pictureUri" to selectedPicture!!))
+            setFragmentResult(
+                AddPictureFragment.REQUEST_KEY,
+                bundleOf("chosenCategory" to selectedCategory!!, "pictureUri" to selectedPicture!!)
+            )
             findNavController().popBackStack()
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -85,7 +85,7 @@ class SelectPictureFragment : Fragment() {
         }
     }
 
-    val callback = object : OnBackPressedCallback(true){
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             findNavController().popBackStack()
         }
@@ -123,7 +123,7 @@ class SelectPictureFragment : Fragment() {
                     button.text = it.name
                     selectedCategory = it
                     button.apply {
-                        setBackgroundColor(getColor(parentActivity,R.color.button_set))
+                        setBackgroundColor(getColor(parentActivity, R.color.button_set))
                         button.setTextColor(getColor(parentActivity, R.color.black))
                     }
                     notifySaveButton()

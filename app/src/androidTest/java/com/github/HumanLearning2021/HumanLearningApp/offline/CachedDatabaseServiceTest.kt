@@ -1,4 +1,4 @@
-          package com.github.HumanLearning2021.HumanLearningApp.offline
+package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
@@ -70,7 +70,10 @@ class CachedDatabaseServiceTest {
         assumeThat(pic, not(equalTo(null)))
         assumeThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
         demoInterface.removePicture(pic)
-        assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, not(hasItem(pic.id)))
+        assertThat(
+            (demoInterface as CachedDatabaseService).cachedPictures.keys,
+            not(hasItem(pic.id))
+        )
     }
 
     @Test
@@ -96,7 +99,9 @@ class CachedDatabaseServiceTest {
         assumeThat(pic, not(equalTo(null)))
         assumeThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
         demoInterface.removePicture(pic)
-        assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, not(hasItem(pic.id)))
-
+        assertThat(
+            (demoInterface as CachedDatabaseService).cachedPictures.keys,
+            not(hasItem(pic.id))
+        )
     }
 }

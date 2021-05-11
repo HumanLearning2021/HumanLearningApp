@@ -22,6 +22,7 @@ class AuthenticationPresenterTest {
     fun setUp() {
         presenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
     }
+
     @Test
     fun test_currentUser() {
         assertThat(presenter.currentUser, nullValue())

@@ -11,7 +11,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.*
  */
 class CachedDatabaseService internal constructor(
     private val db: DatabaseService, private val cache: PictureRepository
-): DatabaseService by db {
+) : DatabaseService by db {
 
     internal val cachedPictures: MutableMap<Id, CategorizedPicture> = mutableMapOf()
 
@@ -19,7 +19,7 @@ class CachedDatabaseService internal constructor(
         val uri = cache.retrievePicture(pictureId)
         return if (uri == null) {
             removeFromCache(pictureId)
-             db.getPicture(pictureId)?.let { putIntoCache(it) }
+            db.getPicture(pictureId)?.let { putIntoCache(it) }
         } else {
             val cPic = cachedPictures[pictureId]
             if (cPic == null) {

@@ -1,11 +1,9 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -89,7 +87,7 @@ class CategoriesEditingFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
-    val callback = object : OnBackPressedCallback(true){
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             findNavController().popBackStack()
         }
@@ -103,11 +101,11 @@ class CategoriesEditingFragment : Fragment() {
     }
 
 
-
     private fun addNewView() {
         val viewToAdd = View.inflate(parentActivity, R.layout.row_add_category, null)
         binding.parentLinearLayout.addView(viewToAdd, binding.parentLinearLayout.childCount)
-        viewToAdd.findViewById<ImageButton>(R.id.button_remove).setOnClickListener { removeView(it) }
+        viewToAdd.findViewById<ImageButton>(R.id.button_remove)
+            .setOnClickListener { removeView(it) }
     }
 
 
@@ -127,7 +125,6 @@ class CategoriesEditingFragment : Fragment() {
             binding.parentLinearLayout.removeView(view.parent as View)
         }
     }
-
 
 
     private fun saveData() {
@@ -152,7 +149,9 @@ class CategoriesEditingFragment : Fragment() {
                 datasetId = dataset.id
             }
             val action =
-                CategoriesEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(datasetId!!)
+                CategoriesEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(
+                    datasetId!!
+                )
             findNavController().navigate(action)
         }
     }

@@ -6,16 +6,15 @@ import androidx.core.net.toUri
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import java.io.File
 import java.io.IOException
-import java.lang.Exception
-import java.lang.IllegalArgumentException
 import java.util.*
 
-open class PictureRepository(private val dbName: String, private val context: Context,
-                        private val folder: File = context.getDir(dbName, Context.MODE_PRIVATE)
+open class PictureRepository(
+    private val dbName: String, private val context: Context,
+    private val folder: File = context.getDir(dbName, Context.MODE_PRIVATE)
 ) {
 
     @Throws(Exception::class)
-     fun savePicture(picture: CategorizedPicture): Uri {
+    fun savePicture(picture: CategorizedPicture): Uri {
         val file = File(folder, picture.id)
         picture.copyTo(context, file)
         return file.toUri()

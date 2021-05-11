@@ -253,7 +253,8 @@ class FirestoreDatabaseService internal constructor(
                 e
             )
         }
-        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)?.toPublic() ?: throw DatabaseService.NotFoundException(dataset.id)
+        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)
+            ?.toPublic() ?: throw DatabaseService.NotFoundException(dataset.id)
     }
 
     override suspend fun editDatasetName(dataset: Dataset, newName: String): FirestoreDataset {

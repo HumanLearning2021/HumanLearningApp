@@ -1,14 +1,17 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.content.Context
-import android.content.res.Resources
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
-import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.*
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.hasName
+import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategory
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
@@ -67,7 +70,7 @@ class OfflineDatabaseManagementTest {
         demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory =  FirestoreCategory("oopsy", "oopsy")
+        fakeCategory = FirestoreCategory("oopsy", "oopsy")
         fakeDataset = FirestoreDataset("oopsy", "oopsy", setOf())
     }
 
@@ -86,7 +89,10 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
+            MatcherAssert.assertThat(
+                it,
+                Matchers.instanceOf(DatabaseService.NotFoundException::class.java)
+            )
         })
     }
 
@@ -102,7 +108,16 @@ class OfflineDatabaseManagementTest {
     fun test_getPictureIds() = runBlocking {
         val ids = demoManagement.getPictureIds(demoManagement.getCategoryById(appleCategoryId)!!)
         MatcherAssert.assertThat(ids, Matchers.hasSize(5))
-        MatcherAssert.assertThat(ids, Matchers.containsInAnyOrder("apple01", "apple02", "apple03", "weird_apple", "minecraft_apple"))
+        MatcherAssert.assertThat(
+            ids,
+            Matchers.containsInAnyOrder(
+                "apple01",
+                "apple02",
+                "apple03",
+                "weird_apple",
+                "minecraft_apple"
+            )
+        )
     }
 
     @Test
@@ -116,14 +131,18 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_getRepresentativePicture_null() = runBlocking {
-        MatcherAssert.assertThat(demoManagement.getRepresentativePicture(pearCategoryId), Matchers.equalTo(null))
+        MatcherAssert.assertThat(
+            demoManagement.getRepresentativePicture(pearCategoryId),
+            Matchers.equalTo(null)
+        )
     }
 
     @Test
     fun test_getRepresentativePicture() = runBlocking {
         val appleCategory = demoManagement.getCategoryById(appleCategoryId)
         MatcherAssert.assertThat(
-            demoManagement.getRepresentativePicture(appleCategoryId)!!.category.id, equalTo(appleCategory!!.id)
+            demoManagement.getRepresentativePicture(appleCategoryId)!!.category.id,
+            equalTo(appleCategory!!.id)
         )
     }
 
@@ -137,7 +156,10 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
+            MatcherAssert.assertThat(
+                it,
+                Matchers.instanceOf(DatabaseService.NotFoundException::class.java)
+            )
         })
     }
 
@@ -164,7 +186,10 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_getCategoryById_null() = runBlocking {
-        MatcherAssert.assertThat(demoManagement.getCategoryById(getRandomString()), Matchers.equalTo(null))
+        MatcherAssert.assertThat(
+            demoManagement.getCategoryById(getRandomString()),
+            Matchers.equalTo(null)
+        )
     }
 
     @Test
@@ -174,7 +199,10 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_getCategoryByName() = runBlocking {
-        MatcherAssert.assertThat(demoManagement.getCategoryByName("Poire").first(), hasName("Poire"))
+        MatcherAssert.assertThat(
+            demoManagement.getCategoryByName("Poire").first(),
+            hasName("Poire")
+        )
     }
 
     @Test
@@ -196,7 +224,10 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
+            MatcherAssert.assertThat(
+                it,
+                Matchers.instanceOf(DatabaseService.NotFoundException::class.java)
+            )
         })
     }
 
@@ -205,13 +236,18 @@ class OfflineDatabaseManagementTest {
         val cat = demoManagement.getCategoryById(appleCategoryId)
         val pics = demoManagement.getAllPictures(cat!!)
         MatcherAssert.assertThat(pics, Matchers.hasSize(5))
-        MatcherAssert.assertThat(pics.map { p -> p.category.id }, Matchers.hasItems(Matchers.equalTo(cat.id)))
+        MatcherAssert.assertThat(
+            pics.map { p -> p.category.id },
+            Matchers.hasItems(Matchers.equalTo(cat.id))
+        )
     }
 
     @Test
     fun test_removeCategory() = runBlocking {
         val cat = demoManagement.putCategory(getRandomString())
-        requireNotNull(demoManagement.getCategoryById(cat.id), {"category was not put into database"})
+        requireNotNull(
+            demoManagement.getCategoryById(cat.id),
+            { "category was not put into database" })
         demoManagement.removeCategory(cat)
         MatcherAssert.assertThat(demoManagement.getCategoryById(cat.id), Matchers.equalTo(null))
     }
@@ -245,7 +281,10 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
+            MatcherAssert.assertThat(
+                it,
+                Matchers.instanceOf(DatabaseService.NotFoundException::class.java)
+            )
         })
     }
 
@@ -253,15 +292,18 @@ class OfflineDatabaseManagementTest {
     fun test_putDataset() = runBlocking {
         val name = getRandomString()
         val ds = demoManagement.putDataset(name, setOf())
-        MatcherAssert.assertThat(demoManagement.getDatasetById(ds.id)!!.name, Matchers.equalTo(name))
+        MatcherAssert.assertThat(
+            demoManagement.getDatasetById(ds.id)!!.name,
+            Matchers.equalTo(name)
+        )
     }
 
     @Test
     fun test_getDatasetById() = runBlocking {
         MatcherAssert.assertThat(
             demoManagement.getDatasetById("PzuR0B48GpYN5ERxM3DW"), Matchers.not(
-            Matchers.equalTo(null)
-        )
+                Matchers.equalTo(null)
+            )
         )
     }
 
@@ -285,7 +327,10 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
+            MatcherAssert.assertThat(
+                it,
+                Matchers.instanceOf(DatabaseService.NotFoundException::class.java)
+            )
         })
     }
 
@@ -309,8 +354,8 @@ class OfflineDatabaseManagementTest {
 
         MatcherAssert.assertThat(
             demoManagement.getRepresentativePicture(cat.id), Matchers.not(
-            Matchers.equalTo(null)
-        )
+                Matchers.equalTo(null)
+            )
         )
     }
 
@@ -347,19 +392,28 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_getDatasets() = runBlocking {
         MatcherAssert.assertThat(demoManagement.getDatasets().size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(demoManagement.getDatasets().first().name, Matchers.equalTo("Fruit"))
+        MatcherAssert.assertThat(
+            demoManagement.getDatasets().first().name,
+            Matchers.equalTo("Fruit")
+        )
     }
 
     @Test
     fun test_getDatasetNames() = runBlocking {
         MatcherAssert.assertThat(demoManagement.getDatasetNames().size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(demoManagement.getDatasetNames().first(), Matchers.equalTo("Fruit"))
+        MatcherAssert.assertThat(
+            demoManagement.getDatasetNames().first(),
+            Matchers.equalTo("Fruit")
+        )
     }
 
     @Test
     fun test_getDatasetIds() = runBlocking {
         MatcherAssert.assertThat(demoManagement.getDatasetIds().size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(demoManagement.getDatasetIds().first(), Matchers.equalTo("PzuR0B48GpYN5ERxM3DW"))
+        MatcherAssert.assertThat(
+            demoManagement.getDatasetIds().first(),
+            Matchers.equalTo("PzuR0B48GpYN5ERxM3DW")
+        )
     }
 
     @Test
@@ -383,7 +437,10 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
+            MatcherAssert.assertThat(
+                it,
+                Matchers.instanceOf(DatabaseService.NotFoundException::class.java)
+            )
         })
     }
 
@@ -392,9 +449,15 @@ class OfflineDatabaseManagementTest {
         val ogName = getRandomString()
         val ds = demoManagement.putDataset(ogName, setOf())
         val newName = getRandomString()
-        MatcherAssert.assertThat(demoManagement.getDatasetById(ds.id)!!.name, Matchers.equalTo(ogName))
+        MatcherAssert.assertThat(
+            demoManagement.getDatasetById(ds.id)!!.name,
+            Matchers.equalTo(ogName)
+        )
         demoManagement.editDatasetName(ds, newName)
-        MatcherAssert.assertThat(demoManagement.getDatasetById(ds.id)!!.name, Matchers.equalTo(newName))
+        MatcherAssert.assertThat(
+            demoManagement.getDatasetById(ds.id)!!.name,
+            Matchers.equalTo(newName)
+        )
     }
 
     @Test
@@ -405,7 +468,10 @@ class OfflineDatabaseManagementTest {
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
-            MatcherAssert.assertThat(it, Matchers.instanceOf(DatabaseService.NotFoundException::class.java))
+            MatcherAssert.assertThat(
+                it,
+                Matchers.instanceOf(DatabaseService.NotFoundException::class.java)
+            )
         })
     }
 }

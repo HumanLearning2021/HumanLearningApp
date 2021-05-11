@@ -78,7 +78,12 @@ class RoomDatasetTest {
         val check = datasetDao.loadById(dataset.datasetId)!!.categories
         require(check.containsAll(categories))
 
-        datasetDao.delete(RoomDatasetCategoriesCrossRef(dataset.datasetId, categories.first().categoryId))
+        datasetDao.delete(
+            RoomDatasetCategoriesCrossRef(
+                dataset.datasetId,
+                categories.first().categoryId
+            )
+        )
 
         val res = datasetDao.loadById(dataset.datasetId)!!.categories
 

@@ -3,8 +3,6 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
@@ -17,9 +15,11 @@ import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.junit.*
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @UninstallModules(DatabaseManagementModule::class)
@@ -79,14 +79,20 @@ class UniqueDatabaseManagementTest {
         val dbName = "demo"
         val fDbMan = uDbMan.accessCloudDatabase(dbName)
         val oDbman = uDbMan.downloadDatabase(dbName)
-        assertThat(fDbMan.getDatasets().map { ds -> ds.id }, equalTo(oDbman.getDatasets().map { ds -> ds.id }))
-        assertThat(fDbMan.getCategories().map { cat -> cat.id }, equalTo(oDbman.getCategories().map { cat -> cat.id }))
+        assertThat(
+            fDbMan.getDatasets().map { ds -> ds.id },
+            equalTo(oDbman.getDatasets().map { ds -> ds.id })
+        )
+        assertThat(
+            fDbMan.getCategories().map { cat -> cat.id },
+            equalTo(oDbman.getCategories().map { cat -> cat.id })
+        )
     }
 
     @Test
     fun offlineDatabaseThrowsIfNotDownloaded() = runBlocking {
         kotlin.runCatching {
-            OfflineDatabaseManagement(OfflineDatabaseService("demo", context, room))
+            DefaultDatabaseManagement(OfflineDatabaseService("demo", context, room))
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
@@ -97,6 +103,6 @@ class UniqueDatabaseManagementTest {
     @Test
     fun accessOfflineDatabaseReturnsCorrectType() = runBlocking {
         uDbMan.downloadDatabase("demo")
-        assert(uDbMan.accessDatabase("demo") is OfflineDatabaseManagement)
+        assert(uDbMan.accessDatabase("demo") is DefaultDatabaseManagement)
     }
 }
