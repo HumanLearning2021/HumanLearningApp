@@ -103,6 +103,7 @@ class UniqueDatabaseManagement constructor(
 
     fun removeOfflineDatabase(databaseName: String) {
         room.databaseDao().delete(RoomEmptyHLDatabase(databaseName))
+        PictureRepository(databaseName, context).clear()
         downloadedDatabases.remove(databaseName)
     }
 
