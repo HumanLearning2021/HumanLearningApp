@@ -80,8 +80,8 @@ object DatabaseManagementTestModule {
     @Provides
     fun provideCachedDemoDatabaseManagement(
         @DemoDatabase db: DatabaseManagement,
-        @DemoCachePictureStorage repo: PictureStorage
-    ): DatabaseManagement = DatabaseManagementModule.provideCachedDemoService(db, repo)
+        @DemoCachePictureStorage storage: PictureStorage
+    ): DatabaseManagement = DatabaseManagementModule.provideCachedDemoService(db, storage)
 
     @ScratchDatabase
     @Provides
