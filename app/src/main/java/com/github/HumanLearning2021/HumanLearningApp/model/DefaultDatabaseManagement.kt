@@ -185,5 +185,22 @@ class DefaultDatabaseManagement internal constructor(
             throw e
         }
     }
+
+    override suspend fun countOccurrence(user: User.Id, dataset: Id, event: Event) {
+        (databaseService.getStatistic(user, dataset) ?: Statistic(
+            Statistic.Id(user,
+            dataset),
+            mapOf()
+        )).let { stat ->
+            stat.copy(occurrences = stat.occurrences.let {
+                it + (event to it.getOrDefault(
+                    event,
+                    0
+                ) + 1)
+            })
+        }.also { stat ->
+            databaseService.putStatistic(stat)
+        }
+    }
 }
  
