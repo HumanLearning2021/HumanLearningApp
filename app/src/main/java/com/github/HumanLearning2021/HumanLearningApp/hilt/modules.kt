@@ -70,11 +70,12 @@ object RoomDatabaseModule {
     @Provides
     @Singleton
     @RoomDatabase
-    fun provideRoomDatabase(@ApplicationContext context: Context): RoomOfflineDatabase = Room.databaseBuilder(
-        context.applicationContext,
-        RoomOfflineDatabase::class.java,
-        "general_offline_database"
-    ).build()
+    fun provideRoomDatabase(@ApplicationContext context: Context): RoomOfflineDatabase =
+        Room.databaseBuilder(
+            context.applicationContext,
+            RoomOfflineDatabase::class.java,
+            "general_offline_database"
+        ).build()
 }
 
 @Qualifier
@@ -109,13 +110,15 @@ object FirebaseAuthUIModule {
 object EmulationModule {
     @Provides
     @ProductionFirestore
-    fun provideNotEmulated(@ProductionFirebaseApp app: FirebaseApp): FirebaseFirestore = Firebase.firestore(app)
+    fun provideNotEmulated(@ProductionFirebaseApp app: FirebaseApp): FirebaseFirestore =
+        Firebase.firestore(app)
 
     @Provides
     @EmulatedFirestore
     @Singleton
     fun provideEmulated(): FirebaseFirestore {
-        FirebaseFirestore.getInstance().terminate() //TODO("Find out why it is initialized before this instead of just terminating it before restarting")
+        FirebaseFirestore.getInstance()
+            .terminate() //TODO("Find out why it is initialized before this instead of just terminating it before restarting")
         val db = FirebaseFirestore.getInstance()
         db.useEmulator("10.0.2.2", 8080)
         val settings = FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build()
@@ -142,7 +145,10 @@ object DatabaseServiceModule {
 
     @OfflineDemoDatabase
     @Provides
-    fun provideOfflineDemoService(@ApplicationContext context: Context, @GlobalDatabaseManagement uDb: UniqueDatabaseManagement): DatabaseService =
+    fun provideOfflineDemoService(
+        @ApplicationContext context: Context,
+        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement
+    ): DatabaseService =
         runBlocking {
             uDb.downloadDatabase("demo")
             OfflineDatabaseService("demo", context, RoomDatabaseModule.provideRoomDatabase(context))
@@ -150,23 +156,33 @@ object DatabaseServiceModule {
 
     @OfflineScratchDatabase
     @Provides
-    fun provideOfflineScratchService(@ApplicationContext context: Context, @GlobalDatabaseManagement uDb: UniqueDatabaseManagement): DatabaseService =
+    fun provideOfflineScratchService(
+        @ApplicationContext context: Context,
+        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement
+    ): DatabaseService =
         runBlocking {
             uDb.downloadDatabase("offlineScratch")
-            OfflineDatabaseService("offlineScratch", context, RoomDatabaseModule.provideRoomDatabase(context))
+            OfflineDatabaseService(
+                "offlineScratch",
+                context,
+                RoomDatabaseModule.provideRoomDatabase(context)
+            )
         }
 
     @DemoDatabase
     @Provides
-    fun provideDemoService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("demo", firestore)
+    fun provideDemoService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
+        FirestoreDatabaseService("demo", firestore)
 
     @Demo2Database
     @Provides
-    fun provideDemo2Service( @ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("demo2", firestore)
+    fun provideDemo2Service(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
+        FirestoreDatabaseService("demo2", firestore)
 
     @ScratchDatabase
     @Provides
-    fun provideScratchService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("scratch", firestore)
+    fun provideScratchService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
+        FirestoreDatabaseService("scratch", firestore)
 }
 
 @Module
@@ -174,11 +190,13 @@ object DatabaseServiceModule {
 object DatabaseManagementModule {
     @DummyDatabase
     @Provides
-    fun provideDummyManagement(@DummyDatabase db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
+    fun provideDummyManagement(@DummyDatabase db: DatabaseService): DatabaseManagement =
+        DefaultDatabaseManagement(db)
 
     @DemoDatabase
     @Provides
-    fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
+    fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement =
+        DefaultDatabaseManagement(db)
 
     @CachedDemoDatabase
     @Provides
@@ -186,21 +204,29 @@ object DatabaseManagementModule {
 
     @Demo2Database
     @Provides
-    fun provideDemo2Service(@Demo2Database db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
+    fun provideDemo2Service(@Demo2Database db: DatabaseService): DatabaseManagement =
+        DefaultDatabaseManagement(db)
 
     @ScratchDatabase
     @Provides
-    fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
+    fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement =
+        DefaultDatabaseManagement(db)
 
     @OfflineDemoDatabase
     @Provides
-    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
+    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement =
+        DefaultDatabaseManagement(db)
 
     @OfflineScratchDatabase
     @Provides
-    fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
+    fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement =
+        DefaultDatabaseManagement(db)
 
     @GlobalDatabaseManagement
     @Provides
-    fun provideGlobalDatabaseManagement(@ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase, @ProductionFirestore firestore: FirebaseFirestore): UniqueDatabaseManagement = UniqueDatabaseManagement(context, room, firestore)
+    fun provideGlobalDatabaseManagement(
+        @ApplicationContext context: Context,
+        @RoomDatabase room: RoomOfflineDatabase,
+        @ProductionFirestore firestore: FirebaseFirestore
+    ): UniqueDatabaseManagement = UniqueDatabaseManagement(context, room, firestore)
 }

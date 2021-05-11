@@ -30,11 +30,24 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.spoon)
     )
 
-    private val forkRepPic = DummyCategorizedPicture("forkPic1Id", fork, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.fork_rep))
-    private val knifeRepPic = DummyCategorizedPicture("knifePic1Id", knife, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.knife_rep))
-    private val spoonRepPic = DummyCategorizedPicture("spoonPic1Id", spoon, Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/"+R.drawable.spoon_rep))
+    private val forkRepPic = DummyCategorizedPicture(
+        "forkPic1Id",
+        fork,
+        Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork_rep)
+    )
+    private val knifeRepPic = DummyCategorizedPicture(
+        "knifePic1Id",
+        knife,
+        Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife_rep)
+    )
+    private val spoonRepPic = DummyCategorizedPicture(
+        "spoonPic1Id",
+        spoon,
+        Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.spoon_rep)
+    )
 
-    private val pictures: MutableSet<DummyCategorizedPicture> = mutableSetOf(forkPic, knifePic, spoonPic)
+    private val pictures: MutableSet<DummyCategorizedPicture> =
+        mutableSetOf(forkPic, knifePic, spoonPic)
     private val categories: MutableSet<DummyCategory> = mutableSetOf(fork, knife, spoon)
     private val datasets: MutableSet<DummyDataset> =
         mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
@@ -81,7 +94,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
         require(category is DummyCategory)
-        if(!categories.contains(category)) throw DatabaseService.NotFoundException(category.id)
+        if (!categories.contains(category)) throw DatabaseService.NotFoundException(category.id)
 
         val addedPicture = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
         pictures.add(addedPicture)
@@ -175,7 +188,8 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         if (!categories.contains(category)) {
             throw DatabaseService.NotFoundException(category.id)
         }
-        representativePictures[category.id] = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
+        representativePictures[category.id] =
+            DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
     }
 
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
@@ -187,7 +201,10 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         return datasets
     }
 
-    override suspend fun removeCategoryFromDataset(dataset: Dataset, category: Category): DummyDataset {
+    override suspend fun removeCategoryFromDataset(
+        dataset: Dataset,
+        category: Category
+    ): DummyDataset {
         require(dataset is DummyDataset)
         require(category is DummyCategory)
         if (!datasets.contains(dataset)) {
@@ -197,7 +214,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         for (c in dsCategories) {
             if (c == category) {
                 val newCategories: MutableSet<Category> = mutableSetOf()
-                newCategories.apply{
+                newCategories.apply {
                     addAll(categories)
                     remove(c)
                 }
@@ -234,15 +251,17 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         // calling datasets.contains(dataset) returned false for obviously equal datasets
         // TODO : discuss this
 //        if (!datasets.contains(dataset)) {
-        if (datasets.find{it == dataset} == null) {
-            throw DatabaseService.NotFoundException("The underlying database:\n $datasets\n\n does not " +
-                    "contain the dataset \n $dataset")
+        if (datasets.find { it == dataset } == null) {
+            throw DatabaseService.NotFoundException(
+                "The underlying database:\n $datasets\n\n does not " +
+                        "contain the dataset \n $dataset"
+            )
         }
         return if (dataset.categories.contains(category)) {
             dataset
         } else {
             val newCats = mutableSetOf<Category>()
-            newCats.apply{
+            newCats.apply {
                 addAll(dataset.categories)
                 add(category)
             }

@@ -7,7 +7,6 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -19,9 +18,11 @@ import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.junit.*
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @UninstallModules(DatabaseManagementModule::class)
@@ -76,15 +77,21 @@ class UniqueDatabaseManagementTest {
     fun offlineAndFirestoreDatabasesContainTheSameElements() = runBlocking {
         val dbName = "demo"
         val fDbMan = uDbMan.accessCloudDatabase(dbName) as CachedDatabaseManagement
-        val oDbman = uDbMan.downloadDatabase(dbName) as OfflineDatabaseManagement
-        assertThat(fDbMan.getDatasets().map { ds -> ds.id }, equalTo(oDbman.getDatasets().map { ds -> ds.id }))
-        assertThat(fDbMan.getCategories().map { cat -> cat.id }, equalTo(oDbman.getCategories().map { cat -> cat.id }))
+        val oDbman = uDbMan.downloadDatabase(dbName) as DefaultDatabaseManagement
+        assertThat(
+            fDbMan.getDatasets().map { ds -> ds.id },
+            equalTo(oDbman.getDatasets().map { ds -> ds.id })
+        )
+        assertThat(
+            fDbMan.getCategories().map { cat -> cat.id },
+            equalTo(oDbman.getCategories().map { cat -> cat.id })
+        )
     }
 
     @Test
     fun offlineDatabaseThrowsIfNotDownloaded() = runBlocking {
         kotlin.runCatching {
-            OfflineDatabaseManagement(OfflineDatabaseService("demo", context, room))
+            DefaultDatabaseManagement(OfflineDatabaseService("demo", context, room))
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
@@ -95,6 +102,6 @@ class UniqueDatabaseManagementTest {
     @Test
     fun accessOfflineDatabaseReturnsCorrectType() = runBlocking {
         uDbMan.downloadDatabase("demo")
-        assert(uDbMan.accessDatabase("demo") is OfflineDatabaseManagement)
+        assert(uDbMan.accessDatabase("demo") is DefaultDatabaseManagement)
     }
 }

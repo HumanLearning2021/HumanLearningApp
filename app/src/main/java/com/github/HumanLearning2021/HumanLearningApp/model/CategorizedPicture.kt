@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Parcelable
 import android.widget.ImageView
-import androidx.annotation.MainThread
 import java.io.File
-import java.io.InputStream
 
 /**
  * Interface representing a categorized picture

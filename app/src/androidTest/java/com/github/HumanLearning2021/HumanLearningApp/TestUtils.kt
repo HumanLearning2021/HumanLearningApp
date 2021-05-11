@@ -41,7 +41,7 @@ object TestUtils {
             private val WARN_WAIT_TOO_LONG = 2000
 
             override fun perform(uiController: UiController?, view: View?) {
-                if(millis > WARN_WAIT_TOO_LONG){
+                if (millis > WARN_WAIT_TOO_LONG) {
                     Log.w(
                         "TestUtils, wait",
                         "PERFORMANCE : you use a long wait time > $WARN_WAIT_TOO_LONG" +

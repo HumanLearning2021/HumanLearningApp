@@ -6,13 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
-import com.github.HumanLearning2021.HumanLearningApp.model.hasName
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -23,7 +17,6 @@ import org.hamcrest.Matchers.*
 import org.junit.Assert.fail
 import org.junit.Assume.assumeThat
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -66,7 +59,7 @@ class FirestoreDatabaseManagementTest {
         demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory =  FirestoreCategory("oopsy", "oopsy")
+        fakeCategory = FirestoreCategory("oopsy", "oopsy")
         fakeDataset = FirestoreDataset("oopsy", "oopsy", setOf())
     }
 
@@ -100,7 +93,10 @@ class FirestoreDatabaseManagementTest {
     @Test
     fun test_getRepresentativePicture() = runBlocking {
         val appleCategory = demoManagement.getCategoryById(appleCategoryId)
-        assertThat(demoManagement.getRepresentativePicture(appleCategoryId), hasCategory(equalTo(appleCategory)))
+        assertThat(
+            demoManagement.getRepresentativePicture(appleCategoryId),
+            hasCategory(equalTo(appleCategory))
+        )
     }
 
     @Test
@@ -108,7 +104,10 @@ class FirestoreDatabaseManagementTest {
         runCatching {
             val tmp = File.createTempFile("meow", ".png")
             val uri = Uri.fromFile(tmp)
-            scratchManagement.putPicture(uri, FirestoreCategory(getRandomString(), getRandomString()))
+            scratchManagement.putPicture(
+                uri,
+                FirestoreCategory(getRandomString(), getRandomString())
+            )
             tmp.delete()
         }.fold({
             fail("unexpected successful completion")
@@ -187,7 +186,9 @@ class FirestoreDatabaseManagementTest {
     @Test
     fun test_removeCategory() = runBlocking {
         val cat = scratchManagement.putCategory(getRandomString())
-        requireNotNull(scratchManagement.getCategoryById(cat.id), {"category was not put into database"})
+        requireNotNull(
+            scratchManagement.getCategoryById(cat.id),
+            { "category was not put into database" })
         scratchManagement.removeCategory(cat)
         assertThat(scratchManagement.getCategoryById(cat.id), equalTo(null))
     }
@@ -229,7 +230,10 @@ class FirestoreDatabaseManagementTest {
     fun test_getPictureIds() = runBlocking {
         val ids = demoManagement.getPictureIds(demoManagement.getCategoryById(appleCategoryId)!!)
         assertThat(ids, hasSize(5))
-        assertThat(ids, containsInAnyOrder("apple01", "apple02", "apple03", "weird_apple", "minecraft_apple"))
+        assertThat(
+            ids,
+            containsInAnyOrder("apple01", "apple02", "apple03", "weird_apple", "minecraft_apple")
+        )
     }
 
     @Test
@@ -297,7 +301,13 @@ class FirestoreDatabaseManagementTest {
     @Test
     fun test_putRepresentativePicture_fromCategorizedPicture_pictureNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.putRepresentativePicture(FirestoreCategorizedPicture("${UUID.randomUUID()}",  fakeCategory, "url"))
+            scratchManagement.putRepresentativePicture(
+                FirestoreCategorizedPicture(
+                    "${UUID.randomUUID()}",
+                    fakeCategory,
+                    "url"
+                )
+            )
         }.fold({
             fail("unexpected successful completion")
         }, {

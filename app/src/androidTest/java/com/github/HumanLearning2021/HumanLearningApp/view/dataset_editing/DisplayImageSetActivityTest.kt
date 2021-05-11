@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -13,9 +12,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -51,7 +47,7 @@ class DisplayImageSetActivityTest {
 
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
     private var dsPictures = emptySet<CategorizedPicture>()
     private lateinit var categories: Set<Category>
@@ -86,11 +82,12 @@ class DisplayImageSetActivityTest {
                 dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
                 val tmp = File.createTempFile("droid", ".png")
                 try {
-                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork).use { img ->
-                        tmp.outputStream().use {
-                            img.copyTo(it)
+                    ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork)
+                        .use { img ->
+                            tmp.outputStream().use {
+                                img.copyTo(it)
+                            }
                         }
-                    }
                     val uri = Uri.fromFile(tmp)
                     dbManagement.putPicture(uri, cat)
                 } finally {
@@ -132,7 +129,12 @@ class DisplayImageSetActivityTest {
             .perform(click())
 
 
-        verify(navController).navigate(DisplayImageSetFragmentDirections.actionDisplayImageSetFragmentToDisplayImageFragment(dsPictures.elementAt(0), datasetId))
+        verify(navController).navigate(
+            DisplayImageSetFragmentDirections.actionDisplayImageSetFragmentToDisplayImageFragment(
+                dsPictures.elementAt(0),
+                datasetId
+            )
+        )
     }
 
     @Test
@@ -169,14 +171,15 @@ class DisplayImageSetActivityTest {
                 .perform(longClick())
 
             onView(withId(R.id.set_representative_picture)).perform(click())
-            val reprPictureAfterClick = dbManagement.getRepresentativePicture(categories.elementAt(0).id)
+            val reprPictureAfterClick =
+                dbManagement.getRepresentativePicture(categories.elementAt(0).id)
             val nbOfPicturesAfterDelete = dbManagement.getAllPictures(categories.elementAt(0)).size
             assert(nbOfPictures - 1 == nbOfPicturesAfterDelete)
             assert(reprPicture != reprPictureAfterClick)
         }
     }
 
-    private fun launchFragment(){
+    private fun launchFragment() {
         val args = bundleOf("datasetId" to datasetId, "category" to categories.elementAt(index))
         launchFragmentInHiltContainer<DisplayImageSetFragment>(args) {
             Navigation.setViewNavController(requireView(), navController)
