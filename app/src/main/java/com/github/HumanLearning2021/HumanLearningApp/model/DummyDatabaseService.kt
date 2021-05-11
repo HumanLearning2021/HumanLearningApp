@@ -52,7 +52,8 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     private val datasets: MutableSet<DummyDataset> =
         mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
     private val representativePictures: MutableMap<String, CategorizedPicture> = mutableMapOf()
-    private val users = mutableMapOf<Pair<User.Type, String>, User>()
+    private val users = mutableMapOf<User.Id, User>()
+    private val statistics = mutableMapOf<Statistic.Id, Statistic>()
 
     init {
         representativePictures["Fork"] = forkRepPic
@@ -282,8 +283,15 @@ class DummyDatabaseService internal constructor() : DatabaseService {
             uid = uid,
             email = firebaseUser.email,
             displayName = firebaseUser.displayName,
-        ).also { users[Pair(type, uid)] = it }
+        ).also { users[it.id] = it }
     }
 
-    override suspend fun getUser(type: User.Type, uid: String) = users[Pair(type, uid)]
+    override suspend fun getUser(type: User.Type, uid: String) = users[User.Id(uid, type)]
+
+    override suspend fun getStatistic(userId: User.Id, datasetId: Id): Statistic? =
+        statistics[Statistic.Id(userId, datasetId)]
+
+    override suspend fun putStatistic(statistic: Statistic) {
+        statistics[statistic.id] = statistic
+    }
 }

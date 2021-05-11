@@ -14,3 +14,5 @@ interface Dataset : Parcelable {
     val name: String
     val categories: Set<Category>
 }
+
+typealias DatasetId = Id
