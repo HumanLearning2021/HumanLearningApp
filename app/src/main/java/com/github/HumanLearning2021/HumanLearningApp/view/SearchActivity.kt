@@ -1,6 +1,5 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
-import com.github.HumanLearning2021.HumanLearningApp.R
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -8,13 +7,10 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,7 +35,7 @@ class SearchActivity : AppCompatActivity() {
             searchView = findViewById(R.id.searchView)
             listView = findViewById(R.id.listView)
             adapter = ArrayAdapter<String>(
-                getApplicationContext(),
+                applicationContext,
                 android.R.layout.simple_list_item_1,
                 datasetList
             )

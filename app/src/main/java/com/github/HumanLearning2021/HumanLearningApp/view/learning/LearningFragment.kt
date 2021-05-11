@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LearningFragment: Fragment() {
+class LearningFragment : Fragment() {
     private lateinit var audioFeedback: LearningAudioFeedback
     private lateinit var datasetId: Id
     private lateinit var dataset: Dataset
@@ -58,7 +58,7 @@ class LearningFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         datasetId = args.datasetId
-        lifecycleScope.launch{
+        lifecycleScope.launch {
             dataset = dbMgt.getDatasetById(datasetId)!!
             learningPresenter.learningMode = args.learningMode
             learningPresenter.dataset = dataset
@@ -67,7 +67,7 @@ class LearningFragment: Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
-    val callback = object : OnBackPressedCallback(true){
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             findNavController().popBackStack()
         }
@@ -90,7 +90,6 @@ class LearningFragment: Fragment() {
         super.onPause()
         audioFeedback.releaseMediaPlayers()
     }
-
 
 
     /**
@@ -121,10 +120,10 @@ class LearningFragment: Fragment() {
 
 
     private fun initImageView(catIvId: Int, cat: Category): ImageView {
-        val catIv = when(catIvId) {
+        val catIv = when (catIvId) {
             R.id.learning_cat_0 -> binding.learningCat0
             R.id.learning_cat_1 -> binding.learningCat1
-            R.id.learning_cat_2-> binding.learningCat2
+            R.id.learning_cat_2 -> binding.learningCat2
             else -> binding.learningToSort
         }
 
@@ -153,7 +152,7 @@ class LearningFragment: Fragment() {
      * This method initializes the image view containing the image to sort
      */
     private fun initImageToSort(catIvId: Int, cat: Category) {
-        initImageView(catIvId, cat).setOnTouchListener{ e, v -> onImageToSortTouched(e, v)}
+        initImageView(catIvId, cat).setOnTouchListener { e, v -> onImageToSortTouched(e, v) }
     }
 
     /**
@@ -190,7 +189,10 @@ class LearningFragment: Fragment() {
     private fun dropCallback(event: DragEvent, v: View): Boolean {
         val item: ClipData.Item = event.clipData.getItemAt(0)
         setOpacity(v, opaque)
-        Log.d(parentActivity.localClassName, "dropped : ${item.text} on category: ${v.contentDescription}")
+        Log.d(
+            parentActivity.localClassName,
+            "dropped : ${item.text} on category: ${v.contentDescription}"
+        )
 
         // TODO (future sprint) make this more robust
         // the classification is considered correct if the text carried by the drag
@@ -241,6 +243,7 @@ class LearningFragment: Fragment() {
             else -> false
         }
     }
+
     companion object {
         private fun setOpacity(v: View, opacity: Float) {
             v.alpha = opacity

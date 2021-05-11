@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.room
 
 import android.content.Context
-import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
@@ -65,6 +64,7 @@ class RoomHLDatabaseTest {
     private fun getRandomString() = "${UUID.randomUUID()}"
     private fun getRandomDatasetWithoutCategories() =
         RoomDatasetWithoutCategories(getRandomString(), getRandomString())
+
     private fun getRandomDatabaseWithoutDatasets() =
         RoomEmptyHLDatabase(getRandomString())
 

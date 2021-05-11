@@ -9,16 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentAddPictureBinding
-import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentTakePictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
-import kotlinx.coroutines.launch
 
-class AddPictureFragment: Fragment() {
+class AddPictureFragment : Fragment() {
 
     private lateinit var parentActivity: FragmentActivity
     private var categories = setOf<Category>()
@@ -59,13 +56,20 @@ class AddPictureFragment: Fragment() {
 
 
 
-        binding.selectExistingPicture.setOnClickListener{
-            val action = AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(args.categories, datasetId)
+        binding.selectExistingPicture.setOnClickListener {
+            val action =
+                AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(
+                    args.categories,
+                    datasetId
+                )
             findNavController().navigate(action)
         }
 
         binding.useCamera.setOnClickListener {
-            val action = AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(args.categories, datasetId)
+            val action = AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(
+                args.categories,
+                datasetId
+            )
             findNavController().navigate(action)
         }
 
@@ -73,7 +77,7 @@ class AddPictureFragment: Fragment() {
 
     }
 
-    val callback = object : OnBackPressedCallback(true){
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             findNavController().popBackStack()
         }

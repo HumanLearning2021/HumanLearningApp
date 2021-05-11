@@ -1,13 +1,8 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
@@ -16,16 +11,16 @@ import androidx.test.uiautomator.UiSelector
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
-import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -33,8 +28,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
-import java.io.File
-import java.util.*
 
 
 @UninstallModules(DatabaseManagementModule::class)
@@ -44,10 +37,11 @@ class LearningTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    @BindValue @Demo2Database
-    val dbManagement: DatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    @BindValue
+    @Demo2Database
+    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
-    private val datasetId = TestUtils.getFirstDataset(dbManagement).id as String
+    private val datasetId = TestUtils.getFirstDataset(dbManagement).id
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
@@ -142,7 +136,7 @@ class LearningTest {
         return mDevice.findObject(UiSelector().description(descr))
     }
 
-    private fun launchFragment(){
+    private fun launchFragment() {
         val args = bundleOf("datasetId" to datasetId, "learningMode" to LearningMode.PRESENTATION)
         launchFragmentInHiltContainer<LearningFragment>(args) {
             Navigation.setViewNavController(requireView(), navController)

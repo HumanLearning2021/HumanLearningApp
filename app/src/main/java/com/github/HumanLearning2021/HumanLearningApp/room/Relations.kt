@@ -21,7 +21,7 @@ data class RoomDataset(
     ) val categories: List<RoomCategory>
 )
 
-data class RoomHLDatabase (
+data class RoomHLDatabase(
     @Embedded val emptyHLDatabase: RoomEmptyHLDatabase,
     @Relation(
         parentColumn = "databaseName",

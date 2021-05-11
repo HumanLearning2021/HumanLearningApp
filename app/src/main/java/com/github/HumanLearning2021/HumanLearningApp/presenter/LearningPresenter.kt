@@ -35,9 +35,9 @@ class LearningPresenter @Inject constructor(
             LearningMode.PRESENTATION -> dbMgt.getRepresentativePicture(rndCat.id)
         }
 
-        if(nextPicture != null){
+        if (nextPicture != null) {
             nextPicture.displayOn(activity, view)
-        }else{
+        } else {
             Log.e(this::class.java.name, "There is no next picture to display")
         }
         view.contentDescription = rndCat.name
@@ -56,8 +56,8 @@ class LearningPresenter @Inject constructor(
             rndCat = dataset.categories.random()
             catPicsIds = dbMgt.getPictureIds(rndCat)
         } while (
-            // TODO(Niels) : risk of infinite loop if 2 categories in dataset or no category
-            //  with a picture. To fix
+        // TODO(Niels) : risk of infinite loop if 2 categories in dataset or no category
+        //  with a picture. To fix
             previousCategory == rndCat || catPicsIds.isEmpty()
         )
         previousCategory = rndCat!!

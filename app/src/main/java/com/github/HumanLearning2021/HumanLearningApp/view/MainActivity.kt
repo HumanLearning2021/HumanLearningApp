@@ -1,22 +1,17 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.*
-import com.firebase.ui.auth.AuthUI
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupWithNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.bottomnavigation.BottomNavigationMenu
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,7 +35,11 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.datasetsOverviewFragment, R.id.learningDatasetSelectionFragment, R.id.homeFragment),
+            setOf(
+                R.id.datasetsOverviewFragment,
+                R.id.learningDatasetSelectionFragment,
+                R.id.homeFragment
+            ),
             findViewById<DrawerLayout>(R.id.drawer_layout)
         )
         setSupportActionBar(toolbar)

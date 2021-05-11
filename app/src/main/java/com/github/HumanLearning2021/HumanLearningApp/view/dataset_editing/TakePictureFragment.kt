@@ -66,6 +66,7 @@ class TakePictureFragment : Fragment() {
         _binding = FragmentTakePictureBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -93,7 +94,7 @@ class TakePictureFragment : Fragment() {
 
     }
 
-    val callback = object : OnBackPressedCallback(true){
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             findNavController().popBackStack()
         }
@@ -108,10 +109,12 @@ class TakePictureFragment : Fragment() {
     }
 
 
-
     @Suppress("UNUSED_PARAMETER")
     private fun onSave(view: View) {
-        setFragmentResult(AddPictureFragment.REQUEST_KEY, bundleOf("chosenCategory" to chosenCategory, "pictureUri" to pictureUri))
+        setFragmentResult(
+            AddPictureFragment.REQUEST_KEY,
+            bundleOf("chosenCategory" to chosenCategory, "pictureUri" to pictureUri)
+        )
         findNavController().popBackStack()
     }
 
