@@ -96,9 +96,11 @@ class FirestoreDatabaseService internal constructor(
         lateinit var self: DocumentReference
         var displayName: String? = null
         var email: String? = null
+        var isAdmin: Boolean = false
         fun toPublic() = FirestoreUser(
             displayName = displayName,
             email = email,
+            isAdmin = isAdmin,
             uid = self.id.takeWhile { it != '@' },
             type = User.Type.valueOf(self.id.takeLastWhile { it != '@' }),
         )
@@ -307,6 +309,23 @@ class FirestoreDatabaseService internal constructor(
         }
         documentRef.set(data).await()
         return documentRef.get().await().toObject(UserSchema::class.java)!!.toPublic()
+    }
+
+    //TODO Optimize transaction to db
+    override suspend fun setAdminAccess(firebaseUser: FirebaseUser ,adminAccess : Boolean): User {
+        val uid = firebaseUser.uid
+        val type = User.Type.FIREBASE
+        val documentRef = users.document("$uid@$type")
+        val data = UserSchema().apply {
+            isAdmin = adminAccess
+        }
+        documentRef.set(data).await()
+        return documentRef.get().await().toObject(UserSchema::class.java)!!.toPublic()
+    }
+
+    override suspend fun checkIsAdmin(type: User.Type, uid: String): Boolean {
+        val fireStoreUser = getUser(type,uid)
+        return fireStoreUser!!.isAdmin
     }
 
     override suspend fun getUser(type: User.Type, uid: String): FirestoreUser? {
