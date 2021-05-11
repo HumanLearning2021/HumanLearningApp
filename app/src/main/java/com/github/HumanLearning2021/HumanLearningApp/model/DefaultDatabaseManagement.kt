@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
-import java.lang.Exception
 
 @Deprecated("replaced by DefaultDatabaseManagement")
 typealias DummyDatabaseManagement = DefaultDatabaseManagement

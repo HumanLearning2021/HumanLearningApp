@@ -2,9 +2,16 @@ package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 
-class CachedDatabaseManagement internal constructor(
-    private val db: DatabaseManagement, private val cache: PictureRepository
-): DatabaseManagement by db {
+/**
+ * Decorator for a DatabaseManagement which adds caching for the pictures
+ *
+ * @property db: database management to decorate
+ * @property cache: PictureStorage of the cache
+ * @constructor the specified DatabaseManagement decorated as a cache
+ */
+class CachedDatabaseService internal constructor(
+    private val db: DatabaseService, private val cache: PictureRepository
+): DatabaseService by db {
 
     internal val cachedPictures: MutableMap<Id, CategorizedPicture> = mutableMapOf()
 
@@ -12,13 +19,11 @@ class CachedDatabaseManagement internal constructor(
         val uri = cache.retrievePicture(pictureId)
         return if (uri == null) {
             removeFromCache(pictureId)
-            val fPic = db.getPicture(pictureId) ?: return null
-            putIntoCache(fPic)
+             db.getPicture(pictureId)?.let { putIntoCache(it) }
         } else {
             val cPic = cachedPictures[pictureId]
             if (cPic == null) {
-                val fPic = db.getPicture(pictureId) ?: return null
-                putIntoCache(fPic)
+                db.getPicture(pictureId)?.let { putIntoCache(it) }
             } else {
                 Converters.fromPicture(cPic, uri)
             }
@@ -42,7 +47,7 @@ class CachedDatabaseManagement internal constructor(
         if (pic != null) db.removePicture(pic)
     }
 
-    private suspend fun putIntoCache(picture: CategorizedPicture): OfflineCategorizedPicture {
+    private fun putIntoCache(picture: CategorizedPicture): OfflineCategorizedPicture {
         val uri = cache.savePicture(picture)
         cachedPictures[picture.id] = picture
         return Converters.fromPicture(picture, uri)

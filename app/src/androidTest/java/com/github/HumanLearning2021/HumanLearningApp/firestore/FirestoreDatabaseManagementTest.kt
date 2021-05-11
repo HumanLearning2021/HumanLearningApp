@@ -13,6 +13,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.hasName
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -45,6 +46,10 @@ class FirestoreDatabaseManagementTest {
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
+
+    @Inject
     @DemoDatabase
     lateinit var demoManagement: DatabaseManagement
 
@@ -63,7 +68,7 @@ class FirestoreDatabaseManagementTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory =  FirestoreCategory("oopsy", "oopsy")

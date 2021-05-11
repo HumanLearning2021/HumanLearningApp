@@ -10,6 +10,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.hasName
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -46,6 +47,10 @@ class FirestoreDatabaseServiceTest {
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
+
+    @Inject
     @DemoDatabase
     lateinit var demoInterface: DatabaseService
 
@@ -63,7 +68,7 @@ class FirestoreDatabaseServiceTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory =  FirestoreCategory("oopsy", "oopsy")

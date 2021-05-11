@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.offline
+          package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
@@ -23,11 +23,15 @@ import javax.inject.Inject
 @UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class CachedDatabaseManagementTest {
+class CachedDatabaseServiceTest {
 
     @Inject
     @Demo2Database
     lateinit var demo2DbService: DatabaseService
+
+    @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
 
     @BindValue
     @Demo2Database
@@ -35,7 +39,7 @@ class CachedDatabaseManagementTest {
 
     @Inject
     @CachedDemoDatabase
-    lateinit var demoInterface: DatabaseManagement
+    lateinit var demoInterface: DatabaseService
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -45,36 +49,36 @@ class CachedDatabaseManagementTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
     }
 
     @Test
     fun getPicturePutsItIntoCache() = runBlocking {
-        val ids = demoInterface.getPictureIds(demoInterface.getCategoryById(appleCategoryId)!!)
+        val ids = demoInterface.getPictureIds(demoInterface.getCategory(appleCategoryId)!!)
         val pic = demoInterface.getPicture(ids.random())
         assert(pic is OfflineCategorizedPicture)
         assertThat(pic, not(equalTo(null)))
-        assertThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
+        assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
     }
 
     @Test
     fun removePictureRemovesItFromCache() = runBlocking {
-        val ids = demoInterface.getPictureIds(demoInterface.getCategoryById(appleCategoryId)!!)
+        val ids = demoInterface.getPictureIds(demoInterface.getCategory(appleCategoryId)!!)
         val pic = demoInterface.getPicture(ids.random())
         assumeThat(pic, not(equalTo(null)))
-        assumeThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
+        assumeThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
         demoInterface.removePicture(pic)
-        assertThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, not(hasItem(pic.id)))
+        assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, not(hasItem(pic.id)))
     }
 
     @Test
     fun getPictureWorksFromCache() = runBlocking {
-        val ids = demoInterface.getPictureIds(demoInterface.getCategoryById(appleCategoryId)!!)
+        val ids = demoInterface.getPictureIds(demoInterface.getCategory(appleCategoryId)!!)
         val pic = demoInterface.getPicture(ids.random())
         assumeThat(pic, not(equalTo(null)))
-        assumeThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
+        assumeThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
         val pic2 = demoInterface.getPicture(pic.id)
         assertThat(pic2, not(equalTo(null)))
     }
@@ -83,16 +87,16 @@ class CachedDatabaseManagementTest {
     fun getReprPicturePutsItIntoCache() = runBlocking {
         val pic = demoInterface.getRepresentativePicture("pear")
         assumeThat(pic, not(equalTo(null)))
-        assertThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
+        assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
     }
 
     @Test
     fun getPictureDeprecatedPutsItIntoCache() = runBlocking {
-        val pic = demoInterface.getPicture(demoInterface.getCategoryById(appleCategoryId)!!)
+        val pic = demoInterface.getPicture(demoInterface.getCategory(appleCategoryId)!!)
         assumeThat(pic, not(equalTo(null)))
-        assumeThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, hasItem(pic!!.id))
+        assumeThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
         demoInterface.removePicture(pic)
-        assertThat((demoInterface as CachedDatabaseManagement).cachedPictures.keys, not(hasItem(pic.id)))
+        assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, not(hasItem(pic.id)))
 
     }
 }

@@ -30,12 +30,12 @@ class UniqueDatabaseManagement constructor(val context: Context, private val roo
         return if (downloadedDatabases.contains(databaseName)) {
             DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
         } else {
-            CachedDatabaseManagement(DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore)), CachePictureRepository(databaseName, context))
+            DefaultDatabaseManagement(CachedDatabaseService(FirestoreDatabaseService(databaseName, firestore), CachePictureRepository(databaseName, context)))
         }
     }
 
     fun accessCloudDatabase(databaseName: String): DatabaseManagement {
-        return CachedDatabaseManagement(DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore)), CachePictureRepository(databaseName, context))
+        return DefaultDatabaseManagement(CachedDatabaseService(FirestoreDatabaseService(databaseName, firestore), CachePictureRepository(databaseName, context)))
     }
 
     suspend fun downloadDatabase(databaseName: String): DatabaseManagement {

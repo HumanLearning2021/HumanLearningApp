@@ -12,6 +12,7 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -48,6 +49,10 @@ class FirestoreCategorizedPictureTest {
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
+
+    @Inject
     @DemoDatabase
     lateinit var db: DatabaseService
 
@@ -60,7 +65,7 @@ class FirestoreCategorizedPictureTest {
     @Before
     fun setUp() {
         hiltRule.inject()  // to get db set up
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
         UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).apply {
             if (!isScreenOn)
                 wakeUp()

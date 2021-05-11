@@ -2,13 +2,11 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
@@ -38,6 +36,10 @@ class UniqueDatabaseManagementTest {
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
+
+    @Inject
     @RoomDatabase
     lateinit var room: RoomOfflineDatabase
 
@@ -55,7 +57,7 @@ class UniqueDatabaseManagementTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
         context.cacheDir.deleteRecursively()
         room.clearAllTables()
         Thread.sleep(1000) //wait for above method to complete
@@ -75,8 +77,8 @@ class UniqueDatabaseManagementTest {
     @Test
     fun offlineAndFirestoreDatabasesContainTheSameElements() = runBlocking {
         val dbName = "demo"
-        val fDbMan = uDbMan.accessCloudDatabase(dbName) as CachedDatabaseManagement
-        val oDbman = uDbMan.downloadDatabase(dbName) as OfflineDatabaseManagement
+        val fDbMan = uDbMan.accessCloudDatabase(dbName)
+        val oDbman = uDbMan.downloadDatabase(dbName)
         assertThat(fDbMan.getDatasets().map { ds -> ds.id }, equalTo(oDbman.getDatasets().map { ds -> ds.id }))
         assertThat(fDbMan.getCategories().map { cat -> cat.id }, equalTo(oDbman.getCategories().map { cat -> cat.id }))
     }

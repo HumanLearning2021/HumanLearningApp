@@ -39,6 +39,10 @@ class OfflineDatabaseManagementTest {
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
+
+    @Inject
     @RoomDatabase
     lateinit var room: RoomOfflineDatabase
 
@@ -60,7 +64,7 @@ class OfflineDatabaseManagementTest {
     @Before
     fun setUp() = runBlocking {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory =  FirestoreCategory("oopsy", "oopsy")

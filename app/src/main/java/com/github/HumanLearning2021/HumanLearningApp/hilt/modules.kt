@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
@@ -63,6 +63,10 @@ annotation class RoomDatabase
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DemoCachePictureRepository
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class Demo2CachePictureRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -129,7 +133,11 @@ object EmulationModule {
 object PictureRepositoryModule {
     @Provides
     @DemoCachePictureRepository
-    fun provideCachePictureRepository(@ApplicationContext context: Context): PictureRepository = CachePictureRepository("demo", context)
+    fun provideDemoCachePictureRepository(@ApplicationContext context: Context): PictureRepository = CachePictureRepository("demo", context)
+
+    @Provides
+    @Demo2CachePictureRepository
+    fun provideDemo2CachePictureRepository(@ApplicationContext context: Context): PictureRepository = CachePictureRepository("demo2", context)
 }
 
 @Module
@@ -162,7 +170,7 @@ object DatabaseServiceModule {
 
     @Demo2Database
     @Provides
-    fun provideDemo2Service( @ProductionFirestore firestore: FirebaseFirestore): DatabaseService = FirestoreDatabaseService("demo2", firestore)
+    fun provideDemo2Service( @ProductionFirestore firestore: FirebaseFirestore, @Demo2CachePictureRepository repository: PictureRepository): DatabaseService = CachedDatabaseService(FirestoreDatabaseService("demo2", firestore), repository)
 
     @ScratchDatabase
     @Provides
@@ -180,13 +188,9 @@ object DatabaseManagementModule {
     @Provides
     fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
 
-    @CachedDemoDatabase
-    @Provides
-    fun provideCachedDemoService(@DemoDatabase db: DatabaseManagement, @DemoCachePictureRepository repo: PictureRepository): DatabaseManagement = CachedDatabaseManagement(db, repo)
-
     @Demo2Database
     @Provides
-    fun provideDemo2Service(@Demo2Database db: DatabaseService): DatabaseManagement = DefaultDatabaseManagement(db)
+    fun provideDemo2Service(@Demo2Database db: DatabaseService, @Demo2CachePictureRepository cache: PictureRepository): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @ScratchDatabase
     @Provides

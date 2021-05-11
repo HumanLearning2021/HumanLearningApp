@@ -14,7 +14,9 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2CachePictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -43,6 +45,10 @@ class DummyCategorizedPictureTest {
     @Demo2Database
     lateinit var demo2DbMgt: DatabaseManagement
 
+    @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
+
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
@@ -52,7 +58,7 @@ class DummyCategorizedPictureTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
         testRule.launchActivity(
             Intent(
                 ApplicationProvider.getApplicationContext(),
