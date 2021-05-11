@@ -5,23 +5,30 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
+import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationMenu
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
-
+    @Inject
+    lateinit var presenter: AuthenticationPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +46,29 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.setupWithNavController(navController, appBarConfiguration)
 
-        findViewById<BottomNavigationView>(R.id.bottom_nav).setupWithNavController(navController)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        bottomNav.setupWithNavController(navController)
+        val goToLearningButton = bottomNav?.menu?.get(0)
+        val goToDsEditingButton = bottomNav?.menu?.get(1)
+
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            if(presenter.currentUser == null){
+                goToLearningButton?.isVisible = false
+                goToDsEditingButton?.isVisible = false
+            } else {
+                val isAdmin = true
+                if(isAdmin) {
+                    goToLearningButton?.isVisible = true
+                    goToDsEditingButton?.isVisible = true
+                } else {
+                    goToLearningButton?.isVisible = true
+                    goToDsEditingButton?.isVisible = false
+                }
+            }
+        }
+
         findViewById<NavigationView>(R.id.nav_view).setupWithNavController(navController)
     }
-
-
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
