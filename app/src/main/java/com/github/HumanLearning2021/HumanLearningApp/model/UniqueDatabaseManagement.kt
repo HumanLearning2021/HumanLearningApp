@@ -35,33 +35,24 @@ class UniqueDatabaseManagement constructor(
 
     fun accessDatabase(databaseName: String): DatabaseManagement {
         return if (downloadedDatabases.contains(databaseName)) {
-            DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
+            DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore), databaseName, context, room)
         } else {
             CachedDatabaseManagement(
-                DefaultDatabaseManagement(
-                    FirestoreDatabaseService(
-                        databaseName,
-                        firestore
-                    )
-                ), CachePictureRepository(databaseName, context)
+                DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore), databaseName, context, room), CachePictureRepository(databaseName, context)
             )
         }
     }
 
     fun accessCloudDatabase(databaseName: String): DatabaseManagement {
         return CachedDatabaseManagement(
-            DefaultDatabaseManagement(
-                FirestoreDatabaseService(
-                    databaseName,
-                    firestore
-                )
-            ), CachePictureRepository(databaseName, context)
+                DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore), databaseName, context, room)
+            , CachePictureRepository(databaseName, context)
         )
     }
 
     suspend fun downloadDatabase(databaseName: String): DatabaseManagement {
         val firestoreDbManagement =
-            DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore))
+            DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore), databaseName, context, room)
         val pictureRepository = PictureRepository(databaseName, context)
 
         val datasets = firestoreDbManagement.getDatasets()
@@ -98,7 +89,7 @@ class UniqueDatabaseManagement constructor(
         )
         initializeRoomCrossRefs(dbDsRefs, dbCatRefs, dbPicRefs, dsCatRefs)
         downloadedDatabases.add(databaseName)
-        return DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
+        return DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore), databaseName, context, room)
     }
 
     fun removeOfflineDatabase(databaseName: String) {

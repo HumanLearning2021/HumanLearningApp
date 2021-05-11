@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
+import android.content.Context
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
@@ -12,11 +13,14 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -27,6 +31,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 
 @UninstallModules(DatabaseManagementModule::class)
@@ -36,9 +41,17 @@ class LearningDatasetSelectionTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
+
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    lateinit var dbManagement: DatabaseManagement
 
     private val datasetId = TestUtils.getFirstDataset(dbManagement).id
 
@@ -47,6 +60,7 @@ class LearningDatasetSelectionTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        dbManagement = DefaultDatabaseManagement(DummyDatabaseService(), "dummy", context, room)
         launchFragment()
     }
 

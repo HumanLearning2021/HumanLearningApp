@@ -17,7 +17,10 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -29,6 +32,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import java.util.*
+import javax.inject.Inject
 
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
@@ -39,7 +43,15 @@ class DisplayImageActivityTest {
 
     @BindValue
     @Demo2Database
-    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    lateinit var dbMgt: DatabaseManagement
+
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
 
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
@@ -54,6 +66,7 @@ class DisplayImageActivityTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        dbMgt = DefaultDatabaseManagement(DummyDatabaseService(), "dummy", context, room)
         categories = emptySet()
         datasetPictures = emptySet()
         datasetId = dataset.id

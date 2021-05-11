@@ -8,6 +8,7 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -33,6 +34,14 @@ class RoomHLDatabaseTest {
     @Demo2Database
     lateinit var demo2DbService: DatabaseService
 
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
+
     @BindValue
     @Demo2Database
     lateinit var demo2DbMgt: DatabaseManagement
@@ -50,7 +59,7 @@ class RoomHLDatabaseTest {
     @Before
     fun createDb() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, context, room)
         databaseDao = db.databaseDao()
         datasetDao = db.datasetDao()
     }

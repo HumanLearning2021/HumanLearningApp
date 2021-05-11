@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.Context
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -18,7 +19,13 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.withIndex
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -32,6 +39,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
@@ -42,7 +50,15 @@ class CategoriesEditingFragmentTest {
 
     @BindValue
     @Demo2Database
-    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    lateinit var dbMgt: DatabaseManagement
+
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
 
     private val dataset: Dataset = getFirstDataset(dbMgt)
     private val datasetId: String = getFirstDataset(dbMgt).id
@@ -52,6 +68,7 @@ class CategoriesEditingFragmentTest {
     @Before
     fun setUp() {
         hiltRule.inject()
+        dbMgt = DefaultDatabaseManagement(DummyDatabaseService(), "dummy", context, room)
         launchFragment()
     }
 

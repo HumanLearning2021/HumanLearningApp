@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
+import android.content.Context
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -13,10 +14,13 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -28,6 +32,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
+import javax.inject.Inject
 
 
 @UninstallModules(DatabaseManagementModule::class)
@@ -37,9 +42,17 @@ class LearningTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
+
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    lateinit var dbManagement: DatabaseManagement
 
     private val datasetId = TestUtils.getFirstDataset(dbManagement).id
 
@@ -55,6 +68,7 @@ class LearningTest {
     fun setup() {
         mDevice = UiDevice.getInstance(getInstrumentation())
         hiltRule.inject()
+        dbManagement = DefaultDatabaseManagement(DummyDatabaseService(), "dummy", context, room)
         launchFragment()
     }
 

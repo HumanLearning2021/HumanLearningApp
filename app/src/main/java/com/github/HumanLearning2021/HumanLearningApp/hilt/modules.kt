@@ -148,11 +148,12 @@ object DatabaseServiceModule {
     @Provides
     fun provideOfflineDemoService(
         @ApplicationContext context: Context,
-        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement
+        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
+        @RoomDatabase room: RoomOfflineDatabase,
     ): DatabaseService =
         runBlocking {
             uDb.downloadDatabase("demo")
-            OfflineDatabaseService("demo", context, RoomDatabaseModule.provideRoomDatabase(context))
+            OfflineDatabaseService("demo", context, room)
         }
 
     @OfflineScratchDatabase
@@ -191,13 +192,13 @@ object DatabaseServiceModule {
 object DatabaseManagementModule {
     @DummyDatabase
     @Provides
-    fun provideDummyManagement(@DummyDatabase db: DatabaseService): DatabaseManagement =
-        DefaultDatabaseManagement(db)
+    fun provideDummyManagement(@DummyDatabase db: DatabaseService, @ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase): DatabaseManagement =
+        DefaultDatabaseManagement(db, "dummy", context, room)
 
     @DemoDatabase
     @Provides
-    fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement =
-        DefaultDatabaseManagement(db)
+    fun provideDemoService(@DemoDatabase db: DatabaseService, @ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase): DatabaseManagement =
+        DefaultDatabaseManagement(db, "demo", context, room)
 
     @CachedDemoDatabase
     @Provides
@@ -208,23 +209,23 @@ object DatabaseManagementModule {
 
     @Demo2Database
     @Provides
-    fun provideDemo2Service(@Demo2Database db: DatabaseService): DatabaseManagement =
-        DefaultDatabaseManagement(db)
+    fun provideDemo2Service(@Demo2Database db: DatabaseService, @ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase): DatabaseManagement =
+        DefaultDatabaseManagement(db, "demo2", context, room)
 
     @ScratchDatabase
     @Provides
-    fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement =
-        DefaultDatabaseManagement(db)
+    fun provideScratchService(@ScratchDatabase db: DatabaseService, @ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase): DatabaseManagement =
+        DefaultDatabaseManagement(db, "scratch", context, room)
 
     @OfflineDemoDatabase
     @Provides
-    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement =
-        DefaultDatabaseManagement(db)
+    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService, @ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase): DatabaseManagement =
+        DefaultDatabaseManagement(db, "demo", context, room)
 
     @OfflineScratchDatabase
     @Provides
-    fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement =
-        DefaultDatabaseManagement(db)
+    fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService, @ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase): DatabaseManagement =
+        DefaultDatabaseManagement(db, "scratch", context, room)
 
     @GlobalDatabaseManagement
     @Provides

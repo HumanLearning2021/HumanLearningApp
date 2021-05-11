@@ -1,10 +1,10 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -58,6 +58,14 @@ class FirestoreDemoDatabaseServiceTest : DemoDatabaseServiceTest() {
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
+
+    @Inject
     @DemoDatabase
     override lateinit var db: DatabaseService
 
@@ -67,6 +75,6 @@ class FirestoreDemoDatabaseServiceTest : DemoDatabaseServiceTest() {
     @Before
     fun setUpDb() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, context, room)
     }
 }

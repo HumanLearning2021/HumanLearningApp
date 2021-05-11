@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
+import android.content.Context
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -18,9 +19,12 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.PermissionGranter
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -36,6 +40,7 @@ import org.junit.runners.MethodSorters
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import java.lang.reflect.Method
+import javax.inject.Inject
 
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
@@ -45,9 +50,17 @@ class TakePictureActivityTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
+
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    lateinit var dbManagement: DatabaseManagement
 
     private val datasetId: String = TestUtils.getFirstDataset(dbManagement).id
 
@@ -74,6 +87,7 @@ class TakePictureActivityTest {
     @Before
     fun setUp() {
         hiltRule.inject()
+        dbManagement = DefaultDatabaseManagement(DummyDatabaseService(), "dummy", context, room)
         launchFragment()
         // By waiting before the test starts, it allows time for the app to startup to prevent the
         // following error to appear on cirrus:

@@ -20,7 +20,10 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -36,6 +39,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
 
 @UninstallModules(DatabaseManagementModule::class)
@@ -45,9 +49,17 @@ class DisplayImageSetActivityTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
+
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    lateinit var dbManagement: DatabaseManagement
 
     private var dsPictures = emptySet<CategorizedPicture>()
     private lateinit var categories: Set<Category>
@@ -61,6 +73,7 @@ class DisplayImageSetActivityTest {
     @Before
     fun setUp() {
         hiltRule.inject()  // to get dbManagement set up
+        dbManagement = DefaultDatabaseManagement(DummyDatabaseService(), "dummy", context, room)
         runBlocking {
             var found = false
             val datasets = dbManagement.getDatasets()

@@ -45,8 +45,9 @@ object DatabaseServiceTestModule {
     @Provides
     fun provideDemoDatabase(
         @ApplicationContext context: Context,
-        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement
-    ) = DatabaseServiceModule.provideOfflineDemoService(context, uDb)
+        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
+        @RoomDatabase room: RoomOfflineDatabase,
+    ) = DatabaseServiceModule.provideOfflineDemoService(context, uDb, room)
 }
 
 @TestInstallIn(
@@ -73,8 +74,8 @@ object RoomDatabaseTestModule {
 object DatabaseManagementTestModule {
     @DemoDatabase
     @Provides
-    fun provideDemoDatabaseManagement(@DemoDatabase db: DatabaseService): DatabaseManagement =
-        DatabaseManagementModule.provideDemoService(db)
+    fun provideDemoDatabaseManagement(@DemoDatabase db: DatabaseService, @ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase): DatabaseManagement =
+        DatabaseManagementModule.provideDemoService(db, context, room)
 
     @CachedDemoDatabase
     @Provides
@@ -85,13 +86,13 @@ object DatabaseManagementTestModule {
 
     @ScratchDatabase
     @Provides
-    fun provideScratchDatabaseManagement(@ScratchDatabase db: DatabaseService): DatabaseManagement =
-        DatabaseManagementModule.provideScratchService(db)
+    fun provideScratchDatabaseManagement(@ScratchDatabase db: DatabaseService, @ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase): DatabaseManagement =
+        DatabaseManagementModule.provideScratchService(db, context, room)
 
     @OfflineDemoDatabase
     @Provides
-    fun provideOfflineDemoDatabaseManagement(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement =
-        DatabaseManagementModule.provideOfflineDemoService(db)
+    fun provideOfflineDemoDatabaseManagement(@OfflineDemoDatabase db: DatabaseService, @ApplicationContext context: Context, @RoomDatabase room: RoomOfflineDatabase): DatabaseManagement =
+        DatabaseManagementModule.provideOfflineDemoService(db, context, room)
 
     @GlobalDatabaseManagement
     @Provides

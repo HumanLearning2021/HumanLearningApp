@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.Context
 import android.content.Intent
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -25,9 +26,12 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -44,6 +48,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 
 @UninstallModules(DatabaseManagementModule::class)
@@ -63,7 +68,15 @@ class DisplayDatasetActivityTest {
 
     @BindValue
     @Demo2Database
-    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    lateinit var dbMgt: DatabaseManagement
+
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
 
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
@@ -77,6 +90,7 @@ class DisplayDatasetActivityTest {
     @Before
     fun setup() {
         hiltRule.inject()  // ensures dbManagement is available
+        dbMgt = DefaultDatabaseManagement(DummyDatabaseService(), "dummy", context, room)
         dataset = getFirstDataset(dbMgt)
         Intents.init()
     }

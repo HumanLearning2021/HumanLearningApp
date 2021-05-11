@@ -18,10 +18,7 @@ import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import javax.inject.Inject
 
@@ -56,7 +53,7 @@ class UniqueDatabaseManagementTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, context, room)
         context.cacheDir.deleteRecursively()
         room.clearAllTables()
         Thread.sleep(1000) //wait for above method to complete
@@ -88,10 +85,11 @@ class UniqueDatabaseManagementTest {
         )
     }
 
+    @Ignore("Functionality not present at the moment")
     @Test
     fun offlineDatabaseThrowsIfNotDownloaded() = runBlocking {
         kotlin.runCatching {
-            DefaultDatabaseManagement(OfflineDatabaseService("demo", context, room))
+            DefaultDatabaseManagement(OfflineDatabaseService("demo", context, room), "demo", context, room)
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {

@@ -63,7 +63,8 @@ class OfflineDatabaseManagementTest {
     @Before
     fun setUp() = runBlocking {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        room.clearAllTables()
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, context, room)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory = FirestoreCategory("oopsy", "oopsy")
@@ -74,6 +75,7 @@ class OfflineDatabaseManagementTest {
     fun teardown() {
         room.clearAllTables()
         PictureRepository("demo", context).clear()
+        PictureRepository("demo2", context).clear()
     }
 
     private fun getRandomString() = "${UUID.randomUUID()}"

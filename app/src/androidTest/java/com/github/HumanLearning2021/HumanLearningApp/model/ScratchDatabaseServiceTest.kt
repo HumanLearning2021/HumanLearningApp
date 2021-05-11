@@ -1,11 +1,14 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
+import android.content.Context
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -82,6 +85,14 @@ class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
+
+    @Inject
     @ScratchDatabase
     override lateinit var db: DatabaseService
 
@@ -91,7 +102,7 @@ class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
     @Before
     fun setUpDb() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, context, room)
     }
 }
 
@@ -109,6 +120,14 @@ class ScratchDummyDatabaseServiceTest : ScratchDatabaseServiceTest() {
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
+
+    @Inject
     @DummyDatabase
     override lateinit var db: DatabaseService
 
@@ -118,6 +137,6 @@ class ScratchDummyDatabaseServiceTest : ScratchDatabaseServiceTest() {
     @Before
     fun setUpDb() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, context, room)
     }
 }

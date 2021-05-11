@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
+import android.content.Context
 import android.content.Intent
 import androidx.navigation.fragment.findNavController
 import androidx.test.core.app.ApplicationProvider
@@ -19,10 +20,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -33,6 +37,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
@@ -50,13 +55,22 @@ class GeneralNavigationTest {
         )
     )
 
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
+
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    lateinit var dbManagement: DatabaseManagement
 
     @Before
     fun setup() {
         hiltRule.inject()
+        dbManagement = DefaultDatabaseManagement(DummyDatabaseService(), "dummy", context, room)
         Intents.init()
     }
 

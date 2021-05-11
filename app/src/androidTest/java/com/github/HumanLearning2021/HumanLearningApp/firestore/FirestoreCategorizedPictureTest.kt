@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
+import android.content.Context
 import android.content.Intent
 import android.widget.ImageView
 import androidx.lifecycle.lifecycleScope
@@ -12,7 +13,9 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -43,6 +46,14 @@ class FirestoreCategorizedPictureTest {
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    @Inject
+    @RoomDatabase
+    lateinit var room: RoomOfflineDatabase
+
+    @Inject
     @DemoDatabase
     lateinit var db: DatabaseService
 
@@ -55,7 +66,7 @@ class FirestoreCategorizedPictureTest {
     @Before
     fun setUp() {
         hiltRule.inject()  // to get db set up
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, context, room)
         UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).apply {
             if (!isScreenOn)
                 wakeUp()

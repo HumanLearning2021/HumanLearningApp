@@ -14,24 +14,14 @@ import java.util.*
 class OfflineDatabaseService internal constructor(
     val dbName: String,
     val context: Context,
-    val room: RoomOfflineDatabase
+    val room: RoomOfflineDatabase,
 ) : DatabaseService {
 
-    private val pictureRepository: PictureRepository
-    private val databaseDao: DatabaseDao
-    private val datasetDao: DatasetDao
-    private val categoryDao: CategoryDao
-    private val userDao: UserDao
-
-    init {
-        pictureRepository = PictureRepository(dbName, context)
-        databaseDao = room.databaseDao()
-        databaseDao.loadByName(dbName)
-            ?: throw IllegalStateException("The database $dbName has not yet been downloaded.")
-        datasetDao = room.datasetDao()
-        categoryDao = room.categoryDao()
-        userDao = room.userDao()
-    }
+    private val pictureRepository: PictureRepository = PictureRepository(dbName, context)
+    private val databaseDao: DatabaseDao = room.databaseDao()
+    private val datasetDao: DatasetDao = room.datasetDao()
+    private val categoryDao: CategoryDao = room.categoryDao()
+    private val userDao: UserDao = room.userDao()
 
     private fun getID() = "${UUID.randomUUID()}"
 
@@ -101,7 +91,7 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun getCategories(): Set<OfflineCategory> {
-        return databaseDao.loadByName(dbName)!!.categories.map { c -> fromCategory(c) }.toSet()
+        return databaseDao.loadByName(dbName)?.categories?.map { c -> fromCategory(c) }?.toSet() ?: setOf()
     }
 
     /**
@@ -195,13 +185,13 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun getDatasets(): Set<OfflineDataset> {
-        return databaseDao.loadByName(dbName)!!.datasets.map { d ->
+        return databaseDao.loadByName(dbName)?.datasets?.map { d ->
             fromDataset(
                 datasetDao.loadById(
                     d.datasetId
                 )!!
             )
-        }.toSet()
+        }?.toSet() ?: setOf()
     }
 
     override suspend fun removeCategoryFromDataset(
