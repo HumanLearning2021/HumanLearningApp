@@ -87,13 +87,6 @@ class CachedDatabaseServiceTest {
     }
 
     @Test
-    fun getReprPicturePutsItIntoCache() = runBlocking {
-        val pic = demoInterface.getRepresentativePicture("pear")
-        assumeThat(pic, not(equalTo(null)))
-        assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
-    }
-
-    @Test
     fun getPictureDeprecatedPutsItIntoCache() = runBlocking {
         val pic = demoInterface.getPicture(demoInterface.getCategory(appleCategoryId)!!)
         assumeThat(pic, not(equalTo(null)))
@@ -103,5 +96,23 @@ class CachedDatabaseServiceTest {
             (demoInterface as CachedDatabaseService).cachedPictures.keys,
             not(hasItem(pic.id))
         )
+    }
+
+    @Test
+    fun getRepresentativePicturePutsItIntoCache() = runBlocking {
+        assumeThat((demoInterface as CachedDatabaseService).representativePictures.keys, not(hasItem(appleCategoryId)))
+        val pic = demoInterface.getRepresentativePicture(appleCategoryId)
+        assumeThat(pic, not(equalTo(null)))
+        assertThat((demoInterface as CachedDatabaseService).representativePictures.keys, hasItem(appleCategoryId))
+        assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
+    }
+
+    @Test
+    fun getRepresentativePictureWorks() = runBlocking {
+        val pic = demoInterface.getRepresentativePicture(appleCategoryId)
+        assumeThat(pic, not(equalTo(null)))
+        assumeThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
+        val pic2 = demoInterface.getPicture(pic.id)
+        assertThat(pic2, not(equalTo(null)))
     }
 }

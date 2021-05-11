@@ -14,6 +14,7 @@ class CachedDatabaseService internal constructor(
 ) : DatabaseService by db {
 
     internal val cachedPictures: MutableMap<Id, CategorizedPicture> = mutableMapOf()
+    internal val representativePictures: MutableMap<Id, Id> = mutableMapOf()
 
     override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
         val uri = cache.retrievePicture(pictureId)
@@ -36,8 +37,22 @@ class CachedDatabaseService internal constructor(
     }
 
     override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? {
-        val fPic = db.getRepresentativePicture(categoryId) ?: return null
-        return this.getPicture(fPic.id)
+        val picId = representativePictures[categoryId]
+        return picId?.let { id ->
+            cache.retrievePicture(id)?.let { uri ->
+                cachedPictures[id]?.let { cPic ->
+                    Converters.fromPicture(cPic, uri)
+                } ?: db.getPicture(id)?.let { pic -> putIntoCache(pic) }
+            } ?: run {
+                removeFromCache(id)
+                db.getPicture(id)?.let { pic -> putIntoCache(pic) }
+            }
+        } ?: let {
+            db.getRepresentativePicture(categoryId)?.let { cPic ->
+                representativePictures[categoryId] = cPic.id
+                db.getRepresentativePicture(categoryId)?.let { pic -> putIntoCache(pic) }
+            }
+        }
     }
 
     override suspend fun removePicture(picture: CategorizedPicture) {
