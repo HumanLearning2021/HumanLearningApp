@@ -62,7 +62,7 @@ annotation class RoomDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class DemoCachePictureRepository
+annotation class DemoCachePictureStorage
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -131,8 +131,9 @@ object EmulationModule {
 @InstallIn(SingletonComponent::class)
 object PictureRepositoryModule {
     @Provides
-    @DemoCachePictureRepository
-    fun provideCachePictureRepository(@ApplicationContext context: Context): PictureStorage = CachePictureStorage("demo", context)
+    @DemoCachePictureStorage
+    fun provideCachePictureStorage(@ApplicationContext context: Context): PictureStorage =
+        CachePictureStorage("demo", context)
 }
 
 @Module
@@ -200,7 +201,10 @@ object DatabaseManagementModule {
 
     @CachedDemoDatabase
     @Provides
-    fun provideCachedDemoService(@DemoDatabase db: DatabaseManagement, @DemoCachePictureRepository repo: PictureStorage): DatabaseManagement = CachedDatabaseManagement(db, repo)
+    fun provideCachedDemoService(
+        @DemoDatabase db: DatabaseManagement,
+        @DemoCachePictureStorage repo: PictureStorage
+    ): DatabaseManagement = CachedDatabaseManagement(db, repo)
 
     @Demo2Database
     @Provides
