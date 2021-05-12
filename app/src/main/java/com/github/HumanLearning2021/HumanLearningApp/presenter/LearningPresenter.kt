@@ -2,9 +2,12 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.app.Activity
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.Event
+import com.github.HumanLearning2021.HumanLearningApp.model.id
+import com.github.HumanLearning2021.HumanLearningApp.model.learning.LearningModel
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 
 
@@ -26,17 +29,7 @@ class LearningPresenter(
     private val dataset: Dataset,
     private val auth: AuthenticationPresenter,
 ) {
-
-    /**
-     * Represents the current category that the user must sort
-     */
-    private lateinit var currentCategory: Category
-
-    /**
-     * Maps the ImageView id displaying the representative to the category it represents
-     * A missing value indicates that nothing is displayed
-     */
-    private val targetCategories: MutableMap<ViewId, Category> = HashMap()
+    private val learningModel = LearningModel(dataset)
 
 
     /**
@@ -69,18 +62,14 @@ class LearningPresenter(
             "There must be enough categories in the dataset to display one category on each target" +
                     " ImageView"
         }
-        // avoid keeping invalid mappings by clearing the map
-        targetCategories.clear()
-        // choose the categories that are going to be displayed at random
-        categoriesInDataset.shuffled().take(targetViews.size)
-            // and update the mapping and display the category
-            .forEachIndexed { i, cat ->
-                val iv = targetViews[i]
-                targetCategories += Pair(iv.id, cat)
-                dbMgt.getRepresentativePicture(cat.id)?.displayOn(activity, iv)
-                // set new content description. ONLY FOR ACCESSIBILITY REASONS, NOT FOR FUNCTIONALITY
-                iv.contentDescription = cat.name
-            }
+
+        learningModel.updateTargetCategories(targetViews).forEach {
+            val (iv, cat) = it
+            dbMgt.getRepresentativePicture(cat.id)?.displayOn(activity, iv)
+            // set new content description. ONLY FOR ACCESSIBILITY REASONS, NOT FOR FUNCTIONALITY
+            iv.contentDescription = cat.name
+        }
+
     }
 
     /**
@@ -89,10 +78,9 @@ class LearningPresenter(
      * @param view The view on which to display the chosen picture. Normally has id R.id.learning_im_to_sort
      */
     private suspend fun updatePictureToSort(activity: Activity, view: ImageView) {
-        currentCategory = getRndCategory()
+        val currentCategory = learningModel.updateCurrentCategory()
         val rndCatPicIds = dbMgt.getPictureIds(currentCategory)
         val rndCatRepr = dbMgt.getRepresentativePicture(currentCategory.id)
-
         val nextPicture = when (learningMode) {
             LearningMode.REPRESENTATION ->
                 if (rndCatPicIds.isEmpty()) {
@@ -115,23 +103,12 @@ class LearningPresenter(
         view.invalidate()
     }
 
-    /**
-     * Returns a random category amongst the current target categories
-     */
-
-    private fun getRndCategory(): Category = targetCategories.values.random()
-
 
     suspend fun saveEvent(event: Event) =
         auth.currentUser?.let { user ->
             dbMgt.countOccurrence(user.id, dataset.id, event)
         }
 
-    /**
-     * Verifies if the currentCategory is equal to the category displayed on the given view
-     * @param v View displaying the target category
-     * @return true iff the sorting is correct
-     */
-    fun isSortingCorrect(v: View): Boolean =
-        targetCategories.contains(v.id) && targetCategories[v.id] == currentCategory
+
+    fun isSortingCorrect(v: ImageView) = learningModel.isSortingCorrect(v)
 }

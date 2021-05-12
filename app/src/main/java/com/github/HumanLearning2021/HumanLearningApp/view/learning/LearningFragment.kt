@@ -100,6 +100,9 @@ class LearningFragment : Fragment() {
         }
     }
 
+    /**
+     * TODO
+     */
     private fun setEventListeners() = with(binding) {
         learningToSort.setOnTouchListener { e, v -> onImageToSortTouched(e, v) }
         learningCat0.setOnDragListener(targetOnDragListener)
@@ -160,7 +163,7 @@ class LearningFragment : Fragment() {
     private fun dropCallback(event: DragEvent, v: View): Boolean {
         setOpacity(v, opaque)
 
-        val sortingCorrect = learningPresenter.isSortingCorrect(v)
+        val sortingCorrect = learningPresenter.isSortingCorrect(v as ImageView)
         audioFeedback.stopAndPrepareMediaPlayers()
         if (sortingCorrect) {
             audioFeedback.startCorrectFeedback()
@@ -191,6 +194,9 @@ class LearningFragment : Fragment() {
         return true
     }
 
+    /**
+     * TODO
+     */
     private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
