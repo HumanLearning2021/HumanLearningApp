@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.get
@@ -53,9 +54,11 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, _, _ ->
             val isAdmin = true
             if(presenter.currentUser == null || !isAdmin){
+                Toast.makeText(applicationContext, "NOT LOGGED IN", Toast.LENGTH_SHORT).show()
                 goToLearningButton?.isVisible = true
                 goToDsEditingButton?.isVisible = false
             } else {
+                Toast.makeText(applicationContext, "LOGGED IN", Toast.LENGTH_SHORT).show()
                 goToLearningButton?.isVisible = true
                 goToDsEditingButton?.isVisible = true
             }
