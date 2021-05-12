@@ -29,6 +29,10 @@ class LearningPresenter(
     private val dataset: Dataset,
     private val auth: AuthenticationPresenter,
 ) {
+
+    /**
+     * Underlying model for the learning
+     */
     private val learningModel = LearningModel(dataset)
 
 
@@ -43,33 +47,21 @@ class LearningPresenter(
         targetViews: List<ImageView>,
         sourceView: ImageView
     ) {
-        // warning: the order is important here, because the picture to sort has to have a category
-        // that is one of the target categories
-        updateTargetCategories(activity, targetViews)
-        updatePictureToSort(activity, sourceView)
-    }
-
-
-    /**
-     * Update the target categories for the learning. This method chooses n categories at random in
-     * the dataset (n = targetViews.size) and displays them on the given targetViews
-     * @param activity activity on which the targetViews appear
-     * @param targetViews ImageViews on which the new category representatives are going to be displayed
-     */
-    private suspend fun updateTargetCategories(activity: Activity, targetViews: List<ImageView>) {
-        val categoriesInDataset = dataset.categories
-        require(categoriesInDataset.size >= targetViews.size) {
+        require(dataset.categories.size >= targetViews.size) {
             "There must be enough categories in the dataset to display one category on each target" +
                     " ImageView"
         }
 
-        learningModel.updateTargetCategories(targetViews).forEach {
+        learningModel.updateForNextSorting(targetViews).forEach {
             val (iv, cat) = it
             dbMgt.getRepresentativePicture(cat.id)?.displayOn(activity, iv)
             // set new content description. ONLY FOR ACCESSIBILITY REASONS, NOT FOR FUNCTIONALITY
             iv.contentDescription = cat.name
         }
 
+        // It matters that this method is called last, because the picture to sort must have a
+        // category amongst those that are displayed
+        updatePictureToSort(activity, sourceView)
     }
 
     /**
@@ -78,7 +70,7 @@ class LearningPresenter(
      * @param view The view on which to display the chosen picture. Normally has id R.id.learning_im_to_sort
      */
     private suspend fun updatePictureToSort(activity: Activity, view: ImageView) {
-        val currentCategory = learningModel.updateCurrentCategory()
+        val currentCategory = learningModel.getCurrentCategory()
         val rndCatPicIds = dbMgt.getPictureIds(currentCategory)
         val rndCatRepr = dbMgt.getRepresentativePicture(currentCategory.id)
         val nextPicture = when (learningMode) {
@@ -103,12 +95,13 @@ class LearningPresenter(
         view.invalidate()
     }
 
-
     suspend fun saveEvent(event: Event) =
         auth.currentUser?.let { user ->
             dbMgt.countOccurrence(user.id, dataset.id, event)
         }
 
-
+    /**
+     * @see LearningModel.isSortingCorrect for documentation
+     */
     fun isSortingCorrect(v: ImageView) = learningModel.isSortingCorrect(v)
 }

@@ -4,32 +4,29 @@ import android.widget.ImageView
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 
-
+/**
+ * This class models the learning process.
+ * @param dataset dataset with which the learning happens
+ */
 class LearningModel(private val dataset: Dataset) {
 
     /**
-     * Represents the current category that the user must sort
+     * Represents the category of the current picture to sort
      */
     private lateinit var currentCategory: Category
+
+    /**
+     * Get the category of the current picture to sort
+     */
+    fun getCurrentCategory(): Category {
+        return currentCategory
+    }
 
     /**
      * Maps the ImageView id displaying the representative to the category it represents
      * A missing value indicates that nothing is displayed
      */
     private val imageViewToCategory: MutableMap<ImageView, Category> = HashMap()
-
-    /**
-     * TODO
-     */
-    fun updateCurrentCategory(): Category {
-        currentCategory = getRndCategory()
-        return currentCategory
-    }
-
-    /**
-     * Returns a random category amongst the current target categories
-     */
-    private fun getRndCategory(): Category = imageViewToCategory.values.random()
 
     /**
      * Verifies if the currentCategory is equal to the category displayed on the given view
@@ -40,9 +37,12 @@ class LearningModel(private val dataset: Dataset) {
         imageViewToCategory.contains(imageView) && imageViewToCategory[imageView] == currentCategory
 
     /**
-     * TODO
+     * Update the model to be ready for the next sorting.
+     * In particular, choose the new target categories and the new category of the picture to sort
+     * @param targetViews image views used to display target categories
+     * @return the newly updated mapping from ImageView to corresponding category
      */
-    fun updateTargetCategories(targetViews: List<ImageView>): Map<ImageView, Category> {
+    fun updateForNextSorting(targetViews: List<ImageView>): Map<ImageView, Category> {
         imageViewToCategory.clear()
         // choose the categories that are going to be displayed at random
         dataset.categories.shuffled().take(targetViews.size)
@@ -51,6 +51,8 @@ class LearningModel(private val dataset: Dataset) {
                 val iv = targetViews[i]
                 imageViewToCategory += Pair(iv, cat)
             }
+        // update the current category of the picture to sort
+        currentCategory = imageViewToCategory.values.random()
         return imageViewToCategory
     }
 }
