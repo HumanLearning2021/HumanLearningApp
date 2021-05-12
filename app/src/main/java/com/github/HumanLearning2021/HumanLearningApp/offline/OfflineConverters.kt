@@ -35,6 +35,6 @@ object OfflineConverters {
     }
 
     fun fromUser(user: RoomUser): OfflineUser {
-        return OfflineUser(user.type, user.userId, user.displayName, user.email)
+        return OfflineUser(user.type, user.userId, user.displayName, user.email,user.isAdmin)
     }
 }

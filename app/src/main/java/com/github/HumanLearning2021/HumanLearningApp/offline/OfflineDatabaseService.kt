@@ -248,10 +248,33 @@ class OfflineDatabaseService internal constructor(
                 firebaseUser.uid,
                 User.Type.FIREBASE,
                 firebaseUser.displayName,
-                firebaseUser.email
+                firebaseUser.email,
+                getUser(User.Type.FIREBASE, firebaseUser.uid)!!.isAdmin,
             )
         )
         return fromUser(userDao.load(firebaseUser.uid, User.Type.FIREBASE)!!)
+    }
+
+    //TODO optimize this transaction
+    override suspend fun setAdminAccess(
+        firebaseUser: FirebaseUser,
+        adminAccess: Boolean
+    ): OfflineUser {
+        userDao.update(
+            RoomUser(
+                firebaseUser.uid,
+                User.Type.FIREBASE,
+                firebaseUser.displayName,
+                firebaseUser.email,
+                adminAccess,
+            )
+        )
+        return fromUser(userDao.load(firebaseUser.uid, User.Type.FIREBASE)!!)
+
+    }
+
+    override suspend fun checkIsAdmin(user: User): Boolean {
+        return user.isAdmin
     }
 
     override suspend fun getUser(type: User.Type, uid: String): OfflineUser? {

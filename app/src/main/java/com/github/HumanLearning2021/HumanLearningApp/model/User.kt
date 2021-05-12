@@ -14,4 +14,5 @@ interface User : Parcelable {
     val uid: String
     val displayName: String?
     val email: String?
+    val isAdmin : Boolean
 }

@@ -9,4 +9,5 @@ data class FirestoreUser(
     override val email: String?,
     override val uid: String,
     override val type: User.Type,
+    override val isAdmin : Boolean,
 ) : User
