@@ -75,9 +75,9 @@ class OfflineDatabaseManagementTest {
     }
 
     @After
-    fun teardown() = runBlocking {
-        room.clearAllTables()
+    fun tearDown() = runBlocking {
         PictureRepository("demo", context).clear()
+        room.clearAllTables()
     }
 
     private fun getRandomString() = "${UUID.randomUUID()}"

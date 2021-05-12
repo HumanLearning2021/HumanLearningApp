@@ -17,17 +17,19 @@ class UniqueDatabaseManagement constructor(
     private val room: RoomOfflineDatabase,
     private val firestore: FirebaseFirestore
 ) {
-
+    
     private val databaseDao = room.databaseDao()
     private val datasetDao = room.datasetDao()
     private val categoryDao = room.categoryDao()
 
-    suspend fun getDownloadedDatabases(): List<String> = room.databaseDao().loadAll().map { db -> db.emptyHLDatabase.databaseName }.toList()
+    suspend fun getDownloadedDatabases(): List<String> =
+        room.databaseDao().loadAll().map { db -> db.emptyHLDatabase.databaseName }.toList()
 
     suspend fun getDatabases(): List<String> = FirestoreDatabaseService.getDatabaseNames()
 
     suspend fun accessDatabase(databaseName: String): DatabaseManagement {
-        return if (room.databaseDao().loadAll().map { db -> db.emptyHLDatabase.databaseName }.contains(databaseName)) {
+        return if (room.databaseDao().loadAll().map { db -> db.emptyHLDatabase.databaseName }
+                .contains(databaseName)) {
             DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
         } else {
             DefaultDatabaseManagement(

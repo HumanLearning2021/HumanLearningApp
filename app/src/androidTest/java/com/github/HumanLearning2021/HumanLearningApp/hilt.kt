@@ -47,8 +47,9 @@ object DatabaseServiceTestModule {
     @Provides
     fun provideDemoDatabase(
         @ApplicationContext context: Context,
-        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement
-    ) = DatabaseServiceModule.provideOfflineDemoService(context, uDb)
+        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
+        @RoomDatabase room: RoomOfflineDatabase,
+    ) = DatabaseServiceModule.provideOfflineDemoService(context, uDb, room)
 
     @CachedDemoDatabase
     @Provides

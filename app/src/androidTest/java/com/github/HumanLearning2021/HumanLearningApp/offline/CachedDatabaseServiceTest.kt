@@ -87,18 +87,6 @@ class CachedDatabaseServiceTest {
     }
 
     @Test
-    fun getPictureDeprecatedPutsItIntoCache() = runBlocking {
-        val pic = demoInterface.getPicture(demoInterface.getCategory(appleCategoryId)!!)
-        assumeThat(pic, not(equalTo(null)))
-        assumeThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
-        demoInterface.removePicture(pic)
-        assertThat(
-            (demoInterface as CachedDatabaseService).cachedPictures.keys,
-            not(hasItem(pic.id))
-        )
-    }
-
-    @Test
     fun getRepresentativePicturePutsItIntoCache() = runBlocking {
         assumeThat((demoInterface as CachedDatabaseService).representativePictures.keys, not(hasItem(appleCategoryId)))
         val pic = demoInterface.getRepresentativePicture(appleCategoryId)

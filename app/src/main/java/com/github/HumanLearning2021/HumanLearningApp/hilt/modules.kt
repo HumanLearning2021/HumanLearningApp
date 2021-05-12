@@ -157,11 +157,12 @@ object DatabaseServiceModule {
     @Provides
     fun provideOfflineDemoService(
         @ApplicationContext context: Context,
-        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement
+        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
+        @RoomDatabase room: RoomOfflineDatabase,
     ): DatabaseService =
         runBlocking {
             uDb.downloadDatabase("demo")
-            OfflineDatabaseService("demo", context, RoomDatabaseModule.provideRoomDatabase(context))
+            OfflineDatabaseService("demo", context, room)
         }
 
     @OfflineScratchDatabase

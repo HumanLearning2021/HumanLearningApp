@@ -185,13 +185,13 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun getDatasets(): Set<OfflineDataset> {
-        return databaseDao.loadByName(dbName)!!.datasets.map { d ->
+        return databaseDao.loadByName(dbName)?.datasets?.map { d ->
             fromDataset(
                 datasetDao.loadById(
                     d.datasetId
                 )!!
             )
-        }.toSet()
+        }?.toSet() ?: setOf()
     }
 
     override suspend fun removeCategoryFromDataset(

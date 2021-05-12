@@ -31,11 +31,6 @@ class CachedDatabaseService internal constructor(
         }
     }
 
-    override suspend fun getPicture(category: Category): CategorizedPicture? {
-        val picIds = db.getPictureIds(category)
-        return this.getPicture(picIds.random())
-    }
-
     override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? {
         val picId = representativePictures[categoryId]
         return picId?.let { id ->
