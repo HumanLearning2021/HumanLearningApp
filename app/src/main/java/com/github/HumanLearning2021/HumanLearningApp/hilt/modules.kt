@@ -215,7 +215,6 @@ object DatabaseManagementModule {
     @Provides
     fun provideDemo2Service(
         @Demo2Database db: DatabaseService,
-        @Demo2CachePictureRepository cache: PictureRepository
     ): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @ScratchDatabase

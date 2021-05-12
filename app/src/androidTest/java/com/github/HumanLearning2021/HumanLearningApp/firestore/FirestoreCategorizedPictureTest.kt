@@ -60,7 +60,7 @@ class FirestoreCategorizedPictureTest {
     @Before
     fun setUp() {
         hiltRule.inject()  // to get db set up
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).apply {
             if (!isScreenOn)
                 wakeUp()

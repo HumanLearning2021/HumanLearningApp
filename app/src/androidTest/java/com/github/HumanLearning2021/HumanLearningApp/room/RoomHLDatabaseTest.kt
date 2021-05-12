@@ -14,6 +14,7 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -56,7 +57,7 @@ class RoomHLDatabaseTest {
     @Before
     fun createDb() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         databaseDao = db.databaseDao()
         datasetDao = db.datasetDao()
     }
@@ -75,7 +76,7 @@ class RoomHLDatabaseTest {
         RoomEmptyHLDatabase(getRandomString())
 
     @Test
-    fun works() {
+    fun works() = runBlocking {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val hlDb1 = getRandomDatabaseWithoutDatasets()
         val hlDb2 = getRandomDatabaseWithoutDatasets()

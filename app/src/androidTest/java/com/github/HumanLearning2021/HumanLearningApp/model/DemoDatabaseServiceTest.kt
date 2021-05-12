@@ -69,6 +69,6 @@ class FirestoreDemoDatabaseServiceTest : DemoDatabaseServiceTest() {
     @Before
     fun setUpDb() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
     }
 }

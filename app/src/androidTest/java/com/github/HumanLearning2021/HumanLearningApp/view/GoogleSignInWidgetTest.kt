@@ -41,7 +41,7 @@ class GoogleSignInWidgetTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
     }
 
     @Test

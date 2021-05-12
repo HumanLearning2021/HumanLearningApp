@@ -57,7 +57,7 @@ class UniqueDatabaseManagementTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService, repository)
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         context.cacheDir.deleteRecursively()
         room.clearAllTables()
         Thread.sleep(1000) //wait for above method to complete

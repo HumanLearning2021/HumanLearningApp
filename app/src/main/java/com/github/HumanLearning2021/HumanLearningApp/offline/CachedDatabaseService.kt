@@ -39,18 +39,11 @@ class CachedDatabaseService internal constructor(
     override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? {
         val picId = representativePictures[categoryId]
         return picId?.let { id ->
-            cache.retrievePicture(id)?.let { uri ->
-                cachedPictures[id]?.let { cPic ->
-                    Converters.fromPicture(cPic, uri)
-                } ?: db.getPicture(id)?.let { pic -> putIntoCache(pic) }
-            } ?: run {
-                removeFromCache(id)
-                db.getPicture(id)?.let { pic -> putIntoCache(pic) }
-            }
+            getRepresentativePictureFromCache(id)
         } ?: let {
             db.getRepresentativePicture(categoryId)?.let { cPic ->
                 representativePictures[categoryId] = cPic.id
-                db.getRepresentativePicture(categoryId)?.let { pic -> putIntoCache(pic) }
+                putIntoCache(cPic)
             }
         }
     }
@@ -62,18 +55,29 @@ class CachedDatabaseService internal constructor(
         if (pic != null) db.removePicture(pic)
     }
 
-    private fun putIntoCache(picture: CategorizedPicture): OfflineCategorizedPicture {
+    private suspend fun putIntoCache(picture: CategorizedPicture): OfflineCategorizedPicture {
         val uri = cache.savePicture(picture)
         cachedPictures[picture.id] = picture
         return Converters.fromPicture(picture, uri)
     }
 
-    private fun removeFromCache(pictureId: Id) {
+    private suspend fun removeFromCache(pictureId: Id) {
         cachedPictures.remove(pictureId)
         try {
             cache.deletePicture(pictureId)
         } catch (e: DatabaseService.NotFoundException) {
             // Do nothing since it means that the cache already removed it itself
+        }
+    }
+
+    private suspend fun getRepresentativePictureFromCache(pictureId: Id): CategorizedPicture? {
+        return cache.retrievePicture(pictureId)?.let { uri ->
+            cachedPictures[pictureId]?.let { cPic ->
+                Converters.fromPicture(cPic, uri)
+            } ?: db.getPicture(pictureId)?.let { pic -> putIntoCache(pic) }
+        } ?: run {
+            removeFromCache(pictureId)
+            db.getPicture(pictureId)?.let { pic -> putIntoCache(pic) }
         }
     }
 }
