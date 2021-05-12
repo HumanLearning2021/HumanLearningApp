@@ -51,18 +51,13 @@ class MainActivity : AppCompatActivity() {
         val goToDsEditingButton = bottomNav?.menu?.get(1)
 
         navController.addOnDestinationChangedListener { _, _, _ ->
-            if(presenter.currentUser == null){
-                goToLearningButton?.isVisible = false
+            val isAdmin = true
+            if(presenter.currentUser == null || !isAdmin){
+                goToLearningButton?.isVisible = true
                 goToDsEditingButton?.isVisible = false
             } else {
-                val isAdmin = true
-                if(isAdmin) {
-                    goToLearningButton?.isVisible = true
-                    goToDsEditingButton?.isVisible = true
-                } else {
-                    goToLearningButton?.isVisible = true
-                    goToDsEditingButton?.isVisible = false
-                }
+                goToLearningButton?.isVisible = true
+                goToDsEditingButton?.isVisible = true
             }
         }
 
