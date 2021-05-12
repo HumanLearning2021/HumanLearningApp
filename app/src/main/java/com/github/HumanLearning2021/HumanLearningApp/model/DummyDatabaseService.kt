@@ -300,9 +300,8 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         ).also { users[Pair(type, uid)] = it }
     }
 
-    override suspend fun checkIsAdmin(type: User.Type, uid: String): Boolean {
-        val dummyUser = getUser(type, uid)
-        return dummyUser!!.isAdmin
+    override suspend fun checkIsAdmin(user :User): Boolean {
+        return user.isAdmin
     }
 
     override suspend fun getUser(type: User.Type, uid: String) = users[Pair(type, uid)]

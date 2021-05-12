@@ -323,8 +323,7 @@ class FirestoreDatabaseService internal constructor(
         return documentRef.get().await().toObject(UserSchema::class.java)!!.toPublic()
     }
 
-    override suspend fun checkIsAdmin(type: User.Type, uid: String): Boolean {
-        val fireStoreUser = getUser(type,uid)
+    override suspend fun checkIsAdmin(fireStoreUser: User): Boolean {
         return fireStoreUser!!.isAdmin
     }
 

@@ -4,7 +4,6 @@ import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.room.*
 
 object OfflineConverters {
-    /*
     fun fromPicture(picture: RoomPicture, categoryDao: CategoryDao): OfflineCategorizedPicture {
         val cat = fromCategory(categoryDao.loadById(picture.categoryId)!!)
         return OfflineCategorizedPicture(picture.pictureId, cat, picture.uri)
@@ -37,5 +36,5 @@ object OfflineConverters {
 
     fun fromUser(user: RoomUser): OfflineUser {
         return OfflineUser(user.type, user.userId, user.displayName, user.email,user.isAdmin)
-    }*/
+    }
 }

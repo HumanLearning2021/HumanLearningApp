@@ -9,5 +9,5 @@ class OfflineUser(
     override val uid: String,
     override val displayName: String?,
     override val email: String?,
-    override val isAdmin: Boolean
+    override val isAdmin: Boolean,
 ) : User
