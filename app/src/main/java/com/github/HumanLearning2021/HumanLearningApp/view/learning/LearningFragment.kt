@@ -1,17 +1,14 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipDescription
 import android.os.Bundle
-import android.util.Log
 import android.view.*
+import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
@@ -31,6 +28,11 @@ class LearningFragment : Fragment() {
     private val args: LearningFragmentArgs by navArgs()
     private var _binding: FragmentLearningBinding? = null
     private val binding get() = _binding!!
+
+    /**
+     * This stores the image views on which the representatives of the target categories are displayed
+     */
+    private lateinit var targetImageViews: List<ImageView>
 
 
     lateinit var learningPresenter: LearningPresenter
@@ -57,16 +59,45 @@ class LearningFragment : Fragment() {
         datasetId = args.datasetId
         lifecycleScope.launch {
             dataset = dbMgt.getDatasetById(datasetId)!!
+            targetImageViews = adaptDisplayToNumberOfCategories(dataset)
+
             learningPresenter = LearningPresenter(dbMgt, args.learningMode, dataset)
-//            initLearningViews()
-            learningPresenter.updateCurrentCategory(parentActivity, binding.learningToSort)
-            learningPresenter.updateTargetCategories(parentActivity,
-                with(binding) { listOf(learningCat0, learningCat1, learningCat2) }
+            learningPresenter.updateForNextSorting(
+                parentActivity,
+                targetImageViews,
+                binding.learningToSort
             )
             // sets the listeners for the image views of the sorting
             setEventListeners()
         }
         requireActivity().onBackPressedDispatcher.addCallback(callback)
+    }
+
+    /**
+     * This function adapts the display to the number of categories in the dataset
+     * For example, if the dataset only has 2 categories, one of the categories will not be displayed
+     * @param dataset dataset that is used for the learning
+     * @return the ImageViews that stay displayed on screen
+     */
+    private fun adaptDisplayToNumberOfCategories(dataset: Dataset): List<ImageView> {
+        val nbCategories = dataset.categories.size
+        require(nbCategories > 0) {
+            "A dataset used for learning should have at least one category"
+        }
+        val makeInvisible = { v: List<View> -> v.forEach { it.visibility = View.INVISIBLE } }
+        return with(binding) {
+            when (nbCategories) {
+                1 -> {
+                    makeInvisible(listOf(learningCat0, learningCat2))
+                    listOf(learningCat1)
+                }
+                2 -> {
+                    makeInvisible(listOf(learningCat0))
+                    listOf(learningCat1, learningCat2)
+                }
+                else -> listOf(learningCat0, learningCat1, learningCat2)
+            }
+        }
     }
 
     private fun setEventListeners() = with(binding) {
@@ -127,26 +158,19 @@ class LearningFragment : Fragment() {
      * @param v The ImageView representing the target category
      */
     private fun dropCallback(event: DragEvent, v: View): Boolean {
-        val item: ClipData.Item = event.clipData.getItemAt(0)
         setOpacity(v, opaque)
-        Log.d(
-            parentActivity.localClassName,
-            "dropped : ${item.text} on category: ${v.contentDescription}"
-        )
 
         val sortingCorrect = learningPresenter.isSortingCorrect(v)
-        val self = parentActivity
         audioFeedback.stopAndPrepareMediaPlayers()
         if (sortingCorrect) {
             audioFeedback.startCorrectFeedback()
             lifecycleScope.launch {
-                binding.learningToSort.let {
-                    learningPresenter.updateCurrentCategory(
-                        self,
-                        it,
-                    )
-                }
                 learningPresenter.saveEvent(Event.SUCCESS)
+                learningPresenter.updateForNextSorting(
+                    parentActivity,
+                    targetImageViews,
+                    binding.learningToSort
+                )
             }
         } else {
             audioFeedback.startIncorrectFeedback()
@@ -170,15 +194,12 @@ class LearningFragment : Fragment() {
     private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                // TODO (future sprint) make verification mechanism more robust
-                val item = ClipData.Item(view.contentDescription)
-                val dragData = ClipData(
-                    getString(R.string.learning_clipdata_label),
-                    arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
-                    item
+                view.startDragAndDrop(
+                    null,
+                    View.DragShadowBuilder(view),
+                    null,
+                    0
                 )
-                val shadow = View.DragShadowBuilder(view)
-                view.startDragAndDrop(dragData, shadow, null, 0)
                 true
             }
             else -> false
@@ -190,6 +211,5 @@ class LearningFragment : Fragment() {
             v.alpha = opacity
             v.invalidate()
         }
-
     }
 }
