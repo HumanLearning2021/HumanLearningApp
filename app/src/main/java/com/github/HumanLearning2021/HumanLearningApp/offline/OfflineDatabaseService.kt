@@ -249,7 +249,7 @@ class OfflineDatabaseService internal constructor(
                 User.Type.FIREBASE,
                 firebaseUser.displayName,
                 firebaseUser.email,
-                getUser(User.Type.FIREBASE,firebaseUser.uid)!!.isAdmin,
+                getUser(User.Type.FIREBASE, firebaseUser.uid)!!.isAdmin,
             )
         )
         return fromUser(userDao.load(firebaseUser.uid, User.Type.FIREBASE)!!)
@@ -273,7 +273,7 @@ class OfflineDatabaseService internal constructor(
 
     }
 
-    override suspend fun checkIsAdmin(user : User): Boolean {
+    override suspend fun checkIsAdmin(user: User): Boolean {
         return user.isAdmin
     }
 
