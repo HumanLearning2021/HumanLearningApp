@@ -6,16 +6,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -25,6 +30,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     @Inject
     lateinit var presenter: AuthenticationPresenter
+    @Inject
+    @Demo2Database
+    lateinit var dbService: DatabaseService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,15 +60,19 @@ class MainActivity : AppCompatActivity() {
         val goToDsEditingButton = bottomNav?.menu?.get(1)
 
         navController.addOnDestinationChangedListener { _, _, _ ->
-            val isAdmin = true
-            if(presenter.currentUser == null || !isAdmin){
-                Toast.makeText(applicationContext, "NOT LOGGED IN", Toast.LENGTH_SHORT).show()
-                goToLearningButton?.isVisible = true
-                goToDsEditingButton?.isVisible = false
-            } else {
-                Toast.makeText(applicationContext, "LOGGED IN", Toast.LENGTH_SHORT).show()
-                goToLearningButton?.isVisible = true
-                goToDsEditingButton?.isVisible = true
+            lifecycleScope.launch {
+                val user = presenter.currentUser
+                if(user == null){
+                    Toast.makeText(applicationContext, "USER IS NULL", Toast.LENGTH_SHORT).show()
+                }
+                val isAdmin = user?.let { dbService.checkIsAdmin(it) }
+                if (user == null || !isAdmin!!) {
+                    goToLearningButton?.isVisible = true
+                    goToDsEditingButton?.isVisible = false
+                } else {
+                    goToLearningButton?.isVisible = true
+                    goToDsEditingButton?.isVisible = true
+                }
             }
         }
 
