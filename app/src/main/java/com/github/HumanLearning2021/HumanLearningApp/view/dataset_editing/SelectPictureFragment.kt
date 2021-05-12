@@ -70,9 +70,23 @@ class SelectPictureFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
+    private fun launchOpenPicture() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "image/*"
+        }
+        /** This method is deprecated. However, the [official documentation][1] recommends using it
+         * for this purpose as of 2021-05-12. We do not currently know how to avoid this.
+         *
+         * [1]:
+         * https://developer.android.com/training/data-storage/shared/documents-files#open-file
+         */
+        @Suppress("DEPRECATION")  // FIXME: use something non-deprecated
+        startActivityForResult(intent, RC_OPEN_PICTURE)
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress("DEPRECATION")  // FIXME: use something non-deprecated
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             RC_OPEN_PICTURE -> {
@@ -101,16 +115,6 @@ class SelectPictureFragment : Fragment() {
 
     private fun displayPicture(pic: Uri) {
         Glide.with(this).load(pic).into(binding.selectedPicturePreview)
-    }
-
-    private fun launchOpenPicture() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "image/*"
-
-        }
-        @Suppress("DEPRECATION")  // FIXME: use something non-deprecated
-        startActivityForResult(intent, RC_OPEN_PICTURE)
     }
 
     private fun onSelectCategoryButton() {

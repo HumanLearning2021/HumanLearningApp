@@ -40,7 +40,13 @@ class GoogleSignInWidget : Fragment() {
     }
 
     private fun onLoginButtonPress() {
-        @Suppress("DEPRECATION")  // FIXME: use something non-deprecated
+        /** This method is deprecated. However, the [official documentation][1] recommends using it
+         * for this purpose as of 2021-05-12. We do not currently know how to avoid this.
+         *
+         * [1]:
+         * https://firebase.google.com/docs/auth/android/google-signin#authenticate_with_firebase
+         */
+        @Suppress("DEPRECATION")
         startActivityForResult(
             presenter.intentForStartActivityForResult(),
             RC_SIGN_IN
@@ -49,7 +55,7 @@ class GoogleSignInWidget : Fragment() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress("DEPRECATION")  // FIXME: use something non-deprecated
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
