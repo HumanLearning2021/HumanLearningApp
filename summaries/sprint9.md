@@ -13,6 +13,11 @@ This week I integrate the image caching mechanism into the production app. This 
 In summary, I expected the caching integration to be non trivial despite all the code being ready in theory but not to encounter this many issues. My start to the week was not very good and my code reflects that which is why I did not finish my second task and rather to have something which is not very good I decided to take more time for my code reviews and improve the testing for the caching instead.
 
 ## Lachat, Niels Marco
+This week I worked on making the learning fragment work with datasets with an arbitrary number of categories. I started by refactoring the learning to avoid relying on the contentDescription to verify that a sorting is correct. 
+
+I could implement these changes and write tests for them, but I couldn't merge my PR, because some tests broke because I added datasets to the DummyDatabaseService. I didn't have the time fix the broken tests, but that will be my first task for the next sprint. 
+
+Overall, I spent around 11 hours on the project which is more than I should have, but I feel that the work I did was meaningful.
 
 
 ## Lenweiter, Martin
