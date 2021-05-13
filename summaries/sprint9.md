@@ -4,7 +4,7 @@
 
 
 ## Bettens, Louis
-
+This Sprint, I was tasked with implementing the back-end part of learner statistics. We can now record how well learners perform, but there is no UI to this yet. This took the expected amount of time and went smoothly.
 
 ## Jaakik, Marouane
 
