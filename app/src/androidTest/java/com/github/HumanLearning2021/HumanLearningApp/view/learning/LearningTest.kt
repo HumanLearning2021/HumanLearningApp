@@ -13,14 +13,14 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -39,9 +39,9 @@ class LearningTest {
 
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
-    private val datasetId = TestUtils.getFirstDataset(dbManagement).id
+    private val firstDatasetId = TestUtils.getFirstDataset(dbMgt).id
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
@@ -57,20 +57,51 @@ class LearningTest {
     fun setup() {
         mDevice = UiDevice.getInstance(getInstrumentation())
         hiltRule.inject()
-        launchFragment()
     }
 
     @Test
     fun allImageViewsAreDisplayed() {
+        launchFragment(firstDatasetId)
         assertDisplayed(R.id.learning_to_sort)
         assertDisplayed(R.id.learning_cat_0)
         assertDisplayed(R.id.learning_cat_1)
         assertDisplayed(R.id.learning_cat_2)
     }
 
-    /** TODO add test to verify that the LearningFragment can support datasets with
-     * 1, 2, 3 or more categories
-     */
+    private fun getDatasetWithNCategories(N: Int): Dataset {
+        require(N > 0)
+        val maybeDataset = runBlocking {
+            dbMgt.getDatasets().find { it.categories.size == N }
+        }
+        require(maybeDataset != null)
+        { "There has to be a dataset with $N categories in $dbMgt" }
+        return maybeDataset
+    }
+
+    @Test
+    fun onlyOneImageViewVisibleWhenOneCategoryInDataset() {
+        launchFragment(getDatasetWithNCategories(1).id)
+        assertNotDisplayed(R.id.learning_cat_0)
+        assertDisplayed(R.id.learning_cat_1)
+        assertNotDisplayed(R.id.learning_cat_2)
+    }
+
+    @Test
+    fun onlyTwoImageViewsVisibleWhenTwoCategoriesInDataset() {
+        launchFragment(getDatasetWithNCategories(2).id)
+        assertDisplayed(R.id.learning_cat_0)
+        assertDisplayed(R.id.learning_cat_1)
+        assertNotDisplayed(R.id.learning_cat_2)
+    }
+
+    @Test
+    fun allImageViewsVisibleWhenFourCategoriesInDataset() {
+        launchFragment(getDatasetWithNCategories(4).id)
+        assertDisplayed(R.id.learning_cat_0)
+        assertDisplayed(R.id.learning_cat_1)
+        assertDisplayed(R.id.learning_cat_2)
+    }
+
 
     /**
      * This test verifies that when dragging the picture to sort on each of the targets a certain
@@ -80,6 +111,7 @@ class LearningTest {
      */
     @Test
     fun atLeastOneCategoryChange() {
+        launchFragment(firstDatasetId)
         val imToSort = getImageToSort()
         val targetImages = getTargetImages()
         val nbAttempts = 10
@@ -120,6 +152,7 @@ class LearningTest {
      */
     @Test
     fun dragImageOnCorrectCategory() {
+        launchFragment(firstDatasetId)
         val imToSort = getImageToSort()
         val startDescr = imToSort.contentDescription
         val NUMBER_OF_ATTEMPTS = 50
@@ -147,6 +180,7 @@ class LearningTest {
      */
     @Test
     fun dragImageOnIncorrectCategory() {
+        launchFragment(firstDatasetId)
         val imToSort = getImageToSort()
         val startDescr = imToSort.contentDescription
         for (i in 0 until NUMBER_OF_CATEGORIES) {
@@ -178,6 +212,7 @@ class LearningTest {
      */
     @Test
     fun dragWithUnsuccessfulDrop() {
+        launchFragment(firstDatasetId)
         val imToSort = getImageToSort()
         val startDescr = imToSort.contentDescription
         // there shouldn't be a category on the topleft corner
@@ -199,7 +234,7 @@ class LearningTest {
         return mDevice.findObject(UiSelector().description(descr))
     }
 
-    private fun launchFragment() {
+    private fun launchFragment(datasetId: Id) {
         val args = bundleOf("datasetId" to datasetId, "learningMode" to LearningMode.PRESENTATION)
         launchFragmentInHiltContainer<LearningFragment>(args) {
             // intercepts the LearningFragment for use during tests

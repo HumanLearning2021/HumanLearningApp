@@ -33,7 +33,7 @@ class LearningFragment : Fragment() {
      * This stores the image views on which the representatives of the target categories are displayed
      */
     private lateinit var targetImageViews: List<ImageView>
-    
+
     lateinit var learningPresenter: LearningPresenter
 
     @Inject
@@ -91,8 +91,8 @@ class LearningFragment : Fragment() {
                     listOf(learningCat1)
                 }
                 2 -> {
-                    makeInvisible(listOf(learningCat0))
-                    listOf(learningCat1, learningCat2)
+                    makeInvisible(listOf(learningCat2))
+                    listOf(learningCat0, learningCat1)
                 }
                 else -> listOf(learningCat0, learningCat1, learningCat2)
             }

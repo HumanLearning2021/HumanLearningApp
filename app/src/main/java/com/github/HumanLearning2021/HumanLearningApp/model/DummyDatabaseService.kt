@@ -11,6 +11,9 @@ import java.util.*
  */
 class DummyDatabaseService internal constructor() : DatabaseService {
     private val fork = DummyCategory("Fork", "Fork")
+
+    // fork2 allows us to have a dataset with 4 categories without needing a new test picture
+    private val fork2 = DummyCategory("Fork2", "Fork2")
     private val knife = DummyCategory("Knife", "Knife")
     private val spoon = DummyCategory("Spoon", "Spoon")
 
@@ -50,13 +53,22 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         mutableSetOf(forkPic, knifePic, spoonPic)
     private val categories: MutableSet<DummyCategory> = mutableSetOf(fork, knife, spoon)
     private val datasets: MutableSet<DummyDataset> =
-        mutableSetOf(DummyDataset("kitchen utensils", "kitchen utensils", categories))
+        mutableSetOf(
+            DummyDataset("kitchen utensils", "kitchen utensils", categories),
+            DummyDataset("one category", "one category", setOf(fork)),
+            DummyDataset("two categories", "two categories", setOf(fork, knife)),
+            DummyDataset(
+                "four categories", "four categories",
+                setOf(fork, knife, spoon, fork2)
+            ),
+        )
     private val representativePictures: MutableMap<String, CategorizedPicture> = mutableMapOf()
     private val users = mutableMapOf<User.Id, User>()
     private val statistics = mutableMapOf<Statistic.Id, Statistic>()
 
     init {
         representativePictures["Fork"] = forkRepPic
+        representativePictures["Fork2"] = forkRepPic
         representativePictures["Knife"] = knifeRepPic
         representativePictures["Spoon"] = spoonRepPic
     }
