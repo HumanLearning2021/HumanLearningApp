@@ -100,7 +100,7 @@ class LearningFragment : Fragment() {
     }
 
     /**
-     * TODO
+     * Sets the event listeners for the image to sort and the target image views
      */
     private fun setEventListeners() = with(binding) {
         learningToSort.setOnTouchListener { e, v -> onImageToSortTouched(e, v) }
@@ -194,7 +194,7 @@ class LearningFragment : Fragment() {
     }
 
     /**
-     * TODO
+     * Callback triggered when the image view holding the image to sort is touched.
      */
     private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
         return when (event.action) {
@@ -212,7 +212,13 @@ class LearningFragment : Fragment() {
     }
 
     companion object {
+        /**
+         * Set the opacity of the given view and force it to be redrawn
+         * @param v The view whose opacity will be set
+         * @param opacity The new opacity. Has to be in [0,1]
+         */
         private fun setOpacity(v: View, opacity: Float) {
+            require(opacity in 0.0f..1.0f)
             v.alpha = opacity
             v.invalidate()
         }
