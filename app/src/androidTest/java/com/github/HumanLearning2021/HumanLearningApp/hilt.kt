@@ -5,7 +5,9 @@ import androidx.room.Room
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,8 +47,16 @@ object DatabaseServiceTestModule {
     @Provides
     fun provideDemoDatabase(
         @ApplicationContext context: Context,
-        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement
-    ) = DatabaseServiceModule.provideOfflineDemoService(context, uDb)
+        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
+        @RoomDatabase room: RoomOfflineDatabase,
+    ) = DatabaseServiceModule.provideOfflineDemoService(context, uDb, room)
+
+    @CachedDemoDatabase
+    @Provides
+    fun provideCacheDemoDatabase(
+        @DemoDatabase db: DatabaseService,
+        @DemoCachePictureRepository cache: PictureRepository
+    ): DatabaseService = CachedDatabaseService(db, cache)
 }
 
 @TestInstallIn(
@@ -78,10 +88,8 @@ object DatabaseManagementTestModule {
 
     @CachedDemoDatabase
     @Provides
-    fun provideCachedDemoDatabaseManagement(
-        @DemoDatabase db: DatabaseManagement,
-        @DemoCachePictureRepository repo: PictureRepository
-    ): DatabaseManagement = DatabaseManagementModule.provideCachedDemoService(db, repo)
+    fun provideCachedDemoDatabaseManagement(@DemoDatabase db: DatabaseService): DatabaseManagement =
+        DefaultDatabaseManagement(db)
 
     @ScratchDatabase
     @Provides

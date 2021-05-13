@@ -12,6 +12,7 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -41,6 +42,10 @@ class FirestoreCategorizedPictureTest {
     @BindValue
     @Demo2Database
     lateinit var demo2DbMgt: DatabaseManagement
+
+    @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
 
     @Inject
     @DemoDatabase

@@ -42,6 +42,10 @@ class OfflineDatabaseManagementTest {
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
+
+    @Inject
     @RoomDatabase
     lateinit var room: RoomOfflineDatabase
 
@@ -71,9 +75,9 @@ class OfflineDatabaseManagementTest {
     }
 
     @After
-    fun teardown() {
-        room.clearAllTables()
+    fun tearDown() = runBlocking {
         PictureRepository("demo", context).clear()
+        room.clearAllTables()
     }
 
     private fun getRandomString() = "${UUID.randomUUID()}"

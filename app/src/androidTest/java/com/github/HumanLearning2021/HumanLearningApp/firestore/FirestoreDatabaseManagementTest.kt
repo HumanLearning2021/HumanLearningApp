@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -36,6 +37,10 @@ class FirestoreDatabaseManagementTest {
     @BindValue
     @Demo2Database
     lateinit var demo2DbMgt: DatabaseManagement
+
+    @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
 
     @Inject
     @DemoDatabase

@@ -4,12 +4,12 @@ import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.room.*
 
 object OfflineConverters {
-    fun fromPicture(picture: RoomPicture, categoryDao: CategoryDao): OfflineCategorizedPicture {
+    suspend fun fromPicture(picture: RoomPicture, categoryDao: CategoryDao): OfflineCategorizedPicture {
         val cat = fromCategory(categoryDao.loadById(picture.categoryId)!!)
         return OfflineCategorizedPicture(picture.pictureId, cat, picture.uri)
     }
 
-    fun fromPicture(
+    suspend fun fromPicture(
         picture: RoomRepresentativePicture,
         categoryDao: CategoryDao
     ): OfflineCategorizedPicture {
