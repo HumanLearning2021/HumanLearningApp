@@ -3,7 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.offline
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 
 /**
- * Decorator for a DatabaseManagement which adds caching for the pictures
+ * Decorator for a DatabaseService which adds caching for the pictures
  *
  * @property db: database management to decorate
  * @property cache: PictureStorage of the cache
