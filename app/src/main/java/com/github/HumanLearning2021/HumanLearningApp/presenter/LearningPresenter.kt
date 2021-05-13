@@ -33,7 +33,7 @@ class LearningPresenter(
     /**
      * Underlying model for the learning
      */
-    private val learningModel = LearningModel(dataset)
+    val learningModel = LearningModel(dataset)
 
 
     /**

@@ -51,6 +51,8 @@ class LearningTest {
 
     lateinit var mDevice: UiDevice
 
+    lateinit var learningFragment: LearningFragment
+
     @Before
     fun setup() {
         mDevice = UiDevice.getInstance(getInstrumentation())
@@ -66,6 +68,56 @@ class LearningTest {
         assertDisplayed(R.id.learning_cat_2)
     }
 
+    /** TODO add test to verify that the LearningFragment can support datasets with
+     * 1, 2, 3 or more categories
+     */
+
+    /**
+     * This test verifies that when dragging the picture to sort on each of the targets a certain
+     * number of times (eg. 10), the category changed at least once. This test DOES NOT use
+     * contentDescription to do verifications, but it is less precise than the other tests because
+     * it cannot select the correct (or incorrect) target, so it has to try them all in succession.
+     */
+    @Test
+    fun atLeastOneCategoryChange() {
+        val imToSort = getImageToSort()
+        val targetImages = getTargetImages()
+        val nbAttempts = 10
+        var foundChange = false
+        for (i in 1..nbAttempts) {
+            // try all targets in succession
+            for (target in targetImages) {
+                val catBefore = getCurrentCategory()
+                imToSort.dragTo(target, NUMBER_OF_DRAG_STEPS)
+                val catAfter = getCurrentCategory()
+                if (catBefore != catAfter) {
+                    foundChange = true
+                    break
+                }
+            }
+            if (foundChange) break
+        }
+        assert(foundChange) {
+            "There was no change of category even after dragging the " +
+                    "image to sort $nbAttempts times on each target."
+        }
+    }
+
+    private fun getCurrentCategory() =
+        learningFragment.learningPresenter.learningModel.getCurrentCategory()
+
+    private fun getTargetImages(): List<UiObject> =
+        (0 until NUMBER_OF_CATEGORIES).map {
+            getImageInstance(it)
+        }
+
+
+    /**
+     * WARNING: this test relies on the fact that the contentDescription of the ImageViews
+     * on the learningFragment corresponds to the name of the category displayed on it.
+     * I (Niels) haven't found another way to select the correct UiObject as drag target, using
+     * UiAutomation.
+     */
     @Test
     fun dragImageOnCorrectCategory() {
         val imToSort = getImageToSort()
@@ -73,7 +125,7 @@ class LearningTest {
         val NUMBER_OF_ATTEMPTS = 50
         var foundImageChange = false
         // tries drag and drop NUMBER_OF_ATTEMPTS times until there is a change in the image to sort
-        // (change in description)
+        // (change in category)
         // prob to have the same color NUMBER_OF_ATTEMPTS (eg 100) times in a row with a working UI is
         // P = (1/NUMBER_OF_CATEGORIES)^NUMBER_OF_ATTEMPTS (eg (1/3)^100, aka very small)
         for (i in 1..NUMBER_OF_ATTEMPTS) {
@@ -87,6 +139,12 @@ class LearningTest {
         assertThat(foundImageChange, `is`(true))
     }
 
+    /**
+     * WARNING: this test relies on the fact that the contentDescription of the ImageViews
+     * on the learningFragment corresponds to the name of the category displayed on it.
+     * I (Niels) haven't found another way to select the correct UiObject as drag target, using
+     * UiAutomation.
+     */
     @Test
     fun dragImageOnIncorrectCategory() {
         val imToSort = getImageToSort()
@@ -112,6 +170,11 @@ class LearningTest {
      * ACTION_DRAG_EXITED will never get triggered and thus decrease branch coverage.
      * If anyone has a smarter idea to trigger the ACTION_DRAG_EXITED without the aforementioned
      * caveats, I'll be more than happy to hear it.
+     *
+     * WARNING: this test relies on the fact that the contentDescription of the ImageViews
+     * on the learningFragment corresponds to the name of the category displayed on it.
+     * I (Niels) haven't found another way to select the correct UiObject as drag target, using
+     * UiAutomation.
      */
     @Test
     fun dragWithUnsuccessfulDrop() {
@@ -139,6 +202,9 @@ class LearningTest {
     private fun launchFragment() {
         val args = bundleOf("datasetId" to datasetId, "learningMode" to LearningMode.PRESENTATION)
         launchFragmentInHiltContainer<LearningFragment>(args) {
+            // intercepts the LearningFragment for use during tests
+            // I am quite surprised that this works, but I am very happy that it does
+            learningFragment = this
             Navigation.setViewNavController(requireView(), navController)
         }
     }

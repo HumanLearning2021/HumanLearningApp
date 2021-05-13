@@ -33,8 +33,7 @@ class LearningFragment : Fragment() {
      * This stores the image views on which the representatives of the target categories are displayed
      */
     private lateinit var targetImageViews: List<ImageView>
-
-
+    
     lateinit var learningPresenter: LearningPresenter
 
     @Inject
