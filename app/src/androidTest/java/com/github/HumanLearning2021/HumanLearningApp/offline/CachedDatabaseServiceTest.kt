@@ -1,9 +1,11 @@
 package com.github.HumanLearning2021.HumanLearningApp.offline
 
+import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -36,6 +38,10 @@ class CachedDatabaseServiceTest {
     @BindValue
     @Demo2Database
     lateinit var demo2DbMgt: DatabaseManagement
+
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
 
     @Inject
     @CachedDemoDatabase
@@ -100,5 +106,28 @@ class CachedDatabaseServiceTest {
         assumeThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
         val pic2 = demoInterface.getPicture(pic.id)
         assertThat(pic2, not(equalTo(null)))
+    }
+
+    @Test
+    fun retrieveRepresentativePictureTwiceWorks() = runBlocking {
+        val pic1 = demoInterface.getRepresentativePicture(appleCategoryId)
+        assumeThat(pic1, not(equalTo(null)))
+        val pic2 = demoInterface.getRepresentativePicture(appleCategoryId)
+        assertThat(pic2!!.id, equalTo(pic1!!.id))
+    }
+
+    @Test
+    fun getPictureTwiceWorksWithCacheClearedInBetween() = runBlocking {
+        val id = demoInterface.getPictureIds(demoInterface.getCategory(appleCategoryId)!!).random()
+        val pic1 = demoInterface.getPicture(id)
+        assumeThat(pic1, not(equalTo(null)))
+        assumeThat(
+            context.cacheDir.listFiles()?.toList()?.forEach { file -> file.delete() }, not(
+                equalTo(null)
+            )
+        )
+        val pic2 = demoInterface.getPicture(id)
+        assumeThat(pic2, not(equalTo(null)))
+        assertThat(pic1!!.id, equalTo(pic2!!.id))
     }
 }
