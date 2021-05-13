@@ -7,6 +7,7 @@
 This Sprint, I was tasked with implementing the back-end part of learner statistics. We can now record how well learners perform, but there is no UI to this yet. This took the expected amount of time and went smoothly.
 
 ## Jaakik, Marouane
+This Sprint, I have implemented the Back-end changes to account for User vs Learner Modes. Implementation went smoothly, I have just struggled to get the coverage to the required threshold to merge. I hope to do This by the end of the Weekend.  I have worked together with Nicolas who who implemented the UI aspect of it, which was done and ready to merge but since it is dependent on mine, this couldn't be done. I also got Help from Louis and Jonas to better understand the backend code. All in All good week.
 
 ## Konrad, Jonas Franz
 This week I integrate the image caching mechanism into the production app. This took much longer than expected because of changes made to the app since the caching methods were implemented. There also was an issue with IO operations being executed on the main thread that I did not discover earlier but it is now merged. I also started doing a bit of refactoring in response to the feedback we received (pr still a draft). My other task was to implement the ability to download a database but the implementation I made is quite honestly very bad which is why I left it as a draft pr.
