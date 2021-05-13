@@ -15,6 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 import java.util.*
+import kotlin.random.Random.Default.nextBoolean
 
 @RunWith(AndroidJUnit4::class)
 class RoomUserTest {
@@ -36,14 +37,25 @@ class RoomUserTest {
 
     private fun getRandomString() = "${UUID.randomUUID()}"
     private fun getRandomUserType() = User.Type.values().toList().shuffled().first()
-    private fun getRandomUser() =
-        RoomUser(getRandomString(), getRandomUserType(), getRandomString(), getRandomString(),false)
+    private fun getRandomUser() = RoomUser(getRandomString(), getRandomUserType(), getRandomString(), getRandomString(),nextBoolean())
 
     @Test
     fun insertThenLoadBasicUser() {
         val id = getRandomString()
         val type = getRandomUserType()
         val testUser = RoomUser(id, type, null, null,false)
+
+        userDao.insertAll(testUser)
+
+        val res = userDao.loadAll().first()
+
+        assertThat(res, equalTo(testUser))
+    }
+    @Test
+    fun insertThenLoadBasicUserAdmin() {
+        val id = getRandomString()
+        val type = getRandomUserType()
+        val testUser = RoomUser(id, type, null, null,true)
 
         userDao.insertAll(testUser)
 
@@ -155,6 +167,25 @@ class RoomUserTest {
         val toUpdateUser = testUsers.random()
         val updatedUser =
             RoomUser(toUpdateUser.userId, toUpdateUser.type, getRandomString(), toUpdateUser.email,false)
+        userDao.update(updatedUser)
+        val res = userDao.loadAll()
+
+        assertThat(res, hasSize(numberOfUsers))
+        assertThat(res, not(contains(toUpdateUser)))
+        assertThat(userDao.load(updatedUser.userId, updatedUser.type), equalTo(updatedUser))
+    }
+    @Test
+    fun updatingUserAdminWorks() {
+        val numberOfUsers = (1..10).random()
+        val testUsers = mutableListOf<RoomUser>()
+        for (i in 0 until numberOfUsers) {
+            testUsers.add(getRandomUser())
+        }
+
+        userDao.insertAll(*testUsers.toTypedArray())
+        val toUpdateUser = testUsers.random()
+        val updatedUser =
+            RoomUser(toUpdateUser.userId, toUpdateUser.type, getRandomString(), toUpdateUser.email,true)
         userDao.update(updatedUser)
         val res = userDao.loadAll()
 
