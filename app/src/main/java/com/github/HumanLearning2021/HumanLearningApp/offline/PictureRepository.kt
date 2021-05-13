@@ -2,9 +2,9 @@ package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.content.Context
 import android.net.Uri
-import androidx.camera.core.internal.IoConfig
 import androidx.core.net.toUri
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -38,7 +38,7 @@ open class PictureRepository(
     }
 
     @Throws(IllegalArgumentException::class)
-    suspend fun deletePicture(id: String): Boolean {
+    suspend fun deletePicture(id: Id): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 File("${folder.path}${File.pathSeparator}$id").delete()
@@ -48,7 +48,7 @@ open class PictureRepository(
         }
     }
 
-    suspend fun retrievePicture(id: String): Uri? {
+    suspend fun retrievePicture(id: Id): Uri? {
         val file = File(folder, id)
         return withContext(Dispatchers.IO) {
             if (file.exists()) {

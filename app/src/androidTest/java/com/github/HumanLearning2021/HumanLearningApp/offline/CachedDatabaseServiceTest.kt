@@ -88,10 +88,8 @@ class CachedDatabaseServiceTest {
 
     @Test
     fun getRepresentativePicturePutsItIntoCache() = runBlocking {
-        assumeThat((demoInterface as CachedDatabaseService).representativePictures.keys, not(hasItem(appleCategoryId)))
         val pic = demoInterface.getRepresentativePicture(appleCategoryId)
         assumeThat(pic, not(equalTo(null)))
-        assertThat((demoInterface as CachedDatabaseService).representativePictures.keys, hasItem(appleCategoryId))
         assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
     }
 

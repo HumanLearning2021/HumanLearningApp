@@ -1,6 +1,9 @@
 package com.github.HumanLearning2021.HumanLearningApp.offline
 
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
+import com.github.HumanLearning2021.HumanLearningApp.model.Converters
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 
 /**
  * Decorator for a DatabaseManagement which adds caching for the pictures
@@ -14,7 +17,6 @@ class CachedDatabaseService internal constructor(
 ) : DatabaseService by db {
 
     internal val cachedPictures: MutableMap<Id, CategorizedPicture> = mutableMapOf()
-    internal val representativePictures: MutableMap<Id, Id> = mutableMapOf()
 
     override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
         val uri = cache.retrievePicture(pictureId)
@@ -32,12 +34,10 @@ class CachedDatabaseService internal constructor(
     }
 
     override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? {
-        val picId = representativePictures[categoryId]
-        return picId?.let { id ->
+        return db.getRepresentativePicture(categoryId)?.id?.let { id ->
             getRepresentativePictureFromCache(id)
         } ?: let {
             db.getRepresentativePicture(categoryId)?.let { cPic ->
-                representativePictures[categoryId] = cPic.id
                 putIntoCache(cPic)
             }
         }
