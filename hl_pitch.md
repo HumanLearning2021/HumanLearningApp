@@ -8,7 +8,7 @@ Predownload an image if the demo is done on an emulator, then add this image dur
 
 ## Script
 
-Verbal communication is central to human interaction. This means that if you can't communicate verbally, it is difficult integrate well into society. People with mental disabilities can have problems communicating verbally, which is why they often use picture based communication.
+Verbal communication is central to human interaction. This means that if you can't communicate verbally, it is difficult to integrate well into society. People with mental disabilities can have problems communicating verbally, which is why they often use picture based communication.
 
 The problem now is that the same people often do not have good abstraction capabilites. If they show you a picture of a fork and you give them a fork that does not look like the fork in the picture they do not recognize it as being what they requested.
 
