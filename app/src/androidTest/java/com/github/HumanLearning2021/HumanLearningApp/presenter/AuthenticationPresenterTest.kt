@@ -31,7 +31,7 @@ class AuthenticationPresenterTest {
     @Test
     fun test_signInAnonymously() = runBlocking {
         val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
-        presenter.onSuccessfulLogin()
+        presenter.onSuccessfulLogin(false)
         val user = presenter.currentUser
         assertThat(user, notNullValue())
         user!!
