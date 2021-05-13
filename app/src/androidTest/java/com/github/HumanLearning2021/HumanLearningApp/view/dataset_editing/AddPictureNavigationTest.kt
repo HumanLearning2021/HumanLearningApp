@@ -87,7 +87,7 @@ class AddPictureNavigationTest {
     fun navigateToChoose() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
-            presenter.onSuccessfulLogin()
+            presenter.onSuccessfulLogin(true)
             onView(withId(R.id.startLearningButton)).perform(click())
             navigateToAddPictureActivity()
             onView(withId(R.id.select_existing_picture)).perform(click())
@@ -99,7 +99,7 @@ class AddPictureNavigationTest {
     fun navigateToCamera() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
-            presenter.onSuccessfulLogin()
+            presenter.onSuccessfulLogin(true)
             onView(withId(R.id.startLearningButton)).perform(click())
             navigateToAddPictureActivity()
             Espresso.onView(ViewMatchers.withId(R.id.use_camera))

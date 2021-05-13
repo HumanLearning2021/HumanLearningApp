@@ -172,7 +172,7 @@ class DisplayDatasetActivityTest {
     fun clickOnMenuModifyCategoriesWorks() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
-            presenter.onSuccessfulLogin()
+            presenter.onSuccessfulLogin(true)
             onView(withId(R.id.startLearningButton)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
@@ -189,7 +189,7 @@ class DisplayDatasetActivityTest {
     fun clickOnMenuAddNewPictureWorks() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
-            presenter.onSuccessfulLogin()
+            presenter.onSuccessfulLogin(true)
             onView(withId(R.id.startLearningButton)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
@@ -222,7 +222,7 @@ class DisplayDatasetActivityTest {
     fun clickOnMenuDeleteDatasetWorks() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
-            presenter.onSuccessfulLogin()
+            presenter.onSuccessfulLogin(true)
             onView(withId(R.id.startLearningButton)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
@@ -252,7 +252,7 @@ class DisplayDatasetActivityTest {
     fun clickOnMenuButNotOnButtonClosesMenu() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
-            presenter.onSuccessfulLogin()
+            presenter.onSuccessfulLogin(true)
             onView(withId(R.id.startLearningButton)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)

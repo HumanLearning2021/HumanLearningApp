@@ -77,7 +77,7 @@ class GeneralNavigationTest {
     fun navigateToDisplayDatasetAndThenNavigateUpGoesToDatasetsOverview() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
-            presenter.onSuccessfulLogin()
+            presenter.onSuccessfulLogin(true)
             onView(withId(R.id.startLearningButton)).perform(click())
             navigateToDisplayDataset()
             assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
@@ -90,7 +90,7 @@ class GeneralNavigationTest {
     fun createDatasetAndNavigateUpGoesToDatasetsOverview() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
-            presenter.onSuccessfulLogin()
+            presenter.onSuccessfulLogin(true)
             onView(withId(R.id.startLearningButton)).perform(click())
             onView(withId(R.id.datasetsOverviewFragment)).perform(click())
             onView(withId(R.id.createDatasetButton)).perform(click())

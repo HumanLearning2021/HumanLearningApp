@@ -62,9 +62,6 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, _, _ ->
             lifecycleScope.launch {
                 val user = presenter.currentUser
-                if(user == null){
-                    Toast.makeText(applicationContext, "USER IS NULL", Toast.LENGTH_SHORT).show()
-                }
                 val isAdmin = user?.let { dbService.checkIsAdmin(it) }
                 if (user == null || !isAdmin!!) {
                     goToLearningButton?.isVisible = true
