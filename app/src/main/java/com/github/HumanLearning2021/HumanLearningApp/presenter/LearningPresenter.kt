@@ -4,16 +4,14 @@ import android.app.Activity
 import android.util.Log
 import android.widget.ImageView
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import javax.inject.Inject
 
 class LearningPresenter @Inject constructor(
     @Demo2Database
-    private val dbMgt: DatabaseManagement
+    private val dbMgt: DatabaseManagement,
+    private val auth: AuthenticationPresenter,
 ) {
     // may be set by the view
     var learningMode = LearningMode.PRESENTATION
@@ -72,4 +70,9 @@ class LearningPresenter @Inject constructor(
     suspend fun displayTargetPicture(activity: Activity, view: ImageView, category: Category) {
         dbMgt.getRepresentativePicture(category.id)?.displayOn(activity, view)
     }
+
+    suspend fun saveEvent(event: Event) =
+        auth.currentUser?.let { user ->
+            dbMgt.countOccurrence(user.id, dataset.id, event)
+        }
 }

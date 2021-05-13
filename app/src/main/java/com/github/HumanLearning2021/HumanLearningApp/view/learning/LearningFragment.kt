@@ -16,10 +16,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -209,9 +206,13 @@ class LearningFragment : Fragment() {
                         it,
                     )
                 }
+                learningPresenter.saveEvent(Event.SUCCESS)
             }
         } else {
             audioFeedback.startIncorrectFeedback()
+            lifecycleScope.launch {
+                learningPresenter.saveEvent(Event.MISTAKE)
+            }
         }
         return res
     }
