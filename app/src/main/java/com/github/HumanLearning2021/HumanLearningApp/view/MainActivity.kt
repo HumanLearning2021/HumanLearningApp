@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     @Inject
-    lateinit var presenter: AuthenticationPresenter
+    lateinit var authPresenter: AuthenticationPresenter
     @Inject
     @Demo2Database
     lateinit var dbService: DatabaseService
@@ -56,19 +56,15 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
         bottomNav.setupWithNavController(navController)
-        val goToLearningButton = bottomNav?.menu?.get(0)
-        val goToDsEditingButton = bottomNav?.menu?.get(1)
 
+        val goToDsEditingButton = bottomNav?.menu?.get(1)
         navController.addOnDestinationChangedListener { _, _, _ ->
             lifecycleScope.launch {
-                val user = presenter.currentUser
+                goToDsEditingButton?.isVisible = false
+                val user = authPresenter.currentUser
                 val isAdmin = user?.let { dbService.checkIsAdmin(it) }
-                if (user == null || !isAdmin!!) {
-                    goToLearningButton?.isVisible = true
-                    goToDsEditingButton?.isVisible = false
-                } else {
-                    goToLearningButton?.isVisible = true
-                    goToDsEditingButton?.isVisible = true
+                isAdmin?.let{
+                    goToDsEditingButton?.isVisible = it
                 }
             }
         }

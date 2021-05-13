@@ -53,7 +53,7 @@ class AddPictureNavigationTest {
     )
 
     @BindValue
-    val presenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
+    val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     @BindValue
     @Demo2Database
@@ -87,7 +87,7 @@ class AddPictureNavigationTest {
     fun navigateToChoose() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
-            presenter.onSuccessfulLogin(true)
+            authPresenter.onSuccessfulLogin(true)
             onView(withId(R.id.startLearningButton)).perform(click())
             navigateToAddPictureActivity()
             onView(withId(R.id.select_existing_picture)).perform(click())
@@ -99,7 +99,7 @@ class AddPictureNavigationTest {
     fun navigateToCamera() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
-            presenter.onSuccessfulLogin(true)
+            authPresenter.onSuccessfulLogin(true)
             onView(withId(R.id.startLearningButton)).perform(click())
             navigateToAddPictureActivity()
             Espresso.onView(ViewMatchers.withId(R.id.use_camera))
@@ -126,7 +126,7 @@ class AddPictureNavigationTest {
 
     private fun assertCurrentFragmentIsCorrect(expected: Int) {
         activityScenarioRule.scenario.onActivity {
-            var currentFragmentContainer =
+            val currentFragmentContainer =
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
             val currentFragment = currentFragmentContainer?.findNavController()?.currentDestination
             assert(currentFragment?.id == expected)
