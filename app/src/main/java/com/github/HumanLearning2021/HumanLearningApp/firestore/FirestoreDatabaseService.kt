@@ -317,7 +317,6 @@ class FirestoreDatabaseService internal constructor(
         val type = User.Type.FIREBASE
         val documentRef = users.document("$uid@$type")
         val data = UserSchema().apply {
-            isAdmin = adminAccess
         }
         documentRef.set(data).await()
         return documentRef.get().await().toObject(UserSchema::class.java)!!.toPublic()

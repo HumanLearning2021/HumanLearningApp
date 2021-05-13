@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.firebase.ui.auth.IdpResponse
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentGoogleSignInBinding
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,6 +25,7 @@ import javax.inject.Inject
 class GoogleSignInWidget : Fragment() {
     @Inject
     lateinit var presenter: AuthenticationPresenter
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,9 +37,12 @@ class GoogleSignInWidget : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        isAdmin = view.findViewById<CheckBox>(R.id.checkBox).isChecked
         view.findViewById<Button>(R.id.loginButton).setOnClickListener {
             onLoginButtonPress()
+        }
+
+        view.findViewById<Button>(R.id.checkBox).setOnClickListener {
+            isAdmin = view.findViewById<CheckBox>(R.id.checkBox).isChecked
         }
 
         updateUi()
