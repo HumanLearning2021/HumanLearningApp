@@ -24,7 +24,6 @@ class GoogleSignInWidget : Fragment() {
     @Inject
     lateinit var presenter: AuthenticationPresenter
 
-    var isAdmin = false
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,8 +34,8 @@ class GoogleSignInWidget : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        isAdmin = view.findViewById<CheckBox>(R.id.checkBox).isChecked
         view.findViewById<Button>(R.id.loginButton).setOnClickListener {
-            isAdmin = view.findViewById<CheckBox>(R.id.checkBox).isChecked
             onLoginButtonPress()
         }
 
@@ -98,5 +97,6 @@ class GoogleSignInWidget : Fragment() {
 
     companion object {
         val RC_SIGN_IN: Int = "firebase auth".hashCode()
+        var isAdmin = false
     }
 }

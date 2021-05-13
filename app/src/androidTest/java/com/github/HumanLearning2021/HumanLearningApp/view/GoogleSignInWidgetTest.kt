@@ -1,7 +1,12 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
+import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
@@ -10,6 +15,9 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -44,4 +52,23 @@ class GoogleSignInWidgetTest {
             onActivityResult(GoogleSignInWidget.RC_SIGN_IN, 0, null)
         }
     }
+
+    @Test
+    fun checkBoxUiTest() {
+        onView(withId(R.id.checkbox)).check(matches(not(isChecked())));
+        onView(withId(R.id.checkBox)).perform(click()).check(matches(isChecked()))
+        onView(withId(R.id.checkBox)).perform(click()).check(matches(not(isChecked())))
+    }
+
+    @Test
+    fun checkedBoxSetAdminTrue(){
+        onView(withId(R.id.checkBox)).perform(click())
+        assertThat(GoogleSignInWidget.isAdmin,equalTo(true))
+    }
+
+    @Test
+    fun uncheckedBoxSetAdminfalse(){
+        assertThat(GoogleSignInWidget.isAdmin,equalTo(false))
+    }
+
 }

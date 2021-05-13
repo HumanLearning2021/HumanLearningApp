@@ -312,7 +312,7 @@ class FirestoreDatabaseService internal constructor(
     }
 
     //TODO Optimize transaction to db
-    override suspend fun setAdminAccess(firebaseUser: FirebaseUser ,adminAccess : Boolean): User {
+    override suspend fun setAdminAccess(firebaseUser: FirebaseUser, adminAccess: Boolean): User {
         val uid = firebaseUser.uid
         val type = User.Type.FIREBASE
         val documentRef = users.document("$uid@$type")
@@ -324,7 +324,7 @@ class FirestoreDatabaseService internal constructor(
     }
 
     override suspend fun checkIsAdmin(fireStoreUser: User): Boolean {
-        return fireStoreUser!!.isAdmin
+        return fireStoreUser.isAdmin
     }
 
     override suspend fun getUser(type: User.Type, uid: String): FirestoreUser? {
