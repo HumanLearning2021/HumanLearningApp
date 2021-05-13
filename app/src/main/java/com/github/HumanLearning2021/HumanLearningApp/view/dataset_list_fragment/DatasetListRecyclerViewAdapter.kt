@@ -13,6 +13,8 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DatasetListRecyclerViewAdapter(
     private val hostActivity: Activity,
@@ -97,9 +99,9 @@ class DatasetListRecyclerViewAdapter(
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val filterPattern = constraint.toString().toLowerCase().trim()
+                val filterPattern = constraint.toString().toLowerCase(Locale.getDefault()).trim()
                 val filteredList = originalDatasetList.filter {
-                    it.name.toLowerCase().startsWith(filterPattern)
+                    it.name.toLowerCase(Locale.getDefault()).startsWith(filterPattern)
                 }
                 return FilterResults().apply { values = filteredList }
             }
