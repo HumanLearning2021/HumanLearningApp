@@ -2,10 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.firebase.ui.auth.AuthUI
-import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.Event
-import com.github.HumanLearning2021.HumanLearningApp.model.id
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -26,7 +23,8 @@ class LearningPresenterTest {
     val presenter = LearningPresenter(
         dbMgt, LearningMode.PRESENTATION,
         dataset,
-        authPres
+        authPres,
+	NoopImageDisplayer,
     )
 
     @Before

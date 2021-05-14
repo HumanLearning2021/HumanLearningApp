@@ -42,6 +42,9 @@ class DisplayImageSetFragment : Fragment() {
 
     lateinit var dBManagement: DatabaseManagement
 
+    @Inject
+    lateinit var imageDisplayer: ImageDisplayer
+
     private var categorizedPicturesList = setOf<CategorizedPicture>()
     private var categorizedPicturesSelectedList = setOf<CategorizedPicture>()
     private var numberOfSelectedPictures = 0
@@ -96,7 +99,6 @@ class DisplayImageSetFragment : Fragment() {
                 displayImageSetAdapter =
                     DisplayImageSetAdapter(
                         categorizedPicturesList,
-                        parentActivity
                     )
 
                 parentActivity.findViewById<GridView>(R.id.display_image_set_imagesGridView).adapter =
@@ -125,15 +127,14 @@ class DisplayImageSetFragment : Fragment() {
     }
 
 
-    private class DisplayImageSetAdapter(
+    private inner class DisplayImageSetAdapter(
         pictures: Set<CategorizedPicture>,
-        private val context: Activity
     ) : BaseAdapter() {
 
         var adapterPictures = pictures
 
         private var layoutInflater =
-            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            parentActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         override fun getView(position: Int, view0: View?, viewGroup: ViewGroup?): View {
             val view =
@@ -141,7 +142,9 @@ class DisplayImageSetFragment : Fragment() {
 
             val imageView = view.findViewById<ImageView>(R.id.image_item_imageView)
 
-            adapterPictures.elementAt(position).displayOn(context, imageView as ImageView)
+            with(imageDisplayer) {
+                adapterPictures.elementAt(position).displayOn(imageView as ImageView)
+            }
 
             return view
         }

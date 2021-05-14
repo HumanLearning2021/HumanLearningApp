@@ -3,10 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 import android.app.Activity
 import android.util.Log
 import android.widget.ImageView
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.Event
-import com.github.HumanLearning2021.HumanLearningApp.model.id
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.model.learning.LearningModel
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 
@@ -28,6 +25,7 @@ class LearningPresenter(
     private val learningMode: LearningMode,
     private val dataset: Dataset,
     private val auth: AuthenticationPresenter,
+    private val imageDisplayer: ImageDisplayer,
 ) {
 
     /**
@@ -54,7 +52,9 @@ class LearningPresenter(
 
         learningModel.updateForNextSorting(targetViews).forEach {
             val (iv, cat) = it
-            dbMgt.getRepresentativePicture(cat.id)?.displayOn(activity, iv)
+            with(imageDisplayer) {
+                dbMgt.getRepresentativePicture(cat.id)?.displayOn(iv)
+            }
             // set new content description. ONLY FOR ACCESSIBILITY REASONS, NOT FOR FUNCTIONALITY
             iv.contentDescription = cat.name
         }
@@ -63,6 +63,8 @@ class LearningPresenter(
         // category amongst those that are displayed
         updatePictureToSort(activity, sourceView)
     }
+
+    private var previousCategory: Category? = null
 
     /**
      * Picks a random picture from the dataset, and displays it on the given view
@@ -87,13 +89,46 @@ class LearningPresenter(
         }
 
         if (nextPicture != null) {
-            nextPicture.displayOn(activity, view)
+            with(imageDisplayer) {
+                nextPicture.displayOn(view)
+            }
         } else {
             Log.e(this::class.java.name, "There is no next picture to display")
         }
         // contentDescription only used for accessibility reasons
         view.contentDescription = currentCategory.name
         view.invalidate()
+    }
+
+    /**
+     * Returns a random category of the dataset, with the corresponding list of picture *ids*.
+     * The returned category is guaranteed to be different from the previousCategory
+     * The list of picture ids is guaranteed to ben non-empty
+     */
+    private suspend fun getRndCategoryWithPictureIds(): Pair<Category, List<Id>> {
+        var rndCat: Category?
+        var catPicsIds: List<Id>
+        do {
+            rndCat = dataset.categories.random()
+            catPicsIds = dbMgt.getPictureIds(rndCat)
+        } while (
+        // TODO(Niels) : risk of infinite loop if 2 categories in dataset or no category
+        //  with a picture. To fix
+            previousCategory == rndCat || catPicsIds.isEmpty()
+        )
+        previousCategory = rndCat!!
+        return Pair(rndCat, catPicsIds)
+    }
+
+    /**
+     * Displays the representative of the given category on the given ImageView
+     * @param view The ImageView on which the representative is going to be displayed
+     * @param category The category whose representative will be displayed
+     */
+    suspend fun displayTargetPicture(activity: Activity, view: ImageView, category: Category) {
+        with(imageDisplayer) {
+            dbMgt.getRepresentativePicture(category.id)?.displayOn(view)
+        }
     }
 
     suspend fun saveEvent(event: Event) =

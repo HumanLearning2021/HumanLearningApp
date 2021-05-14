@@ -33,6 +33,9 @@ class DisplayImageFragment : Fragment() {
 
     lateinit var dbManagement: DatabaseManagement
 
+    @Inject
+    lateinit var imageDisplayer: ImageDisplayer
+
     private var picture: CategorizedPicture? = null
     private lateinit var datasetId: Id
     private lateinit var category: Category
@@ -77,10 +80,9 @@ class DisplayImageFragment : Fragment() {
         datasetId = args.datasetId
         category = picture!!.category
         parentActivity.findViewById<TextView>(R.id.display_image_viewCategory).text = category.name
-        picture!!.displayOn(
-            parentActivity,
-            parentActivity.findViewById(R.id.display_image_viewImage)
-        )
+        with(imageDisplayer) {
+            picture!!.displayOn(parentActivity.findViewById(R.id.display_image_viewImage))
+        }
 
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }

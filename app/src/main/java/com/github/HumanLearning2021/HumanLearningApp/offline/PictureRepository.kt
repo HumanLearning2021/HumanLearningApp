@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.core.net.toUri
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.model.ImageDownloader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -16,13 +17,15 @@ open class PictureRepository(
     private val folder: File = context.getDir(dbName, Context.MODE_PRIVATE)
 ) {
 
+    private val imageDownloader = ImageDownloader(context)
+
     @Throws(Exception::class)
     suspend fun savePicture(picture: CategorizedPicture): Uri {
-        return withContext(Dispatchers.IO) {
-            val file = File(folder, picture.id)
-            picture.copyTo(context, file)
-            file.toUri()
+        val file = File(folder, picture.id)
+        with(imageDownloader) {
+            picture.downloadTo(file)
         }
+        return file.toUri()
     }
 
     @Throws(IllegalArgumentException::class)

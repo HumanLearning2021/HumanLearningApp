@@ -13,6 +13,7 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.ImageDisplayer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.atomic.AtomicBoolean
@@ -33,6 +34,9 @@ class DatasetListWidget : Fragment() {
     lateinit var dbName: String
 
     lateinit var dbMgt: DatabaseManagement
+
+    @Inject
+    lateinit var imageDisplayer: ImageDisplayer
 
     private val mutableSelectedDataset = SingleLiveData<Dataset>()
     private lateinit var adapter: DatasetListRecyclerViewAdapter
@@ -70,7 +74,7 @@ class DatasetListWidget : Fragment() {
             inflater.inflate(R.layout.fragment_dataset_list, container, false) as RecyclerView
         adapter = DatasetListRecyclerViewAdapter(
             lifecycleScope = lifecycleScope,
-            hostActivity = requireActivity(),
+            imageDisplayer = imageDisplayer,
             dbMgt = dbMgt,
         ) {
             mutableSelectedDataset.value = it

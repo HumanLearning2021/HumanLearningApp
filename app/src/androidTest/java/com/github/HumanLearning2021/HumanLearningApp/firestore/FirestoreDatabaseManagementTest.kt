@@ -293,7 +293,7 @@ class FirestoreDatabaseManagementTest {
                 FirestoreCategorizedPicture(
                     "${UUID.randomUUID()}",
                     fakeCategory,
-                    "url"
+                    Uri.EMPTY
                 )
             )
         }.fold({

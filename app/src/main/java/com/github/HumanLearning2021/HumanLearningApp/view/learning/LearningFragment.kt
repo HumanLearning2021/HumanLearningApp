@@ -59,6 +59,9 @@ class LearningFragment : Fragment() {
 
     lateinit var dbMgt: DatabaseManagement
 
+    @Inject
+    lateinit var imageDisplayer: ImageDisplayer
+
     private lateinit var parentActivity: Activity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +93,8 @@ class LearningFragment : Fragment() {
                 evaluationModel = EvaluationModel(dataset)
             }
             targetImageViews = updateTargetImageViews()
-            learningPresenter = LearningPresenter(dbMgt, args.learningMode, dataset, authPresenter)
+            learningPresenter =
+                LearningPresenter(dbMgt, args.learningMode, dataset, authPresenter, imageDisplayer)
             learningPresenter.updateForNextSorting(
                 parentActivity,
                 targetImageViews,

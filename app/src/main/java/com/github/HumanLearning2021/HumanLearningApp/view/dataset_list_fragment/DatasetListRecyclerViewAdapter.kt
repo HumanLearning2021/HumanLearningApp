@@ -1,6 +1,5 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment
 
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.ImageDisplayer
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
 class DatasetListRecyclerViewAdapter(
-    private val hostActivity: Activity,
+    private val imageDisplayer: ImageDisplayer,
     private val lifecycleScope: LifecycleCoroutineScope,
     private val dbMgt: DatabaseManagement,
     private val itemClickedCallback: (Dataset) -> Unit
@@ -75,9 +74,11 @@ class DatasetListRecyclerViewAdapter(
                 val repr2 = dbMgt.getRepresentativePicture(catList[2].id)
 
                 with(view) {
-                    repr0?.displayOn(hostActivity, findViewById(R.id.DatasetList_elt_im0))
-                    repr1?.displayOn(hostActivity, findViewById(R.id.DatasetList_elt_im1))
-                    repr2?.displayOn(hostActivity, findViewById(R.id.DatasetList_elt_im2))
+                    with(imageDisplayer) {
+                        repr0?.displayOn(findViewById(R.id.DatasetList_elt_im0))
+                        repr1?.displayOn(findViewById(R.id.DatasetList_elt_im1))
+                        repr2?.displayOn(findViewById(R.id.DatasetList_elt_im2))
+                    }
                 }
             }
         }
