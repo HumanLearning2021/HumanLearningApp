@@ -26,4 +26,10 @@ This week, I integrated the search functionality into our app. This allows to pe
 
 ## Vial, Nicolas
 This week I made the necessary changes to the interfaces to allow a separation between user and administrator.  There were fewer changes to make than I thought, so I worked a little less than usual this week. My task was dependent on Marouane's who was in charge of the backend, so we communicated a lot to agree on the model used. I thought I would have time to start writing the documentation for all dataset editing interfaces but I didn't find the time. I didn't have any problems except a problem of understanding about injections that Louis helped me to clarify.
+
 ## Overall Team: Lessons Learned
+This sprint, we accomplished a lot of useful work, although some of it could not be merged due to late discovered issues (low coverage, broken tests, ...).
+This is something we should improve by trying to test earlier, but it is certainly not an easy thing to do.
+
+Next sprint we should try to merge all the remaining PRs so that we satisfy the requirements, as well as address some of the issues noted by the code review. We will also need to implement the destabilization task, but it shouldn't be too difficult, given that we already did some preparatory work for it (allow learning on arbitrarily many categories, and add a mechanism to store statistics).
+
