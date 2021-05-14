@@ -1,30 +1,16 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
-import android.app.Activity
-import android.content.Context
+import android.net.Uri
 import android.os.Parcelable
-import android.widget.ImageView
-import java.io.File
+import kotlinx.parcelize.Parcelize
 
 /**
- * Interface representing a categorized picture
+ * Representation of a categorized picture
+ * @property id unique identifier of the picture
+ * @property category to which the picture is assigned
+ * @property picture location of the drawable
  */
-
-interface CategorizedPicture : Parcelable {
-    val id: Id
-    val category: Category
-
-    /**
-     * A function that allows to display this image on an ImageView
-     *
-     * @param activity the activity to which the ImageView belongs
-     *  @param imageView the ImageView on which to display the image
-     *
-     */
-    fun displayOn(activity: Activity, imageView: ImageView)
-
-    /**
-     * copy image data to a file.
-     */
-    fun copyTo(context: Context, dest: File)
-}
+@Parcelize
+data class CategorizedPicture(
+    val id: Id, val category: Category, val picture: Uri
+) : Parcelable

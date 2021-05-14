@@ -1,6 +1,5 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.net.Uri
@@ -40,6 +39,9 @@ class DisplayDatasetFragment : Fragment() {
     lateinit var dbName: String
 
     lateinit var dbManagement: DatabaseManagement
+
+    @Inject
+    lateinit var imageDisplayer: ImageDisplayer
 
     private val args: DisplayDatasetFragmentArgs by navArgs()
 
@@ -117,7 +119,6 @@ class DisplayDatasetFragment : Fragment() {
                 DisplayDatasetAdapter(
                     representativePictures,
                     categories,
-                    parentActivity
                 )
 
             binding.displayDatasetImagesGridView.adapter = displayDatasetAdapter
@@ -184,15 +185,13 @@ class DisplayDatasetFragment : Fragment() {
         callback.remove()
     }
 
-    class DisplayDatasetAdapter(
+    inner class DisplayDatasetAdapter(
         private val images: ArrayList<Any>,
         private val categories: Set<Category>,
-
-        private val context: Activity
     ) : BaseAdapter() {
 
         private var layoutInflater =
-            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            parentActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         override fun getView(position: Int, view0: View?, viewGroup: ViewGroup?): View {
             val view =
@@ -208,10 +207,9 @@ class DisplayDatasetFragment : Fragment() {
             val picture = images.elementAt(position)
             if (picture is CategorizedPicture) {
                 imageCat?.text = picture.category.name
-                picture.displayOn(
-                    context,
-                    imageView as ImageView
-                )
+                with(imageDisplayer) {
+                    picture.displayOn(imageView as ImageView)
+                }
             } else {
                 imageCat?.text = categories.elementAt(position).name
                 imageView.setImageResource(R.drawable.default_representative_picture)

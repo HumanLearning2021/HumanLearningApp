@@ -113,7 +113,7 @@ class FirestoreDatabaseServiceTest {
                 FirestoreCategorizedPicture(
                     "some id",
                     fakeCategory,
-                    "some url"
+                    Uri.EMPTY
                 )
             )
         }.fold({

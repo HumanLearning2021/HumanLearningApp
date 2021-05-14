@@ -1,6 +1,5 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.ImageView
@@ -16,6 +15,7 @@ import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.Before
@@ -60,7 +60,9 @@ class DummyCategorizedPictureTest {
         testRule.activity.run {
             lifecycleScope.launch {
                 setContentView(imageView)
-                dummyCategorizedPicture.displayOn(this@run, imageView)
+                with(DefaultImageDisplayer(this@run)) {
+                    dummyCategorizedPicture.displayOn(imageView)
+                }
 
             }
             waitFor(500)
@@ -75,15 +77,18 @@ class DummyCategorizedPictureTest {
     private fun pngHeader(): Array<Byte> = arrayOf(137.toByte(), 80, 78, 71, 13, 10, 26, 10)
 
     @Test
-    fun copyToWorksAsExpected() {
+    fun downloadToWorksAsExpected() {
         val pictureUri =
             Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
         val dummyCategory = DummyCategory("Fork", "Fork")
         val dummyCategorizedPicture = DummyCategorizedPicture("some id", dummyCategory, pictureUri)
-        val context: Context = ApplicationProvider.getApplicationContext()
         val tmpFile = File.createTempFile("myImage", ".png")
         try {
-            dummyCategorizedPicture.copyTo(context, tmpFile)
+            with(ImageDownloader(ApplicationProvider.getApplicationContext())) {
+                runBlocking {
+                    dummyCategorizedPicture.downloadTo(tmpFile)
+                }
+            }
             assertThat(
                 tmpFile.inputStream().use {
                     val buf = ByteArray(8)

@@ -9,8 +9,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.DefaultImageDisplayer
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -30,7 +31,6 @@ import javax.inject.Inject
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class FirestoreCategorizedPictureTest {
-
     @Inject
     @DemoDatabase
     lateinit var db: DatabaseService
@@ -68,7 +68,9 @@ class FirestoreCategorizedPictureTest {
         testRule.activity.run {
             lifecycleScope.launch {
                 setContentView(imageView)
-                pic.displayOn(this@run, imageView)
+                with(DefaultImageDisplayer(this@run)) {
+                    pic.displayOn(imageView)
+                }
             }
         }
         waitFor(1000)
