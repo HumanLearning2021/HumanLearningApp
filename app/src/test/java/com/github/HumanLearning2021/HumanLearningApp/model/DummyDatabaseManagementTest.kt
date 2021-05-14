@@ -3,6 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.net.Uri
 import com.github.HumanLearning2021.HumanLearningApp.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.hasItems
@@ -15,17 +16,30 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class DummyDatabaseManagementTest {
 
-    var testDatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+    lateinit var testDatabaseManagement: DatabaseManagement
 
     @Before
     fun bef() {
         testDatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+        runBlocking {
+            with(testDatabaseManagement) {
+                fork = putCategory("Fork")
+                knife = putCategory("Knife")
+                spoon = putCategory("Spoon")
+                forkPic = putPicture(forkUri, fork)
+                knifePic = putPicture(knifeUri, knife)
+                spoonPic = putPicture(spoonUri, spoon)
+                putDataset("kitchen utensils", setOf(fork, knife, spoon))
+            }
+        }
     }
 
-    private val fork = DummyCategory("Fork", "Fork")
-    private val knife = DummyCategory("Knife", "Knife")
-    private val spoon = DummyCategory("Spoon", "Spoon")
-    private val table = DummyCategory("Table", "Table")
+    private lateinit var fork: Category
+    private lateinit var knife: Category
+    private lateinit var spoon: Category
+
+    // a non-existent category
+    private val table = Category("Table", "Table")
 
     private val forkUri =
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
@@ -34,9 +48,9 @@ class DummyDatabaseManagementTest {
     private val spoonUri =
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.spoon)
 
-    private val forkPic = DummyCategorizedPicture("forkpicid", fork, forkUri)
-    private val knifePic = DummyCategorizedPicture("knifepicid", knife, knifeUri)
-    private val spoonPic = DummyCategorizedPicture("spoonpicid", spoon, spoonUri)
+    private lateinit var forkPic: CategorizedPicture
+    private lateinit var knifePic: CategorizedPicture
+    private lateinit var spoonPic: CategorizedPicture
 
     @ExperimentalCoroutinesApi
     @Suppress("DEPRECATION")
@@ -213,13 +227,7 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun putRepresentativePictureOverloadWorks() = runBlockingTest {
-        testDatabaseManagement.putRepresentativePicture(
-            DummyCategorizedPicture(
-                "forkid",
-                fork,
-                Uri.EMPTY
-            )
-        )
+        testDatabaseManagement.putRepresentativePicture(forkPic)
         assert(testDatabaseManagement.getRepresentativePicture(fork.id) != null)
     }
 
@@ -247,7 +255,6 @@ class DummyDatabaseManagementTest {
     @Test(expected = DatabaseService.NotFoundException::class)
     fun removeCategoryFromDatasetThrowsNotFoundExceptionIfCategoryNotInDb() = runBlockingTest {
         val name = "Utensils"
-        val fork = DummyCategory("Fork", "Fork")
         val dataset = DummyDataset(name, name, setOf())
         testDatabaseManagement.removeCategoryFromDataset(dataset, fork)
     }
@@ -267,9 +274,6 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun removeCategoryFromDatasetWorks() = runBlockingTest {
-        val fork = DummyCategory("Fork", "Fork")
-        val knife = DummyCategory("Knife", "Knife")
-        val spoon = DummyCategory("Spoon", "Spoon")
         val name = "Utensils"
         val dataset = testDatabaseManagement.putDataset(name, setOf(fork, knife, spoon))
         val newDataset = testDatabaseManagement.removeCategoryFromDataset(dataset, fork)
@@ -280,22 +284,17 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun addCategoryToDatasetWorks() = runBlockingTest {
-        val fork = DummyCategory("Fork", "Fork")
-        val knife = DummyCategory("Knife", "Knife")
         val name = "Utensils"
         val dataset = testDatabaseManagement.putDataset(name, setOf(fork, knife))
-        val newCat = DummyCategory("Spoon", "Spoon")
         require(dataset.categories.containsAll(setOf(fork, knife)))
         require(dataset.categories.size == 2)
-        val newDataset = testDatabaseManagement.addCategoryToDataset(dataset, newCat)
-        assert(newDataset.categories.containsAll(setOf(fork, knife, newCat)))
+        val newDataset = testDatabaseManagement.addCategoryToDataset(dataset, spoon)
+        assert(newDataset.categories.containsAll(setOf(fork, knife, spoon)))
     }
 
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun addCategoryToDatasetThrowsIfCategoryNotInDatabase() = runBlockingTest {
-        val fork = DummyCategory("Fork", "Fork")
-        val knife = DummyCategory("Knife", "Knife")
         val name = "Utensils"
         val dataset = testDatabaseManagement.putDataset(name, setOf(fork, knife))
         testDatabaseManagement.addCategoryToDataset(dataset, table)
@@ -313,9 +312,6 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun editDatasetNameWorks() = runBlockingTest {
-        val fork = DummyCategory("Fork", "Fork")
-        val knife = DummyCategory("Knife", "Knife")
-        val spoon = DummyCategory("Spoon", "Spoon")
         val name = "Utensils"
         val newName = "NoLongerUtensils"
         val dataset = testDatabaseManagement.putDataset(name, setOf(fork, knife, spoon))
@@ -327,7 +323,7 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun getPictureIds() = runBlockingTest {
-        assertThat(testDatabaseManagement.getPictureIds(fork), hasItems("forkpicid"))
+        assertThat(testDatabaseManagement.getPictureIds(fork), hasItems(forkPic.id))
     }
 
     @ExperimentalCoroutinesApi
@@ -339,6 +335,6 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun getPictureById() = runBlockingTest {
-        assertThat(testDatabaseManagement.getPicture("forkpicid")!!.category, equalTo(fork))
+        assertThat(testDatabaseManagement.getPicture(forkPic.id)!!.category, equalTo(fork))
     }
 }

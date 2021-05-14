@@ -64,7 +64,7 @@ class GeneralNavigationTest {
     var dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
-    
+
     @BindValue
     val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 

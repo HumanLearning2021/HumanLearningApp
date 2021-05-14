@@ -6,7 +6,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -14,12 +14,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class DummyDatabaseServiceTest {
-
-    private val fork = DummyCategory("Fork", "Fork")
-    private val knife = DummyCategory("Knife", "Knife")
-    private val spoon = DummyCategory("Spoon", "Spoon")
-    private val table = DummyCategory("Table", "Table")
-
     private val forkUri =
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
     private val knifeUri =
@@ -27,32 +21,25 @@ class DummyDatabaseServiceTest {
     private val spoonUri =
         Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.spoon)
 
-    private val forkPic = DummyCategorizedPicture("forkpicid", fork, forkUri)
-    private val knifePic = DummyCategorizedPicture("knifepicid", knife, knifeUri)
-    private val spoonPic = DummyCategorizedPicture("spoonpicid", spoon, spoonUri)
+    lateinit var dummyDatabaseService: DummyDatabaseService
 
-    @ExperimentalCoroutinesApi
-    @Suppress("DEPRECATION")
-    @Test
-    fun getForkWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        val actual = dummyDatabaseService.getPicture(fork)
-        val expected = forkPic
-        assertEquals(actual, expected)
+    @Before
+    fun setUp() {
+        dummyDatabaseService = DummyDatabaseService()
     }
 
     @ExperimentalCoroutinesApi
     @Suppress("DEPRECATION")
     @Test(expected = DatabaseService.NotFoundException::class)
     fun getPictureCategoryNotPresentThrows() = runBlockingTest {
-        DummyDatabaseService().getPicture(DummyCategory("Plate", "Plate"))
+        dummyDatabaseService.getPicture(DummyCategory("Plate", "Plate"))
+        Unit
     }
 
     @ExperimentalCoroutinesApi
     @Suppress("DEPRECATION")
     @Test
     fun getPictureCategoryEmpty() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         assertThat(
             dummyDatabaseService.getPicture(dummyDatabaseService.putCategory("Plate")), equalTo(
                 null
@@ -60,13 +47,11 @@ class DummyDatabaseServiceTest {
         )
     }
 
-
     @ExperimentalCoroutinesApi
     @Suppress("DEPRECATION")
     @Test
     fun putAndThenGetWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        dummyDatabaseService.putCategory("Table")
+        val table = dummyDatabaseService.putCategory("Table")
         dummyDatabaseService.putPicture(forkUri, table)
 
         val res = dummyDatabaseService.getPicture(table)!!
@@ -76,14 +61,14 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun putPictureCategoryNotPresentThrows() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
+        val table = dummyDatabaseService.putCategory("Table")
+        dummyDatabaseService.removeCategory(table)
         dummyDatabaseService.putPicture(forkUri, table)
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun getCategoryPresent() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         dummyDatabaseService.putCategory("Table")
         assertThat(
             dummyDatabaseService.getCategory("Table"),
@@ -94,14 +79,12 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test
     fun getCategoryNotPresent() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         assertThat(dummyDatabaseService.getCategory("Table"), equalTo(null))
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun putCategoryNotPresent() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         assertThat(
             dummyDatabaseService.putCategory("Table"),
             equalTo(DummyCategory("Table", "Table"))
@@ -111,7 +94,6 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test
     fun putCategoryAlreadyPresentChangesNothing() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         dummyDatabaseService.putCategory("Table")
         assertThat(
             dummyDatabaseService.putCategory("Table"),
@@ -120,51 +102,15 @@ class DummyDatabaseServiceTest {
     }
 
     @ExperimentalCoroutinesApi
-    @Test
-    fun getCategoriesWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        val categories = HashSet(dummyDatabaseService.getCategories())
-
-        dummyDatabaseService.putCategory(table.name)
-
-        categories.add(table)
-        assertThat(
-            dummyDatabaseService.getCategories(),
-            equalTo(categories)
-        )
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test
-    fun putDatasetWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        assertThat(
-            dummyDatabaseService.putDataset("Utensils", setOf(knife, spoon)),
-            equalTo(DummyDataset("Utensils", "Utensils", setOf(knife, spoon)))
-        )
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test
-    fun getDatasetWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        dummyDatabaseService.putDataset("Utensils", setOf(knife, spoon))
-        assertThat(
-            dummyDatabaseService.getDataset("Utensils")!!.categories,
-            equalTo(setOf(knife, spoon))
-        )
-    }
-
-    @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun removeCategoryThrowsExpectedException() = runBlockingTest {
-        DummyDatabaseService().removeCategory(table)
+        dummyDatabaseService.removeCategory(Category("Table", "Table"))
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun removeCategoryWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
+        val fork = dummyDatabaseService.putCategory("Fork")
         dummyDatabaseService.removeCategory(fork)
         assert(!dummyDatabaseService.getCategories().contains(fork))
     }
@@ -172,9 +118,8 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test
     fun removeCategoryAlsoRemovesFromDatasets() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        dummyDatabaseService.putCategory("Fork")
-        dummyDatabaseService.putCategory("Spoon")
+        val fork = dummyDatabaseService.putCategory("Fork")
+        val spoon = dummyDatabaseService.putCategory("Spoon")
         dummyDatabaseService.putDataset("Utensils", setOf(fork, spoon))
         dummyDatabaseService.removeCategory(fork)
         assert(!dummyDatabaseService.getDataset("Utensils")!!.categories.contains(fork))
@@ -183,13 +128,13 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun putRepresentativePictureThrowsExpectedException() = runBlockingTest {
-        DummyDatabaseService().putRepresentativePicture(Uri.EMPTY, table)
+        val table = Category("Table", "Table")
+        dummyDatabaseService.putRepresentativePicture(Uri.EMPTY, table)
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun putRepresentativePictureWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         val table = dummyDatabaseService.putCategory("Table")
         assert(dummyDatabaseService.getRepresentativePicture("Table") == null)
         dummyDatabaseService.putRepresentativePicture(Uri.EMPTY, table)
@@ -199,14 +144,14 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun deleteDatasetThrowsNotFoundException() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         dummyDatabaseService.deleteDataset("Fork")
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun deleteDatasetWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
+        val fork = dummyDatabaseService.putCategory("Fork")
+        val spoon = dummyDatabaseService.putCategory("Spoon")
         dummyDatabaseService.putDataset("Fork", setOf(fork, spoon))
         dummyDatabaseService.deleteDataset("Fork")
         assert(dummyDatabaseService.getDataset("Fork") == null)
@@ -215,15 +160,15 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun getAllPicturesThrowsNotFoundException() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
+        val table = Category("Table", "Table")
         dummyDatabaseService.getAllPictures(table)
+        Unit
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun getAllPicturesGetsAllPictures() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        dummyDatabaseService.putCategory("Fork")
+        val fork = dummyDatabaseService.putCategory("Fork")
         dummyDatabaseService.putPicture(forkUri, fork)
         dummyDatabaseService.putPicture(spoonUri, fork)
         val res = dummyDatabaseService.getAllPictures(fork).map { p ->
@@ -246,7 +191,7 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun removePictureThrowsNotFoundException() = runBlockingTest {
-        DummyDatabaseService().removePicture(
+        dummyDatabaseService.removePicture(
             DummyCategorizedPicture(
                 "tablepicid",
                 DummyCategory("Table", "Table"),
@@ -258,7 +203,8 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test
     fun removePictureRemovesPicture() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
+        val fork = dummyDatabaseService.putCategory("Fork")
+        val forkPic = dummyDatabaseService.putPicture(forkUri, fork)
         dummyDatabaseService.removePicture(forkPic)
         assert(dummyDatabaseService.getAllPictures(fork).isEmpty())
     }
@@ -266,33 +212,38 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test
     fun getDatasetReturnsNullIfThereIsNone() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         assert(dummyDatabaseService.getDataset("Fork") == null)
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun getDatasetsWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        assert(dummyDatabaseService.getDatasets().isNotEmpty()) {
-            "There must be at least one dataset in the dummy database"
-        }
+        dummyDatabaseService.putDataset("kitchen utensils", setOf())
+        assert(
+            dummyDatabaseService.getDatasets().contains(
+                DummyDataset(
+                    "kitchen utensils",
+                    "kitchen utensils",
+                    setOf()
+                )
+            )
+        )
     }
 
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun removeCategoryFromDatasetThrowsNotFoundExceptionIfCategoryNotInDb() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         val name = "Utensils"
         val fork = DummyCategory("Fork", "Fork")
         val dataset = DummyDataset(name, name, setOf())
         dummyDatabaseService.removeCategoryFromDataset(dataset, fork)
+        Unit
     }
 
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun removeCategoryFromDatasetThrowsNotFoundExceptionIfDatasetNotInDb() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
+        val fork = dummyDatabaseService.putCategory("Fork")
         dummyDatabaseService.removeCategoryFromDataset(
             DummyDataset(
                 "some_id",
@@ -300,12 +251,12 @@ class DummyDatabaseServiceTest {
                 setOf()
             ), fork
         )
+        Unit
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun removeCategoryFromDatasetWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         val fork = DummyCategory("Fork", "Fork")
         val knife = DummyCategory("Knife", "Knife")
         val spoon = DummyCategory("Spoon", "Spoon")
@@ -319,7 +270,6 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test
     fun editDatasetNameWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         val fork = DummyCategory("Fork", "Fork")
         val knife = DummyCategory("Knife", "Knife")
         val spoon = DummyCategory("Spoon", "Spoon")
@@ -334,37 +284,37 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test
     fun addCategoryToDatasetWorks() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
-        val fork = DummyCategory("Fork", "Fork")
-        val knife = DummyCategory("Knife", "Knife")
+        val fork = dummyDatabaseService.putCategory("Fork")
+        val knife = dummyDatabaseService.putCategory("Knife")
+        val spoon = dummyDatabaseService.putCategory("Spoon")
         val name = "Utensils"
         val dataset = dummyDatabaseService.putDataset(name, setOf(fork, knife))
-        val newCat = DummyCategory("Spoon", "Spoon")
         require(dataset.categories.containsAll(setOf(fork, knife)))
         require(dataset.categories.size == 2)
-        val newDataset = dummyDatabaseService.addCategoryToDataset(dataset, newCat)
-        assert(newDataset.categories.containsAll(setOf(fork, knife, newCat)))
+        val newDataset = dummyDatabaseService.addCategoryToDataset(dataset, spoon)
+        assertThat(newDataset.categories, equalTo(setOf(fork, knife, spoon)))
     }
 
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun addCategoryToDatasetThrowsIfCategoryNotInDatabase() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
         val fork = DummyCategory("Fork", "Fork")
         val knife = DummyCategory("Knife", "Knife")
         val name = "Utensils"
         val dataset = dummyDatabaseService.putDataset(name, setOf(fork, knife))
-        dummyDatabaseService.addCategoryToDataset(dataset, table)
+        dummyDatabaseService.addCategoryToDataset(dataset, Category("Table", "Table"))
+        Unit
     }
 
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun addCategoryToDatasetThrowsIfDatasetNotInDatabase() = runBlockingTest {
-        val dummyDatabaseService = DummyDatabaseService()
+        val spoon = dummyDatabaseService.putCategory("Spoon")
         dummyDatabaseService.addCategoryToDataset(
             DummyDataset("some_id", "some_name", setOf()),
             spoon
         )
+        Unit
     }
 }
 
