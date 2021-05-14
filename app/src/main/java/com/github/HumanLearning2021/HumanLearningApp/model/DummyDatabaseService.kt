@@ -196,6 +196,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         require(picture is DummyCategorizedPicture)
         putRepresentativePicture(picture.picture, picture.category)
+        pictures.remove(picture)
     }
 
     override suspend fun getDatasets(): Set<Dataset> {
