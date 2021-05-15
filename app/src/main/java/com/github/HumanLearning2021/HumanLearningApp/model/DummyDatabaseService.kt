@@ -175,11 +175,8 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         return dataset
     }
 
-    override suspend fun getDataset(id: Id): Dataset? {
-        for (d in datasets)
-            if (d.name == id) return d
-        return null
-    }
+    override suspend fun getDataset(id: Id): Dataset? = datasets.find { it.id == id }
+
 
     override suspend fun deleteDataset(id: Id) {
         for (d in datasets) {
@@ -242,7 +239,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
             throw DatabaseService.NotFoundException(dataset.id)
         }
         val newDs = DummyDataset(dataset.id, newName, dataset.categories)
-        this.datasets.apply {
+        datasets.apply {
             add(newDs)
             remove(dataset)
         }

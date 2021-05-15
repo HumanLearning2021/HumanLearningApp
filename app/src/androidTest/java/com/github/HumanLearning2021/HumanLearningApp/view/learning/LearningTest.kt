@@ -11,16 +11,19 @@ import androidx.test.uiautomator.UiSelector
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getDatasetWithNCategories
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -68,19 +71,10 @@ class LearningTest {
         assertDisplayed(R.id.learning_cat_2)
     }
 
-    private fun getDatasetWithNCategories(N: Int): Dataset {
-        require(N > 0)
-        val maybeDataset = runBlocking {
-            dbMgt.getDatasets().find { it.categories.size == N }
-        }
-        require(maybeDataset != null)
-        { "There has to be a dataset with $N categories in $dbMgt" }
-        return maybeDataset
-    }
 
     @Test
     fun onlyOneImageViewVisibleWhenOneCategoryInDataset() {
-        launchFragment(getDatasetWithNCategories(1).id)
+        launchFragment(getDatasetWithNCategories(1, dbMgt).id)
         assertNotDisplayed(R.id.learning_cat_0)
         assertDisplayed(R.id.learning_cat_1)
         assertNotDisplayed(R.id.learning_cat_2)
@@ -88,7 +82,7 @@ class LearningTest {
 
     @Test
     fun onlyTwoImageViewsVisibleWhenTwoCategoriesInDataset() {
-        launchFragment(getDatasetWithNCategories(2).id)
+        launchFragment(getDatasetWithNCategories(2, dbMgt).id)
         assertDisplayed(R.id.learning_cat_0)
         assertDisplayed(R.id.learning_cat_1)
         assertNotDisplayed(R.id.learning_cat_2)
@@ -96,7 +90,7 @@ class LearningTest {
 
     @Test
     fun allImageViewsVisibleWhenFourCategoriesInDataset() {
-        launchFragment(getDatasetWithNCategories(4).id)
+        launchFragment(getDatasetWithNCategories(4, dbMgt).id)
         assertDisplayed(R.id.learning_cat_0)
         assertDisplayed(R.id.learning_cat_1)
         assertDisplayed(R.id.learning_cat_2)

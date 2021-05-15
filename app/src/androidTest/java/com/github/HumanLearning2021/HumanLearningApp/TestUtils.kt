@@ -7,6 +7,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
@@ -72,5 +73,22 @@ object TestUtils {
                 return matcher.matches(view) && currentIndex++ == index
             }
         }
+    }
+
+    /**
+     * Returns a dataset with N categories in the given database
+     * @param N number of categories of the dataset
+     * @param dbMgt DatabaseManagement instance
+     * @return first dataset with N categories
+     * @throws IllegalArgumentException if no dataset with N categories found
+     */
+    fun getDatasetWithNCategories(N: Int, dbMgt: DatabaseManagement): Dataset {
+        require(N > 0)
+        val maybeDataset = runBlocking {
+            dbMgt.getDatasets().find { it.categories.size == N }
+        }
+        require(maybeDataset != null)
+        { "There has to be a dataset with $N categories in $dbMgt" }
+        return maybeDataset
     }
 }
