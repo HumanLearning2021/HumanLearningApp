@@ -15,6 +15,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.Event
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -35,6 +36,9 @@ class LearningFragment : Fragment() {
     private lateinit var targetImageViews: List<ImageView>
 
     lateinit var learningPresenter: LearningPresenter
+
+    @Inject
+    lateinit var authPresenter: AuthenticationPresenter
 
     @Inject
     @Demo2Database
@@ -60,7 +64,7 @@ class LearningFragment : Fragment() {
             dataset = dbMgt.getDatasetById(datasetId)!!
             targetImageViews = adaptDisplayToNumberOfCategories(dataset)
 
-            learningPresenter = LearningPresenter(dbMgt, args.learningMode, dataset)
+            learningPresenter = LearningPresenter(dbMgt, args.learningMode, dataset, authPresenter)
             learningPresenter.updateForNextSorting(
                 parentActivity,
                 targetImageViews,

@@ -123,7 +123,7 @@ class GeneralNavigationTest {
 
     private fun assertCurrentFragmentIsCorrect(expected: Int) {
         activityScenarioRule.scenario.onActivity {
-            var currentFragmentContainer =
+            val currentFragmentContainer =
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
             val currentFragment = currentFragmentContainer?.findNavController()?.currentDestination
             assertThat(currentFragment?.id, equalTo(expected))
