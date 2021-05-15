@@ -149,16 +149,10 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         require(category is DummyCategory)
         if (categories.contains(category)) {
             categories.remove(category)
-            for (d in datasets) {
-                if (d.categories.contains(category)) {
-                    val newDataset = removeCategoryFromDataset(d, category)
-                    datasets.apply {
-                        remove(d)
-                        add(newDataset)
-                    }
-                }
-
-            }
+            val datasetsToUpdate = datasets.filter { it.categories.contains(category) }
+            val updatedDatasets = datasetsToUpdate.map { removeCategoryFromDataset(it, category) }
+            datasets.removeAll(datasetsToUpdate)
+            datasets.addAll(updatedDatasets)
         } else {
             throw DatabaseService.NotFoundException(category.id)
         }
@@ -223,16 +217,16 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         if (!datasets.contains(dataset)) {
             throw DatabaseService.NotFoundException(dataset.id)
         }
-        val dsCategories = dataset.categories
-        for (c in dsCategories) {
+
+        for (c in dataset.categories) {
             if (c == category) {
                 val newCategories: MutableSet<Category> = mutableSetOf()
                 newCategories.apply {
-                    addAll(categories)
+                    addAll(dataset.categories)
                     remove(c)
                 }
                 val newDs = DummyDataset(dataset.id, dataset.name, newCategories as Set<Category>)
-                this.datasets.apply {
+                datasets.apply {
                     add(newDs)
                     remove(dataset)
                 }
