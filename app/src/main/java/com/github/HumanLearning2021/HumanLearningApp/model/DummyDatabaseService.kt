@@ -51,10 +51,10 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     private val pictures: MutableSet<DummyCategorizedPicture> =
         mutableSetOf(forkPic, knifePic, spoonPic)
-    private val categories: MutableSet<DummyCategory> = mutableSetOf(fork, knife, spoon)
+    private val categories: MutableSet<DummyCategory> = mutableSetOf(fork, fork2, knife, spoon)
     private val datasets: MutableSet<DummyDataset> =
         mutableSetOf(
-            DummyDataset("kitchen utensils", "kitchen utensils", categories),
+            DummyDataset("kitchen utensils", "kitchen utensils", setOf(fork, knife, spoon)),
             DummyDataset("one category", "one category", setOf(fork)),
             DummyDataset("two categories", "two categories", setOf(fork, knife)),
             DummyDataset(
@@ -117,11 +117,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         if (!categories.contains(category)) throw DatabaseService.NotFoundException(category.id)
     }
 
-    override suspend fun getCategory(id: Id): Category? {
-        for (c in categories)
-            if (c.id == id) return c
-        return null
-    }
+    override suspend fun getCategory(id: Id): Category? = categories.find { it.id == id }
 
     override suspend fun putCategory(categoryName: String): Category {
         val category = DummyCategory(categoryName, categoryName)
