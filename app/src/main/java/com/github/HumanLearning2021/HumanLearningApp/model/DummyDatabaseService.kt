@@ -76,8 +76,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         require(category is DummyCategory)
-        if (!categories.contains(category))
-            throw DatabaseService.NotFoundException(category.id)
+        requireCategoryPresent(category)
 
         for (p in pictures)
             if (p.category == category) return p
@@ -92,8 +91,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     override suspend fun getPictureIds(category: Category): List<Id> {
         require(category is DummyCategory)
-        if (!categories.contains(category))
-            throw DatabaseService.NotFoundException(category.id)
+        requireCategoryPresent(category)
 
         val res = mutableListOf<String>()
         for (p in pictures)
@@ -107,12 +105,16 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
         require(category is DummyCategory)
-        if (!categories.contains(category)) throw DatabaseService.NotFoundException(category.id)
+        requireCategoryPresent(category)
 
         val addedPicture = DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
         pictures.add(addedPicture)
 
         return addedPicture
+    }
+
+    private fun requireCategoryPresent(category: Category) {
+        if (!categories.contains(category)) throw DatabaseService.NotFoundException(category.id)
     }
 
     override suspend fun getCategory(id: Id): Category? {
@@ -133,9 +135,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
         require(category is DummyCategory)
-        if (!categories.contains(category)) {
-            throw DatabaseService.NotFoundException(category.id)
-        }
+        requireCategoryPresent(category)
         val res: MutableSet<CategorizedPicture> = mutableSetOf()
         for (p in pictures) {
             if (p.category == category) {
@@ -147,15 +147,14 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     override suspend fun removeCategory(category: Category) {
         require(category is DummyCategory)
-        if (categories.contains(category)) {
-            categories.remove(category)
-            val datasetsToUpdate = datasets.filter { it.categories.contains(category) }
-            val updatedDatasets = datasetsToUpdate.map { removeCategoryFromDataset(it, category) }
-            datasets.removeAll(datasetsToUpdate)
-            datasets.addAll(updatedDatasets)
-        } else {
-            throw DatabaseService.NotFoundException(category.id)
-        }
+        requireCategoryPresent(category)
+
+        categories.remove(category)
+        val datasetsToUpdate = datasets.filter { it.categories.contains(category) }
+        val updatedDatasets =
+            datasetsToUpdate.map { removeCategoryFromDataset(it, category) }
+        datasets.removeAll(datasetsToUpdate)
+        datasets.addAll(updatedDatasets)
     }
 
     override suspend fun removePicture(picture: CategorizedPicture) {
@@ -189,9 +188,8 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     }
 
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
-        if (!categories.contains(category)) {
-            throw DatabaseService.NotFoundException(category.id)
-        }
+        requireCategoryPresent(category)
+
         representativePictures[category.id] =
             DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
     }
@@ -211,9 +209,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     ): DummyDataset {
         require(dataset is DummyDataset)
         require(category is DummyCategory)
-        if (!datasets.contains(dataset)) {
-            throw DatabaseService.NotFoundException(dataset.id)
-        }
+        requireDatasetPresent(dataset)
 
         for (c in dataset.categories) {
             if (c == category) {
@@ -222,7 +218,8 @@ class DummyDatabaseService internal constructor() : DatabaseService {
                     addAll(dataset.categories)
                     remove(c)
                 }
-                val newDs = DummyDataset(dataset.id, dataset.name, newCategories as Set<Category>)
+                val newDs =
+                    DummyDataset(dataset.id, dataset.name, newCategories as Set<Category>)
                 datasets.apply {
                     add(newDs)
                     remove(dataset)
@@ -235,9 +232,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     override suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset {
         require(dataset is DummyDataset)
-        if (!datasets.contains(dataset)) {
-            throw DatabaseService.NotFoundException(dataset.id)
-        }
+        requireDatasetPresent(dataset)
         val newDs = DummyDataset(dataset.id, newName, dataset.categories)
         datasets.apply {
             add(newDs)
@@ -246,12 +241,16 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         return newDs
     }
 
+    private fun requireDatasetPresent(dataset: Dataset) {
+        if (!datasets.contains(dataset)) {
+            throw DatabaseService.NotFoundException(dataset.id)
+        }
+    }
+
     override suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset {
         require(dataset is DummyDataset)
         require(category is DummyCategory)
-        if (!categories.contains(category)) {
-            throw DatabaseService.NotFoundException(category.id)
-        }
+        requireCategoryPresent(category)
         // calling datasets.contains(dataset) returned false for obviously equal datasets
         // TODO : discuss this
 //        if (!datasets.contains(dataset)) {

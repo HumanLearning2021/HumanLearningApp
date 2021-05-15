@@ -39,7 +39,7 @@ object TestUtils {
                 return "Wait for $millis milliseconds"
             }
 
-            private val WARN_WAIT_TOO_LONG = 2000
+            private val WARN_WAIT_TOO_LONG = 1000
 
             override fun perform(uiController: UiController?, view: View?) {
                 if (millis > WARN_WAIT_TOO_LONG) {
