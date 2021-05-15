@@ -79,18 +79,6 @@ class SearchTest {
     }
 
     @Test
-    fun datasetsOverviewInputEmptyStringYieldsAllResults() {
-        navigateToDatasetsOverview()
-        inputEmptyStringYieldsAllResults()
-    }
-
-    @Test
-    fun learningDatasetSelectionInputEmptyStringYieldsAllResults() {
-        navigateToLearningDatasetSelection()
-        inputEmptyStringYieldsAllResults()
-    }
-
-    @Test
     fun datasetsOverviewSearchByKeyWordYieldsCorrectResult() {
         navigateToDatasetsOverview()
         searchByKeyWordYieldsCorrectResult()
@@ -164,16 +152,6 @@ class SearchTest {
         onView(withId(R.id.learningDatasetSelectionFragment)).perform(click())
     }
 
-
-    private fun inputEmptyStringYieldsAllResults() {
-        onView(withId(R.id.action_search)).perform(click(), typeText(""))
-        onView(isRoot()).perform(closeSoftKeyboard())
-        onView(withId(R.id.DatasetList_list)).check(
-            ViewAssertions.matches(
-                ViewMatchers.hasChildCount(dummyDatasets.size)
-            )
-        )
-    }
 
     private fun emptySpacePrefixHasNoInfluence() {
         onView(withId(R.id.action_search)).perform(click(), typeText("          "))
