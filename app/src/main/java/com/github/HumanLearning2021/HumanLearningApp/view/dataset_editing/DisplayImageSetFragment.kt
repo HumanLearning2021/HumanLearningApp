@@ -143,7 +143,9 @@ class DisplayImageSetFragment : Fragment() {
             val imageView = view.findViewById<ImageView>(R.id.image_item_imageView)
 
             with(imageDisplayer) {
-                adapterPictures.elementAt(position).displayOn(imageView as ImageView)
+                lifecycleScope.launch {
+                    adapterPictures.elementAt(position).displayOn(imageView as ImageView)
+                }
             }
 
             return view

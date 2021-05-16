@@ -8,7 +8,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.DefaultImageDisplayer
@@ -22,7 +21,6 @@ import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assume.assumeThat
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -53,7 +51,6 @@ class FirestoreCategorizedPictureTest {
     }
 
     @Test
-    @Ignore("See https://github.com/HumanLearning2021/HumanLearningApp/issues/184")
     fun displayOnWorksAsExpected() {
         val pic = runBlocking {
             val cats = db.getCategories()
@@ -65,7 +62,7 @@ class FirestoreCategorizedPictureTest {
         val imageView = ImageView(ApplicationProvider.getApplicationContext())
         assumeThat(imageView.drawable, nullValue())
 
-        testRule.activity.run {
+        val job = testRule.activity.run {
             lifecycleScope.launch {
                 setContentView(imageView)
                 with(DefaultImageDisplayer(this@run)) {
@@ -73,7 +70,7 @@ class FirestoreCategorizedPictureTest {
                 }
             }
         }
-        waitFor(1000)
+        runBlocking { job.join() }
         assertThat(imageView.drawable, notNullValue())
     }
 }
