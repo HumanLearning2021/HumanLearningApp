@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
+import android.util.Log
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.google.firebase.auth.FirebaseUser
 import java.util.*
@@ -238,7 +239,14 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     }
 
     private fun requireDatasetPresent(dataset: Dataset) {
+
+        // calling datasets.contains(dataset) returned false for obviously equal datasets
         if (!datasets.contains(dataset)) {
+            Log.e(
+                this::class.java.simpleName,
+                "The underlying database:\n $datasets\n\n does not " +
+                        "contain the dataset \n $dataset"
+            )
             throw DatabaseService.NotFoundException(dataset.id)
         }
     }
@@ -247,15 +255,8 @@ class DummyDatabaseService internal constructor() : DatabaseService {
         require(dataset is DummyDataset)
         require(category is DummyCategory)
         requireCategoryPresent(category)
-        // calling datasets.contains(dataset) returned false for obviously equal datasets
-        // TODO : discuss this
-//        if (!datasets.contains(dataset)) {
-        if (datasets.find { it == dataset } == null) {
-            throw DatabaseService.NotFoundException(
-                "The underlying database:\n $datasets\n\n does not " +
-                        "contain the dataset \n $dataset"
-            )
-        }
+        requireDatasetPresent(dataset)
+
         return if (dataset.categories.contains(category)) {
             dataset
         } else {
