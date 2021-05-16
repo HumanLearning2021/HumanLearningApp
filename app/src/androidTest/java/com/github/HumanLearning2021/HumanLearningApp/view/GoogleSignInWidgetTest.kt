@@ -48,7 +48,6 @@ class GoogleSignInWidgetTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    private val navController: NavController = Mockito.mock(NavController::class.java)
 
     @Before
     fun setUp() {

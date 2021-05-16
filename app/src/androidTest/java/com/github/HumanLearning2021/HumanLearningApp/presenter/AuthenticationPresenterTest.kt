@@ -52,4 +52,5 @@ class AuthenticationPresenterTest {
         assertThat(user.isAdmin, equalTo(true))
     }
 
+
 }

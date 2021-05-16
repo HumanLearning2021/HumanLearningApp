@@ -3,6 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 import android.content.Intent
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.User
@@ -14,7 +15,7 @@ import javax.inject.Singleton
 @Singleton  // need to persist currentUser across activities
 class AuthenticationPresenter @Inject constructor(
     private val authUI: AuthUI,
-    @DummyDatabase
+    @DemoDatabase
     private val db: DatabaseService,
 ) {
     /**
