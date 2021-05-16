@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -17,6 +18,7 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -81,7 +83,9 @@ class DisplayImageFragment : Fragment() {
         category = picture!!.category
         parentActivity.findViewById<TextView>(R.id.display_image_viewCategory).text = category.name
         with(imageDisplayer) {
-            picture!!.displayOn(parentActivity.findViewById(R.id.display_image_viewImage))
+            lifecycleScope.launch {
+                picture!!.displayOn(parentActivity.findViewById(R.id.display_image_viewImage))
+            }
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(callback)

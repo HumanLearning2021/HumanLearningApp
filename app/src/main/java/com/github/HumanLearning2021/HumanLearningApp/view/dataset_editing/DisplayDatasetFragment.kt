@@ -208,7 +208,9 @@ class DisplayDatasetFragment : Fragment() {
             if (picture is CategorizedPicture) {
                 imageCat?.text = picture.category.name
                 with(imageDisplayer) {
-                    picture.displayOn(imageView as ImageView)
+                    lifecycleScope.launch {
+                        picture.displayOn(imageView as ImageView)
+                    }
                 }
             } else {
                 imageCat?.text = categories.elementAt(position).name
