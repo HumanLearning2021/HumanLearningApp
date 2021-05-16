@@ -9,6 +9,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -47,12 +48,26 @@ class SearchTest {
 
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
-    private val dummyDatasets = runBlocking { dbManagement.getDatasets() }
+    private val dummyDatasets = runBlocking { dbMgt.getDatasets() }
+
+    private val datasetName = "kitchen utensils"
+
+    /**
+     * The discriminating prefix is used as a search text in tests below. When searching
+     * with this prefix, only the dataset with name `datasetName` should be visible.
+     */
+    private val discriminatingPrefix = "kitchen"
 
     @Before
     fun setup() {
+        runBlocking {
+            require(dbMgt.getDatasetByName(datasetName).size == 1) {
+                "The database has to contain exactly one dataset with name $datasetName " +
+                        "to be able to procede."
+            }
+        }
         hiltRule.inject()
         Intents.init()
     }
@@ -61,18 +76,6 @@ class SearchTest {
     fun cleanUp() {
         Intents.release()
         activityScenarioRule.scenario.close()
-    }
-
-    @Test
-    fun datasetsOverviewInputEmptyStringYieldsAllResults() {
-        navigateToDatasetsOverview()
-        inputEmptyStringYieldsAllResults()
-    }
-
-    @Test
-    fun learningDatasetSelectionInputEmptyStringYieldsAllResults() {
-        navigateToLearningDatasetSelection()
-        inputEmptyStringYieldsAllResults()
     }
 
     @Test
@@ -116,13 +119,13 @@ class SearchTest {
     }
 
     @Test
-    fun datasetsOverviewEmptySpacePrefixHasNoInfluence(){
+    fun datasetsOverviewEmptySpacePrefixHasNoInfluence() {
         navigateToDatasetsOverview()
         emptySpacePrefixHasNoInfluence()
     }
 
     @Test
-    fun learningDatasetSelectionEmptySpacePrefixHasNoInfluence(){
+    fun learningDatasetSelectionEmptySpacePrefixHasNoInfluence() {
         navigateToLearningDatasetSelection()
         emptySpacePrefixHasNoInfluence()
     }
@@ -150,17 +153,9 @@ class SearchTest {
     }
 
 
-    private fun inputEmptyStringYieldsAllResults() {
-        onView(withId(R.id.action_search)).perform(click(), typeText(""))
-        onView(withId(R.id.DatasetList_list)).check(
-            ViewAssertions.matches(
-                ViewMatchers.hasChildCount(dummyDatasets.size)
-            )
-        )
-    }
-
-    private fun emptySpacePrefixHasNoInfluence(){
+    private fun emptySpacePrefixHasNoInfluence() {
         onView(withId(R.id.action_search)).perform(click(), typeText("          "))
+        onView(isRoot()).perform(closeSoftKeyboard())
         onView(withId(R.id.DatasetList_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(dummyDatasets.size)
@@ -169,7 +164,11 @@ class SearchTest {
     }
 
     private fun typeTextAndThenClearYieldsAllResults() {
-        onView(withId(R.id.action_search)).perform(click(), typeText("kitchen"), clearText())
+        onView(withId(R.id.action_search)).perform(
+            click(),
+            typeText(discriminatingPrefix),
+            clearText()
+        )
         onView(withId(R.id.DatasetList_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(dummyDatasets.size)
@@ -178,7 +177,7 @@ class SearchTest {
     }
 
     private fun canClickOnSubsetOfDatasetsMatchingSearch() {
-        onView(withId(R.id.action_search)).perform(click(), typeText("kitchen"))
+        onView(withId(R.id.action_search)).perform(click(), typeText(discriminatingPrefix))
         onView(withId(R.id.DatasetList_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
@@ -189,7 +188,10 @@ class SearchTest {
     }
 
     private fun searchNotFoundYieldsNoResult() {
-        onView(withId(R.id.action_search)).perform(click(), typeText("asdfghjkledfvboijhedfvbgbzuhikmolwsxd"))
+        onView(withId(R.id.action_search)).perform(
+            click(),
+            typeText("asdfghjkledfvboijhedfvbgbzuhikmolwsxd")
+        )
         onView(withId(R.id.DatasetList_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(0)
@@ -198,7 +200,7 @@ class SearchTest {
     }
 
     private fun searchByKeyWordYieldsCorrectResult() {
-        onView(withId(R.id.action_search)).perform(click(), typeText("kitchen"))
+        onView(withId(R.id.action_search)).perform(click(), typeText(discriminatingPrefix))
         onView(withId(R.id.DatasetList_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(1)

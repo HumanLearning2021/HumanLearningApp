@@ -1,11 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipDescription
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
@@ -13,10 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.Event
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -31,9 +30,15 @@ class LearningFragment : Fragment() {
     private var _binding: FragmentLearningBinding? = null
     private val binding get() = _binding!!
 
+    /**
+     * This stores the image views on which the representatives of the target categories are displayed
+     */
+    private lateinit var targetImageViews: List<ImageView>
+
+    lateinit var learningPresenter: LearningPresenter
 
     @Inject
-    lateinit var learningPresenter: LearningPresenter
+    lateinit var authPresenter: AuthenticationPresenter
 
     @Inject
     @Demo2Database
@@ -45,7 +50,7 @@ class LearningFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         audioFeedback = LearningAudioFeedback(parentActivity.applicationContext)
         _binding = FragmentLearningBinding.inflate(inflater, container, false)
@@ -57,12 +62,57 @@ class LearningFragment : Fragment() {
         datasetId = args.datasetId
         lifecycleScope.launch {
             dataset = dbMgt.getDatasetById(datasetId)!!
-            learningPresenter.learningMode = args.learningMode
-            learningPresenter.dataset = dataset
-            initLearningViews()
+            targetImageViews = adaptDisplayToNumberOfCategories(dataset)
+
+            learningPresenter = LearningPresenter(dbMgt, args.learningMode, dataset, authPresenter)
+            learningPresenter.updateForNextSorting(
+                parentActivity,
+                targetImageViews,
+                binding.learningToSort
+            )
+            // sets the listeners for the image views of the sorting
+            setEventListeners()
         }
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
+
+    /**
+     * This function adapts the display to the number of categories in the dataset
+     * For example, if the dataset only has 2 categories, one of the categories will not be displayed
+     * @param dataset dataset that is used for the learning
+     * @return the ImageViews that stay displayed on screen
+     */
+    private fun adaptDisplayToNumberOfCategories(dataset: Dataset): List<ImageView> {
+        val nbCategories = dataset.categories.size
+        require(nbCategories > 0) {
+            "A dataset used for learning should have at least one category"
+        }
+        val makeInvisible = { v: List<View> -> v.forEach { it.visibility = View.INVISIBLE } }
+        return with(binding) {
+            when (nbCategories) {
+                1 -> {
+                    makeInvisible(listOf(learningCat0, learningCat2))
+                    listOf(learningCat1)
+                }
+                2 -> {
+                    makeInvisible(listOf(learningCat2))
+                    listOf(learningCat0, learningCat1)
+                }
+                else -> listOf(learningCat0, learningCat1, learningCat2)
+            }
+        }
+    }
+
+    /**
+     * Sets the event listeners for the image to sort and the target image views
+     */
+    private fun setEventListeners() = with(binding) {
+        learningToSort.setOnTouchListener { e, v -> onImageToSortTouched(e, v) }
+        learningCat0.setOnDragListener(targetOnDragListener)
+        learningCat1.setOnDragListener(targetOnDragListener)
+        learningCat2.setOnDragListener(targetOnDragListener)
+    }
+
 
     val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -89,76 +139,6 @@ class LearningFragment : Fragment() {
     }
 
 
-    /**
-     * This method initializes the image views containing the image to sort and the images
-     * representing the target categories.
-     */
-    private fun initLearningViews() {
-        lifecycleScope.launch {
-            val cats = dataset.categories
-            if (cats.size < 3) {
-                // TODO : maybe allow fewer categories in the future
-                Log.e(
-                    this.javaClass.name, "There are fewer than 3 categories in the dataset",
-                    IllegalStateException()
-                )
-            } else {
-                val cat0 = cats.elementAt(0)
-
-                initTargetCategory(R.id.learning_cat_0, cat0)
-                initTargetCategory(R.id.learning_cat_1, cats.elementAt(1))
-                initTargetCategory(R.id.learning_cat_2, cats.elementAt(2))
-
-                initImageToSort(R.id.learning_to_sort, cat0)
-            }
-
-        }
-    }
-
-
-    private fun initImageView(catIvId: Int, cat: Category): ImageView {
-        val catIv = when (catIvId) {
-            R.id.learning_cat_0 -> binding.learningCat0
-            R.id.learning_cat_1 -> binding.learningCat1
-            R.id.learning_cat_2 -> binding.learningCat2
-            else -> binding.learningToSort
-        }
-
-        // TODO (next sprint) make this more robust
-        // The mechanism to verify that the classification is correct is the comparison between
-        // the contentDescription of the target ImageView and the text carried in the drag & drop
-        // see LearningActivity::dropCallback
-        catIv.contentDescription = cat.name
-        Log.d(parentActivity.localClassName, "init contentDescription to ${cat.name}")
-
-        if (catIvId == R.id.learning_to_sort) {
-            lifecycleScope.launch {
-                learningPresenter.displayNextPicture(parentActivity, catIv)
-            }
-        } else {
-            lifecycleScope.launch {
-                learningPresenter.displayTargetPicture(parentActivity, catIv, cat)
-            }
-        }
-
-        return catIv
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    /**
-     * This method initializes the image view containing the image to sort
-     */
-    private fun initImageToSort(catIvId: Int, cat: Category) {
-        initImageView(catIvId, cat).setOnTouchListener { e, v -> onImageToSortTouched(e, v) }
-    }
-
-    /**
-     * This method initializes an image view representing a target category
-     */
-    private fun initTargetCategory(catIvId: Int, cat: Category) {
-        initImageView(catIvId, cat).setOnDragListener(targetOnDragListener)
-    }
-
     private val opaque = 1.0f
     private val halfOpaque = opaque / 2
 
@@ -184,29 +164,19 @@ class LearningFragment : Fragment() {
      * @param v The ImageView representing the target category
      */
     private fun dropCallback(event: DragEvent, v: View): Boolean {
-        val item: ClipData.Item = event.clipData.getItemAt(0)
         setOpacity(v, opaque)
-        Log.d(
-            parentActivity.localClassName,
-            "dropped : ${item.text} on category: ${v.contentDescription}"
-        )
 
-        // TODO (future sprint) make this more robust
-        // the classification is considered correct if the text carried by the drag
-        // is equal to the contentDescription of the target ImageView
-        val res = item.text == v.contentDescription
-        val self = parentActivity
+        val sortingCorrect = learningPresenter.isSortingCorrect(v as ImageView)
         audioFeedback.stopAndPrepareMediaPlayers()
-        if (res) {
+        if (sortingCorrect) {
             audioFeedback.startCorrectFeedback()
             lifecycleScope.launch {
-                binding.learningToSort.let {
-                    learningPresenter.displayNextPicture(
-                        self,
-                        it,
-                    )
-                }
                 learningPresenter.saveEvent(Event.SUCCESS)
+                learningPresenter.updateForNextSorting(
+                    parentActivity,
+                    targetImageViews,
+                    binding.learningToSort
+                )
             }
         } else {
             audioFeedback.startIncorrectFeedback()
@@ -214,7 +184,7 @@ class LearningFragment : Fragment() {
                 learningPresenter.saveEvent(Event.MISTAKE)
             }
         }
-        return res
+        return sortingCorrect
     }
 
     /**
@@ -227,18 +197,18 @@ class LearningFragment : Fragment() {
         return true
     }
 
+    /**
+     * Callback triggered when the image view holding the image to sort is touched.
+     */
     private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                // TODO (future sprint) make verification mechanism more robust
-                val item = ClipData.Item(view.contentDescription)
-                val dragData = ClipData(
-                    getString(R.string.learning_clipdata_label),
-                    arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
-                    item
+                view.startDragAndDrop(
+                    null,
+                    View.DragShadowBuilder(view),
+                    null,
+                    0
                 )
-                val shadow = View.DragShadowBuilder(view)
-                view.startDragAndDrop(dragData, shadow, null, 0)
                 true
             }
             else -> false
@@ -246,10 +216,15 @@ class LearningFragment : Fragment() {
     }
 
     companion object {
+        /**
+         * Set the opacity of the given view and force it to be redrawn
+         * @param v The view whose opacity will be set
+         * @param opacity The new opacity. Has to be in [0,1]
+         */
         private fun setOpacity(v: View, opacity: Float) {
+            require(opacity in 0.0f..1.0f)
             v.alpha = opacity
             v.invalidate()
         }
-
     }
 }
