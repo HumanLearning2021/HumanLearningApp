@@ -6,6 +6,7 @@ import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
@@ -18,12 +19,16 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.withIndex
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.hasSize
 import org.junit.Assume.assumeTrue
 import org.junit.Before
@@ -44,7 +49,7 @@ class CategoriesEditingFragmentTest {
     @Demo2Database
     val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
-    private val dataset: Dataset = getFirstDataset(dbMgt)
+    private var dataset: Dataset = getFirstDataset(dbMgt)
     private val datasetId: String = getFirstDataset(dbMgt).id
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
@@ -119,7 +124,7 @@ class CategoriesEditingFragmentTest {
         onView(withId(R.id.button_submit_list)).perform(click())
         waitFor(1) // increase id needed
         runBlocking {
-            val updatedDataset = dbMgt.getDatasetById(dataset.id)!!
+            val updatedDataset = dbMgt.getDatasetById(datasetId)!!
             assert(nbCategories + 1 == updatedDataset.categories.size)
         }
     }
@@ -128,6 +133,34 @@ class CategoriesEditingFragmentTest {
     fun backButtonWorks() {
         Espresso.pressBack()
         verify(navController).popBackStack()
+    }
+
+    @Test
+    fun modifyingDatasetNameWorks() {
+        val newName = "new dataset name"
+        runBlocking {
+            waitFor(1) // increase if needed
+            onView(withId(R.id.dataset_name)).perform(
+                ViewActions.clearText(),
+                typeText("$newName\n")
+            )
+            onView(withId(R.id.dataset_name)).check(
+                ViewAssertions.matches(
+                    withText(
+                        CoreMatchers.containsString(newName)
+                    )
+                )
+            )
+
+            // need to get again because dataset is immutable and editing the name creates a new
+            // Dataset object in the database
+            // `!!` ok because we checked it exists in setup
+            dataset = dbMgt.getDatasetById(datasetId)!!
+            assert(dataset.name == newName) {
+                "dataset name \"${dataset.name}\" different" +
+                        " from \"$newName\""
+            }
+        }
     }
 
     private fun launchFragment() {

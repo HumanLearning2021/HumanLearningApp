@@ -9,7 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
@@ -34,7 +34,6 @@ import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.anything
-import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Assume.assumeTrue
 import org.junit.Before
@@ -133,26 +132,6 @@ class DisplayDatasetActivityTest {
                     )
                 )
             )
-        }
-    }
-
-    @Test
-    fun modifyingDatasetNameWorks() {
-        launchFragment()
-        val newName = "new dataset name"
-        runBlocking {
-            waitFor(1) // increase if needed
-            onView(withId(R.id.display_dataset_name)).perform(clearText(), typeText("$newName\n"))
-            onView(withId(R.id.display_dataset_name)).check(matches(withText(containsString(newName))))
-
-            // need to get again because dataset is immutable and editing the name creates a new
-            // Dataset object in the database
-            // `!!` ok because we checked it exists in setup
-            dataset = dbMgt.getDatasetById(datasetId)!!
-            assert(dataset.name == newName) {
-                "dataset name \"${dataset.name}\" different" +
-                        " from \"$newName\""
-            }
         }
     }
 

@@ -8,10 +8,10 @@
     <string name="AddPicture_categorySelectionDialogTitle">Pick a category</string>
     <string name="AddPicture_permissionNeededDialogTitle">Camera required</string>
     <string name="AddPicture_permissionNeededDialogMessage">To use this functionality, access to the camera is required. Either you have denied the app the permission to use it or your device has no camera.</string>
-    <string name="DataCreationActivity_DataCreationTitle">Categories List</string>
+    <string name="DataCreationActivity_DataCreationTitle">Categories List :</string>
     <string name="DataCreationActivity_DataCreationSubmitButton">Save changes</string>
     <string name="DataCreationActivity_DataCreationAddButton">Add new category</string>
-    <string name="DataCreationActivity_DataCreationCat">Enter Category</string>
+    <string name="DataCreationActivity_DataCreationCat">Enter category name</string>
     <string name="AddPicture_errorWhileTakingPictureDialogTitle">Error</string>
     <string name="AddPicture_errorWhileTakingPictureDialogMessage">An error occurred while taking the picture, please try again.</string>
     <string name="AddPicture_camareImageViewDescription">Shows the picture which has just been taken</string>
@@ -36,7 +36,7 @@
     <string name="modify_categories">Modify categories</string>
     <string name="add_new_picture">Add new picture</string>
     <string name="delete_dataset">Delete dataset</string>
-    <string name="dataset_name">Dataset Name</string>
+    <string name="dataset_name">Enter dataset name</string>
     <string name="imagetobedisplayed">image to be displayed</string>
     <string name="buttontoremovepicturefromdataset">button to remove picture from dataset</string>
     <string name="picturehasbeenremoved">This Picture has been removed from this dataset.</string>

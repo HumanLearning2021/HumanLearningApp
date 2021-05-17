@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -47,7 +48,7 @@ class CategoriesEditingFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         _binding = FragmentCategoriesEditingBinding.inflate(layoutInflater)
         return binding.root
@@ -64,6 +65,7 @@ class CategoriesEditingFragment : Fragment() {
                 }
                 if (!new) {
                     dataset = dBManagement.getDatasetById(datasetId!!)!!
+                    binding.datasetName?.setText(dataset.name)
                     dsCategories = dataset.categories
                     val count = dsCategories.size
                     var v: View?
@@ -78,8 +80,12 @@ class CategoriesEditingFragment : Fragment() {
                             TextView.BufferType.EDITABLE
                         )
                     }
+                    setTextChangeListener()
+                } else {
+                    for (i in 0 until 3) {
+                        addNewView()
+                    }
                 }
-
 
                 setButtonsListener()
             }
@@ -109,7 +115,7 @@ class CategoriesEditingFragment : Fragment() {
     }
 
 
-    fun removeView(view: View) {
+    private fun removeView(view: View) {
         val categoryName: EditText =
             (view.parent as View).findViewById(R.id.data_creation_category_name)
         lifecycleScope.launch {
@@ -144,6 +150,10 @@ class CategoriesEditingFragment : Fragment() {
                 for (cat in newCategories) {
                     dataset = dBManagement.addCategoryToDataset(dataset, cat)
                 }
+                dataset = dBManagement.editDatasetName(
+                    dataset,
+                    binding.datasetName?.text.toString()
+                )
             } else {
                 dataset = dBManagement.putDataset("New Dataset", newCategories)
                 datasetId = dataset.id
@@ -168,6 +178,17 @@ class CategoriesEditingFragment : Fragment() {
         }
         binding.buttonSubmitList.setOnClickListener {
             saveData()
+        }
+    }
+
+    private fun setTextChangeListener() {
+        binding.datasetName?.doAfterTextChanged {
+            lifecycleScope.launch {
+                dataset = dBManagement.editDatasetName(
+                    dataset,
+                    binding.datasetName?.text.toString()
+                )
+            }
         }
     }
 }

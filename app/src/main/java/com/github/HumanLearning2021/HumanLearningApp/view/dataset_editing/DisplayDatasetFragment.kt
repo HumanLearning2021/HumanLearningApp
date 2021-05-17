@@ -10,7 +10,6 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResultListener
@@ -80,7 +79,7 @@ class DisplayDatasetFragment : Fragment() {
 
         lifecycleScope.launch {
             dataset = dbManagement.getDatasetById(datasetId)!!
-            binding.displayDatasetName.setText(dataset.name)
+            (binding.displayDatasetName as TextView).text = dataset.name
             categories = dataset.categories
 
             for (cat in categories) {
@@ -102,7 +101,6 @@ class DisplayDatasetFragment : Fragment() {
             binding.displayDatasetImagesGridView.adapter = displayDatasetAdapter
 
             setGridViewItemListener()
-            setTextChangeListener()
         }
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
@@ -226,17 +224,4 @@ class DisplayDatasetFragment : Fragment() {
                 findNavController().navigate(action)
             }
     }
-
-    private fun setTextChangeListener() {
-        binding.displayDatasetName.doAfterTextChanged {
-            lifecycleScope.launch {
-                dataset = dbManagement.editDatasetName(
-                    dataset,
-                    binding.displayDatasetName.text.toString()
-                )
-            }
-        }
-    }
-
-
 }
