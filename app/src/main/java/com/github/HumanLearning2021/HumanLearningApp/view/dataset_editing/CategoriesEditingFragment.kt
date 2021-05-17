@@ -15,20 +15,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentCategoriesEditingBinding
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class CategoriesEditingFragment : Fragment() {
 
     @Inject
-    @Demo2Database
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
+
     lateinit var dBManagement: DatabaseManagement
 
     private var _binding: FragmentCategoriesEditingBinding? = null
@@ -42,6 +42,10 @@ class CategoriesEditingFragment : Fragment() {
     private var new = false
     private val args: CategoriesEditingFragmentArgs by navArgs()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        runBlocking { dBManagement = globalDatabaseManagement.accessDatabase("demo2") }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

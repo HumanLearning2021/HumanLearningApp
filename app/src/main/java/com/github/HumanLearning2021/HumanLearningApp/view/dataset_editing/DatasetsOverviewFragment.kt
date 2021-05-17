@@ -2,11 +2,13 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.widget.SearchView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDatasetsOverviewBinding
@@ -42,6 +44,12 @@ class DatasetsOverviewFragment : Fragment() {
                         it.id
                     )
                 findNavController().navigate(action)
+            }
+        }
+
+        if (savedInstanceState == null) {
+            childFragmentManager.commit {
+                add(R.id.placeholder_for_download_switch, DownloadSwitchFragment())
             }
         }
 

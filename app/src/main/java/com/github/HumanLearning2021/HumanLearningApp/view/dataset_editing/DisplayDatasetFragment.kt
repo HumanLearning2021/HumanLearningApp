@@ -19,10 +19,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayDatasetBinding
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -31,7 +32,9 @@ class DisplayDatasetFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
 
     @Inject
-    @Demo2Database
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
+
     lateinit var dbManagement: DatabaseManagement
 
     private val args: DisplayDatasetFragmentArgs by navArgs()
@@ -46,6 +49,7 @@ class DisplayDatasetFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        runBlocking { dbManagement = globalDatabaseManagement.accessDatabase("demo2") }
         setFragmentResultListener(REQUEST_KEY) { _, bundle ->
             val pictureUri = bundle.getParcelable<Uri>("pictureUri")
             val chosenCategory = bundle.getParcelable<Category>("chosenCategory")

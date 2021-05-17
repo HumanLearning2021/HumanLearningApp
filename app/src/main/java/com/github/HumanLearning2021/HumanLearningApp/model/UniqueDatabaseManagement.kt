@@ -8,6 +8,8 @@ import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseServ
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.*
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * @param context: the application context
@@ -17,7 +19,7 @@ class UniqueDatabaseManagement constructor(
     private val room: RoomOfflineDatabase,
     private val firestore: FirebaseFirestore
 ) {
-    
+
     private val databaseDao = room.databaseDao()
     private val datasetDao = room.datasetDao()
     private val categoryDao = room.categoryDao()
@@ -28,18 +30,20 @@ class UniqueDatabaseManagement constructor(
     suspend fun getDatabases(): List<String> = FirestoreDatabaseService.getDatabaseNames()
 
     suspend fun accessDatabase(databaseName: String): DatabaseManagement {
-        return if (room.databaseDao().loadAll().map { db -> db.emptyHLDatabase.databaseName }
-                .contains(databaseName)) {
-            DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
-        } else {
-            DefaultDatabaseManagement(
-                CachedDatabaseService(
-                    FirestoreDatabaseService(
-                        databaseName,
-                        firestore
-                    ), CachePictureRepository(databaseName, context)
+        return withContext(Dispatchers.IO) {
+            if (room.databaseDao().loadAll().map { db -> db.emptyHLDatabase.databaseName }
+                    .contains(databaseName)) {
+                DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
+            } else {
+                DefaultDatabaseManagement(
+                    CachedDatabaseService(
+                        FirestoreDatabaseService(
+                            databaseName,
+                            firestore
+                        ), CachePictureRepository(databaseName, context)
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -55,48 +59,54 @@ class UniqueDatabaseManagement constructor(
     }
 
     suspend fun downloadDatabase(databaseName: String): DatabaseManagement {
-        val firestoreDbManagement =
-            DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore))
-        val pictureRepository = PictureRepository(databaseName, context)
+        return withContext(Dispatchers.IO) {
+            val firestoreDbManagement =
+                DefaultDatabaseManagement(FirestoreDatabaseService(databaseName, firestore))
+            val pictureRepository = PictureRepository(databaseName, context)
 
-        val datasets = firestoreDbManagement.getDatasets()
-        val categories = firestoreDbManagement.getCategories()
-        val pictures = categories.map { cat -> firestoreDbManagement.getAllPictures(cat) }.flatten()
-        val dbPicRefs = pictures.map { pic -> RoomDatabasePicturesCrossRef(databaseName, pic.id) }
-        val dbDsRefs = datasets.map { ds -> RoomDatabaseDatasetsCrossRef(databaseName, ds.id) }
-        val dbCatRefs =
-            categories.map { cat -> RoomDatabaseCategoriesCrossRef(databaseName, cat.id) }
-        val dsCatRefs = datasets.map { ds -> ds.id to ds.categories }.flatMap { (dsId, cats) ->
-            cats.map { cat -> RoomDatasetCategoriesCrossRef(dsId, cat.id) }
-        }
-        val roomDatasets = datasets.map { ds -> RoomDatasetWithoutCategories(ds.id, ds.name) }
-        val roomCats = categories.map { cat -> RoomCategory(cat.id, cat.name) }
-        val roomPics = pictures.map { pic ->
-            RoomPicture(pic.id, pictureRepository.savePicture(pic), pic.category.id)
-        }
-        val roomRepresentativePictures = categories.mapNotNull { cat ->
-            firestoreDbManagement.getRepresentativePicture(cat.id)
-        }.map { pic ->
-            RoomUnlinkedRepresentativePicture(
-                pic.id,
-                pictureRepository.savePicture(pic),
-                pic.category.id
+            val datasets = firestoreDbManagement.getDatasets()
+            val categories = firestoreDbManagement.getCategories()
+            val pictures =
+                categories.map { cat -> firestoreDbManagement.getAllPictures(cat) }.flatten()
+            val dbPicRefs =
+                pictures.map { pic -> RoomDatabasePicturesCrossRef(databaseName, pic.id) }
+            val dbDsRefs = datasets.map { ds -> RoomDatabaseDatasetsCrossRef(databaseName, ds.id) }
+            val dbCatRefs =
+                categories.map { cat -> RoomDatabaseCategoriesCrossRef(databaseName, cat.id) }
+            val dsCatRefs = datasets.map { ds -> ds.id to ds.categories }.flatMap { (dsId, cats) ->
+                cats.map { cat -> RoomDatasetCategoriesCrossRef(dsId, cat.id) }
+            }
+            val roomDatasets = datasets.map { ds -> RoomDatasetWithoutCategories(ds.id, ds.name) }
+            val roomCats = categories.map { cat -> RoomCategory(cat.id, cat.name) }
+            val roomPics = pictures.map { pic ->
+                RoomPicture(pic.id, pictureRepository.savePicture(pic), pic.category.id)
+            }
+            val roomRepresentativePictures = categories.mapNotNull { cat ->
+                firestoreDbManagement.getRepresentativePicture(cat.id)
+            }.map { pic ->
+                RoomUnlinkedRepresentativePicture(
+                    pic.id,
+                    pictureRepository.savePicture(pic),
+                    pic.category.id
+                )
+            }
+
+            initializeRoomEntities(
+                databaseName,
+                roomDatasets,
+                roomCats,
+                roomPics,
+                roomRepresentativePictures
             )
+            initializeRoomCrossRefs(dbDsRefs, dbCatRefs, dbPicRefs, dsCatRefs)
+            DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
         }
-
-        initializeRoomEntities(
-            databaseName,
-            roomDatasets,
-            roomCats,
-            roomPics,
-            roomRepresentativePictures
-        )
-        initializeRoomCrossRefs(dbDsRefs, dbCatRefs, dbPicRefs, dsCatRefs)
-        return DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
     }
 
     suspend fun removeOfflineDatabase(databaseName: String) {
-        room.databaseDao().delete(RoomEmptyHLDatabase(databaseName))
+        withContext(Dispatchers.IO) {
+            room.databaseDao().delete(RoomEmptyHLDatabase(databaseName))
+        }
     }
 
     private suspend fun initializeRoomEntities(

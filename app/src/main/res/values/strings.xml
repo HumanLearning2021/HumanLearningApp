@@ -80,5 +80,8 @@
     <string name="nav_graph_label_take_picture">Take a Picture</string>
     <string name="nav_graph_label_select_picture">Select a Picture</string>
     <string name="search">Search</string>
+    <string name="download">download</string>
+    <string name="download_icon">download_icon</string>
+    <string name="download_database">Download database</string>
 </resources>
 

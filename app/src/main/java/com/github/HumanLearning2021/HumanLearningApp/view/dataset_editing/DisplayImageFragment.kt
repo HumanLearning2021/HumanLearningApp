@@ -12,12 +12,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayImageBinding
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -25,7 +23,9 @@ class DisplayImageFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
 
     @Inject
-    @Demo2Database
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
+
     lateinit var dbManagement: DatabaseManagement
 
     private var picture: CategorizedPicture? = null
@@ -35,6 +35,11 @@ class DisplayImageFragment : Fragment() {
     private val args: DisplayImageFragmentArgs by navArgs()
     private var _binding: FragmentDisplayImageBinding? = null
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        runBlocking { dbManagement = globalDatabaseManagement.accessDatabase("demo2") }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
