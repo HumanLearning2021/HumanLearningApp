@@ -224,6 +224,15 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         require(picture is FirestoreCategorizedPicture)
+        val ref = pictures.document(picture.id)
+        if (!ref.get().await().exists()) {
+            throw DatabaseService.NotFoundException(picture.id)
+        }
+        try {
+            ref.delete().await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.w(this.toString(), "Removing picture ${picture.url} from ${this.db} failed", e)
+        }
         putRepresentativePicture(picture.url, picture.category)
     }
 

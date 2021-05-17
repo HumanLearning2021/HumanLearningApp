@@ -182,6 +182,7 @@ class OfflineDatabaseService internal constructor(
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         require(picture is OfflineCategorizedPicture)
         putRepresentativePicture(picture.picture, picture.category)
+        categoryDao.loadPicture(picture.id)?.let { categoryDao.delete(it) }
     }
 
     override suspend fun getDatasets(): Set<OfflineDataset> {

@@ -137,7 +137,6 @@ class DefaultDatabaseManagement internal constructor(
      */
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         databaseService.putRepresentativePicture(picture)
-        removePicture(picture)
     }
 
     override suspend fun getDatasets(): Set<Dataset> {
@@ -188,8 +187,10 @@ class DefaultDatabaseManagement internal constructor(
 
     override suspend fun countOccurrence(user: User.Id, dataset: Id, event: Event) {
         (databaseService.getStatistic(user, dataset) ?: Statistic(
-            Statistic.Id(user,
-            dataset),
+            Statistic.Id(
+                user,
+                dataset
+            ),
             mapOf()
         )).let { stat ->
             stat.copy(occurrences = stat.occurrences.let {
