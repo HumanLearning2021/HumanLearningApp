@@ -1,9 +1,8 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.app.AlertDialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -51,6 +50,7 @@ class CategoriesEditingFragment : Fragment() {
     ): View {
         parentActivity = requireActivity()
         _binding = FragmentCategoriesEditingBinding.inflate(layoutInflater)
+        setHasOptionsMenu(true)
         return binding.root
 
     }
@@ -150,12 +150,9 @@ class CategoriesEditingFragment : Fragment() {
                 for (cat in newCategories) {
                     dataset = dBManagement.addCategoryToDataset(dataset, cat)
                 }
-                dataset = dBManagement.editDatasetName(
-                    dataset,
-                    binding.datasetName?.text.toString()
-                )
             } else {
-                dataset = dBManagement.putDataset("New Dataset", newCategories)
+                dataset =
+                    dBManagement.putDataset(binding.datasetName?.text.toString(), newCategories)
                 datasetId = dataset.id
             }
             val action =
@@ -188,6 +185,31 @@ class CategoriesEditingFragment : Fragment() {
                     dataset,
                     binding.datasetName?.text.toString()
                 )
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.categories_editing_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.categories_editing_menu_info -> {
+                AlertDialog.Builder(this.context)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setTitle(getString(R.string.info))
+                    .setMessage(getString(R.string.categoriesEditingInfo))
+                    .setPositiveButton(
+                        getString(R.string.Close)
+                    ) { _, _ ->
+                    }
+                    .show()
+                true
+            }
+            else -> {
+                true
             }
         }
     }
