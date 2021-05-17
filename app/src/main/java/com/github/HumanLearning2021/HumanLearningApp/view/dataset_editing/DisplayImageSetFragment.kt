@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.TypedValue
@@ -54,6 +55,7 @@ class DisplayImageSetFragment : Fragment() {
     ): View {
         parentActivity = requireActivity()
         _binding = FragmentDisplayImageSetBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -244,5 +246,26 @@ class DisplayImageSetFragment : Fragment() {
             }
 
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.display_imageset_info_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.display_imageset_menu_info -> {
+                AlertDialog.Builder(this.context)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setTitle(getString(R.string.info))
+                    .setMessage(getString(R.string.displayImagesetInfo))
+                    .show()
+                true
+            }
+            else -> {
+                true
+            }
+        }
     }
 }

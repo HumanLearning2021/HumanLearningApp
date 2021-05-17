@@ -201,10 +201,6 @@ class CategoriesEditingFragment : Fragment() {
                     .setIcon(android.R.drawable.ic_dialog_info)
                     .setTitle(getString(R.string.info))
                     .setMessage(getString(R.string.categoriesEditingInfo))
-                    .setPositiveButton(
-                        getString(R.string.Close)
-                    ) { _, _ ->
-                    }
                     .show()
                 true
             }

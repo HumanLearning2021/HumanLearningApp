@@ -48,6 +48,8 @@
     <string name="deleteConfirmationMessage">Are you sure you want to delete this dataset?</string>
     <string name="categoriesEditingInfo">- A category is a word representing a type of object (Ex: Fork) -\n\n
         - Every picture belong to a category of the dataset -</string>
+    <string name="displayImagesetInfo">- To delete images : click longer on the image you want to delete, select all the pictures to delete and press the trashcan icon -\n\n
+        - To set an image as representative of the category : click longer on the image and select the star icon -</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
     <string name="Close">Close</string>
