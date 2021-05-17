@@ -79,7 +79,7 @@
             android:id="@+id/action_categoriesEditingFragment_to_displayDatasetFragment"
             app:destination="@id/displayDatasetFragment"
             app:popUpTo="@id/datasetsOverviewFragment"
-            app:popUpToInclusive="false"></action>
+            app:popUpToInclusive="false" />
         <argument
             android:name="datasetId"
             android:defaultValue="@null"
@@ -89,7 +89,7 @@
     <fragment
         android:id="@+id/displayImageSetFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.DisplayImageSetFragment"
-        android:label="nav_graph_label_display_image_set"
+        android:label="@string/nav_graph_label_display_image_set"
         tools:layout="@layout/fragment_display_image_set">
         <action
             android:id="@+id/action_displayImageSetFragment_to_displayImageFragment"
