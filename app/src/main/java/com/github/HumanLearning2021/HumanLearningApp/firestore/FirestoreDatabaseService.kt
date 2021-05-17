@@ -27,7 +27,7 @@ class FirestoreDatabaseService internal constructor(
     private val datasets = db.collection("/databases/$dbName/datasets")
     private val representativePictures = db.collection("/databases/$dbName/representativePictures")
     private val users = db.collection("/databases/$dbName/users")
-    private val statistics = db.collection("/databases/$dbName/users")
+    private val statistics = db.collection("/databases/$dbName/statistics")
     private val storage = Firebase.storage
     private val imagesDir = storage.reference.child("$dbName/images")
 
