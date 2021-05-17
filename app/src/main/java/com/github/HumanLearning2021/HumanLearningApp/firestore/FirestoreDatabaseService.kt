@@ -224,6 +224,15 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         require(picture is FirestoreCategorizedPicture)
+        val ref = pictures.document(picture.id)
+        if (!ref.get().await().exists()) {
+            throw DatabaseService.NotFoundException(picture.id)
+        }
+        try {
+            ref.delete().await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.w(this.toString(), "Removing picture ${picture.url} from ${this.db} failed", e)
+        }
         putRepresentativePicture(picture.url, picture.category)
     }
 
@@ -245,19 +254,10 @@ class FirestoreDatabaseService internal constructor(
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     override suspend fun getDatasets(): Set<FirestoreDataset> {
+        Log.d("db download debugging", "downloading datasets from firestore...")
         val ds = datasets.get().await().documents
-        return buildSet {
-            for (d in ds) {
-                val obj = d.toObject(DatasetSchema::class.java)
-                if (obj == null) {
-                    Log.w(this.toString(), "Failed to load dataset ${d.id}")
-                } else {
-                    add(obj.toPublic())
-                }
-            }
-        }
+        return ds.mapNotNull { d -> d.toObject(DatasetSchema::class.java)?.toPublic() }.toSet()
     }
 
     override suspend fun removeCategoryFromDataset(

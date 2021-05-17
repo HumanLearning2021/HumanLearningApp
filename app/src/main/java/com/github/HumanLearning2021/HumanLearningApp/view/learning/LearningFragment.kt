@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.*
@@ -48,7 +49,13 @@ class LearningFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        runBlocking { dbMgt = globalDatabaseManagement.accessDatabase("demo2") }
+        runBlocking {
+            dbMgt = globalDatabaseManagement.accessDatabase(
+                getString(
+                    R.string.production_database_name
+                )
+            )
+        }
     }
 
     override fun onCreateView(
@@ -135,6 +142,13 @@ class LearningFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        runBlocking {
+            dbMgt = globalDatabaseManagement.accessDatabase(
+                getString(
+                    R.string.production_database_name
+                )
+            )
+        }
         audioFeedback.initMediaPlayers()
     }
 

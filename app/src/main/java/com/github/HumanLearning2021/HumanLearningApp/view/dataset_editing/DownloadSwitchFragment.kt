@@ -28,7 +28,25 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        runBlocking { dbMgt = globalDatabaseManagement.accessDatabase("demo2") }
+        runBlocking {
+            dbMgt = globalDatabaseManagement.accessDatabase(
+                getString(
+                    R.string.production_database_name
+                )
+            )
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        runBlocking {
+            dbMgt = globalDatabaseManagement.accessDatabase(
+                getString(
+                    R.string.production_database_name
+                )
+            )
+        }
+        setSwitchState()
     }
 
     override fun onCreateView(
@@ -38,14 +56,30 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
     ): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState) as ConstraintLayout
         switch = view.getViewById(R.id.download_switch) as SwitchCompat
-        switch.isChecked = true //TODO("set depending on database state")
-        //setSwitchLogic(switch) TODO("uncomment once implemented")
+        setSwitchState()
+        setSwitchLogic()
         return view
     }
 
-    private fun setSwitchLogic(switch: SwitchCompat) {
-        TODO("not yet implemented")
+    private fun setSwitchState() {
+        runBlocking {
+            switch.isChecked = globalDatabaseManagement.getDownloadedDatabases().contains(
+                getString(
+                    R.string.production_database_name
+                )
+            )
+        }
     }
 
-    fun isDownloaded(): Boolean = switch.isChecked
+    private fun setSwitchLogic() {
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            runBlocking {
+                if (isChecked) {
+                    globalDatabaseManagement.downloadDatabase(getString(R.string.production_database_name))
+                } else {
+                    globalDatabaseManagement.removeDatabaseFromDownloads(getString(R.string.production_database_name))
+                }
+            }
+        }
+    }
 }

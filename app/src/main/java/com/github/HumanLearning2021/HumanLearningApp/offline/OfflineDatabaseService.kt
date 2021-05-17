@@ -26,6 +26,14 @@ class OfflineDatabaseService internal constructor(
     private fun getID() = "${UUID.randomUUID()}"
 
     /**
+     * A function to clear the content of the database from the device
+     */
+    suspend fun clear() {
+        room.databaseDao().delete(RoomEmptyHLDatabase(dbName))
+        pictureRepository.clear()
+    }
+
+    /**
      * A function to retrieve a picture from the database given a category
      *
      * @param category the category of the image to be retrieved
@@ -182,6 +190,7 @@ class OfflineDatabaseService internal constructor(
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         require(picture is OfflineCategorizedPicture)
         putRepresentativePicture(picture.picture, picture.category)
+        categoryDao.loadPicture(picture.id)?.let { categoryDao.delete(it) }
     }
 
     override suspend fun getDatasets(): Set<OfflineDataset> {

@@ -44,7 +44,24 @@ class CategoriesEditingFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        runBlocking { dBManagement = globalDatabaseManagement.accessDatabase("demo2") }
+        runBlocking {
+            dBManagement = globalDatabaseManagement.accessDatabase(
+                getString(
+                    R.string.production_database_name
+                )
+            )
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        runBlocking {
+            dBManagement = globalDatabaseManagement.accessDatabase(
+                getString(
+                    R.string.production_database_name
+                )
+            )
+        }
     }
 
     override fun onCreateView(

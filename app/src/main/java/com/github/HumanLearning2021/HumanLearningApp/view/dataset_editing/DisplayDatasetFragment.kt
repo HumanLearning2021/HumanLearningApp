@@ -49,13 +49,30 @@ class DisplayDatasetFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        runBlocking { dbManagement = globalDatabaseManagement.accessDatabase("demo2") }
+        runBlocking {
+            dbManagement = globalDatabaseManagement.accessDatabase(
+                getString(
+                    R.string.production_database_name
+                )
+            )
+        }
         setFragmentResultListener(REQUEST_KEY) { _, bundle ->
             val pictureUri = bundle.getParcelable<Uri>("pictureUri")
             val chosenCategory = bundle.getParcelable<Category>("chosenCategory")
             lifecycleScope.launch {
                 dbManagement.putPicture(pictureUri!!, chosenCategory!!)
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        runBlocking {
+            dbManagement = globalDatabaseManagement.accessDatabase(
+                getString(
+                    R.string.production_database_name
+                )
+            )
         }
     }
 

@@ -41,7 +41,24 @@ class DatasetListWidget : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        runBlocking { dbMgt = globalDatabaseManagement.accessDatabase("demo2") }
+        runBlocking {
+            dbMgt = globalDatabaseManagement.accessDatabase(
+                getString(
+                    R.string.production_database_name
+                )
+            )
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        runBlocking {
+            dbMgt = globalDatabaseManagement.accessDatabase(
+                getString(
+                    R.string.production_database_name
+                )
+            )
+        }
     }
 
     override fun onCreateView(
