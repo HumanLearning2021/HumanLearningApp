@@ -70,6 +70,15 @@ class GoogleSignInWidgetTest {
     }
 
     @Test
+    fun testLoginButton(){
+        launchFragmentInHiltContainer<GoogleSignInWidget> {
+            onView(withId(R.id.checkBox)).perform(click())
+            onActivityResult(GoogleSignInWidget.RC_SIGN_IN, 0, null)
+        }
+
+    }
+
+    @Test
     fun checkedBoxSetAdminTrue() {
         launchFragment()
         onView(withId(R.id.checkBox)).perform(click())

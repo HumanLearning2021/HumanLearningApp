@@ -314,34 +314,6 @@ class FirestoreDatabaseServiceTest {
         assertThat(demoInterface.getRepresentativePicture(appleCategoryId), not(equalTo(null)))
     }
 
-    @Test
-    fun test_setAdminAccess(){
-            runBlocking {
-                Firebase.auth.signInAnonymously().await().user!!
-                Firebase.auth.currentUser?.let {
-                    var currentUser = demoInterface.updateUser(it)
-                    currentUser = demoInterface.setAdminAccess(it,true)
-                    assertThat(currentUser.isAdmin, equalTo(true))
-                }
-
-
-            }
-
-    }
-
-    fun test_setUserAccess(){
-        runBlocking {
-            Firebase.auth.signInAnonymously().await().user!!
-            Firebase.auth.currentUser?.let {
-                var currentUser = demoInterface.updateUser(it)
-                currentUser = demoInterface.setAdminAccess(it,false)
-                assertThat(currentUser.isAdmin, equalTo(false))
-            }
-
-
-        }
-
-    }
 
 
 }
