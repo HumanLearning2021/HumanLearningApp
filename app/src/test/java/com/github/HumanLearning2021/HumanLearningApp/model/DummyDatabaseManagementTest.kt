@@ -226,7 +226,9 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun getDatasetsWorks() = runBlockingTest {
-        assert(testDatabaseManagement.getDatasets().size == 1)
+        assert(testDatabaseManagement.getDatasets().isNotEmpty()) {
+            "The dummy database should have at least one dataset"
+        }
     }
 
     @ExperimentalCoroutinesApi

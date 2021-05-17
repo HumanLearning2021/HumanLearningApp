@@ -6,6 +6,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManage
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.Event
 import com.github.HumanLearning2021.HumanLearningApp.model.id
+import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.runBlocking
@@ -19,15 +20,20 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class LearningPresenterTest {
     val db = DummyDatabaseService()
+    val dbMgt = DefaultDatabaseManagement(db)
     val authPres = AuthenticationPresenter(AuthUI.getInstance(), db)
-    val presenter = LearningPresenter(DefaultDatabaseManagement(db), authPres)
+    val dataset = runBlocking { db.putDataset("Stuff'n'things", setOf()) }
+    val presenter = LearningPresenter(
+        dbMgt, LearningMode.PRESENTATION,
+        dataset,
+        authPres
+    )
 
     @Before
     fun setUp() {
-        runBlocking() {
+        runBlocking {
             Firebase.auth.signInAnonymously().await()
             authPres.onSuccessfulLogin()
-            presenter.dataset = db.putDataset("Stuff'n'things", setOf())
         }
     }
 
@@ -37,14 +43,14 @@ class LearningPresenterTest {
         val countBefore = runBlocking {
             db.getStatistic(
                 authPres.currentUser!!.id,
-                presenter.dataset.id
+                dataset.id
             )?.occurrences?.get(event) ?: 0
         }
         runBlocking {
             presenter.saveEvent(event)
         }
         val countAfter = runBlocking {
-            db.getStatistic(authPres.currentUser!!.id, presenter.dataset.id)!!.occurrences[event]
+            db.getStatistic(authPres.currentUser!!.id, dataset.id)!!.occurrences[event]
         }
         assertThat(countAfter, equalTo(countBefore + 1))
     }
