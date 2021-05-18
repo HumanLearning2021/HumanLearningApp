@@ -48,6 +48,7 @@ class GoogleSignInWidgetTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    private val navController: NavController = Mockito.mock(NavController::class.java)
 
     @Before
     fun setUp() {
@@ -67,15 +68,6 @@ class GoogleSignInWidgetTest {
         onView(withId(R.id.checkBox)).check(matches(not(isChecked())));
         onView(withId(R.id.checkBox)).perform(click()).check(matches(isChecked()))
         onView(withId(R.id.checkBox)).perform(click()).check(matches(not(isChecked())))
-    }
-
-    @Test
-    fun testLoginButton(){
-        launchFragmentInHiltContainer<GoogleSignInWidget> {
-            onView(withId(R.id.checkBox)).perform(click())
-            onActivityResult(GoogleSignInWidget.RC_SIGN_IN, 0, null)
-        }
-
     }
 
     @Test
