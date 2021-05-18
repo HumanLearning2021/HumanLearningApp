@@ -5,7 +5,8 @@ import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineDemoDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
@@ -14,10 +15,8 @@ import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategory
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
@@ -28,22 +27,9 @@ import java.io.File
 import java.util.*
 import javax.inject.Inject
 
-@UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class OfflineDatabaseManagementTest {
-
-    @Inject
-    @Demo2Database
-    lateinit var demo2DbService: DatabaseService
-
-    @BindValue
-    @Demo2Database
-    lateinit var demo2DbMgt: DatabaseManagement
-
-    @Inject
-    @Demo2CachePictureRepository
-    lateinit var repository: PictureRepository
 
     @Inject
     @RoomDatabase
@@ -67,7 +53,6 @@ class OfflineDatabaseManagementTest {
     @Before
     fun setUp() = runBlocking {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory = FirestoreCategory("oopsy", "oopsy")
@@ -149,7 +134,11 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_putPicture_categoryNotPresent() = runBlocking {
         runCatching {
-            val tmp = File.createTempFile("meow", ".png")
+            val tmp = File.createTempFile(
+                "meow",
+                ".png",
+                ApplicationProvider.getApplicationContext<Context>().filesDir
+            )
             val uri = Uri.fromFile(tmp)
             demoManagement.putPicture(uri, FirestoreCategory(getRandomString(), getRandomString()))
             tmp.delete()
@@ -169,7 +158,7 @@ class OfflineDatabaseManagementTest {
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cat = demoManagement.putCategory(name)
 
-        val tmp = File.createTempFile("meow", ".png")
+        val tmp = File.createTempFile("meow", ".png", ctx.filesDir)
         val pic = try {
             ctx.resources.openRawResource(R.drawable.fork).use { img ->
                 tmp.outputStream().use {
@@ -258,7 +247,7 @@ class OfflineDatabaseManagementTest {
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cat = demoManagement.putCategory(name)
 
-        val tmp = File.createTempFile("meow", ".png")
+        val tmp = File.createTempFile("meow", ".png", ctx.filesDir)
         val pic = try {
             ctx.resources.openRawResource(R.drawable.fork).use { img ->
                 tmp.outputStream().use {
@@ -339,7 +328,7 @@ class OfflineDatabaseManagementTest {
         val randomCategoryName = getRandomString()
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cat = demoManagement.putCategory(randomCategoryName)
-        val tmp = File.createTempFile("droid", ".png")
+        val tmp = File.createTempFile("droid", ".png", ctx.filesDir)
         try {
             ctx.resources.openRawResource(R.drawable.fork).use { img ->
                 tmp.outputStream().use {
@@ -364,7 +353,7 @@ class OfflineDatabaseManagementTest {
         val randomCategoryName = getRandomString()
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cat = demoManagement.putCategory(randomCategoryName)
-        val tmp = File.createTempFile("droid", ".png")
+        val tmp = File.createTempFile("droid", ".png", ctx.filesDir)
         var pic: CategorizedPicture
         try {
             ctx.resources.openRawResource(R.drawable.fork).use { img ->

@@ -16,9 +16,13 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
+import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import dagger.hilt.android.testing.BindValue
@@ -30,8 +34,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
-@UninstallModules(DatabaseManagementModule::class)
+@UninstallModules(DatabaseNameModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class AddPictureNavigationTest {
@@ -46,9 +51,15 @@ class AddPictureNavigationTest {
         )
     )
 
+    @Inject
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
+
     @BindValue
-    @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    @ProductionDatabaseName
+    var dbName = "demo"
+
+    lateinit var dbMgt: DatabaseManagement
 
     private val catSet = setOf<Category>(
         DummyCategory("cat1", "cat1"),
@@ -65,6 +76,7 @@ class AddPictureNavigationTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         Intents.init()
     }
 

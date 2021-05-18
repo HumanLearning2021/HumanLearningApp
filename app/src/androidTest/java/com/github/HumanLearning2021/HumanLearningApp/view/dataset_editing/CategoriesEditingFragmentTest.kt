@@ -16,9 +16,12 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.withIndex
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -32,26 +35,36 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
-@UninstallModules(DatabaseManagementModule::class)
+@UninstallModules(DatabaseNameModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class CategoriesEditingFragmentTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    @BindValue
-    @Demo2Database
-    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    @Inject
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
-    private val dataset: Dataset = getFirstDataset(dbMgt)
-    private val datasetId: String = getFirstDataset(dbMgt).id
+    @BindValue
+    @ProductionDatabaseName
+    var dbName = "dummy"
+
+    lateinit var dbMgt: DatabaseManagement
+
+    lateinit var dataset: Dataset
+    lateinit var datasetId: String
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
     @Before
     fun setUp() {
         hiltRule.inject()
+        dbMgt = globalDatabaseManagement.accessDatabase(dbName)
+        dataset = getFirstDataset(dbMgt)
+        datasetId = getFirstDataset(dbMgt).id
         launchFragment()
     }
 
@@ -117,7 +130,7 @@ class CategoriesEditingFragmentTest {
         onView(withText("")).perform(typeText("new beautiful category"))
         closeSoftKeyboard()
         onView(withId(R.id.button_submit_list)).perform(click())
-        waitFor(1) // increase id needed
+        waitFor(1) // increase if needed
         runBlocking {
             val updatedDataset = dbMgt.getDatasetById(dataset.id)!!
             assert(nbCategories + 1 == updatedDataset.categories.size)

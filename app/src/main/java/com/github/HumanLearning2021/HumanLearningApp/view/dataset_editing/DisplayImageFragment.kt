@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayImageBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
@@ -25,6 +26,10 @@ class DisplayImageFragment : Fragment() {
     @Inject
     @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
+
+    @Inject
+    @ProductionDatabaseName
+    lateinit var dbName: String
 
     lateinit var dbManagement: DatabaseManagement
 
@@ -40,9 +45,7 @@ class DisplayImageFragment : Fragment() {
         super.onCreate(savedInstanceState)
         runBlocking {
             dbManagement = globalDatabaseManagement.accessDatabase(
-                getString(
-                    R.string.production_database_name
-                )
+                dbName
             )
         }
     }
@@ -51,9 +54,7 @@ class DisplayImageFragment : Fragment() {
         super.onResume()
         runBlocking {
             dbManagement = globalDatabaseManagement.accessDatabase(
-                getString(
-                    R.string.production_database_name
-                )
+                dbName
             )
         }
     }

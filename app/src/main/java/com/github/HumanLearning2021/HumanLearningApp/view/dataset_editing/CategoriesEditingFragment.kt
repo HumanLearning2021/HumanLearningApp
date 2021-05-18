@@ -16,6 +16,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentCategoriesEditingBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,6 +30,10 @@ class CategoriesEditingFragment : Fragment() {
     @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
+    @Inject
+    @ProductionDatabaseName
+    lateinit var dbName: String
+    
     lateinit var dBManagement: DatabaseManagement
 
     private var _binding: FragmentCategoriesEditingBinding? = null
@@ -46,9 +51,7 @@ class CategoriesEditingFragment : Fragment() {
         super.onCreate(savedInstanceState)
         runBlocking {
             dBManagement = globalDatabaseManagement.accessDatabase(
-                getString(
-                    R.string.production_database_name
-                )
+                dbName
             )
         }
     }
@@ -57,9 +60,7 @@ class CategoriesEditingFragment : Fragment() {
         super.onResume()
         runBlocking {
             dBManagement = globalDatabaseManagement.accessDatabase(
-                getString(
-                    R.string.production_database_name
-                )
+                dbName
             )
         }
     }

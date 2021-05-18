@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
@@ -43,6 +43,10 @@ class LearningFragment : Fragment() {
     @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
+    @Inject
+    @ProductionDatabaseName
+    lateinit var dbName: String
+
     lateinit var dbMgt: DatabaseManagement
 
     private lateinit var parentActivity: Activity
@@ -51,9 +55,7 @@ class LearningFragment : Fragment() {
         super.onCreate(savedInstanceState)
         runBlocking {
             dbMgt = globalDatabaseManagement.accessDatabase(
-                getString(
-                    R.string.production_database_name
-                )
+                dbName
             )
         }
     }
@@ -144,9 +146,7 @@ class LearningFragment : Fragment() {
         super.onResume()
         runBlocking {
             dbMgt = globalDatabaseManagement.accessDatabase(
-                getString(
-                    R.string.production_database_name
-                )
+                dbName
             )
         }
         audioFeedback.initMediaPlayers()

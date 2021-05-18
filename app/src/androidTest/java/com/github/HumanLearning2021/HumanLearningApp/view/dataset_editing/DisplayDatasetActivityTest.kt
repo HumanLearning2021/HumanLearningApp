@@ -22,8 +22,9 @@ import androidx.test.uiautomator.UiDevice
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
@@ -43,9 +44,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 
-@UninstallModules(DatabaseManagementModule::class)
+@UninstallModules(DatabaseNameModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayDatasetActivityTest {
@@ -60,9 +62,15 @@ class DisplayDatasetActivityTest {
         )
     )
 
+    @Inject
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
+
     @BindValue
-    @Demo2Database
-    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    @ProductionDatabaseName
+    var dbName = "dummy"
+
+    lateinit var dbMgt: DatabaseManagement
 
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
@@ -76,6 +84,7 @@ class DisplayDatasetActivityTest {
     @Before
     fun setup() {
         hiltRule.inject()  // ensures dbManagement is available
+        dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         runBlocking {
             val ds = dbMgt.getDatasetById(datasetId)
             require(ds != null) {

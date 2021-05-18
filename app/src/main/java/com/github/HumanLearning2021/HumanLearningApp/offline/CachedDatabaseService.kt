@@ -4,6 +4,8 @@ import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.Converters
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Decorator for a DatabaseService which adds caching for the pictures
@@ -18,45 +20,48 @@ class CachedDatabaseService internal constructor(
 
     internal val cachedPictures: MutableMap<Id, CategorizedPicture> = mutableMapOf()
 
-    override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
-        val uri = cache.retrievePicture(pictureId)
-        return if (uri == null) {
-            removeFromCache(pictureId)
-            db.getPicture(pictureId)?.let { putIntoCache(it) }
-        } else {
-            val cPic = cachedPictures[pictureId]
-            if (cPic == null) {
+    override suspend fun getPicture(pictureId: Id): CategorizedPicture? =
+        withContext(Dispatchers.IO) {
+            val uri = cache.retrievePicture(pictureId)
+            if (uri == null) {
+                removeFromCache(pictureId)
                 db.getPicture(pictureId)?.let { putIntoCache(it) }
             } else {
-                Converters.fromPicture(cPic, uri)
+                val cPic = cachedPictures[pictureId]
+                if (cPic == null) {
+                    db.getPicture(pictureId)?.let { putIntoCache(it) }
+                } else {
+                    Converters.fromPicture(cPic, uri)
+                }
             }
         }
-    }
 
-    override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? {
-        return db.getRepresentativePicture(categoryId)?.id?.let { id ->
-            getRepresentativePictureFromCache(id)
-        } ?: let {
-            db.getRepresentativePicture(categoryId)?.let { cPic ->
-                putIntoCache(cPic)
+    override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? =
+        withContext(Dispatchers.IO) {
+            db.getRepresentativePicture(categoryId)?.id?.let { id ->
+                getRepresentativePictureFromCache(id)
+            } ?: let {
+                db.getRepresentativePicture(categoryId)?.let { cPic ->
+                    putIntoCache(cPic)
+                }
             }
         }
-    }
 
-    override suspend fun removePicture(picture: CategorizedPicture) {
+    override suspend fun removePicture(picture: CategorizedPicture) = withContext(Dispatchers.IO) {
         cachedPictures.remove(picture.id)
         cache.deletePicture(picture.id)
         val pic = db.getPicture(picture.id)
         if (pic != null) db.removePicture(pic)
     }
 
-    private suspend fun putIntoCache(picture: CategorizedPicture): OfflineCategorizedPicture {
-        val uri = cache.savePicture(picture)
-        cachedPictures[picture.id] = picture
-        return Converters.fromPicture(picture, uri)
-    }
+    private suspend fun putIntoCache(picture: CategorizedPicture): OfflineCategorizedPicture =
+        withContext(Dispatchers.IO) {
+            val uri = cache.savePicture(picture)
+            cachedPictures[picture.id] = picture
+            Converters.fromPicture(picture, uri)
+        }
 
-    private suspend fun removeFromCache(pictureId: Id) {
+    private suspend fun removeFromCache(pictureId: Id) = withContext(Dispatchers.IO) {
         cachedPictures.remove(pictureId)
         try {
             cache.deletePicture(pictureId)
@@ -65,14 +70,15 @@ class CachedDatabaseService internal constructor(
         }
     }
 
-    private suspend fun getRepresentativePictureFromCache(pictureId: Id): CategorizedPicture? {
-        return cache.retrievePicture(pictureId)?.let { uri ->
-            cachedPictures[pictureId]?.let { cPic ->
-                Converters.fromPicture(cPic, uri)
-            } ?: db.getPicture(pictureId)?.let { pic -> putIntoCache(pic) }
-        } ?: run {
-            removeFromCache(pictureId)
-            db.getPicture(pictureId)?.let { pic -> putIntoCache(pic) }
+    private suspend fun getRepresentativePictureFromCache(pictureId: Id): CategorizedPicture? =
+        withContext(Dispatchers.IO) {
+            cache.retrievePicture(pictureId)?.let { uri ->
+                cachedPictures[pictureId]?.let { cPic ->
+                    Converters.fromPicture(cPic, uri)
+                } ?: db.getPicture(pictureId)?.let { pic -> putIntoCache(pic) }
+            } ?: run {
+                removeFromCache(pictureId)
+                db.getPicture(pictureId)?.let { pic -> putIntoCache(pic) }
+            }
         }
-    }
 }

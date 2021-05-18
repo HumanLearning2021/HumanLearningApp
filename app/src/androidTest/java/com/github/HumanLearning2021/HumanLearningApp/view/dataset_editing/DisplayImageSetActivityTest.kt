@@ -18,8 +18,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -36,18 +37,25 @@ import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
 
-@UninstallModules(DatabaseManagementModule::class)
+@UninstallModules(DatabaseNameModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayImageSetActivityTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @Inject
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
+
     @BindValue
-    @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    @ProductionDatabaseName
+    var dbName = "dummy"
+
+    lateinit var dbMgt: DatabaseManagement
 
     private var dsPictures = emptySet<CategorizedPicture>()
     private lateinit var categories: Set<Category>
@@ -61,14 +69,15 @@ class DisplayImageSetActivityTest {
     @Before
     fun setUp() {
         hiltRule.inject()  // to get dbManagement set up
+        dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         runBlocking {
             var found = false
-            val datasets = dbManagement.getDatasets()
+            val datasets = dbMgt.getDatasets()
             for (ds in datasets) {
                 val dsCats = ds.categories
                 if (dsCats.isNotEmpty() && !found) {
                     for (i in dsCats.indices) {
-                        val dsPictures = dbManagement.getAllPictures(dsCats.elementAt(i))
+                        val dsPictures = dbMgt.getAllPictures(dsCats.elementAt(i))
                         if (dsPictures.isNotEmpty() && !found) {
                             dataset = ds
                             index = i
@@ -78,8 +87,8 @@ class DisplayImageSetActivityTest {
                 }
             }
             if (!found) {
-                val cat = dbManagement.putCategory("${UUID.randomUUID()}")
-                dataset = dbManagement.putDataset("${UUID.randomUUID()}", setOf(cat))
+                val cat = dbMgt.putCategory("${UUID.randomUUID()}")
+                dataset = dbMgt.putDataset("${UUID.randomUUID()}", setOf(cat))
                 val tmp = File.createTempFile("droid", ".png")
                 try {
                     ApplicationProvider.getApplicationContext<Context>().resources.openRawResource(R.drawable.fork)
@@ -89,14 +98,14 @@ class DisplayImageSetActivityTest {
                             }
                         }
                     val uri = Uri.fromFile(tmp)
-                    dbManagement.putPicture(uri, cat)
+                    dbMgt.putPicture(uri, cat)
                 } finally {
                     tmp.delete()
                 }
             }
             datasetId = dataset.id
             categories = dataset.categories
-            dsPictures = dbManagement.getAllPictures(categories.elementAt(index))
+            dsPictures = dbMgt.getAllPictures(categories.elementAt(index))
         }
         launchFragment()
     }
@@ -146,7 +155,7 @@ class DisplayImageSetActivityTest {
     @Test
     fun deletePicturesWorks() {
         runBlocking {
-            val nbOfPictures = dbManagement.getAllPictures(categories.elementAt(0)).size
+            val nbOfPictures = dbMgt.getAllPictures(categories.elementAt(0)).size
 
             for (i in 0..2) {
                 onData(CoreMatchers.anything())
@@ -155,7 +164,7 @@ class DisplayImageSetActivityTest {
                     .perform(longClick())
             }
             onView(withId(R.id.delete_pictures)).perform(click())
-            val nbOfPicturesAfterDelete = dbManagement.getAllPictures(categories.elementAt(0)).size
+            val nbOfPicturesAfterDelete = dbMgt.getAllPictures(categories.elementAt(0)).size
             assert(nbOfPictures - 1 == nbOfPicturesAfterDelete)
         }
     }
@@ -163,8 +172,8 @@ class DisplayImageSetActivityTest {
     @Test
     fun setRepresentativePictureWorks() {
         runBlocking {
-            val reprPicture = dbManagement.getRepresentativePicture(categories.elementAt(0).id)
-            val nbOfPictures = dbManagement.getAllPictures(categories.elementAt(0)).size
+            val reprPicture = dbMgt.getRepresentativePicture(categories.elementAt(0).id)
+            val nbOfPictures = dbMgt.getAllPictures(categories.elementAt(0)).size
             onData(CoreMatchers.anything())
                 .inAdapterView(withId(R.id.display_image_set_imagesGridView))
                 .atPosition(0)
@@ -172,8 +181,8 @@ class DisplayImageSetActivityTest {
 
             onView(withId(R.id.set_representative_picture)).perform(click())
             val reprPictureAfterClick =
-                dbManagement.getRepresentativePicture(categories.elementAt(0).id)
-            val nbOfPicturesAfterDelete = dbManagement.getAllPictures(categories.elementAt(0)).size
+                dbMgt.getRepresentativePicture(categories.elementAt(0).id)
+            val nbOfPicturesAfterDelete = dbMgt.getAllPictures(categories.elementAt(0)).size
             assert(nbOfPictures - 1 == nbOfPicturesAfterDelete)
             assert(reprPicture != reprPictureAfterClick)
         }

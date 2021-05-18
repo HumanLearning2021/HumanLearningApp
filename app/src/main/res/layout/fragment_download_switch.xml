@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/download_progress_icon"
         app:layout_constraintStart_toStartOf="@+id/download_icon"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,5 +25,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/download_icon" />
+
+    <ProgressBar
+        android:id="@+id/download_progress_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@id/download_switch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

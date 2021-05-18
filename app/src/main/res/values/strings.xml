@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Human Learning</string>
-    <string name="production_database_name">demo2</string>
     <string name="AddPicture_takePictureButtonText">Take a picture</string>
     <string name="AddPicture_takePictureButtonTextWhenImageTaken">Change picture</string>
     <string name="AddPicture_selectCategoryButtonText">Select the category</string>

@@ -15,8 +15,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -29,22 +30,29 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import java.util.*
+import javax.inject.Inject
 
-@UninstallModules(DatabaseManagementModule::class)
+@UninstallModules(DatabaseNameModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayImageActivityTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @Inject
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
+
     @BindValue
-    @Demo2Database
-    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    @ProductionDatabaseName
+    var dbName = "dummy"
+
+    lateinit var dbMgt: DatabaseManagement
 
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
-    private var dataset = getFirstDataset(dbMgt)
-    private val datasetId: String = dataset.id
+    lateinit var dataset: Dataset
+    lateinit var datasetId: String
     private lateinit var categoryWith1Picture: Category
     private lateinit var categoryWith2Pictures: Category
 
@@ -54,6 +62,9 @@ class DisplayImageActivityTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        dbMgt = globalDatabaseManagement.accessDatabase(dbName)
+        dataset = getFirstDataset(dbMgt)
+        datasetId = dataset.id
         categories = emptySet()
         datasetPictures = emptySet()
         categoryWith1Picture = newCategoryWithNPictures(1)

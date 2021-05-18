@@ -9,21 +9,24 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
-@UninstallModules(DatabaseManagementModule::class)
+@UninstallModules(DatabaseNameModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DatasetListWidgetTest {
@@ -31,11 +34,24 @@ class DatasetListWidgetTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    @BindValue
-    @Demo2Database
-    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    @Inject
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
-    private val dummyDatasets = runBlocking { dbMgt.getDatasets() }
+    @BindValue
+    @ProductionDatabaseName
+    var dbName = "dummy"
+
+    lateinit var dbMgt: DatabaseManagement
+
+    lateinit var dummyDatasets: Set<Dataset>
+
+    @Before
+    fun setUp() {
+        hiltRule.inject()
+        dbMgt = globalDatabaseManagement.accessDatabase(dbName)
+        dummyDatasets = runBlocking { dbMgt.getDatasets() }
+    }
 
     @Test
     fun listItemInFragmentAreClickable() {

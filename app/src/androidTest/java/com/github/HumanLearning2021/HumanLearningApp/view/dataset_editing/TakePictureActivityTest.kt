@@ -16,9 +16,13 @@ import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltC
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
+import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import dagger.hilt.android.testing.BindValue
@@ -36,8 +40,9 @@ import org.junit.runners.MethodSorters
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import java.lang.reflect.Method
+import javax.inject.Inject
 
-@UninstallModules(DatabaseManagementModule::class)
+@UninstallModules(DatabaseNameModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // to enforce consistent order of tests
@@ -45,11 +50,17 @@ class TakePictureActivityTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    @BindValue
-    @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    @Inject
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
-    private val datasetId: String = TestUtils.getFirstDataset(dbManagement).id
+    @BindValue
+    @ProductionDatabaseName
+    var dbName = "dummy"
+
+    lateinit var dbMgt: DatabaseManagement
+
+    lateinit var datasetId: String
 
     private val catSet = setOf<Category>(
         DummyCategory("cat1", "cat1"),
@@ -74,6 +85,9 @@ class TakePictureActivityTest {
     @Before
     fun setUp() {
         hiltRule.inject()
+        dbMgt = globalDatabaseManagement.accessDatabase(dbName)
+        TestUtils.getFirstDataset(dbMgt).id
+        datasetId = TestUtils.getFirstDataset(dbMgt).id
         launchFragment()
         // By waiting before the test starts, it allows time for the app to startup to prevent the
         // following error to appear on cirrus:

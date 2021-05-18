@@ -11,6 +11,7 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
@@ -67,15 +68,18 @@ class UniqueDatabaseManagementTest {
 
     @Test
     fun getDownloadedDatabaseNamesWorks() = runBlocking {
-        uDbMan.downloadDatabase("demo")
+        uDbMan.downloadDatabase("demo").await()
         assertThat(uDbMan.getDownloadedDatabases(), hasItem("demo"))
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun offlineAndFirestoreDatabasesContainTheSameElements() = runBlocking {
         val dbName = "demo"
         val fDbMan = uDbMan.accessCloudDatabase(dbName)
-        val oDbman = uDbMan.downloadDatabase(dbName)
+        val tmp = uDbMan.downloadDatabase(dbName)
+        tmp.await()
+        val oDbman = tmp.getCompleted()
         assertThat(
             fDbMan.getDatasets().map { ds -> ds.id },
             equalTo(oDbman.getDatasets().map { ds -> ds.id })
@@ -100,7 +104,7 @@ class UniqueDatabaseManagementTest {
 
     @Test
     fun accessOfflineDatabaseReturnsCorrectType() = runBlocking {
-        uDbMan.downloadDatabase("demo")
+        uDbMan.downloadDatabase("demo").await()
         assert(uDbMan.accessDatabase("demo") is DefaultDatabaseManagement)
     }
 }

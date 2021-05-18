@@ -9,6 +9,7 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
@@ -27,6 +28,10 @@ class DatasetListWidget : Fragment() {
     @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
+    @Inject
+    @ProductionDatabaseName
+    lateinit var dbName: String
+
     lateinit var dbMgt: DatabaseManagement
 
     private val mutableSelectedDataset = SingleLiveData<Dataset>()
@@ -43,9 +48,7 @@ class DatasetListWidget : Fragment() {
         super.onCreate(savedInstanceState)
         runBlocking {
             dbMgt = globalDatabaseManagement.accessDatabase(
-                getString(
-                    R.string.production_database_name
-                )
+                dbName
             )
         }
     }
@@ -54,9 +57,7 @@ class DatasetListWidget : Fragment() {
         super.onResume()
         runBlocking {
             dbMgt = globalDatabaseManagement.accessDatabase(
-                getString(
-                    R.string.production_database_name
-                )
+                dbName
             )
         }
     }

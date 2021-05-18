@@ -11,7 +11,9 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class FirestoreDatabaseService internal constructor(
@@ -130,28 +132,24 @@ class FirestoreDatabaseService internal constructor(
         )
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    override suspend fun getCategories(): Set<FirestoreCategory> {
+    override suspend fun getCategories(): Set<FirestoreCategory> = withContext(Dispatchers.IO) {
         val query = categories
         val cats = query.get().await().toObjects(CategorySchema::class.java)
-        return buildSet(cats.size) {
-            for (cat in cats)
-                add(cat.toPublic())
-        }
+        cats.map { cat -> cat.toPublic() }.toSet()
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    override suspend fun getAllPictures(category: Category): Set<FirestoreCategorizedPicture> {
-        require(category is FirestoreCategory)
-        if (!categories.document(category.id).get().await().exists()) {
-            throw DatabaseService.NotFoundException(category.id)
+    override suspend fun getAllPictures(category: Category): Set<FirestoreCategorizedPicture> =
+        withContext(Dispatchers.IO) {
+            require(category is FirestoreCategory)
+            if (!categories.document(category.id).get().await().exists()) {
+                throw DatabaseService.NotFoundException(category.id)
+            }
+            val query = pictures.whereEqualTo("category", categories.document(category.id))
+            val pics = query.get().await().toObjects(PictureSchema::class.java)
+            pics.map { pic -> pic.toPublic() }.toSet()
         }
-        val query = pictures.whereEqualTo("category", categories.document(category.id))
-        val pics = query.get().await().toObjects(PictureSchema::class.java)
-        return pics.map { pic -> pic.toPublic() }.toSet()
-    }
 
-    override suspend fun removeCategory(category: Category) {
+    override suspend fun removeCategory(category: Category): Unit = withContext(Dispatchers.IO) {
         require(category is FirestoreCategory)
         val ref = categories.document(category.id)
         if (!ref.get().await().exists()) {
@@ -160,110 +158,114 @@ class FirestoreDatabaseService internal constructor(
         try {
             ref.delete().await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w(this.toString(), "Removing category ${category.id} from ${this.db} failed", e)
+            Log.w(this.toString(), "Removing category ${category.id} failed", e)
         }
     }
 
-    override suspend fun removePicture(picture: CategorizedPicture) {
-        require(picture is FirestoreCategorizedPicture)
-        val ref = pictures.document(picture.id)
-        if (!ref.get().await().exists()) {
-            throw DatabaseService.NotFoundException(picture.id)
+    override suspend fun removePicture(picture: CategorizedPicture): Unit =
+        withContext(Dispatchers.IO) {
+            require(picture is FirestoreCategorizedPicture)
+            val ref = pictures.document(picture.id)
+            if (!ref.get().await().exists()) {
+                throw DatabaseService.NotFoundException(picture.id)
+            }
+            try {
+                ref.delete().await()
+            } catch (e: FirebaseFirestoreException) {
+                Log.w(this.toString(), "Removing picture ${picture.url} failed", e)
+            }
+            try {
+                storage.getReferenceFromUrl(picture.url).delete().await()
+            } catch (e: FirebaseException) {
+                Log.w(this.toString(), "Removing the image ${picture.url} from storage failed", e)
+            }
         }
-        try {
-            ref.delete().await()
-        } catch (e: FirebaseFirestoreException) {
-            Log.w(this.toString(), "Removing picture ${picture.url} from ${this.db} failed", e)
-        }
-        try {
-            storage.getReferenceFromUrl(picture.url).delete().await()
-        } catch (e: FirebaseException) {
-            Log.w(this.toString(), "Removing the image ${picture.url} from storage failed", e)
-        }
-    }
 
-    override suspend fun putDataset(name: String, cats: Set<Category>): FirestoreDataset {
-        val catRefs: MutableSet<DocumentReference> = mutableSetOf()
-        for (cat in cats) {
-            require(cat is FirestoreCategory)
-            catRefs.add(categories.document(cat.id))
+    override suspend fun putDataset(name: String, cats: Set<Category>): FirestoreDataset =
+        withContext(Dispatchers.IO) {
+            val catRefs: MutableSet<DocumentReference> = mutableSetOf()
+            for (cat in cats) {
+                require(cat is FirestoreCategory)
+                catRefs.add(categories.document(cat.id))
+            }
+            val data = DatasetSchema(name, catRefs.toList())
+            val documentRef = datasets.add(data).await()
+            documentRef.get().await().toObject(DatasetSchema::class.java)!!.toPublic()
         }
-        val data = DatasetSchema(name, catRefs.toList())
-        val documentRef = datasets.add(data).await()
-        return documentRef.get().await().toObject(DatasetSchema::class.java)!!.toPublic()
-    }
 
-    override suspend fun getDataset(id: Id): FirestoreDataset? {
+    override suspend fun getDataset(id: Id): FirestoreDataset? = withContext(Dispatchers.IO) {
         val ds = datasets.document(id).get().await().toObject(DatasetSchema::class.java)
-        return ds?.toPublic()
+        ds?.toPublic()
     }
 
-    override suspend fun deleteDataset(id: Id) {
+    override suspend fun deleteDataset(id: Id): Unit = withContext(Dispatchers.IO) {
         if (!datasets.document(id).get().await().exists()) {
             throw DatabaseService.NotFoundException(id)
         }
         try {
             datasets.document(id).delete().await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w(this.toString(), "Deleting dataset ${datasets.id} from ${this.db} failed", e)
+            Log.w(this.toString(), "Deleting dataset ${datasets.id} failed", e)
         }
     }
 
-    override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
-        require(category is FirestoreCategory)
-        val categoryRef = categories.document(category.id)
-        if (!categoryRef.get().await().exists()) {
-            throw DatabaseService.NotFoundException(category.id)
+    override suspend fun putRepresentativePicture(picture: Uri, category: Category): Unit =
+        withContext(Dispatchers.IO) {
+            require(category is FirestoreCategory)
+            val categoryRef = categories.document(category.id)
+            if (!categoryRef.get().await().exists()) {
+                throw DatabaseService.NotFoundException(category.id)
+            }
+            val id = "${UUID.randomUUID()}"
+            val imageRef = imagesDir.child(id)
+            imageRef.putFile(picture).await()
+            val url = "gs://${imageRef.bucket}/${imageRef.path}"
+            putRepresentativePicture(url, category)
         }
-        val id = "${UUID.randomUUID()}"
-        val imageRef = imagesDir.child(id)
-        imageRef.putFile(picture).await()
-        val url = "gs://${imageRef.bucket}/${imageRef.path}"
-        putRepresentativePicture(url, category)
-    }
 
-    override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
-        require(picture is FirestoreCategorizedPicture)
-        val ref = pictures.document(picture.id)
-        if (!ref.get().await().exists()) {
-            throw DatabaseService.NotFoundException(picture.id)
+    override suspend fun putRepresentativePicture(picture: CategorizedPicture): Unit =
+        withContext(Dispatchers.IO) {
+            require(picture is FirestoreCategorizedPicture)
+            val ref = pictures.document(picture.id)
+            if (!ref.get().await().exists()) {
+                throw DatabaseService.NotFoundException(picture.id)
+            }
+            try {
+                ref.delete().await()
+            } catch (e: FirebaseFirestoreException) {
+                Log.w(this.toString(), "Removing picture ${picture.url} failed", e)
+            }
+            putRepresentativePicture(picture.url, picture.category)
         }
-        try {
-            ref.delete().await()
-        } catch (e: FirebaseFirestoreException) {
-            Log.w(this.toString(), "Removing picture ${picture.url} from ${this.db} failed", e)
-        }
-        putRepresentativePicture(picture.url, picture.category)
-    }
 
-    private suspend fun putRepresentativePicture(url: String, category: Category) {
-        require(category is FirestoreCategory)
-        val categoryRef = categories.document(category.id)
-        if (!categoryRef.get().await().exists()) {
-            throw DatabaseService.NotFoundException(category.id)
+    private suspend fun putRepresentativePicture(url: String, category: Category) =
+        withContext(Dispatchers.IO) {
+            require(category is FirestoreCategory)
+            val categoryRef = categories.document(category.id)
+            if (!categoryRef.get().await().exists()) {
+                throw DatabaseService.NotFoundException(category.id)
+            }
+            val data = PictureSchema(categoryRef, url)
+            try {
+                representativePictures.add(data).await()
+            } catch (e: FirebaseFirestoreException) {
+                Log.w(
+                    this.toString(),
+                    "Setting representative picture of category ${category.id} to picture at $url failed",
+                    e
+                )
+            }
         }
-        val data = PictureSchema(categoryRef, url)
-        try {
-            representativePictures.add(data).await()
-        } catch (e: FirebaseFirestoreException) {
-            Log.w(
-                this.toString(),
-                "Setting representative picture of category ${category.id} to picture at $url failed",
-                e
-            )
-        }
-    }
 
-    override suspend fun getDatasets(): Set<FirestoreDataset> {
-        Log.d("db download debugging", "downloading datasets from firestore...")
+    override suspend fun getDatasets(): Set<FirestoreDataset> = withContext(Dispatchers.IO) {
         val ds = datasets.get().await().documents
-        return ds.mapNotNull { d -> d.toObject(DatasetSchema::class.java)?.toPublic() }.toSet()
+        ds.mapNotNull { d -> d.toObject(DatasetSchema::class.java)?.toPublic() }.toSet()
     }
 
     override suspend fun removeCategoryFromDataset(
         dataset: Dataset,
         category: Category
-    ): FirestoreDataset {
+    ): FirestoreDataset = withContext(Dispatchers.IO) {
         require(dataset is FirestoreDataset)
         require(category is FirestoreCategory)
         if (!categories.document(category.id).get().await().exists())
@@ -279,31 +281,32 @@ class FirestoreDatabaseService internal constructor(
                 e
             )
         }
-        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)
+        datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)
             ?.toPublic() ?: throw DatabaseService.NotFoundException(dataset.id)
     }
 
-    override suspend fun editDatasetName(dataset: Dataset, newName: String): FirestoreDataset {
-        require(dataset is FirestoreDataset)
-        if (!datasets.document(dataset.id).get().await().exists())
-            throw DatabaseService.NotFoundException(dataset.id)
-        try {
-            datasets.document(dataset.id).update("name", newName).await()
-        } catch (e: FirebaseFirestoreException) {
-            Log.w(
-                this.toString(),
-                "Renaming ${dataset.id} failed",
-                e
-            )
+    override suspend fun editDatasetName(dataset: Dataset, newName: String): FirestoreDataset =
+        withContext(Dispatchers.IO) {
+            require(dataset is FirestoreDataset)
+            if (!datasets.document(dataset.id).get().await().exists())
+                throw DatabaseService.NotFoundException(dataset.id)
+            try {
+                datasets.document(dataset.id).update("name", newName).await()
+            } catch (e: FirebaseFirestoreException) {
+                Log.w(
+                    this.toString(),
+                    "Renaming ${dataset.id} failed",
+                    e
+                )
+            }
+            datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!
+                .toPublic()
         }
-        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!
-            .toPublic()
-    }
 
     override suspend fun addCategoryToDataset(
         dataset: Dataset,
         category: Category
-    ): FirestoreDataset {
+    ): FirestoreDataset = withContext(Dispatchers.IO) {
         require(dataset is FirestoreDataset)
         require(category is FirestoreCategory)
         if (!datasets.document(dataset.id).get().await().exists())
@@ -319,87 +322,99 @@ class FirestoreDatabaseService internal constructor(
                 e
             )
         }
-        return datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!
+        datasets.document(dataset.id).get().await().toObject(DatasetSchema::class.java)!!
             .toPublic()
     }
 
-    override suspend fun updateUser(firebaseUser: FirebaseUser): FirestoreUser {
-        val uid = firebaseUser.uid
-        val type = User.Type.FIREBASE
-        val documentRef = users.document("$uid@$type")
-        val data = UserSchema().apply {
-            email = firebaseUser.email
-            displayName = firebaseUser.displayName
+    override suspend fun updateUser(firebaseUser: FirebaseUser): FirestoreUser =
+        withContext(Dispatchers.IO) {
+            val uid = firebaseUser.uid
+            val type = User.Type.FIREBASE
+            val documentRef = users.document("$uid@$type")
+            val data = UserSchema().apply {
+                email = firebaseUser.email
+                displayName = firebaseUser.displayName
+            }
+            documentRef.set(data).await()
+            documentRef.get().await().toObject(UserSchema::class.java)!!.toPublic()
         }
-        documentRef.set(data).await()
-        return documentRef.get().await().toObject(UserSchema::class.java)!!.toPublic()
-    }
 
-    override suspend fun getUser(type: User.Type, uid: String): FirestoreUser? {
-        val documentRef = users.document("$uid@$type")
-        val user = documentRef.get().await().toObject(UserSchema::class.java)
-        return user?.toPublic()
-    }
+    override suspend fun getUser(type: User.Type, uid: String): FirestoreUser? =
+        withContext(Dispatchers.IO) {
+            val documentRef = users.document("$uid@$type")
+            val user = documentRef.get().await().toObject(UserSchema::class.java)
+            user?.toPublic()
+        }
 
     override suspend fun getStatistic(userId: User.Id, datasetId: Id): Statistic? =
-        statistics.document("$userId+$datasetId").get().await()
-            .toObject(StatisticsSchema::class.java)?.toPublic()
+        withContext(Dispatchers.IO) {
+            statistics.document("$userId+$datasetId").get().await()
+                .toObject(StatisticsSchema::class.java)?.toPublic()
+        }
 
-    override suspend fun putStatistic(statistic: Statistic) {
+    override suspend fun putStatistic(statistic: Statistic): Unit = withContext(Dispatchers.IO) {
         statistic.run {
             statistics.document("$id")
                 .set(StatisticsSchema(occurrences))
         }.await()
     }
 
-    override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {
-        require(category is FirestoreCategory)
-        if (!categories.document(category.id).get().await().exists())
-            throw DatabaseService.NotFoundException(category.id)
-        val query = pictures.whereEqualTo("category", categories.document(category.id)).limit(1)
-        val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
-        return pic?.toPublic()
-    }
+    override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? =
+        withContext(Dispatchers.IO) {
+            require(category is FirestoreCategory)
+            if (!categories.document(category.id).get().await().exists())
+                throw DatabaseService.NotFoundException(category.id)
+            val query = pictures.whereEqualTo("category", categories.document(category.id)).limit(1)
+            val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
+            pic?.toPublic()
+        }
 
-    override suspend fun getPicture(pictureId: Id): FirestoreCategorizedPicture? {
-        val pic = pictures.document(pictureId).get().await().toObject(PictureSchema::class.java)
-        return pic?.toPublic()
-    }
+    override suspend fun getPicture(pictureId: Id): FirestoreCategorizedPicture? =
+        withContext(Dispatchers.IO) {
+            val pic = pictures.document(pictureId).get().await().toObject(PictureSchema::class.java)
+            pic?.toPublic()
+        }
 
-    override suspend fun getPictureIds(category: Category): List<String> {
-        require(category is FirestoreCategory)
-        val query = pictures.whereEqualTo("category", categories.document(category.id))
-        return query.get().await().map { r -> r.id }
-    }
+    override suspend fun getPictureIds(category: Category): List<String> =
+        withContext(Dispatchers.IO) {
+            require(category is FirestoreCategory)
+            val query = pictures.whereEqualTo("category", categories.document(category.id))
+            query.get().await().map { r -> r.id }
+        }
 
-    override suspend fun getRepresentativePicture(categoryId: Id): FirestoreCategorizedPicture? {
-        val query = representativePictures.whereEqualTo("category", categories.document(categoryId))
-            .limit(1)
-        val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
-        return pic?.toPublic()
-    }
+    override suspend fun getRepresentativePicture(categoryId: Id): FirestoreCategorizedPicture? =
+        withContext(Dispatchers.IO) {
+            val query =
+                representativePictures.whereEqualTo("category", categories.document(categoryId))
+                    .limit(1)
+            val pic = query.get().await().toObjects(PictureSchema::class.java).getOrNull(0)
+            pic?.toPublic()
+        }
 
-    override suspend fun putPicture(picture: Uri, category: Category): FirestoreCategorizedPicture {
-        require(category is FirestoreCategory)
-        val id = "${UUID.randomUUID()}"
-        val ref = imagesDir.child(id)
-        if (!categories.document(category.id).get().await().exists())
-            throw DatabaseService.NotFoundException(category.id)
-        ref.putFile(picture).await()
-        val data = PictureSchema(categories.document(category.id), "gs://${ref.bucket}/${ref.path}")
-        val documentRef = pictures.add(data).await()
-        return documentRef.get().await().toObject(PictureSchema::class.java)!!.toPublic()
-    }
+    override suspend fun putPicture(picture: Uri, category: Category): FirestoreCategorizedPicture =
+        withContext(Dispatchers.IO) {
+            require(category is FirestoreCategory)
+            val id = "${UUID.randomUUID()}"
+            val ref = imagesDir.child(id)
+            if (!categories.document(category.id).get().await().exists())
+                throw DatabaseService.NotFoundException(category.id)
+            ref.putFile(picture).await()
+            val data =
+                PictureSchema(categories.document(category.id), "gs://${ref.bucket}/${ref.path}")
+            val documentRef = pictures.add(data).await()
+            documentRef.get().await().toObject(PictureSchema::class.java)!!.toPublic()
+        }
 
-    override suspend fun getCategory(id: Id): FirestoreCategory? {
+    override suspend fun getCategory(id: Id): FirestoreCategory? = withContext(Dispatchers.IO) {
         val cat = categories.document(id).get().await()
             .toObject(CategorySchema::class.java)
-        return cat?.toPublic()
+        cat?.toPublic()
     }
 
-    override suspend fun putCategory(categoryName: String): FirestoreCategory {
-        val data = CategorySchema(categoryName)
-        val documentRef = categories.add(data).await()
-        return documentRef.get().await().toObject(CategorySchema::class.java)!!.toPublic()
-    }
+    override suspend fun putCategory(categoryName: String): FirestoreCategory =
+        withContext(Dispatchers.IO) {
+            val data = CategorySchema(categoryName)
+            val documentRef = categories.add(data).await()
+            documentRef.get().await().toObject(CategorySchema::class.java)!!.toPublic()
+        }
 }

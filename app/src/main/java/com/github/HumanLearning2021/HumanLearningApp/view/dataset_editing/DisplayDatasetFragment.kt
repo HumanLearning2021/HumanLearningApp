@@ -20,6 +20,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayDatasetBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -34,6 +35,10 @@ class DisplayDatasetFragment : Fragment() {
     @Inject
     @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
+
+    @Inject
+    @ProductionDatabaseName
+    lateinit var dbName: String
 
     lateinit var dbManagement: DatabaseManagement
 
@@ -51,9 +56,7 @@ class DisplayDatasetFragment : Fragment() {
         super.onCreate(savedInstanceState)
         runBlocking {
             dbManagement = globalDatabaseManagement.accessDatabase(
-                getString(
-                    R.string.production_database_name
-                )
+                dbName
             )
         }
         setFragmentResultListener(REQUEST_KEY) { _, bundle ->
@@ -69,9 +72,7 @@ class DisplayDatasetFragment : Fragment() {
         super.onResume()
         runBlocking {
             dbManagement = globalDatabaseManagement.accessDatabase(
-                getString(
-                    R.string.production_database_name
-                )
+                dbName
             )
         }
     }
