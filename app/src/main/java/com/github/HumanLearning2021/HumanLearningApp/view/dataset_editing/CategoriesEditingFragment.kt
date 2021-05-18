@@ -64,6 +64,10 @@ class CategoriesEditingFragment : Fragment() {
                     new = true
                 }
                 if (!new) {
+                    /**
+                     * If the dataset is not new, we add the already existing categories
+                     * and the name of the dataset to the layout and set them as non clickable.
+                     */
                     dataset = dBManagement.getDatasetById(datasetId!!)!!
                     binding.datasetName?.setText(dataset.name)
                     dsCategories = dataset.categories
@@ -79,9 +83,18 @@ class CategoriesEditingFragment : Fragment() {
                             dsCategories.elementAt(i).name,
                             TextView.BufferType.EDITABLE
                         )
+                        /**
+                         * We decided that it is not possible to edit the name of a category once created.
+                         * This choice is due to the chosen implementation of a Category.
+                         */
+                        categoryName.keyListener = null
                     }
                     setTextChangeListener()
                 } else {
+                    /**
+                     * If the dataset is new, we add 3 empty categories to help the user
+                     * to understand that he needs to fill the categories names.
+                     */
                     for (i in 0 until 3) {
                         addNewView()
                     }
@@ -106,7 +119,10 @@ class CategoriesEditingFragment : Fragment() {
         _binding = null
     }
 
-
+    /**
+     * This method adds a modifiable category to the list of categories
+     * by adding a new view to the list.
+     */
     private fun addNewView() {
         val viewToAdd = View.inflate(parentActivity, R.layout.row_add_category, null)
         binding.parentLinearLayout.addView(viewToAdd, binding.parentLinearLayout.childCount)
@@ -114,7 +130,12 @@ class CategoriesEditingFragment : Fragment() {
             .setOnClickListener { removeView(it) }
     }
 
-
+    /**
+     * This method is called after having clicked the delete category button.
+     * It removes the view and the category from the dataset if needed.
+     *
+     * @param view the view to be removed.
+     */
     private fun removeView(view: View) {
         val categoryName: EditText =
             (view.parent as View).findViewById(R.id.data_creation_category_name)
@@ -132,12 +153,16 @@ class CategoriesEditingFragment : Fragment() {
         }
     }
 
-
+    /**
+     * This method creates the added categories and add them to the dataset.
+     * If the dataset is new, it is added to the database.
+     * It ends by going to the Display dataset fragment.
+     */
     private fun saveData() {
         lifecycleScope.launch {
             val count = binding.parentLinearLayout.childCount
             var v: View?
-            var newCategories = dsCategories
+            var newCategories = emptySet<Category>()
 
             for (i in dsCategories.size until count) {
                 v = binding.parentLinearLayout.getChildAt(i)
@@ -155,6 +180,7 @@ class CategoriesEditingFragment : Fragment() {
                     dBManagement.putDataset(binding.datasetName?.text.toString(), newCategories)
                 datasetId = dataset.id
             }
+
             val action =
                 CategoriesEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(
                     datasetId!!
@@ -169,6 +195,11 @@ class CategoriesEditingFragment : Fragment() {
         _binding = null
     }
 
+    /**
+     * Set the listeners for the "Add new category" and the "Save data" buttons.
+     * "Add new category" button : Add a new modifiable category for the user
+     * "Save data" button : Save the categories into the dataset and go back to Display dataset fragment
+     */
     private fun setButtonsListener() {
         binding.buttonAdd.setOnClickListener {
             addNewView()
@@ -178,6 +209,9 @@ class CategoriesEditingFragment : Fragment() {
         }
     }
 
+    /**
+     * Set the listener to modify the name of the dataset whenever the name is modified
+     */
     private fun setTextChangeListener() {
         binding.datasetName?.doAfterTextChanged {
             lifecycleScope.launch {

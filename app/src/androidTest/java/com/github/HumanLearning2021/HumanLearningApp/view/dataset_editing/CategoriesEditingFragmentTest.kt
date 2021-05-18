@@ -154,7 +154,6 @@ class CategoriesEditingFragmentTest {
 
             // need to get again because dataset is immutable and editing the name creates a new
             // Dataset object in the database
-            // `!!` ok because we checked it exists in setup
             dataset = dbMgt.getDatasetById(datasetId)!!
             assert(dataset.name == newName) {
                 "dataset name \"${dataset.name}\" different" +
