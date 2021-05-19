@@ -5,14 +5,18 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.firebase.ui.auth.AuthUI
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.User
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -43,8 +47,16 @@ class RoomOfflineDatabaseTest {
     private lateinit var presenter: AuthenticationPresenter
 
     @Inject
+    @Demo2Database
+    lateinit var demo2DbService: DatabaseService
+
+    @Inject
     @ScratchDatabase
     lateinit var scratchInterface: DatabaseService
+
+    @BindValue
+    @Demo2Database
+    lateinit var demo2DbMgt: DatabaseManagement
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -54,6 +66,8 @@ class RoomOfflineDatabaseTest {
 
     @Before
     fun createDb() {
+        hiltRule.inject()
+        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
         categoryDao = db.categoryDao()
@@ -62,8 +76,6 @@ class RoomOfflineDatabaseTest {
         databaseDao = db.databaseDao()
         databaseDao.insertAll(RoomEmptyHLDatabase(dbName))
         presenter = AuthenticationPresenter(AuthUI.getInstance(), scratchInterface)
-
-
 
     }
 
