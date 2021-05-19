@@ -150,7 +150,6 @@ class RoomUserTest {
         for (i in 0 until numberOfUsers) {
             testUsers.add(getRandomUser())
         }
-
         userDao.insertAll(*testUsers.toTypedArray())
         val toUpdateUser = testUsers.random()
         val updatedUser =
