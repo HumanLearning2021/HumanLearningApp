@@ -225,6 +225,7 @@ class DisplayImageSetActivityTest {
 
     private fun navigateToDisplayImagesetFragment() {
         onView(withId(R.id.datasetsOverviewFragment)).perform(click())
+        onView(withId(R.id.DatasetList_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
