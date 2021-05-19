@@ -5,16 +5,13 @@ import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.*
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.hasName
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
@@ -27,22 +24,9 @@ import java.io.File
 import java.util.*
 import javax.inject.Inject
 
-@UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class FirestoreDatabaseServiceTest {
-
-    @Inject
-    @Demo2Database
-    lateinit var demo2DbService: DatabaseService
-
-    @BindValue
-    @Demo2Database
-    lateinit var demo2DbMgt: DatabaseManagement
-
-    @Inject
-    @Demo2CachePictureRepository
-    lateinit var repository: PictureRepository
 
     @Inject
     @DemoDatabase
@@ -62,7 +46,6 @@ class FirestoreDatabaseServiceTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory = FirestoreCategory("oopsy", "oopsy")

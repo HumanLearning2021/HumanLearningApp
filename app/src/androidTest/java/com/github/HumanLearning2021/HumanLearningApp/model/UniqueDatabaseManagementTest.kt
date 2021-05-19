@@ -2,15 +2,13 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
@@ -20,22 +18,9 @@ import org.junit.*
 import org.junit.runner.RunWith
 import javax.inject.Inject
 
-@UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class UniqueDatabaseManagementTest {
-
-    @Inject
-    @Demo2Database
-    lateinit var demo2DbService: DatabaseService
-
-    @BindValue
-    @Demo2Database
-    lateinit var demo2DbMgt: DatabaseManagement
-
-    @Inject
-    @Demo2CachePictureRepository
-    lateinit var repository: PictureRepository
 
     @Inject
     @RoomDatabase
@@ -55,7 +40,6 @@ class UniqueDatabaseManagementTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         context.cacheDir.deleteRecursively()
         room.clearAllTables()
         Thread.sleep(1000) //wait for above method to complete
