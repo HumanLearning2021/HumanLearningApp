@@ -1,7 +1,19 @@
 package com.github.HumanLearning2021.HumanLearningApp.model.learning
 
+import android.os.Parcelable
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import kotlinx.parcelize.Parcelize
 import java.util.*
+
+/**
+ * Represents the result of an evaluation.
+ * @param successFailureCountPerPhase maps each phase number to a tuple (#successes, #failures)
+ * For example, if the value at index 3 is (17, 13), this means that the learner made 17 successful
+ * sortings, and 13 unsuccessful sortings for the phase that uses 3 categories of the dataset.
+ */
+@Parcelize
+data class EvaluationResult(val successFailureCountPerPhase: List<Pair<Int, Int>>) : Parcelable
+
 
 class EvaluationModel(private val dataset: Dataset) {
     /**
@@ -9,6 +21,8 @@ class EvaluationModel(private val dataset: Dataset) {
      * Start with 1 category
      */
     private var currentPhase = 1
+
+    fun getCurrentPhase(): Int = currentPhase
 
     private var nbSuccessesInStreak = 0
     private var nbFailuresInStreak = 0
@@ -41,6 +55,12 @@ class EvaluationModel(private val dataset: Dataset) {
      * (number of successes in phase, number of failures in phase)
      */
     private val successFailureCountPerPhase = ArrayList<Pair<Int, Int>>()
+
+    /**
+     * Get the evaluation result for the current state of the model.
+     * @see EvaluationResult
+     */
+    fun getCurrentEvaluationResult() = EvaluationResult(successFailureCountPerPhase)
 
     private fun successFailureCountForCurrentPhase() =
         successFailureCountPerPhase.getOrElse(currentPhase) { 0 to 0 }
@@ -76,7 +96,7 @@ class EvaluationModel(private val dataset: Dataset) {
                     currentPhase++
                 }
             }
-            
+
             resetStreak()
         }
     }
