@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -32,33 +33,30 @@ class LearningSettingsFragment : Fragment() {
         return binding.root
     }
 
+    private fun setButtonListener(btn: Button, mode: LearningMode) {
+        btn.setOnClickListener {
+            findNavController().navigate(
+                LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
+                    args.datasetId,
+                    learningMode = mode
+                )
+            )
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.learningSettingsBtChoosePresentation.setOnClickListener {
-            findNavController().navigate(
-                LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
-                    args.datasetId,
-                    LearningMode.PRESENTATION
-                )
-            )
-        }
-
-        binding.learningSettingsBtChooseRepresentation.setOnClickListener {
-            findNavController().navigate(
-                LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
-                    args.datasetId,
-                    LearningMode.REPRESENTATION
-                )
-            )
-        }
-        binding.learningSettingsBtChooseEvaluation?.setOnClickListener {
-            findNavController().navigate(
-                LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
-                    args.datasetId,
-                    LearningMode.EVALUATION
-                )
+        setButtonListener(binding.learningSettingsBtChoosePresentation, LearningMode.PRESENTATION)
+        setButtonListener(
+            binding.learningSettingsBtChooseRepresentation,
+            LearningMode.REPRESENTATION
+        )
+        binding.learningSettingsBtChooseEvaluation?.let {
+            setButtonListener(
+                it,
+                LearningMode.EVALUATION
             )
         }
 
