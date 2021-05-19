@@ -76,12 +76,15 @@ class LearningSettingsFragment : Fragment() {
         _binding = null
 
     }
-
-
 }
 
 enum class LearningMode {
     PRESENTATION,
-    REPRESENTATION;
+    REPRESENTATION,
+
+    /**
+     * ComVoor-like evaluation
+     */
+    EVALUATION;
 }
 

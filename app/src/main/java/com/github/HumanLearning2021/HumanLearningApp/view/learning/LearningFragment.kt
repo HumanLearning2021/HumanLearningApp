@@ -77,7 +77,7 @@ class LearningFragment : Fragment() {
     }
 
     /**
-     * This function adapts the display to the number of categories in the dataset
+     * This function adapts the display to the number of categories given
      * For example, if the dataset only has 2 categories, one of the categories will not be displayed
      * @param dataset dataset that is used for the learning
      * @return the ImageViews that are visible on screen
