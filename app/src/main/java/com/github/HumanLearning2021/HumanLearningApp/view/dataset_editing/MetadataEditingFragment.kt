@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CategoriesEditingFragment : Fragment() {
+class MetadataEditingFragment : Fragment() {
 
     @Inject
     @Demo2Database
@@ -40,7 +40,7 @@ class CategoriesEditingFragment : Fragment() {
     private lateinit var removedCategory: Category
     private lateinit var parentActivity: FragmentActivity
     private var new = false
-    private val args: CategoriesEditingFragmentArgs by navArgs()
+    private val args: MetadataEditingFragmentArgs by navArgs()
 
 
     override fun onCreateView(
@@ -182,7 +182,7 @@ class CategoriesEditingFragment : Fragment() {
             }
 
             val action =
-                CategoriesEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(
+                MetadataEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(
                     datasetId!!
                 )
             findNavController().navigate(action)

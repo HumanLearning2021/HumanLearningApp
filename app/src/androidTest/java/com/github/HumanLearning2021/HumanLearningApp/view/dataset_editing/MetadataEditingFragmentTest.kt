@@ -41,7 +41,7 @@ import org.mockito.Mockito.verify
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class CategoriesEditingFragmentTest {
+class MetadataEditingFragmentTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
@@ -109,7 +109,7 @@ class CategoriesEditingFragmentTest {
         onView(withId(R.id.button_submit_list)).perform(click())
         waitFor(1) // increase if needed
         verify(navController).navigate(
-            CategoriesEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(
+            MetadataEditingFragmentDirections.actionCategoriesEditingFragmentToDisplayDatasetFragment(
                 datasetId
             )
         )
@@ -164,7 +164,7 @@ class CategoriesEditingFragmentTest {
 
     private fun launchFragment() {
         val args = bundleOf("datasetId" to datasetId)
-        launchFragmentInHiltContainer<CategoriesEditingFragment>(args) {
+        launchFragmentInHiltContainer<MetadataEditingFragment>(args) {
             Navigation.setViewNavController(requireView(), navController)
         }
     }
