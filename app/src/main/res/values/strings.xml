@@ -83,5 +83,6 @@
     <string name="download">download</string>
     <string name="download_icon">download_icon</string>
     <string name="download_database">Download database</string>
+    <string name="home">Home</string>
 </resources>
 

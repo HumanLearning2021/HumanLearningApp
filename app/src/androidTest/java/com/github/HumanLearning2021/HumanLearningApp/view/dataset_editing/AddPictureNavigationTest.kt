@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.Manifest
 import android.content.Intent
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.testing.TestNavHostController
@@ -25,6 +26,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
+import com.schibsted.spain.barista.interaction.PermissionGranter
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -57,7 +59,7 @@ class AddPictureNavigationTest {
 
     @BindValue
     @ProductionDatabaseName
-    var dbName = "demo"
+    var dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
 
@@ -75,6 +77,7 @@ class AddPictureNavigationTest {
 
     @Before
     fun setup() {
+        PermissionGranter.allowPermissionOneTime(Manifest.permission.CAMERA)
         hiltRule.inject()
         dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         Intents.init()
@@ -98,7 +101,6 @@ class AddPictureNavigationTest {
         navigateToAddPictureActivity()
         Espresso.onView(ViewMatchers.withId(R.id.use_camera))
             .perform(ViewActions.click())
-
         assertCurrentFragmentIsCorrect(R.id.takePictureFragment)
     }
 
@@ -114,7 +116,6 @@ class AddPictureNavigationTest {
             )
         Espresso.openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().targetContext)
         onView(ViewMatchers.withText(R.string.add_new_picture)).perform(click())
-
     }
 
     private fun assertCurrentFragmentIsCorrect(expected: Int) {
@@ -125,6 +126,4 @@ class AddPictureNavigationTest {
             assert(currentFragment?.id == expected)
         }
     }
-
-
 }
