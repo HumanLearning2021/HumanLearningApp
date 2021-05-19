@@ -66,7 +66,8 @@ class LearningSettingsFragment : Fragment() {
             getString(R.string.learning_settings_tooltip_presentation)
         binding.learningSettingsBtChooseRepresentation.tooltipText =
             getString(R.string.learning_settings_tooltip_representation)
-        // TODO add tooltip for evaluation mode
+        binding.learningSettingsBtChooseEvaluation?.tooltipText =
+            getString(R.string.learning_settings_tooltip_evaluation)
 
         requireActivity().onBackPressedDispatcher.addCallback(callback)
 

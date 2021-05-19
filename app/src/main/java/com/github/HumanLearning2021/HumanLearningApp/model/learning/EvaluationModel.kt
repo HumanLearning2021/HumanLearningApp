@@ -28,21 +28,24 @@ class EvaluationModel(private val dataset: Dataset) {
     private fun nbAttemptsInStreak() = nbSuccessesInStreak + nbFailuresInStreak
     private fun successRateInStreak() = nbSuccessesInStreak / nbAttemptsInStreak()
 
-    /**
-     * One streak consists in STREAK_LENGTH attempts at sorting a picture
-     *
-     * Ideally, this should by configurable in LearningSettings
-     */
-    private val STREAK_LENGTH = 5
+    companion object {
+        /**
+         * One streak consists in STREAK_LENGTH attempts at sorting a picture
+         *
+         * Ideally, this should by configurable in LearningSettings
+         */
+        val STREAK_LENGTH = 5
 
-    /**
-     * At the end of each streak, we check
-     * if the success rate was above or equal to MIN_SUCCESS_RATE_FOR_NEXT_PHASE.
-     * If it is the case, we go to the next phase, otherwise we reset the streak
-     *
-     * Ideally, this should by configurable in LearningSettings
-     */
-    private var MIN_SUCCESS_RATE_FOR_NEXT_PHASE = .8
+        /**
+         * At the end of each streak, we check
+         * if the success rate was above or equal to MIN_SUCCESS_RATE_FOR_NEXT_PHASE.
+         * If it is the case, we go to the next phase, otherwise we reset the streak
+         *
+         * Ideally, this should by configurable in LearningSettings
+         */
+        val MIN_SUCCESS_RATE_FOR_NEXT_PHASE = .8
+    }
+
 
     /**
      * This flag indicates whether the evaluation is complete

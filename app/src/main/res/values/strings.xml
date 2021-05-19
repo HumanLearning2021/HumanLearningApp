@@ -22,6 +22,7 @@
     <string name="learning_cat_2_descr">Third target category</string>
     <string name="learning_settings_tooltip_presentation">Learn in presentation mode: an image must be classified against an exact copy</string>
     <string name="learning_settings_tooltip_representation">Learn in representation mode: an image must be classified against a representative of its category</string>
+    <string name="learning_settings_tooltip_evaluation">Evaluation mode allows you to perform an evaluation on the selected dataset</string>
     <string name="learning_settings_btPresentation">PRESENTATION</string>
     <string name="learning_settings_btRepresentation">REPRESENTATION</string>
     <string name="learning_settings_btEvaluation">EVALUATION</string>
