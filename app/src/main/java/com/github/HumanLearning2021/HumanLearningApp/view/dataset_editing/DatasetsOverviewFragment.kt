@@ -12,6 +12,7 @@ import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDatasetsOverviewBinding
+import com.github.HumanLearning2021.HumanLearningApp.view.DownloadSwitchFragment
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget
 import dagger.hilt.android.AndroidEntryPoint
 

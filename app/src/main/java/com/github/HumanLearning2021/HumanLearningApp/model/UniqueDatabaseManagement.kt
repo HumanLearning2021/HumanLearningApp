@@ -76,12 +76,17 @@ class UniqueDatabaseManagement @Inject constructor(
                 context
             ).clear() //TODO("reuse content from cache instead")
             val firestoreDbManagement =
-                DefaultDatabaseManagement(
-                    FirestoreDatabaseService(
-                        databaseName,
-                        firestore
+                // necessary for current testing setup
+                if (databaseName == "dummy") {
+                    DefaultDatabaseManagement(DummyDatabaseService())
+                } else {
+                    DefaultDatabaseManagement(
+                        FirestoreDatabaseService(
+                            databaseName,
+                            firestore
+                        )
                     )
-                )
+                }
             val pictureRepository = PictureRepository(databaseName, context)
 
             val datasets = firestoreDbManagement.getDatasets()
