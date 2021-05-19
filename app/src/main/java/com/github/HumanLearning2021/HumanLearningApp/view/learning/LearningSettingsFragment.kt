@@ -37,27 +37,36 @@ class LearningSettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.learningSettingsBtChoosePresentation.setOnClickListener {
-            val action =
+            findNavController().navigate(
                 LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
                     args.datasetId,
                     LearningMode.PRESENTATION
                 )
-            findNavController().navigate(action)
+            )
         }
 
         binding.learningSettingsBtChooseRepresentation.setOnClickListener {
-            val action =
+            findNavController().navigate(
                 LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
                     args.datasetId,
                     LearningMode.REPRESENTATION
                 )
-            findNavController().navigate(action)
+            )
+        }
+        binding.learningSettingsBtChooseEvaluation?.setOnClickListener {
+            findNavController().navigate(
+                LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
+                    args.datasetId,
+                    LearningMode.EVALUATION
+                )
+            )
         }
 
         binding.learningSettingsBtChoosePresentation.tooltipText =
             getString(R.string.learning_settings_tooltip_presentation)
         binding.learningSettingsBtChooseRepresentation.tooltipText =
             getString(R.string.learning_settings_tooltip_representation)
+        // TODO add tooltip for evaluation mode
 
         requireActivity().onBackPressedDispatcher.addCallback(callback)
 

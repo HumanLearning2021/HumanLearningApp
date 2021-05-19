@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
@@ -15,6 +16,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.Event
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.model.learning.EvaluationModel
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,6 +38,14 @@ class LearningFragment : Fragment() {
     private lateinit var targetImageViews: List<ImageView>
 
     lateinit var learningPresenter: LearningPresenter
+
+    /**
+     * model for evaluation mode
+     * A null value represents the fact that the learning mode is not EVALUATION
+     *
+     * TODO ideally the model would be wrapped inside the presenter (but no time right now)
+     */
+    private var evaluationModel: EvaluationModel? = null
 
     @Inject
     lateinit var authPresenter: AuthenticationPresenter
@@ -62,8 +72,10 @@ class LearningFragment : Fragment() {
         datasetId = args.datasetId
         lifecycleScope.launch {
             dataset = dbMgt.getDatasetById(datasetId)!!
-            targetImageViews = adaptDisplayToNumberOfCategories(dataset.categories.size)
-
+            if (args.learningMode == LearningMode.EVALUATION) {
+                evaluationModel = EvaluationModel(dataset)
+            }
+            targetImageViews = updateTargetImageViews()
             learningPresenter = LearningPresenter(dbMgt, args.learningMode, dataset, authPresenter)
             learningPresenter.updateForNextSorting(
                 parentActivity,
@@ -75,6 +87,18 @@ class LearningFragment : Fragment() {
         }
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
+
+    /**
+     * Get the new target image views, depending on the state of the evaluation model if in
+     * EVALUATION mode, otherwise according to the number of categories in the current dataset
+     */
+    private fun updateTargetImageViews(): List<ImageView> =
+        if (evaluationModel != null) {
+            adaptDisplayToNumberOfCategories(evaluationModel!!.getCurrentPhase())
+        } else {
+            adaptDisplayToNumberOfCategories(dataset.categories.size)
+        }
+
 
     /**
      * This function adapts the display to the number of categories given
@@ -174,6 +198,15 @@ class LearningFragment : Fragment() {
         audioFeedback.stopAndPrepareMediaPlayers()
         if (sortingCorrect) {
             audioFeedback.startCorrectFeedback()
+
+            evaluationModel?.addSuccess()
+            if (evaluationModel?.isEvaluationComplete() == true) {
+                // TODO start navigation to evaluation result fragment
+                Log.d("Evaluation", "EVALUATION COMPLETE !!!")
+            }
+            // update image views in case addSuccess started the next evaluation phase
+            targetImageViews = updateTargetImageViews()
+
             lifecycleScope.launch {
                 learningPresenter.saveEvent(Event.SUCCESS)
                 learningPresenter.updateForNextSorting(
@@ -184,10 +217,12 @@ class LearningFragment : Fragment() {
             }
         } else {
             audioFeedback.startIncorrectFeedback()
+            evaluationModel?.addFailure()
             lifecycleScope.launch {
                 learningPresenter.saveEvent(Event.MISTAKE)
             }
         }
+        Log.d("Evaluation", evaluationModel?.getCurrentEvaluationResult().toString())
         return sortingCorrect
     }
 

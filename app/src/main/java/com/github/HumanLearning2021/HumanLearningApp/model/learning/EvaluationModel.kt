@@ -3,7 +3,6 @@ package com.github.HumanLearning2021.HumanLearningApp.model.learning
 import android.os.Parcelable
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import kotlinx.parcelize.Parcelize
-import java.util.*
 
 /**
  * Represents the result of an evaluation.
@@ -34,7 +33,7 @@ class EvaluationModel(private val dataset: Dataset) {
      *
      * Ideally, this should by configurable in LearningSettings
      */
-    private val STREAK_LENGTH = 10
+    private val STREAK_LENGTH = 5
 
     /**
      * At the end of each streak, we check
@@ -50,11 +49,17 @@ class EvaluationModel(private val dataset: Dataset) {
      */
     private var evaluationComplete = false
 
+    fun isEvaluationComplete() = evaluationComplete
+
     /**
      * List indexed by phase number, values represent
      * (number of successes in phase, number of failures in phase)
      */
-    private val successFailureCountPerPhase = ArrayList<Pair<Int, Int>>()
+    private val successFailureCountPerPhase: MutableList<Pair<Int, Int>> =
+        IntRange(
+            start = 0,
+            endInclusive = dataset.categories.size
+        ).map { 0 to 0 } as MutableList<Pair<Int, Int>>
 
     /**
      * Get the evaluation result for the current state of the model.
@@ -62,16 +67,13 @@ class EvaluationModel(private val dataset: Dataset) {
      */
     fun getCurrentEvaluationResult() = EvaluationResult(successFailureCountPerPhase)
 
-    private fun successFailureCountForCurrentPhase() =
-        successFailureCountPerPhase.getOrElse(currentPhase) { 0 to 0 }
-
     /**
      * Add a success to the success count in this streak & phase.
      * Also checks if the phase or the evaluation is complete
      */
     fun addSuccess() {
         nbSuccessesInStreak++
-        val (nbSuccesses, nbFailures) = successFailureCountForCurrentPhase()
+        val (nbSuccesses, nbFailures) = successFailureCountPerPhase[currentPhase]
         successFailureCountPerPhase[currentPhase] = (nbSuccesses + 1) to nbFailures
         checkIfPhaseOrEvaluationComplete()
     }
@@ -82,7 +84,7 @@ class EvaluationModel(private val dataset: Dataset) {
      */
     fun addFailure() {
         nbFailuresInStreak++
-        val (nbSuccesses, nbFailures) = successFailureCountForCurrentPhase()
+        val (nbSuccesses, nbFailures) = successFailureCountPerPhase[currentPhase]
         successFailureCountPerPhase[currentPhase] = nbSuccesses to (nbFailures + 1)
         checkIfPhaseOrEvaluationComplete()
     }
