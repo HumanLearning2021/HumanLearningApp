@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentCategoriesEditingBinding
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentMetadataEditingBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
@@ -31,7 +31,7 @@ class MetadataEditingFragment : Fragment() {
     @Demo2Database
     lateinit var dBManagement: DatabaseManagement
 
-    private var _binding: FragmentCategoriesEditingBinding? = null
+    private var _binding: FragmentMetadataEditingBinding? = null
     private val binding get() = _binding!!
 
     private var dsCategories = emptySet<Category>()
@@ -49,7 +49,7 @@ class MetadataEditingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         parentActivity = requireActivity()
-        _binding = FragmentCategoriesEditingBinding.inflate(layoutInflater)
+        _binding = FragmentMetadataEditingBinding.inflate(layoutInflater)
         setHasOptionsMenu(true)
         return binding.root
 
@@ -97,7 +97,15 @@ class MetadataEditingFragment : Fragment() {
                      */
                     for (i in 0 until 3) {
                         addNewView()
+                        val v = binding.parentLinearLayout.getChildAt(i)
+                        val categoryName: EditText =
+                            v.findViewById(R.id.data_creation_category_name)
+                        categoryName.setText(
+                            String.format("Category %d", i),
+                            TextView.BufferType.EDITABLE
+                        )
                     }
+                    binding.datasetName?.setText(R.string.ds_name)
                 }
 
                 setButtonsListener()

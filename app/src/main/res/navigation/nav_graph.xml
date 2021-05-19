@@ -74,7 +74,7 @@
         android:id="@+id/categoriesEditingFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.MetadataEditingFragment"
         android:label="@string/nav_graph_label_categories_editing"
-        tools:layout="@layout/fragment_categories_editing">
+        tools:layout="@layout/fragment_metadata_editing">
         <action
             android:id="@+id/action_categoriesEditingFragment_to_displayDatasetFragment"
             app:destination="@id/displayDatasetFragment"

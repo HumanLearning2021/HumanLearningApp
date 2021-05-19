@@ -37,7 +37,8 @@
     <string name="modify_categories">Modify categories</string>
     <string name="add_new_picture">Add new picture</string>
     <string name="delete_dataset">Delete dataset</string>
-    <string name="dataset_name">Enter dataset name</string>
+    <string name="enter_dataset_name">Enter dataset name</string>
+    <string name="ds_name">Dataset name</string>
     <string name="imagetobedisplayed">image to be displayed</string>
     <string name="buttontoremovepicturefromdataset">button to remove picture from dataset</string>
     <string name="picturehasbeenremoved">This Picture has been removed from this dataset.</string>
