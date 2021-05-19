@@ -1,8 +1,10 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.Intent
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
@@ -10,8 +12,12 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
@@ -23,6 +29,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -30,6 +37,7 @@ import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.hasSize
+import org.junit.After
 import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Rule
@@ -45,6 +53,14 @@ class MetadataEditingFragmentTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @get:Rule
+    val activityScenarioRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(
+        Intent(
+            ApplicationProvider.getApplicationContext(),
+            MainActivity::class.java
+        )
+    )
+
     @BindValue
     @Demo2Database
     val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
@@ -57,23 +73,39 @@ class MetadataEditingFragmentTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        launchFragment()
+        runBlocking {
+            val ds = dbMgt.getDatasetById(datasetId)
+            require(ds != null) {
+                "The dataset with id $datasetId doesn't exist in the database. Fix this"
+            }
+            dataset = ds
+        }
+        Intents.init()
+    }
+
+    @After
+    fun cleanUp() {
+        Intents.release()
+        activityScenarioRule.scenario.close()
     }
 
     @Test
     fun rowViewIsDisplayedWhenAddButtonIsClicked() {
+        launchFragment()
         onView(withId(R.id.button_add)).perform(click())
         onView(withText("")).check(ViewAssertions.matches(isDisplayed()))
     }
 
     @Test
     fun rowButtonViewIsDisplayedWhenAddButtonIsClicked() {
+        launchFragment()
         onView(withId(R.id.button_add)).perform(click())
         onView(withId(R.id.button_add)).check(ViewAssertions.matches(isDisplayed()))
     }
 
     @Test
     fun rowViewIsAddedWhenAddButtonIsClicked() {
+        launchFragment()
         onView(withId(R.id.button_add)).perform(click())
         waitFor(1) // increase if needed
         onView(withId(R.id.parent_linear_layout)).check(
@@ -85,6 +117,7 @@ class MetadataEditingFragmentTest {
 
     @Test
     fun rowViewIsRemovedWhenRemoveButtonIsClicked() {
+        launchFragment()
         runBlocking {
             waitFor(1) // increase if needed
             val nbCategories = dataset.categories.size
@@ -106,6 +139,7 @@ class MetadataEditingFragmentTest {
 
     @Test
     fun saveButtonGoesToDisplayDatasetActivity() {
+        launchFragment()
         onView(withId(R.id.button_submit_list)).perform(click())
         waitFor(1) // increase if needed
         verify(navController).navigate(
@@ -116,7 +150,18 @@ class MetadataEditingFragmentTest {
     }
 
     @Test
+    fun clickOnInfoButtonWorks() {
+        navigateToCreateDatasetFragment()
+        onView(withId(R.id.categories_editing_menu_info)).perform(click())
+        waitFor(1) // increase if needed
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(0, 100)
+        waitFor(1) // increase if needed
+        onView(withId(R.id.button_add)).check(ViewAssertions.matches(isDisplayed()))
+    }
+
+    @Test
     fun addNewCategoryToDatasetWorks() {
+        launchFragment()
         val nbCategories = dataset.categories.size
         onView(withId(R.id.button_add)).perform(click())
         onView(withText("")).perform(typeText("new beautiful category"))
@@ -131,12 +176,14 @@ class MetadataEditingFragmentTest {
 
     @Test
     fun backButtonWorks() {
+        launchFragment()
         Espresso.pressBack()
         verify(navController).popBackStack()
     }
 
     @Test
     fun modifyingDatasetNameWorks() {
+        launchFragment()
         val newName = "new dataset name"
         runBlocking {
             waitFor(1) // increase if needed
@@ -167,6 +214,11 @@ class MetadataEditingFragmentTest {
         launchFragmentInHiltContainer<MetadataEditingFragment>(args) {
             Navigation.setViewNavController(requireView(), navController)
         }
+    }
+
+    private fun navigateToCreateDatasetFragment() {
+        onView(withId(R.id.datasetsOverviewFragment)).perform(click())
+        onView(withId(R.id.createDatasetButton)).perform(click())
     }
 }
 

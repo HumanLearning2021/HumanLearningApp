@@ -162,7 +162,7 @@ class DisplayDatasetFragment : Fragment() {
         callback.remove()
     }
 
-    private class DisplayDatasetAdapter(
+    class DisplayDatasetAdapter(
         private val images: ArrayList<Any>,
         private val categories: Set<Category>,
 

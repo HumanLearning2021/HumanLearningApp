@@ -224,7 +224,7 @@ class MetadataEditingFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.categories_editing_menu, menu)
+        inflater.inflate(R.menu.metadata_editing_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
