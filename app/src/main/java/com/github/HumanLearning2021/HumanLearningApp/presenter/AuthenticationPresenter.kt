@@ -13,7 +13,6 @@ import javax.inject.Singleton
 
 @Singleton  // need to persist currentUser across activities
 class AuthenticationPresenter @Inject constructor(
-
     private val authUI: AuthUI,
     @DummyDatabase
     private val db: DatabaseService,
