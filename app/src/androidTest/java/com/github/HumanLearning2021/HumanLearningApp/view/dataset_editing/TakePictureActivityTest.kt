@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
+import android.content.Context
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -25,6 +26,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.PermissionGranter
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -58,6 +60,10 @@ class TakePictureActivityTest {
     @ProductionDatabaseName
     var dbName = "dummy"
 
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
     lateinit var dbMgt: DatabaseManagement
 
     lateinit var datasetId: String
@@ -85,6 +91,7 @@ class TakePictureActivityTest {
     @Before
     fun setUp() {
         hiltRule.inject()
+        context.cacheDir.deleteRecursively()
         dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         TestUtils.getFirstDataset(dbMgt).id
         datasetId = TestUtils.getFirstDataset(dbMgt).id

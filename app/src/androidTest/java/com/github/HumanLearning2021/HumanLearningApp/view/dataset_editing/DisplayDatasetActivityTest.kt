@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -30,6 +31,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import com.schibsted.spain.barista.interaction.PermissionGranter
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -72,6 +74,10 @@ class DisplayDatasetActivityTest {
     @ProductionDatabaseName
     var dbName = "dummy"
 
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
     lateinit var dbMgt: DatabaseManagement
 
     private var datasetPictures = emptySet<CategorizedPicture>()
@@ -97,6 +103,7 @@ class DisplayDatasetActivityTest {
         }
 
         Intents.init()
+        context.cacheDir.deleteRecursively()
     }
 
     @After
@@ -269,5 +276,4 @@ class DisplayDatasetActivityTest {
             Navigation.setViewNavController(requireView(), mockNavController)
         }
     }
-
 }

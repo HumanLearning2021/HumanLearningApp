@@ -137,6 +137,4 @@ class GeneralNavigationTest {
             assertThat(currentFragment?.id, equalTo(expected))
         }
     }
-
-
 }
