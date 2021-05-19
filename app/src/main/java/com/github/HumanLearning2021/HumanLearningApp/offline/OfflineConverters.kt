@@ -2,8 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.room.*
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.ktx.Firebase
 
 object OfflineConverters {
     fun fromPicture(picture: RoomPicture, categoryDao: CategoryDao): OfflineCategorizedPicture {
@@ -39,6 +37,4 @@ object OfflineConverters {
     fun fromUser(user: RoomUser): OfflineUser {
         return OfflineUser(user.type, user.userId, user.displayName, user.email,user.isAdmin)
     }
-
-
 }

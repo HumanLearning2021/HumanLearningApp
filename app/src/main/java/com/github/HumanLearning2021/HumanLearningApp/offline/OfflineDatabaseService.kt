@@ -255,6 +255,7 @@ class OfflineDatabaseService internal constructor(
         return fromUser(userDao.load(firebaseUser.uid, User.Type.FIREBASE)!!)
     }
 
+    //TODO optimize this transaction
     override suspend fun setAdminAccess(
         firebaseUser: FirebaseUser,
         adminAccess: Boolean
