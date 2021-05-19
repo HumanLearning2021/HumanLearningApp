@@ -62,7 +62,7 @@ class LearningFragment : Fragment() {
         datasetId = args.datasetId
         lifecycleScope.launch {
             dataset = dbMgt.getDatasetById(datasetId)!!
-            targetImageViews = adaptDisplayToNumberOfCategories(dataset)
+            targetImageViews = adaptDisplayToNumberOfCategories(dataset.categories.size)
 
             learningPresenter = LearningPresenter(dbMgt, args.learningMode, dataset, authPresenter)
             learningPresenter.updateForNextSorting(
@@ -80,25 +80,29 @@ class LearningFragment : Fragment() {
      * This function adapts the display to the number of categories in the dataset
      * For example, if the dataset only has 2 categories, one of the categories will not be displayed
      * @param dataset dataset that is used for the learning
-     * @return the ImageViews that stay displayed on screen
+     * @return the ImageViews that are visible on screen
      */
-    private fun adaptDisplayToNumberOfCategories(dataset: Dataset): List<ImageView> {
-        val nbCategories = dataset.categories.size
+    private fun adaptDisplayToNumberOfCategories(nbCategories: Int): List<ImageView> {
         require(nbCategories > 0) {
             "A dataset used for learning should have at least one category"
         }
-        val makeInvisible = { v: List<View> -> v.forEach { it.visibility = View.INVISIBLE } }
+        val adjustVisibilities = { visibles: List<ImageView>, invisibles: List<ImageView> ->
+            visibles.forEach { it.visibility = View.VISIBLE }
+            invisibles.forEach { it.visibility = View.INVISIBLE }
+            visibles
+        }
         return with(binding) {
             when (nbCategories) {
                 1 -> {
-                    makeInvisible(listOf(learningCat0, learningCat2))
-                    listOf(learningCat1)
+                    adjustVisibilities(listOf(learningCat1), listOf(learningCat0, learningCat2))
                 }
                 2 -> {
-                    makeInvisible(listOf(learningCat2))
-                    listOf(learningCat0, learningCat1)
+                    adjustVisibilities(listOf(learningCat0, learningCat1), listOf(learningCat2))
                 }
-                else -> listOf(learningCat0, learningCat1, learningCat2)
+                else -> adjustVisibilities(
+                    listOf(learningCat0, learningCat1, learningCat2),
+                    emptyList()
+                )
             }
         }
     }
