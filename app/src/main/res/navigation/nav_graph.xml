@@ -185,7 +185,7 @@
     <fragment
         android:id="@+id/evaluationResultFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.learning.EvaluationResultFragment"
-        android:label="EvaluationResultFragment">
+        android:label="@string/nav_graph_label_evaluation_result">
         <argument
             android:name="evaluationResult"
             app:argType="com.github.HumanLearning2021.HumanLearningApp.model.learning.EvaluationResult" />
