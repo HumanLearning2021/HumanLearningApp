@@ -6,17 +6,20 @@ import kotlinx.parcelize.Parcelize
 /**
  * primary key: (type, uid)
  */
-interface User : Parcelable {
+@Parcelize
+data class User(
+    val displayName: String?,
+    val email: String?,
+    val uid: String,
+    val type: Type,
+    val isAdmin : Boolean
+
+) : Parcelable {
+    
     enum class Type {
         FIREBASE,
         TEST,
     }
-
-    val type: Type
-    val uid: String
-    val displayName: String?
-    val email: String?
-    val isAdmin : Boolean
 
     @Parcelize
     data class Id(val uid: String, val type: Type) : Parcelable {
