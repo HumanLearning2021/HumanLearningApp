@@ -60,15 +60,14 @@ class MetadataEditingFragment : Fragment() {
             if (arguments != null) {
 
                 datasetId = args.datasetId
-                if (datasetId == null) {
-                    new = true
-                }
+                new = datasetId == null
+
                 if (!new) {
                     /**
                      * If the dataset is not new, we add the already existing categories
                      * and the name of the dataset to the layout and set them as non clickable.
                      */
-                    dataset = dBManagement.getDatasetById(datasetId!!)!!
+                    dataset = datasetId?.let { dBManagement.getDatasetById(it) }!!
                     binding.datasetName?.setText(dataset.name)
                     dsCategories = dataset.categories
                     val count = dsCategories.size
