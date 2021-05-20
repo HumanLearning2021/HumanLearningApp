@@ -243,15 +243,15 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun updateUser(firebaseUser: FirebaseUser): OfflineUser {
-        throw IllegalStateException("No Users Downloaded Yet")
+        throw Exception("No Users downloaded yet")
     }
 
     override suspend fun setAdminAccess(firebaseUser: FirebaseUser, adminAccess: Boolean): User {
-        throw IllegalStateException("No Admin In Offline Mode Error")
+        throw Exception("No Admin In Offline Mode Error")
     }
 
     override suspend fun checkIsAdmin(user: User): Boolean {
-        throw IllegalStateException("No Admin In Offline Mode Error")
+        throw Exception("No Admin In Offline Mode Error")
     }
 
     override suspend fun getUser(type: User.Type, uid: String): OfflineUser? {
