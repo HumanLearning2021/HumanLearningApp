@@ -7,9 +7,7 @@
     <item
         android:id="@+id/display_dataset_menu_add_new_picture"
         android:title="@string/add_new_picture" />
-
     <item
         android:id="@+id/display_dataset_menu_delete_dataset"
         android:title="@string/delete_dataset" />
-
 </menu>

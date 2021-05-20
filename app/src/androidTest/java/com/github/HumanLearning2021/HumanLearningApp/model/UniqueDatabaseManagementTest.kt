@@ -51,7 +51,7 @@ class UniqueDatabaseManagementTest {
 
     @Test
     fun getDownloadedDatabaseNamesWorks() = runBlocking {
-        uDbMan.downloadDatabase("demo").await()
+        uDbMan.downloadDatabase("demo")
         assertThat(uDbMan.getDownloadedDatabases(), hasItem("demo"))
     }
 
@@ -59,9 +59,7 @@ class UniqueDatabaseManagementTest {
     fun offlineAndFirestoreDatabasesContainTheSameElements() = runBlocking {
         val dbName = "demo"
         val fDbMan = uDbMan.accessCloudDatabase(dbName)
-        val tmp = uDbMan.downloadDatabase(dbName)
-        tmp.await()
-        val oDbman = tmp.await()
+        val oDbman = uDbMan.downloadDatabase(dbName)
         assertThat(
             fDbMan.getDatasets().map { ds -> ds.id },
             equalTo(oDbman.getDatasets().map { ds -> ds.id })
@@ -86,7 +84,7 @@ class UniqueDatabaseManagementTest {
 
     @Test
     fun accessOfflineDatabaseReturnsCorrectType() = runBlocking {
-        uDbMan.downloadDatabase("demo").await()
+        uDbMan.downloadDatabase("demo")
         assert(uDbMan.accessDatabase("demo") is DefaultDatabaseManagement)
     }
 }

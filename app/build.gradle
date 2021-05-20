@@ -185,5 +185,12 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:1.1.0-alpha02"
     implementation "androidx.camera:camera-view:1.0.0-alpha22"
 
+    //Graphs
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 }
+
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
