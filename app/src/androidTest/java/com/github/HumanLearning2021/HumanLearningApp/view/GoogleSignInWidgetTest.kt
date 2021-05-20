@@ -65,7 +65,7 @@ class GoogleSignInWidgetTest {
     fun checkBoxUiTest() {
         launchFragment()
         onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
-        onView(withId(R.id.checkBox)).check(matches(not(isChecked())));
+        onView(withId(R.id.checkBox)).check(matches(not(isChecked())))
         onView(withId(R.id.checkBox)).perform(click()).check(matches(isChecked()))
         onView(withId(R.id.checkBox)).perform(click()).check(matches(not(isChecked())))
     }
@@ -83,7 +83,7 @@ class GoogleSignInWidgetTest {
         launchFragment()
         onView(withId(R.id.checkBox)).perform(click())
         onView(withId(R.id.checkBox)).perform(click())
-        assertThat(fragment.isAdmin, equalTo(false))
+        assertThat(GoogleSignInWidget.isAdmin, equalTo(false))
     }
 
     private fun launchFragment() {

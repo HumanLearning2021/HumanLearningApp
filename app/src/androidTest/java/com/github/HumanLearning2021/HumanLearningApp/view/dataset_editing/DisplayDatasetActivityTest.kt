@@ -19,19 +19,24 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
+import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers.anything
 import org.junit.After
 import org.junit.Assume.assumeTrue
@@ -57,6 +62,9 @@ class DisplayDatasetActivityTest {
             MainActivity::class.java
         )
     )
+
+    @BindValue
+    val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     @BindValue
     @Demo2Database
@@ -147,32 +155,41 @@ class DisplayDatasetActivityTest {
 
     @Test
     fun clickOnMenuModifyCategoriesWorks() {
-        navigateToDisplayDatasetFragment()
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        onView(withText("Modify categories")).perform(click())
-        activityScenarioRule.scenario.onActivity {
-            val currentFragment =
-                it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
-            assert(currentFragment?.findNavController()?.currentDestination?.id == R.id.categoriesEditingFragment)
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToDisplayDatasetFragment()
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+            onView(withText("Modify categories")).perform(click())
+            activityScenarioRule.scenario.onActivity {
+                val currentFragment =
+                    it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
+                assert(currentFragment?.findNavController()?.currentDestination?.id == R.id.categoriesEditingFragment)
+            }
         }
     }
 
     @Test
     fun clickOnMenuAddNewPictureWorks() {
-        navigateToDisplayDatasetFragment()
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        onView(withText(R.string.add_new_picture)).perform(click())
-        onView(withText(R.string.use_camera)).perform(click())
-
-        activityScenarioRule.scenario.onActivity {
-            val currentFragment =
-                it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
-            assert(currentFragment?.findNavController()?.currentDestination?.id == R.id.takePictureFragment)
-        }
-
-        categories = dataset.categories
-        assumeTrue(categories.isNotEmpty())
         runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToDisplayDatasetFragment()
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+            onView(withText(R.string.add_new_picture)).perform(click())
+            onView(withText(R.string.use_camera)).perform(click())
+
+            activityScenarioRule.scenario.onActivity {
+                val currentFragment =
+                    it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
+                assert(currentFragment?.findNavController()?.currentDestination?.id == R.id.takePictureFragment)
+            }
+
+            categories = dataset.categories
+            assumeTrue(categories.isNotEmpty())
+
             val numberOfPictures = dbMgt.getAllPictures(categories.elementAt(index)).size
             onView(withId(R.id.takePictureButton)).perform(click())
             onView(withId(R.id.selectCategoryButton)).perform(click())
@@ -182,17 +199,21 @@ class DisplayDatasetActivityTest {
             waitFor(150) // increase if needed
             onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
             assert(dbMgt.getAllPictures(categories.elementAt(index)).size == numberOfPictures + 1)
+
         }
     }
 
     @Test
     fun clickOnMenuDeleteDatasetWorks() {
-        navigateToDisplayDatasetFragment()
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        onView(withText(R.string.delete_dataset)).perform(click())
-        onView(withText("No")).perform(click())
-
         runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToDisplayDatasetFragment()
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+            onView(withText(R.string.delete_dataset)).perform(click())
+            onView(withText("No")).perform(click())
+
 
             val numberOfDatasets = dbMgt.getDatasets().size
 
@@ -208,15 +229,21 @@ class DisplayDatasetActivityTest {
 
             val numberOfDatasetsAfter = dbMgt.getDatasets().size
             assert(numberOfDatasets - 1 == numberOfDatasetsAfter)
+
         }
     }
 
     @Test
     fun clickOnMenuButNotOnButtonClosesMenu() {
-        navigateToDisplayDatasetFragment()
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        UiDevice.getInstance(getInstrumentation()).click(0, 100)
-        onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToDisplayDatasetFragment()
+            openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+            UiDevice.getInstance(getInstrumentation()).click(0, 100)
+            onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
+        }
     }
 
     @Test
