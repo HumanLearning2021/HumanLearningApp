@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textSize="30sp"
         android:autofillHints="Dataset Name"
-        android:hint="@string/dataset_name"
+        android:hint="@string/ds_name"
         android:inputType="text"
         android:maxLines="1"
         android:textAlignment="center"

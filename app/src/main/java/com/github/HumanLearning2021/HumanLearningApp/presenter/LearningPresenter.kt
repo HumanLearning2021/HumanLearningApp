@@ -83,6 +83,7 @@ class LearningPresenter(
                     dbMgt.getPicture(rndCatPicIds.random())
                 }
             LearningMode.PRESENTATION -> rndCatRepr
+            LearningMode.EVALUATION -> rndCatRepr // TODO adapt
         }
 
         if (nextPicture != null) {

@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
@@ -15,6 +16,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.Event
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.model.learning.EvaluationModel
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,6 +38,14 @@ class LearningFragment : Fragment() {
     private lateinit var targetImageViews: List<ImageView>
 
     lateinit var learningPresenter: LearningPresenter
+
+    /**
+     * model for evaluation mode
+     * A null value represents the fact that the learning mode is not EVALUATION
+     *
+     * TODO ideally the model would be wrapped inside the presenter (but no time right now)
+     */
+    private var evaluationModel: EvaluationModel? = null
 
     @Inject
     lateinit var authPresenter: AuthenticationPresenter
@@ -62,8 +72,10 @@ class LearningFragment : Fragment() {
         datasetId = args.datasetId
         lifecycleScope.launch {
             dataset = dbMgt.getDatasetById(datasetId)!!
-            targetImageViews = adaptDisplayToNumberOfCategories(dataset)
-
+            if (args.learningMode == LearningMode.EVALUATION) {
+                evaluationModel = EvaluationModel(dataset)
+            }
+            targetImageViews = updateTargetImageViews()
             learningPresenter = LearningPresenter(dbMgt, args.learningMode, dataset, authPresenter)
             learningPresenter.updateForNextSorting(
                 parentActivity,
@@ -77,28 +89,44 @@ class LearningFragment : Fragment() {
     }
 
     /**
-     * This function adapts the display to the number of categories in the dataset
+     * Get the new target image views, depending on the state of the evaluation model if in
+     * EVALUATION mode, otherwise according to the number of categories in the current dataset
+     */
+    private fun updateTargetImageViews(): List<ImageView> =
+        if (evaluationModel != null) {
+            adaptDisplayToNumberOfCategories(evaluationModel!!.getCurrentPhase())
+        } else {
+            adaptDisplayToNumberOfCategories(dataset.categories.size)
+        }
+
+
+    /**
+     * This function adapts the display to the number of categories given
      * For example, if the dataset only has 2 categories, one of the categories will not be displayed
      * @param dataset dataset that is used for the learning
-     * @return the ImageViews that stay displayed on screen
+     * @return the ImageViews that are visible on screen
      */
-    private fun adaptDisplayToNumberOfCategories(dataset: Dataset): List<ImageView> {
-        val nbCategories = dataset.categories.size
+    private fun adaptDisplayToNumberOfCategories(nbCategories: Int): List<ImageView> {
         require(nbCategories > 0) {
             "A dataset used for learning should have at least one category"
         }
-        val makeInvisible = { v: List<View> -> v.forEach { it.visibility = View.INVISIBLE } }
+        val adjustVisibilities = { visibles: List<ImageView>, invisibles: List<ImageView> ->
+            visibles.forEach { it.visibility = View.VISIBLE }
+            invisibles.forEach { it.visibility = View.INVISIBLE }
+            visibles
+        }
         return with(binding) {
             when (nbCategories) {
                 1 -> {
-                    makeInvisible(listOf(learningCat0, learningCat2))
-                    listOf(learningCat1)
+                    adjustVisibilities(listOf(learningCat1), listOf(learningCat0, learningCat2))
                 }
                 2 -> {
-                    makeInvisible(listOf(learningCat2))
-                    listOf(learningCat0, learningCat1)
+                    adjustVisibilities(listOf(learningCat0, learningCat1), listOf(learningCat2))
                 }
-                else -> listOf(learningCat0, learningCat1, learningCat2)
+                else -> adjustVisibilities(
+                    listOf(learningCat0, learningCat1, learningCat2),
+                    emptyList()
+                )
             }
         }
     }
@@ -170,6 +198,20 @@ class LearningFragment : Fragment() {
         audioFeedback.stopAndPrepareMediaPlayers()
         if (sortingCorrect) {
             audioFeedback.startCorrectFeedback()
+
+            evaluationModel?.addSuccess()
+            if (evaluationModel?.isEvaluationComplete() == true) {
+                findNavController().navigate(
+                    LearningFragmentDirections.actionLearningFragmentToEvaluationResultFragment(
+                        evaluationModel!!.getCurrentEvaluationResult()
+                    )
+                )
+
+                Log.d("Evaluation", "EVALUATION COMPLETE !!!")
+            }
+            // update image views in case addSuccess started the next evaluation phase
+            targetImageViews = updateTargetImageViews()
+
             lifecycleScope.launch {
                 learningPresenter.saveEvent(Event.SUCCESS)
                 learningPresenter.updateForNextSorting(
@@ -180,10 +222,12 @@ class LearningFragment : Fragment() {
             }
         } else {
             audioFeedback.startIncorrectFeedback()
+            evaluationModel?.addFailure()
             lifecycleScope.launch {
                 learningPresenter.saveEvent(Event.MISTAKE)
             }
         }
+        Log.d("Evaluation", evaluationModel?.getCurrentEvaluationResult().toString())
         return sortingCorrect
     }
 
