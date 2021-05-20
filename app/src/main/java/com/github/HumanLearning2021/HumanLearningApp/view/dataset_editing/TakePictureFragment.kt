@@ -121,7 +121,7 @@ class TakePictureFragment : Fragment() {
     @Suppress("UNUSED_PARAMETER")
     private fun onTakePicture(view: View) {
         val executor = Executors.newSingleThreadExecutor()
-        val file: File = parentActivity.filesDir
+        val file: File = parentActivity.cacheDir
         val outputFileOptions = ImageCapture.OutputFileOptions.Builder(file).build()
         imageCapture.takePicture(
             outputFileOptions,

@@ -2,14 +2,11 @@ package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.hilt.*
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.CachedDemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
@@ -22,22 +19,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
 
-@UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class CachedDatabaseServiceTest {
-
-    @Inject
-    @Demo2Database
-    lateinit var demo2DbService: DatabaseService
-
-    @Inject
-    @Demo2CachePictureRepository
-    lateinit var repository: PictureRepository
-
-    @BindValue
-    @Demo2Database
-    lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
     @ApplicationContext
@@ -55,7 +39,6 @@ class CachedDatabaseServiceTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
     }

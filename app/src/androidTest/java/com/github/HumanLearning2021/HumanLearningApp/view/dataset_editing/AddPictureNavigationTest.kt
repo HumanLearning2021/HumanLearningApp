@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.Manifest
 import android.content.Intent
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.testing.TestNavHostController
@@ -17,14 +18,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.schibsted.spain.barista.interaction.PermissionGranter
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -36,8 +39,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
-@UninstallModules(DatabaseManagementModule::class)
+@UninstallModules(DatabaseNameModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class AddPictureNavigationTest {
@@ -52,12 +56,18 @@ class AddPictureNavigationTest {
         )
     )
 
-    @BindValue
-    val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
+    @Inject
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
     @BindValue
-    @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    @ProductionDatabaseName
+    var dbName = "dummy"
+
+    lateinit var dbMgt: DatabaseManagement
+
+    @BindValue
+    val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     private val catSet = setOf<Category>(
         DummyCategory("cat1", "cat1"),
@@ -73,7 +83,9 @@ class AddPictureNavigationTest {
 
     @Before
     fun setup() {
+        PermissionGranter.allowPermissionOneTime(Manifest.permission.CAMERA)
         hiltRule.inject()
+        dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         Intents.init()
     }
 
@@ -121,7 +133,6 @@ class AddPictureNavigationTest {
             )
         Espresso.openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().targetContext)
         onView(ViewMatchers.withText(R.string.add_new_picture)).perform(click())
-
     }
 
     private fun assertCurrentFragmentIsCorrect(expected: Int) {
@@ -132,6 +143,4 @@ class AddPictureNavigationTest {
             assert(currentFragment?.id == expected)
         }
     }
-
-
 }

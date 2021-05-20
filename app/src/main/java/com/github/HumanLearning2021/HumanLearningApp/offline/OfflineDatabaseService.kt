@@ -26,6 +26,14 @@ class OfflineDatabaseService internal constructor(
     private fun getID() = "${UUID.randomUUID()}"
 
     /**
+     * A function to clear the content of the database from the device
+     */
+    suspend fun clear() {
+        room.databaseDao().delete(RoomEmptyHLDatabase(dbName))
+        pictureRepository.clear()
+    }
+
+    /**
      * A function to retrieve a picture from the database given a category
      *
      * @param category the category of the image to be retrieved

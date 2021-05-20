@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".view.dataset_editing.DatasetsOverviewFragment">
 
+    <FrameLayout
+        android:id="@+id/placeholder_for_download_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/datasetListFragment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/datasetListFragment"
         class="com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget"

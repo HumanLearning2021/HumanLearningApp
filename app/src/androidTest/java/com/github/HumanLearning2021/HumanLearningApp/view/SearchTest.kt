@@ -15,11 +15,13 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import com.google.firebase.auth.ktx.auth
@@ -33,15 +35,15 @@ import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers
 import org.junit.*
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
-@UninstallModules(DatabaseManagementModule::class)
+@UninstallModules(DatabaseNameModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class SearchTest {
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
-
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(
@@ -51,14 +53,20 @@ class SearchTest {
         )
     )
 
+    @Inject
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
+
+    @BindValue
+    @ProductionDatabaseName
+    var dbName = "dummy"
+
+    lateinit var dbMgt: DatabaseManagement
+    
     @BindValue
     val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
-    @BindValue
-    @Demo2Database
-    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
-
-    private val dummyDatasets = runBlocking { dbMgt.getDatasets() }
+    private lateinit var dummyDatasets: Set<Dataset>
 
     private val datasetName = "kitchen utensils"
 
@@ -70,13 +78,15 @@ class SearchTest {
 
     @Before
     fun setup() {
+        hiltRule.inject()
+        dbMgt = globalDatabaseManagement.accessDatabase(dbName)
+        dummyDatasets = runBlocking { dbMgt.getDatasets() }
         runBlocking {
             require(dbMgt.getDatasetByName(datasetName).size == 1) {
                 "The database has to contain exactly one dataset with name $datasetName " +
                         "to be able to procede."
             }
         }
-        hiltRule.inject()
         Intents.init()
     }
 

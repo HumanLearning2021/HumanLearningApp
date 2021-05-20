@@ -16,6 +16,7 @@ import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import javax.inject.Singleton
 
 @TestInstallIn(
     components = [SingletonComponent::class],
@@ -25,6 +26,7 @@ import dagger.hilt.testing.TestInstallIn
 object DatabaseServiceTestModule {
     @DummyDatabase
     @Provides
+    @Singleton
     fun provideDummyService() = DatabaseServiceModule.provideDummyService()
 
     @DemoDatabase
@@ -81,6 +83,11 @@ object RoomDatabaseTestModule {
 )
 @Module
 object DatabaseManagementTestModule {
+    @DummyDatabase
+    @Provides
+    fun provideDummyDatabaseManagement(@DummyDatabase db: DatabaseService): DatabaseManagement =
+        DatabaseManagementModule.provideDummyManagement(db)
+
     @DemoDatabase
     @Provides
     fun provideDemoDatabaseManagement(@DemoDatabase db: DatabaseService): DatabaseManagement =
@@ -106,7 +113,8 @@ object DatabaseManagementTestModule {
     fun provideUniqueDatabaseManagement(
         @ApplicationContext context: Context,
         @RoomDatabase room: RoomOfflineDatabase,
-        @EmulatedFirestore firestore: FirebaseFirestore
+        @EmulatedFirestore firestore: FirebaseFirestore,
+        @DummyDatabase dummyDb: DatabaseManagement
     ): UniqueDatabaseManagement =
-        DatabaseManagementModule.provideGlobalDatabaseManagement(context, room, firestore)
+        DatabaseManagementModule.provideGlobalDatabaseManagement(context, room, firestore, dummyDb)
 }

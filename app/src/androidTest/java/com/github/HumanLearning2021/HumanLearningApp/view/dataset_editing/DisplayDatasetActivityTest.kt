@@ -1,5 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -22,14 +24,17 @@ import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltC
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.schibsted.spain.barista.interaction.PermissionGranter
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -46,9 +51,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 
-@UninstallModules(DatabaseManagementModule::class)
+@UninstallModules(DatabaseNameModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class DisplayDatasetActivityTest {
@@ -63,12 +69,22 @@ class DisplayDatasetActivityTest {
         )
     )
 
-    @BindValue
-    val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
+    @Inject
+    @GlobalDatabaseManagement
+    lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
     @BindValue
-    @Demo2Database
-    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    @ProductionDatabaseName
+    var dbName = "dummy"
+
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
+    lateinit var dbMgt: DatabaseManagement
+
+    @BindValue
+    val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
@@ -81,7 +97,9 @@ class DisplayDatasetActivityTest {
 
     @Before
     fun setup() {
+        PermissionGranter.allowPermissionOneTime(Manifest.permission.CAMERA)
         hiltRule.inject()  // ensures dbManagement is available
+        dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         runBlocking {
             val ds = dbMgt.getDatasetById(datasetId)
             require(ds != null) {
@@ -91,6 +109,7 @@ class DisplayDatasetActivityTest {
         }
 
         Intents.init()
+        context.cacheDir.deleteRecursively()
     }
 
     @After
@@ -262,5 +281,4 @@ class DisplayDatasetActivityTest {
             Navigation.setViewNavController(requireView(), mockNavController)
         }
     }
-
 }

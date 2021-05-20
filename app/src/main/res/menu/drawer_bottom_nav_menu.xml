@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/learningDatasetSelectionFragment"
         android:icon="@drawable/ic_baseline_book_24"
-        android:title="@string/menu_goto_learning"/>
+        android:title="@string/menu_goto_learning"
+        app:actionViewClass="android.widget.Button" />
     <item
         android:id="@+id/datasetsOverviewFragment"
         android:icon="@drawable/ic_baseline_photo_24"
-        android:title="@string/menu_goto_dataset_editing"/>
+        android:title="@string/menu_goto_dataset_editing"
+        app:actionViewClass="android.widget.Button"/>
 </menu>
 

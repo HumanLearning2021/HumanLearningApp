@@ -90,6 +90,10 @@
     <string name="LoginAdminCheckBox">Check if Admin</string>
     <string name="nav_graph_label_evaluation_result">Evaluation Result</string>
     <string name="search">Search</string>
+    <string name="download">download</string>
+    <string name="download_icon">download_icon</string>
+    <string name="download_database">Download database</string>
     <string name="evaluation_result_graph_label">Success percentage</string>
     <string name="learn_again">Learn Again!</string>
+    <string name="home">Home</string>
 </resources>

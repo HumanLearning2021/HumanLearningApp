@@ -26,6 +26,10 @@ import javax.inject.Singleton
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class ProductionDatabaseName
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class DummyDatabase
 
 @Qualifier
@@ -93,6 +97,14 @@ annotation class ProductionFirestore
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ProductionFirebaseApp
+
+@Module
+@InstallIn(SingletonComponent::class)
+object DatabaseNameModule {
+    @Provides
+    @ProductionDatabaseName
+    fun provideProductionDatabasename(): String = "demo2"
+}
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -169,14 +181,15 @@ object DatabaseServiceModule {
     @Provides
     fun provideOfflineScratchService(
         @ApplicationContext context: Context,
-        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement
+        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
+        @RoomDatabase room: RoomOfflineDatabase
     ): DatabaseService =
         runBlocking {
-            uDb.downloadDatabase("offlineScratch")
+            uDb.downloadDatabase("scratch")
             OfflineDatabaseService(
-                "offlineScratch",
+                "scratch",
                 context,
-                RoomDatabaseModule.provideRoomDatabase(context)
+                room
             )
         }
 
@@ -238,6 +251,7 @@ object DatabaseManagementModule {
     fun provideGlobalDatabaseManagement(
         @ApplicationContext context: Context,
         @RoomDatabase room: RoomOfflineDatabase,
-        @ProductionFirestore firestore: FirebaseFirestore
-    ): UniqueDatabaseManagement = UniqueDatabaseManagement(context, room, firestore)
+        @ProductionFirestore firestore: FirebaseFirestore,
+        @DummyDatabase dummyDb: DatabaseManagement,
+    ): UniqueDatabaseManagement = UniqueDatabaseManagement(context, room, firestore, dummyDb)
 }
