@@ -17,7 +17,6 @@ interface User : Parcelable {
     val displayName: String?
     val email: String?
     val isAdmin : Boolean
-}
 
     @Parcelize
     data class Id(val uid: String, val type: Type) : Parcelable {
