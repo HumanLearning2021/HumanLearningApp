@@ -46,7 +46,7 @@ class EvaluationResultFragmentTest {
     fun setup() {
         hiltRule.inject()
         val evaluationResultList = IntRange(
-            start = 1,
+            start = 0,
             endInclusive = 5
         ).map { 2 to 3 } as MutableList<Pair<Int, Int>>
 

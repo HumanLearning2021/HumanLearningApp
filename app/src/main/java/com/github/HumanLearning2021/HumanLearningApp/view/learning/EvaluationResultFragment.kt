@@ -40,9 +40,7 @@ class EvaluationResultFragment : Fragment() {
         val barEntries = ArrayList<BarEntry>()
 
         successFailureCountPerPhase.forEachIndexed { index, pair ->
-            if (index == 0)
-                barEntries.add(BarEntry(0f, 0f))
-            else {
+            if (index != 0) {
                 val nSuccess = pair.first
                 val nFailures = pair.second
                 barEntries.add(BarEntry(index.toFloat(), nSuccess.toFloat() / nFailures.toFloat()))
