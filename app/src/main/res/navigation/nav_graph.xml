@@ -189,5 +189,10 @@
         <argument
             android:name="evaluationResult"
             app:argType="com.github.HumanLearning2021.HumanLearningApp.model.learning.EvaluationResult" />
+        <action
+            android:id="@+id/action_evaluationResultFragment_to_learningDatasetSelectionFragment"
+            app:destination="@id/learningDatasetSelectionFragment"
+            app:popUpTo="@+id/learningDatasetSelectionFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

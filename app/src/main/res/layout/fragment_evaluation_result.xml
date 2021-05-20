@@ -4,10 +4,20 @@
     android:layout_height="match_parent">
 
 
-<com.github.mikephil.charting.charts.BarChart
-    android:layout_width="match_parent"
-    android:layout_height="400dp"
-    android:id="@+id/barchart_evaluation_result">
-</com.github.mikephil.charting.charts.BarChart>
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barchart_evaluation_result"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="50dp" />
+
+    <Button
+        android:id="@+id/learnAgainButton"
+        android:text="@string/learn_again"
+        android:layout_below="@id/barchart_evaluation_result"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="100dip"
+        android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>
