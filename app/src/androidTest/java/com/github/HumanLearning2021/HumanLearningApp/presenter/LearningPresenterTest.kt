@@ -33,7 +33,7 @@ class LearningPresenterTest {
     fun setUp() {
         runBlocking {
             Firebase.auth.signInAnonymously().await()
-            authPres.onSuccessfulLogin()
+            authPres.onSuccessfulLogin(false)
         }
     }
 

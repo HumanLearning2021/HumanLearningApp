@@ -40,6 +40,7 @@ object OfflineConverters {
             email = user.email,
             user.userId,
             user.type,
+            user.isAdmin,
         )
     }
 }

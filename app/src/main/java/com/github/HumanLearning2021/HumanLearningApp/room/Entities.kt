@@ -58,5 +58,6 @@ data class RoomUser(
     val userId: String,
     val type: User.Type,
     val displayName: String?,
-    val email: String?
+    val email: String?,
+    val isAdmin: Boolean
 )

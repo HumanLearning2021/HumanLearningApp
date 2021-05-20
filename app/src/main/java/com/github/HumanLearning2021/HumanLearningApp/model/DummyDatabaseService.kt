@@ -283,7 +283,24 @@ class DummyDatabaseService internal constructor() : DatabaseService {
             uid = uid,
             email = firebaseUser.email,
             displayName = firebaseUser.displayName,
+            isAdmin = false
         ).also { users[it.id] = it }
+    }
+
+    override suspend fun setAdminAccess(firebaseUser: FirebaseUser, adminAccess: Boolean): User {
+        val type = User.Type.FIREBASE
+        val uid = firebaseUser.uid
+        return DummyUser(
+            type = type,
+            uid = uid,
+            email = firebaseUser.email,
+            displayName = firebaseUser.displayName,
+            isAdmin = adminAccess
+        ).also { users[it.id] = it }
+    }
+
+    override suspend fun checkIsAdmin(user: User): Boolean {
+        return user.isAdmin
     }
 
     override suspend fun getUser(type: User.Type, uid: String) = users[User.Id(uid, type)]

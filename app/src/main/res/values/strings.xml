@@ -15,7 +15,6 @@
     <string name="AddPicture_errorWhileTakingPictureDialogTitle">Error</string>
     <string name="AddPicture_errorWhileTakingPictureDialogMessage">An error occurred while taking the picture, please try again.</string>
     <string name="AddPicture_camareImageViewDescription">Shows the picture which has just been taken</string>
-
     <string name="learning_im_to_sort_descr">Image to sort</string>
     <string name="learning_cat_0_descr">First target category</string>
     <string name="learning_cat_1_descr">Second target category</string>
@@ -88,6 +87,7 @@
     <string name="nav_graph_label_add_picture">Add a New Picture</string>
     <string name="nav_graph_label_take_picture">Take a Picture</string>
     <string name="nav_graph_label_select_picture">Select a Picture</string>
+    <string name="LoginAdminCheckBox">Check if Admin</string>
     <string name="nav_graph_label_evaluation_result">Evaluation Result</string>
     <string name="search">Search</string>
     <string name="download">download</string>

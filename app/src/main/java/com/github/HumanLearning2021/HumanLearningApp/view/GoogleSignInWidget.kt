@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +24,8 @@ class GoogleSignInWidget : Fragment() {
     @Inject
     lateinit var presenter: AuthenticationPresenter
 
+    var isAdmin = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,6 +39,11 @@ class GoogleSignInWidget : Fragment() {
         view.findViewById<Button>(R.id.loginButton).setOnClickListener {
             onLoginButtonPress()
         }
+
+        view.findViewById<Button>(R.id.checkBox).setOnClickListener {
+            isAdmin = view.findViewById<CheckBox>(R.id.checkBox).isChecked
+        }
+
         updateUi()
     }
 
@@ -65,7 +73,7 @@ class GoogleSignInWidget : Fragment() {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         lifecycleScope.launch {
-                            presenter.onSuccessfulLogin()
+                            presenter.onSuccessfulLogin(isAdmin)
                             updateUi()
                         }
                     }
