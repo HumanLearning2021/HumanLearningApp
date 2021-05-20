@@ -34,8 +34,7 @@ class EvaluationModel(private val dataset: Dataset) {
          *
          * Ideally, this should by configurable in LearningSettings
          */
-        //TODO: change back to 5
-        val STREAK_LENGTH = 1
+        val STREAK_LENGTH = 5
 
         /**
          * At the end of each streak, we check
