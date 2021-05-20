@@ -43,7 +43,12 @@ class EvaluationResultFragment : Fragment() {
             if (index != 0) {
                 val nSuccess = pair.first
                 val nFailures = pair.second
-                barEntries.add(BarEntry(index.toFloat(), nSuccess.toFloat() / nFailures.toFloat()))
+                barEntries.add(
+                    BarEntry(
+                        index.toFloat(),
+                        nSuccess.toFloat() / (nSuccess.toFloat() + nFailures.toFloat())
+                    )
+                )
             }
         }
 
