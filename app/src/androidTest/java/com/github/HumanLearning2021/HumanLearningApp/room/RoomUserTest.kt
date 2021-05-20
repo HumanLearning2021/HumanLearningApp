@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.model.User
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
@@ -40,7 +41,7 @@ class RoomUserTest {
         RoomUser(getRandomString(), getRandomUserType(), getRandomString(), getRandomString(),false)
 
     @Test
-    fun insertThenLoadBasicUser() {
+    fun insertThenLoadBasicUser() = runBlocking {
         val id = getRandomString()
         val type = getRandomUserType()
         val testUser = RoomUser(id, type, null, null,false)
@@ -53,7 +54,7 @@ class RoomUserTest {
     }
 
     @Test
-    fun insertThenLoadUser() {
+    fun insertThenLoadUser() = runBlocking {
         val testUser = getRandomUser()
 
         userDao.insertAll(testUser)
@@ -64,7 +65,7 @@ class RoomUserTest {
     }
 
     @Test
-    fun insertThenLoadUsers() {
+    fun insertThenLoadUsers() = runBlocking {
         val numberOfUsers = (2..50).random()
         val testUsers = mutableListOf<RoomUser>()
         for (i in 0 until numberOfUsers) {
@@ -80,7 +81,7 @@ class RoomUserTest {
     }
 
     @Test
-    fun loadSpecificYieldsCorrectResult() {
+    fun loadSpecificYieldsCorrectResult() = runBlocking {
         val numberOfUsers = (1..10).random()
         val testUsers = mutableListOf<RoomUser>()
         for (i in 0 until numberOfUsers) {
@@ -96,7 +97,7 @@ class RoomUserTest {
     }
 
     @Test
-    fun deleteUserDeletesUser() {
+    fun deleteUserDeletesUser() = runBlocking {
         val numberOfUsers = (1..10).random()
         val testUsers = mutableListOf<RoomUser>()
         for (i in 0 until numberOfUsers) {
@@ -113,21 +114,21 @@ class RoomUserTest {
     }
 
     @Test
-    fun loadEmptyDatabaseYieldsEmptyResult() {
+    fun loadEmptyDatabaseYieldsEmptyResult() = runBlocking {
         val res = userDao.loadAll()
 
         assertThat(res, empty())
     }
 
     @Test
-    fun loadNonExistentUserYieldsNoResult() {
+    fun loadNonExistentUserYieldsNoResult() = runBlocking {
         val res = userDao.load(getRandomString(), getRandomUserType())
 
         assertThat(res, equalTo(null))
     }
 
     @Test
-    fun deleteNonExistingUserDoesNothing() {
+    fun deleteNonExistingUserDoesNothing() = runBlocking {
         val numberOfUsers = (0..10).random()
         val testUsers = mutableListOf<RoomUser>()
         for (i in 0 until numberOfUsers) {
@@ -144,7 +145,7 @@ class RoomUserTest {
     }
 
     @Test
-    fun updatingUserWorks() {
+    fun updatingUserWorks() = runBlocking {
         val numberOfUsers = (1..10).random()
         val testUsers = mutableListOf<RoomUser>()
         for (i in 0 until numberOfUsers) {

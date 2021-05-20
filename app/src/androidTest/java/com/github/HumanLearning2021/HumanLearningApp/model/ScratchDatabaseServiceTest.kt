@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.BindValue
@@ -13,8 +14,7 @@ import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.notNullValue
+import org.hamcrest.Matchers.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -66,6 +66,16 @@ abstract class ScratchDatabaseServiceTest {
         assertThat(user.displayName, equalTo(firebaseUser.displayName))
         assertThat(user.email, equalTo(firebaseUser.email))
     }
+
+    @Test
+    fun test_putStatistic() = runBlocking {
+        val event = Event.SUCCESS
+        val userId = User.Id("aaaaa", User.Type.TEST)
+        val datasetId = "real dataset"
+        db.putStatistic(Statistic(Statistic.Id(userId, datasetId), mapOf(event to 42)))
+        val statistic = db.getStatistic(userId, datasetId)
+        assertThat(statistic?.occurrences, hasEntry(event, 42))
+    }
 }
 
 @UninstallModules(DatabaseServiceModule::class)
@@ -80,6 +90,10 @@ class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
     @BindValue
     @Demo2Database
     lateinit var demo2DbMgt: DatabaseManagement
+
+    @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
 
     @Inject
     @ScratchDatabase
@@ -107,6 +121,10 @@ class ScratchDummyDatabaseServiceTest : ScratchDatabaseServiceTest() {
     @BindValue
     @Demo2Database
     lateinit var demo2DbMgt: DatabaseManagement
+
+    @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
 
     @Inject
     @DummyDatabase

@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
@@ -27,7 +28,7 @@ class RoomCategoryTest {
     private lateinit var databaseDao: DatabaseDao
 
     @Before
-    fun createDb() {
+    fun createDb() = runBlocking {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
         categoryDao = db.categoryDao()
@@ -56,7 +57,7 @@ class RoomCategoryTest {
         )
 
     @Test
-    fun insertThenLoadCategories() {
+    fun insertThenLoadCategories() = runBlocking {
         val numberOfCategories = (2..50).random()
         val testCategories = mutableListOf<RoomCategory>()
         val refs = mutableListOf<RoomDatabaseCategoriesCrossRef>()
@@ -75,7 +76,7 @@ class RoomCategoryTest {
     }
 
     @Test
-    fun insertThenLoadAllPictures() {
+    fun insertThenLoadAllPictures() = runBlocking {
         val numberOfPictures = (2..10).random()
         val category = getRandomCategory()
         val testPictures = mutableListOf<RoomPicture>()
@@ -94,7 +95,7 @@ class RoomCategoryTest {
     }
 
     @Test
-    fun loadPictureById() {
+    fun loadPictureById() = runBlocking {
         val numberOfPictures = (2..10).random()
         val category = getRandomCategory()
         val testPictures = mutableListOf<RoomPicture>()
@@ -113,7 +114,7 @@ class RoomCategoryTest {
     }
 
     @Test
-    fun insertThenLoadAllPicturesOfOneCategory() {
+    fun insertThenLoadAllPicturesOfOneCategory() = runBlocking {
         val numberOfPictures = (2..10).random()
         val testPictures = mutableListOf<RoomPicture>()
         val tmpCats = mutableListOf<RoomCategory>()
@@ -140,7 +141,7 @@ class RoomCategoryTest {
 
 
     @Test
-    fun loadRepresentativePicture() {
+    fun loadRepresentativePicture() = runBlocking {
         val category = getRandomCategory()
         val representativePicture = getRandomRepresentativePicture(category.categoryId)
 
@@ -161,7 +162,7 @@ class RoomCategoryTest {
     }
 
     @Test
-    fun loadCategoryByIdYieldsCorrectResult() {
+    fun loadCategoryByIdYieldsCorrectResult() = runBlocking {
         val numberOfCategories = (2..10).random()
         val testCategories = mutableListOf<RoomCategory>()
         for (i in 0 until numberOfCategories) {
@@ -177,7 +178,7 @@ class RoomCategoryTest {
     }
 
     @Test
-    fun loadCategoryByNameYieldsCorrectResult() {
+    fun loadCategoryByNameYieldsCorrectResult() = runBlocking {
         val numberOfCategories = (2..10).random()
         val testCategories = mutableListOf<RoomCategory>()
         for (i in 0 until numberOfCategories) {
@@ -200,7 +201,7 @@ class RoomCategoryTest {
     }
 
     @Test
-    fun updateCategoryWorks() {
+    fun updateCategoryWorks() = runBlocking {
         val numberOfCategories = (1..10).random()
         val testCategories = mutableListOf<RoomCategory>()
         val refs = mutableListOf<RoomDatabaseCategoriesCrossRef>()
@@ -226,7 +227,7 @@ class RoomCategoryTest {
     }
 
     @Test
-    fun deletePictureDeletesPicture() {
+    fun deletePictureDeletesPicture() = runBlocking {
         val category = getRandomCategory()
         val numberOfPictures = (1..10).random()
         val testPictures = mutableListOf<RoomPicture>()
@@ -247,7 +248,7 @@ class RoomCategoryTest {
     }
 
     @Test
-    fun deleteCategoryDeletesCategory() {
+    fun deleteCategoryDeletesCategory() = runBlocking {
         val numberOfCategories = (1..10).random()
         val testCategories = mutableListOf<RoomCategory>()
         for (i in 0 until numberOfCategories) {

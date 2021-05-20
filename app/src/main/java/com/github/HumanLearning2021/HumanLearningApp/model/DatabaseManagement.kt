@@ -212,4 +212,13 @@ interface DatabaseManagement {
      * @throws DatabaseService.NotFoundException if the database does not contain the specified category
      */
     suspend fun addCategoryToDataset(dataset: Dataset, category: Category): Dataset
+
+    /**
+     * Increment the occurrence counter for a given class of event.
+     *
+     * @param userId - id of the user involved in the event
+     * @param datasetId - id of the dataset subject to the event
+     * @param event - type of event
+     */
+    suspend fun countOccurrence(userId: User.Id, datasetId: DatasetId, event: Event)
 }

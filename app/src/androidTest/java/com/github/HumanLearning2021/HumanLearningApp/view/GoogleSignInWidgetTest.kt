@@ -13,11 +13,13 @@ import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltC
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
+import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2CachePictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.CategoriesEditingFragment
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -41,14 +43,16 @@ class GoogleSignInWidgetTest {
     @Demo2Database
     lateinit var demo2DbService: DatabaseService
 
+    @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
+
     @BindValue
     @Demo2Database
     lateinit var demo2DbMgt: DatabaseManagement
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
-
-    private val navController: NavController = Mockito.mock(NavController::class.java)
 
     @Before
     fun setUp() {
@@ -65,6 +69,7 @@ class GoogleSignInWidgetTest {
     @Test
     fun checkBoxUiTest() {
         launchFragment()
+        onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
         onView(withId(R.id.checkBox)).check(matches(not(isChecked())));
         onView(withId(R.id.checkBox)).perform(click()).check(matches(isChecked()))
         onView(withId(R.id.checkBox)).perform(click()).check(matches(not(isChecked())))
@@ -75,6 +80,7 @@ class GoogleSignInWidgetTest {
         launchFragment()
         onView(withId(R.id.checkBox)).perform(click())
         assertThat(GoogleSignInWidget.isAdmin, equalTo(true))
+
     }
 
     @Test

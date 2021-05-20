@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
@@ -22,7 +23,7 @@ class RoomDatasetWithoutCategoriesTest {
     private lateinit var databaseDao: DatabaseDao
 
     @Before
-    fun createDb() {
+    fun createDb() = runBlocking {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
         datasetDao = db.datasetDao()
@@ -45,7 +46,7 @@ class RoomDatasetWithoutCategoriesTest {
         dss.map { ds -> asDataset(ds) }
 
     @Test
-    fun insertThenLoadDataset() {
+    fun insertThenLoadDataset() = runBlocking {
         val testDataset = getRandomDatasetWithoutCategories()
         val ref = RoomDatabaseDatasetsCrossRef(dbName, testDataset.datasetId)
 
@@ -58,7 +59,7 @@ class RoomDatasetWithoutCategoriesTest {
     }
 
     @Test
-    fun insertThenLoadDatasets() {
+    fun insertThenLoadDatasets() = runBlocking {
         val numberOfDatasets = (2..50).random()
         val testDatasets = mutableListOf<RoomDatasetWithoutCategories>()
         val refs = mutableListOf<RoomDatabaseDatasetsCrossRef>()
@@ -77,7 +78,7 @@ class RoomDatasetWithoutCategoriesTest {
     }
 
     @Test
-    fun loadDatasetByIdWorks() {
+    fun loadDatasetByIdWorks() = runBlocking {
         val numberOfDatasets = (1..10).random()
         val testDatasets = mutableListOf<RoomDatasetWithoutCategories>()
         for (i in 0 until numberOfDatasets) {
@@ -93,7 +94,7 @@ class RoomDatasetWithoutCategoriesTest {
     }
 
     @Test
-    fun loadDatasetByNameWorks() {
+    fun loadDatasetByNameWorks() = runBlocking {
         val commonName = "name"
         val numberOfDatasets = (3..10).random()
         val testDatasets = mutableListOf<RoomDatasetWithoutCategories>()
@@ -116,7 +117,7 @@ class RoomDatasetWithoutCategoriesTest {
     }
 
     @Test
-    fun deleteDatasetDeletesDataset() {
+    fun deleteDatasetDeletesDataset() = runBlocking {
         val numberOfDatasets = (1..10).random()
         val testDatasets = mutableListOf<RoomDatasetWithoutCategories>()
         for (i in 0 until numberOfDatasets) {
@@ -133,7 +134,7 @@ class RoomDatasetWithoutCategoriesTest {
     }
 
     @Test
-    fun updatingDatasetWorks() {
+    fun updatingDatasetWorks() = runBlocking {
         val numberOfDatasets = (1..10).random()
         val testDatasets = mutableListOf<RoomDatasetWithoutCategories>()
         val refs = mutableListOf<RoomDatabaseDatasetsCrossRef>()

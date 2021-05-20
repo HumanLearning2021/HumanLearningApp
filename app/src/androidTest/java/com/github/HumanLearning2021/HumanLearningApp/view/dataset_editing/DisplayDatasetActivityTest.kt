@@ -22,7 +22,6 @@ import androidx.test.uiautomator.UiDevice
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
@@ -80,12 +79,19 @@ class DisplayDatasetActivityTest {
 
     private val mockNavController: NavController = Mockito.mock(NavController::class.java)
 
-    private val datasetId: String = getFirstDataset(dbMgt).id
+    private val datasetId = "kitchen utensils"
 
     @Before
     fun setup() {
         hiltRule.inject()  // ensures dbManagement is available
-        dataset = getFirstDataset(dbMgt)
+        runBlocking {
+            val ds = dbMgt.getDatasetById(datasetId)
+            require(ds != null) {
+                "The dataset with id $datasetId doesn't exist in the database. Fix this"
+            }
+            dataset = ds
+        }
+
         Intents.init()
     }
 
@@ -149,7 +155,8 @@ class DisplayDatasetActivityTest {
 
             // need to get again because dataset is immutable and editing the name creates a new
             // Dataset object in the database
-            dataset = getFirstDataset(dbMgt)
+            // `!!` ok because we checked it exists in setup
+            dataset = dbMgt.getDatasetById(datasetId)!!
             assert(dataset.name == newName) {
                 "dataset name \"${dataset.name}\" different" +
                         " from \"$newName\""
