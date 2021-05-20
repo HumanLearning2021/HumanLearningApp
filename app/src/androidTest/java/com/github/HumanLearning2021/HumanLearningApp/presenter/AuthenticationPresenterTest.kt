@@ -1,13 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
-import android.provider.Settings.Global.getString
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.firebase.ui.auth.AuthUI
-import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.User
 import com.google.firebase.auth.ktx.auth
@@ -57,6 +51,5 @@ class AuthenticationPresenterTest {
         assertThat(user.uid, equalTo(firebaseUser.uid))
         assertThat(user.isAdmin, equalTo(true))
     }
-
 
 }
