@@ -55,9 +55,11 @@ class GoogleSignInWidgetTest {
         hiltRule.inject()
         demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
     }
+
     @Test
     fun test_success() {
         launchFragmentInHiltContainer<GoogleSignInWidget> {
+            onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
             onActivityResult(GoogleSignInWidget.RC_SIGN_IN, 0, null)
         }
     }
