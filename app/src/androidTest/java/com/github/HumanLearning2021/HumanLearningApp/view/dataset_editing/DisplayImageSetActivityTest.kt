@@ -55,7 +55,6 @@ import java.io.File
 import java.util.*
 import javax.inject.Inject
 
-
 @UninstallModules(DatabaseNameModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -80,6 +79,8 @@ class DisplayImageSetActivityTest {
     var dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
+
+    @BindValue
     val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     private var dsPictures = emptySet<CategorizedPicture>()

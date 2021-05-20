@@ -82,6 +82,8 @@ class DisplayDatasetActivityTest {
     lateinit var context: Context
 
     lateinit var dbMgt: DatabaseManagement
+
+    @BindValue
     val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     private var datasetPictures = emptySet<CategorizedPicture>()

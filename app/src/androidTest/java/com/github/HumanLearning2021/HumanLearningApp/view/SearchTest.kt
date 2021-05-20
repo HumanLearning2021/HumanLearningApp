@@ -62,6 +62,8 @@ class SearchTest {
     var dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
+    
+    @BindValue
     val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     private lateinit var dummyDatasets: Set<Dataset>
