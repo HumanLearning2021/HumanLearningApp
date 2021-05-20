@@ -35,7 +35,7 @@ import org.mockito.Mockito.verify
 @UninstallModules(DatabaseManagementModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class LearningSettingsActivityTest {
+class LearningSettingsFragmentTest {
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -80,25 +80,38 @@ class LearningSettingsActivityTest {
         )
     }
 
-    private fun bothButtonsAndTVAreDisplayed() {
+    @Test
+    fun pressingEvaluationButtonLaunchesLearningActivity() {
+        onView(withId(R.id.learningSettings_btChooseEvaluation)).perform(click())
+        verify(navController).navigate(
+            LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
+                datasetId,
+                LearningMode.EVALUATION
+            )
+        )
+    }
+
+    private fun titleTestAndButtonsDisplayed() {
         assertDisplayed(R.id.learningSettings_btChoosePresentation)
         assertDisplayed(R.id.learningSettings_btChooseRepresentation)
+        assertDisplayed(R.id.learningSettings_btChooseEvaluation)
         assertDisplayed(R.id.learningSettings_tvMode)
     }
 
-    @Test
-    fun learningModeTooltipsAreCorrect() {
+    private fun learningModeTooltipsAreCorrect() {
         val res = InstrumentationRegistry.getInstrumentation().targetContext.resources
         onView(withId(R.id.learningSettings_btChoosePresentation))
             .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_presentation)))
         onView(withId(R.id.learningSettings_btChooseRepresentation))
             .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_representation)))
+        onView(withId(R.id.learningSettings_btChooseEvaluation))
+            .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_evaluation)))
     }
 
     @Test
     fun staticUITests() {
         learningModeTooltipsAreCorrect()
-        bothButtonsAndTVAreDisplayed()
+        titleTestAndButtonsDisplayed()
     }
 
 
