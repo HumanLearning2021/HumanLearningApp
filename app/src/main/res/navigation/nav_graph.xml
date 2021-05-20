@@ -49,6 +49,9 @@
         <argument
             android:name="learningMode"
             app:argType="com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode" />
+        <action
+            android:id="@+id/action_learningFragment_to_evaluationResultFragment"
+            app:destination="@id/evaluationResultFragment" />
     </fragment>
     <fragment
         android:id="@+id/displayDatasetFragment"
@@ -72,14 +75,14 @@
     </fragment>
     <fragment
         android:id="@+id/categoriesEditingFragment"
-        android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.CategoriesEditingFragment"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.MetadataEditingFragment"
         android:label="@string/nav_graph_label_categories_editing"
-        tools:layout="@layout/fragment_categories_editing">
+        tools:layout="@layout/fragment_metadata_editing">
         <action
             android:id="@+id/action_categoriesEditingFragment_to_displayDatasetFragment"
             app:destination="@id/displayDatasetFragment"
             app:popUpTo="@id/datasetsOverviewFragment"
-            app:popUpToInclusive="false"></action>
+            app:popUpToInclusive="false" />
         <argument
             android:name="datasetId"
             android:defaultValue="@null"
@@ -89,7 +92,7 @@
     <fragment
         android:id="@+id/displayImageSetFragment"
         android:name="com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing.DisplayImageSetFragment"
-        android:label="nav_graph_label_display_image_set"
+        android:label="@string/nav_graph_label_display_image_set"
         tools:layout="@layout/fragment_display_image_set">
         <action
             android:id="@+id/action_displayImageSetFragment_to_displayImageFragment"
@@ -178,5 +181,18 @@
         <action
             android:id="@+id/action_homeFragment_to_learningDatasetSelectionFragment"
             app:destination="@id/learningDatasetSelectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/evaluationResultFragment"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.learning.EvaluationResultFragment"
+        android:label="@string/nav_graph_label_evaluation_result">
+        <argument
+            android:name="evaluationResult"
+            app:argType="com.github.HumanLearning2021.HumanLearningApp.model.learning.EvaluationResult" />
+        <action
+            android:id="@+id/action_evaluationResultFragment_to_learningDatasetSelectionFragment"
+            app:destination="@id/learningDatasetSelectionFragment"
+            app:popUpTo="@+id/learningDatasetSelectionFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

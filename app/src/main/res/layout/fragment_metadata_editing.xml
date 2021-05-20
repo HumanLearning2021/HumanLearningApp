@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.dataset_editing.CategoriesEditingFragment">
+    tools:context=".view.dataset_editing.MetadataEditingFragment">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,6 +14,20 @@
         android:textColor="@color/black"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="@id/categories_editing_guideline1"
+        app:layout_constraintStart_toStartOf="@id/categories_editing_guideline3"
+        app:layout_constraintTop_toTopOf="@id/categories_editing_guideline5" />
+
+    <EditText
+        android:id="@+id/dataset_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:autofillHints="Enter dataset name"
+        android:hint="@string/enter_dataset_name"
+        android:inputType="text"
+        android:maxLines="1"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/categories_editing_guideline5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,7 +39,7 @@
         app:layout_constraintBottom_toTopOf="@id/categories_editing_guideline2"
         app:layout_constraintTop_toBottomOf="@id/categories_editing_guideline1"
         app:layout_constraintStart_toStartOf="@id/categories_editing_guideline3"
-        app:layout_constraintEnd_toStartOf="@id/categories_editing_guideline4" >
+        app:layout_constraintEnd_toStartOf="@id/categories_editing_guideline4">
 
         <LinearLayout
             android:id="@+id/parent_linear_layout"
@@ -47,7 +61,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/categories_editing_guideline2"
         app:layout_constraintBottom_toTopOf="@id/button_submit_list"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_submit_list"
@@ -67,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.08" />
+        app:layout_constraintGuide_percent="0.20" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/categories_editing_guideline2"
@@ -89,6 +103,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.95" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/categories_editing_guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.14" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
