@@ -49,6 +49,9 @@
         <argument
             android:name="learningMode"
             app:argType="com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode" />
+        <action
+            android:id="@+id/action_learningFragment_to_evaluationResultFragment"
+            app:destination="@id/evaluationResultFragment" />
     </fragment>
     <fragment
         android:id="@+id/displayDatasetFragment"
@@ -178,5 +181,13 @@
         <action
             android:id="@+id/action_homeFragment_to_learningDatasetSelectionFragment"
             app:destination="@id/learningDatasetSelectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/evaluationResultFragment"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.learning.EvaluationResultFragment"
+        android:label="EvaluationResultFragment">
+        <argument
+            android:name="evaluationResult"
+            app:argType="com.github.HumanLearning2021.HumanLearningApp.model.learning.EvaluationResult" />
     </fragment>
 </navigation>

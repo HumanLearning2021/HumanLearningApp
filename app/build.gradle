@@ -188,5 +188,9 @@ dependencies {
     //Graphs
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
-
 }
+
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
