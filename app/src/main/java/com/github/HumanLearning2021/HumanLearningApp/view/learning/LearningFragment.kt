@@ -206,6 +206,7 @@ class LearningFragment : Fragment() {
                         evaluationModel!!.getCurrentEvaluationResult()
                     )
                 )
+
                 Log.d("Evaluation", "EVALUATION COMPLETE !!!")
             }
             // update image views in case addSuccess started the next evaluation phase

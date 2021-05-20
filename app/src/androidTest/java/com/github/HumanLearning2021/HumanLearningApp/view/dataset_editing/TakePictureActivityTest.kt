@@ -25,7 +25,6 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.parcelize.Parcelize
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -64,12 +63,6 @@ class TakePictureActivityTest {
     private fun grantCameraPermission() {
         PermissionGranter.allowPermissionOneTime(Manifest.permission.CAMERA)
     }
-
-    @Parcelize
-    private class TestCat(
-        override val id: String, override val name: String
-    ) : Category
-
 
     @Before
     fun setUp() {

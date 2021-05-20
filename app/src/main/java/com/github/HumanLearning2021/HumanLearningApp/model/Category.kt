@@ -1,12 +1,13 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 /**
- * An interface representing a category to which a CategorizedPicture can belong
- * id is used to uniquely identify a Category
+ * Class representing a category to which a CategorizedPicture can belong
+ *
+ * @property name the name of the category (case-sensitive)
+ * @property id uniquely identifies the category
  */
-interface Category : Parcelable {
-    val id: Id
-    val name: String
-}
+@Parcelize
+data class Category(val id: Id, val name: String) : Parcelable
