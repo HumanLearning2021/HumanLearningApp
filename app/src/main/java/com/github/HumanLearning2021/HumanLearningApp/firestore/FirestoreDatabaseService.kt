@@ -27,6 +27,7 @@ class FirestoreDatabaseService internal constructor(
     private val datasets = db.collection("/databases/$dbName/datasets")
     private val representativePictures = db.collection("/databases/$dbName/representativePictures")
     private val users = db.collection("/databases/$dbName/users")
+    private val statistics = db.collection("/databases/$dbName/statistics")
     private val storage = Firebase.storage
     private val imagesDir = storage.reference.child("$dbName/images")
 
@@ -88,6 +89,31 @@ class FirestoreDatabaseService internal constructor(
                 }
             }
             return FirestoreDataset(self.id, name, cats)
+        }
+    }
+
+    private class StatisticsSchema() {
+        @DocumentId
+        lateinit var self: DocumentReference
+        var mistakeOccurrences: Int = 0
+        var successOccurrences: Int = 0
+
+        constructor(occurrences: Map<Event, Int>) : this() {
+            mistakeOccurrences = occurrences[Event.MISTAKE] ?: 0
+            successOccurrences = occurrences[Event.SUCCESS] ?: 0
+        }
+
+        fun toPublic() = self.id.split('+').let { (userId, datasetId) ->
+            Statistic(
+                Statistic.Id(
+                    User.Id.fromString(userId),
+                    datasetId
+                ),
+                mapOf(
+                    Event.MISTAKE to mistakeOccurrences,
+                    Event.SUCCESS to successOccurrences
+                ),
+            )
         }
     }
 
@@ -200,6 +226,15 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         require(picture is FirestoreCategorizedPicture)
+        val ref = pictures.document(picture.id)
+        if (!ref.get().await().exists()) {
+            throw DatabaseService.NotFoundException(picture.id)
+        }
+        try {
+            ref.delete().await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.w(this.toString(), "Removing picture ${picture.url} from ${this.db} failed", e)
+        }
         putRepresentativePicture(picture.url, picture.category)
     }
 
@@ -330,6 +365,17 @@ class FirestoreDatabaseService internal constructor(
         val documentRef = users.document("$uid@$type")
         val user = documentRef.get().await().toObject(UserSchema::class.java)
         return user?.toPublic()
+    }
+
+    override suspend fun getStatistic(userId: User.Id, datasetId: Id): Statistic? =
+        statistics.document("$userId+$datasetId").get().await()
+            .toObject(StatisticsSchema::class.java)?.toPublic()
+
+    override suspend fun putStatistic(statistic: Statistic) {
+        statistic.run {
+            statistics.document("$id")
+                .set(StatisticsSchema(occurrences))
+        }.await()
     }
 
     override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? {

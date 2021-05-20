@@ -123,10 +123,14 @@ class DummyDatabaseServiceTest {
     @Test
     fun getCategoriesWorks() = runBlockingTest {
         val dummyDatabaseService = DummyDatabaseService()
-        dummyDatabaseService.putCategory("Table")
+        val categories = HashSet(dummyDatabaseService.getCategories())
+
+        dummyDatabaseService.putCategory(table.name)
+
+        categories.add(table)
         assertThat(
             dummyDatabaseService.getCategories(),
-            equalTo(setOf(fork, spoon, knife, table))
+            equalTo(categories)
         )
     }
 
@@ -270,15 +274,9 @@ class DummyDatabaseServiceTest {
     @Test
     fun getDatasetsWorks() = runBlockingTest {
         val dummyDatabaseService = DummyDatabaseService()
-        assert(
-            dummyDatabaseService.getDatasets().contains(
-                DummyDataset(
-                    "kitchen utensils",
-                    "kitchen utensils",
-                    dummyDatabaseService.getCategories()
-                )
-            )
-        )
+        assert(dummyDatabaseService.getDatasets().isNotEmpty()) {
+            "There must be at least one dataset in the dummy database"
+        }
     }
 
     @ExperimentalCoroutinesApi

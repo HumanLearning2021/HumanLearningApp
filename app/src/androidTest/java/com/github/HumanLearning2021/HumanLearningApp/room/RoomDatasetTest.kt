@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.After
@@ -45,7 +46,7 @@ class RoomDatasetTest {
         dss.map { ds -> asDataset(ds) }
 
     @Test
-    fun addCategoriesToDatasetThenLoadThem() {
+    fun addCategoriesToDatasetThenLoadThem() = runBlocking {
         val categories = listOf(getRandomCategory(), getRandomCategory(), getRandomCategory())
         val dataset = getRandomDatasetWithoutCategories()
         val crossRefs = mutableListOf<RoomDatasetCategoriesCrossRef>()
@@ -63,7 +64,7 @@ class RoomDatasetTest {
     }
 
     @Test
-    fun removeCategoryFromDataset() {
+    fun removeCategoryFromDataset() = runBlocking {
         val categories = listOf(getRandomCategory(), getRandomCategory(), getRandomCategory())
         val dataset = getRandomDatasetWithoutCategories()
         val crossRefs = mutableListOf<RoomDatasetCategoriesCrossRef>()

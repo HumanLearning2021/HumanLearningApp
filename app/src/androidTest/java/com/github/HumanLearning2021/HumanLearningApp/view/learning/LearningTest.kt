@@ -11,12 +11,15 @@ import androidx.test.uiautomator.UiSelector
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getDatasetWithNCategories
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -39,9 +42,9 @@ class LearningTest {
 
     @BindValue
     @Demo2Database
-    val dbManagement: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
+    val dbMgt: DatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
 
-    private val datasetId = TestUtils.getFirstDataset(dbManagement).id
+    private val firstDatasetId = TestUtils.getFirstDataset(dbMgt).id
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
@@ -51,23 +54,99 @@ class LearningTest {
 
     lateinit var mDevice: UiDevice
 
+    lateinit var learningFragment: LearningFragment
+
     @Before
     fun setup() {
         mDevice = UiDevice.getInstance(getInstrumentation())
         hiltRule.inject()
-        launchFragment()
     }
 
     @Test
     fun allImageViewsAreDisplayed() {
+        launchFragment(firstDatasetId)
         assertDisplayed(R.id.learning_to_sort)
         assertDisplayed(R.id.learning_cat_0)
         assertDisplayed(R.id.learning_cat_1)
         assertDisplayed(R.id.learning_cat_2)
     }
 
+
+    @Test
+    fun onlyOneImageViewVisibleWhenOneCategoryInDataset() {
+        launchFragment(getDatasetWithNCategories(1, dbMgt).id)
+        assertNotDisplayed(R.id.learning_cat_0)
+        assertDisplayed(R.id.learning_cat_1)
+        assertNotDisplayed(R.id.learning_cat_2)
+    }
+
+    @Test
+    fun onlyTwoImageViewsVisibleWhenTwoCategoriesInDataset() {
+        launchFragment(getDatasetWithNCategories(2, dbMgt).id)
+        assertDisplayed(R.id.learning_cat_0)
+        assertDisplayed(R.id.learning_cat_1)
+        assertNotDisplayed(R.id.learning_cat_2)
+    }
+
+    @Test
+    fun allImageViewsVisibleWhenFourCategoriesInDataset() {
+        launchFragment(getDatasetWithNCategories(4, dbMgt).id)
+        assertDisplayed(R.id.learning_cat_0)
+        assertDisplayed(R.id.learning_cat_1)
+        assertDisplayed(R.id.learning_cat_2)
+    }
+
+
+    /**
+     * This test verifies that when dragging the picture to sort on each of the targets a certain
+     * number of times (eg. 10), the category changed at least once. This test DOES NOT use
+     * contentDescription to do verifications, but it is less precise than the other tests because
+     * it cannot select the correct (or incorrect) target, so it has to try them all in succession.
+     */
+    @Test
+    fun atLeastOneCategoryChange() {
+        launchFragment(firstDatasetId)
+        val imToSort = getImageToSort()
+        val targetImages = getTargetImages()
+        val nbAttempts = 10
+        var foundChange = false
+        for (i in 1..nbAttempts) {
+            // try all targets in succession
+            for (target in targetImages) {
+                val catBefore = getCurrentCategory()
+                imToSort.dragTo(target, NUMBER_OF_DRAG_STEPS)
+                val catAfter = getCurrentCategory()
+                if (catBefore != catAfter) {
+                    foundChange = true
+                    break
+                }
+            }
+            if (foundChange) break
+        }
+        assert(foundChange) {
+            "There was no change of category even after dragging the " +
+                    "image to sort $nbAttempts times on each target."
+        }
+    }
+
+    private fun getCurrentCategory() =
+        learningFragment.learningPresenter.learningModel.getCurrentCategory()
+
+    private fun getTargetImages(): List<UiObject> =
+        (0 until NUMBER_OF_CATEGORIES).map {
+            getImageInstance(it)
+        }
+
+
+    /**
+     * WARNING: this test relies on the fact that the contentDescription of the ImageViews
+     * on the learningFragment corresponds to the name of the category displayed on it.
+     * I (Niels) haven't found another way to select the correct UiObject as drag target, using
+     * UiAutomation.
+     */
     @Test
     fun dragImageOnCorrectCategory() {
+        launchFragment(firstDatasetId)
         val imToSort = getImageToSort()
         val startDescr = imToSort.contentDescription
         val NUMBER_OF_ATTEMPTS = 50
@@ -87,8 +166,15 @@ class LearningTest {
         assertThat(foundImageChange, `is`(true))
     }
 
+    /**
+     * WARNING: this test relies on the fact that the contentDescription of the ImageViews
+     * on the learningFragment corresponds to the name of the category displayed on it.
+     * I (Niels) haven't found another way to select the correct UiObject as drag target, using
+     * UiAutomation.
+     */
     @Test
     fun dragImageOnIncorrectCategory() {
+        launchFragment(firstDatasetId)
         val imToSort = getImageToSort()
         val startDescr = imToSort.contentDescription
         for (i in 0 until NUMBER_OF_CATEGORIES) {
@@ -112,9 +198,15 @@ class LearningTest {
      * ACTION_DRAG_EXITED will never get triggered and thus decrease branch coverage.
      * If anyone has a smarter idea to trigger the ACTION_DRAG_EXITED without the aforementioned
      * caveats, I'll be more than happy to hear it.
+     *
+     * WARNING: this test relies on the fact that the contentDescription of the ImageViews
+     * on the learningFragment corresponds to the name of the category displayed on it.
+     * I (Niels) haven't found another way to select the correct UiObject as drag target, using
+     * UiAutomation.
      */
     @Test
     fun dragWithUnsuccessfulDrop() {
+        launchFragment(firstDatasetId)
         val imToSort = getImageToSort()
         val startDescr = imToSort.contentDescription
         // there shouldn't be a category on the topleft corner
@@ -136,9 +228,12 @@ class LearningTest {
         return mDevice.findObject(UiSelector().description(descr))
     }
 
-    private fun launchFragment() {
+    private fun launchFragment(datasetId: Id) {
         val args = bundleOf("datasetId" to datasetId, "learningMode" to LearningMode.PRESENTATION)
         launchFragmentInHiltContainer<LearningFragment>(args) {
+            // intercepts the LearningFragment for use during tests
+            // I am quite surprised that this works, but I am very happy that it does
+            learningFragment = this
             Navigation.setViewNavController(requireView(), navController)
         }
     }

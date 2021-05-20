@@ -8,21 +8,28 @@ Predownload an image if the demo is done on an emulator, then add this image dur
 
 ## Script
 
-Verbal communication is central to human interaction. This means that if you can't communicate verbally, you cannot integrate well into society. People with mental disabilities can have problems communicating verbally, which is why they often use picture based communication.
+Verbal communication is central to human interaction. This means that if you can't communicate verbally, it is difficult to integrate well into society. People with mental disabilities can have problems communicating verbally, which is why they often use picture based communication.
 
-The problem now is that the same people do not have good abstraction capabilites. If they show you a picture of a fork and you give them a fork that does not look like the fork in the picture they do not recognize it as being what they requested.
+The problem now is that the same people often do not have good abstraction capabilites. If they show you a picture of a fork and you give them a fork that does not look like the fork in the picture they do not recognize it as being what they requested.
 
 A method to teach this abstraction is picture matching, which would traditionally require printing lots of images. With our app you can do all of this digitally, which greatly simplifies the process.
-So let's learn!
+
+
+So let's say I am learner. The main purpose of this app for me is to learn, so let's see what it can do!
 
 Let's see what datasets are available to me...
 
 _goes and looks at datasets overview (In the learning part)_ 
 
-_goes in representation mode and start learning and remark that a picture shouldn't be in this dataset_
+_goes in representation mode and start learning_
 
- This picture shouldn't be in this dataset and I don't have enough pictures to learn well... Let's see what is going on.
- 
+
+Now let's say I am an instructor. What I want is to create and manage datasets for my students to learn on. For this, I need administrator privileges, and so need to login as such.
+
+_goes on to login_
+
+_goes to dataset overview, click on dataset to manage_
+
  _goes in datasets overview, select the good dataset, first add a new picture from the storage, then go check to see if the picture has been added. There is also the picture that should not be in this dataset, delete it._
- 
- Nice, now it is perfect ! I can go back to learning with my improved dataset.
+
+ Nice, now it is perfect ! My students can go back to learning with the improved dataset.
