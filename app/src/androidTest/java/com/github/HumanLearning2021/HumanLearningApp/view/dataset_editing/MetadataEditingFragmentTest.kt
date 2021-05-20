@@ -19,6 +19,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
+import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
@@ -29,12 +30,16 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.hasSize
 import org.junit.After
@@ -60,6 +65,9 @@ class MetadataEditingFragmentTest {
             MainActivity::class.java
         )
     )
+
+    @BindValue
+    val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     @BindValue
     @Demo2Database
@@ -151,12 +159,17 @@ class MetadataEditingFragmentTest {
 
     @Test
     fun clickOnInfoButtonWorks() {
-        navigateToCreateDatasetFragment()
-        onView(withId(R.id.categories_editing_menu_info)).perform(click())
-        waitFor(1) // increase if needed
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(0, 100)
-        waitFor(1) // increase if needed
-        onView(withId(R.id.button_add)).check(ViewAssertions.matches(isDisplayed()))
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToCreateDatasetFragment()
+            onView(withId(R.id.categories_editing_menu_info)).perform(click())
+            waitFor(1) // increase if needed
+            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(0, 100)
+            waitFor(1) // increase if needed
+            onView(withId(R.id.button_add)).check(ViewAssertions.matches(isDisplayed()))
+        }
     }
 
     @Test
