@@ -14,8 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.firebase.ui.auth.IdpResponse
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentGoogleSignInBinding
-import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -26,6 +24,7 @@ class GoogleSignInWidget : Fragment() {
     @Inject
     lateinit var presenter: AuthenticationPresenter
 
+    var isAdmin = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -109,6 +108,5 @@ class GoogleSignInWidget : Fragment() {
 
     companion object {
         val RC_SIGN_IN: Int = "firebase auth".hashCode()
-        var isAdmin = false
     }
 }
