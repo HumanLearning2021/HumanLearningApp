@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -22,7 +23,7 @@ class RoomOfflineDatabaseTest {
     private lateinit var databaseDao: DatabaseDao
 
     @Before
-    fun createDb() {
+    fun createDb() = runBlocking {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, RoomOfflineDatabase::class.java).build()
         categoryDao = db.categoryDao()
@@ -39,7 +40,7 @@ class RoomOfflineDatabaseTest {
     }
 
     @Test
-    fun insertDatasetsAndLoadAll() {
+    fun insertDatasetsAndLoadAll() = runBlocking {
         val ds1 = RoomDatasetWithoutCategories("id1", "dataset 1")
         val ds2 = RoomDatasetWithoutCategories("id2", "dataset 2")
 

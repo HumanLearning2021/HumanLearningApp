@@ -17,21 +17,11 @@ class OfflineDatabaseService internal constructor(
     val room: RoomOfflineDatabase
 ) : DatabaseService {
 
-    private val pictureRepository: PictureRepository
-    private val databaseDao: DatabaseDao
-    private val datasetDao: DatasetDao
-    private val categoryDao: CategoryDao
-    private val userDao: UserDao
-
-    init {
-        pictureRepository = PictureRepository(dbName, context)
-        databaseDao = room.databaseDao()
-        databaseDao.loadByName(dbName)
-            ?: throw IllegalStateException("The database $dbName has not yet been downloaded.")
-        datasetDao = room.datasetDao()
-        categoryDao = room.categoryDao()
-        userDao = room.userDao()
-    }
+    private val pictureRepository: PictureRepository = PictureRepository(dbName, context)
+    private val databaseDao: DatabaseDao = room.databaseDao()
+    private val datasetDao: DatasetDao = room.datasetDao()
+    private val categoryDao: CategoryDao = room.categoryDao()
+    private val userDao: UserDao = room.userDao()
 
     private fun getID() = "${UUID.randomUUID()}"
 
@@ -192,16 +182,17 @@ class OfflineDatabaseService internal constructor(
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         require(picture is OfflineCategorizedPicture)
         putRepresentativePicture(picture.picture, picture.category)
+        categoryDao.loadPicture(picture.id)?.let { categoryDao.delete(it) }
     }
 
     override suspend fun getDatasets(): Set<OfflineDataset> {
-        return databaseDao.loadByName(dbName)!!.datasets.map { d ->
+        return databaseDao.loadByName(dbName)?.datasets?.map { d ->
             fromDataset(
                 datasetDao.loadById(
                     d.datasetId
                 )!!
             )
-        }.toSet()
+        }?.toSet() ?: setOf()
     }
 
     override suspend fun removeCategoryFromDataset(
@@ -258,5 +249,13 @@ class OfflineDatabaseService internal constructor(
     override suspend fun getUser(type: User.Type, uid: String): OfflineUser? {
         val user = userDao.load(uid, type) ?: return null
         return fromUser(user)
+    }
+
+    override suspend fun getStatistic(user: User.Id, dataset: Id): Statistic? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun putStatistic(statistic: Statistic) {
+        TODO("Not yet implemented")
     }
 }

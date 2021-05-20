@@ -3,7 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.content.Context
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.*
@@ -17,45 +17,40 @@ class UniqueDatabaseManagement constructor(
     private val room: RoomOfflineDatabase,
     private val firestore: FirebaseFirestore
 ) {
-
+    
     private val databaseDao = room.databaseDao()
     private val datasetDao = room.datasetDao()
     private val categoryDao = room.categoryDao()
 
-    private val downloadedDatabases: MutableList<String> = mutableListOf()
-
-    init {
-        val dsNames = room.databaseDao().loadAll().map { db -> db.emptyHLDatabase.databaseName }
-        dsNames.forEach { dsName -> downloadedDatabases.add(dsName) }
-    }
-
-    fun getDownloadedDatabases(): List<String> = downloadedDatabases.toList()
+    suspend fun getDownloadedDatabases(): List<String> =
+        room.databaseDao().loadAll().map { db -> db.emptyHLDatabase.databaseName }.toList()
 
     suspend fun getDatabases(): List<String> = FirestoreDatabaseService.getDatabaseNames()
 
-    fun accessDatabase(databaseName: String): DatabaseManagement {
-        return if (downloadedDatabases.contains(databaseName)) {
+    suspend fun accessDatabase(databaseName: String): DatabaseManagement {
+        return if (room.databaseDao().loadAll().map { db -> db.emptyHLDatabase.databaseName }
+                .contains(databaseName)) {
             DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
         } else {
-            CachedDatabaseManagement(
-                DefaultDatabaseManagement(
+            DefaultDatabaseManagement(
+                CachedDatabaseService(
                     FirestoreDatabaseService(
                         databaseName,
                         firestore
-                    )
-                ), CachePictureRepository(databaseName, context)
+                    ), CachePictureRepository(databaseName, context)
+                )
             )
         }
     }
 
     fun accessCloudDatabase(databaseName: String): DatabaseManagement {
-        return CachedDatabaseManagement(
-            DefaultDatabaseManagement(
+        return DefaultDatabaseManagement(
+            CachedDatabaseService(
                 FirestoreDatabaseService(
                     databaseName,
                     firestore
-                )
-            ), CachePictureRepository(databaseName, context)
+                ), CachePictureRepository(databaseName, context)
+            )
         )
     }
 
@@ -97,16 +92,14 @@ class UniqueDatabaseManagement constructor(
             roomRepresentativePictures
         )
         initializeRoomCrossRefs(dbDsRefs, dbCatRefs, dbPicRefs, dsCatRefs)
-        downloadedDatabases.add(databaseName)
         return DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
     }
 
-    fun removeOfflineDatabase(databaseName: String) {
+    suspend fun removeOfflineDatabase(databaseName: String) {
         room.databaseDao().delete(RoomEmptyHLDatabase(databaseName))
-        downloadedDatabases.remove(databaseName)
     }
 
-    private fun initializeRoomEntities(
+    private suspend fun initializeRoomEntities(
         dbName: String,
         datasets: List<RoomDatasetWithoutCategories>,
         categories: List<RoomCategory>,
@@ -120,7 +113,7 @@ class UniqueDatabaseManagement constructor(
         categoryDao.insertAll(*representativePictures.toTypedArray())
     }
 
-    private fun initializeRoomCrossRefs(
+    private suspend fun initializeRoomCrossRefs(
         dbDsRefs: List<RoomDatabaseDatasetsCrossRef>,
         dbCatRefs: List<RoomDatabaseCategoriesCrossRef>,
         dbPicRefs: List<RoomDatabasePicturesCrossRef>,

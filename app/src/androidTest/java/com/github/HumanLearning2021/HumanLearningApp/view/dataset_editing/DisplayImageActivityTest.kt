@@ -43,8 +43,8 @@ class DisplayImageActivityTest {
 
     private var datasetPictures = emptySet<CategorizedPicture>()
     private var categories = emptySet<Category>()
-    private val dataset = getFirstDataset(dbMgt)
-    private lateinit var datasetId: String
+    private var dataset = getFirstDataset(dbMgt)
+    private val datasetId: String = dataset.id
     private lateinit var categoryWith1Picture: Category
     private lateinit var categoryWith2Pictures: Category
 
@@ -56,7 +56,6 @@ class DisplayImageActivityTest {
         hiltRule.inject()
         categories = emptySet()
         datasetPictures = emptySet()
-        datasetId = dataset.id
         categoryWith1Picture = newCategoryWithNPictures(1)
         categoryWith2Pictures = newCategoryWithNPictures(2)
     }
@@ -95,6 +94,7 @@ class DisplayImageActivityTest {
         return runBlocking {
             val newCategory = dbMgt.putCategory("${UUID.randomUUID()}")
 
+            dataset = dbMgt.getDatasetById(datasetId)!!
             dbMgt.addCategoryToDataset(dataset, newCategory)
 
             val forkUri = getForkUri()

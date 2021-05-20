@@ -14,6 +14,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.hasName
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -43,6 +44,10 @@ class FirestoreDatabaseServiceTest {
     @BindValue
     @Demo2Database
     lateinit var demo2DbMgt: DatabaseManagement
+
+    @Inject
+    @Demo2CachePictureRepository
+    lateinit var repository: PictureRepository
 
     @Inject
     @DemoDatabase
