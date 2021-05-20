@@ -9,10 +9,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentEvaluationResultBinding
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 
+
+/**
+ * Fragment used to display the result of an comVoor-like evaluation
+ */
 class EvaluationResultFragment : Fragment() {
     private var _binding: FragmentEvaluationResultBinding? = null
     private val binding get() = _binding!!
@@ -32,10 +41,8 @@ class EvaluationResultFragment : Fragment() {
         val successFailureCountPerPhase = args.evaluationResult.successFailureCountPerPhase
 
         barChart.setDrawBarShadow(false)
-        barChart.setDrawValueAboveBar(true)
-        barChart.setMaxVisibleValueCount(1)
-        barChart.setPinchZoom(false)
-        barChart.setDrawGridBackground(true)
+        barChart.setScaleEnabled(false);
+        barChart.description.isEnabled = false
 
         val barEntries = ArrayList<BarEntry>()
 
@@ -46,7 +53,7 @@ class EvaluationResultFragment : Fragment() {
                 barEntries.add(
                     BarEntry(
                         index.toFloat(),
-                        nSuccess.toFloat() / (nSuccess.toFloat() + nFailures.toFloat())
+                        100f * nSuccess.toFloat() / (nSuccess.toFloat() + nFailures.toFloat())
                     )
                 )
             }
@@ -55,11 +62,41 @@ class EvaluationResultFragment : Fragment() {
         val barDataset = BarDataSet(barEntries, getString(R.string.evaluation_result_graph_label))
         barDataset.color = R.color.blue
         val barData = BarData(barDataset)
-        barData.barWidth = 0.9f
+        barData.barWidth = 0.7f
         barChart.data = barData
 
         binding.learnAgainButton.setOnClickListener {
             findNavController().navigate(EvaluationResultFragmentDirections.actionEvaluationResultFragmentToLearningDatasetSelectionFragment())
         }
+
+        barChart.axisRight.isEnabled = false
+
+        val leftAxis: YAxis = barChart.axisLeft
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = 110f
+        leftAxis.setDrawGridLines(false)
+
+        val xAxis: XAxis = barChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false);
+        xAxis.labelCount = successFailureCountPerPhase.size - 1
+
+        xAxis.valueFormatter = IndexAxisValueFormatter(
+            IntRange(
+                0,
+                successFailureCountPerPhase.size - 1
+            ).map {
+                if (it == 1)
+                    "$it category"
+                else
+                    "$it categories"
+            }.toTypedArray()
+        )
+    }
+}
+
+class LabelFormatter(private val mLabels: Array<String>) : ValueFormatter() {
+    override fun getFormattedValue(value: Float, axis: AxisBase): String {
+        return mLabels[value.toInt()]
     }
 }

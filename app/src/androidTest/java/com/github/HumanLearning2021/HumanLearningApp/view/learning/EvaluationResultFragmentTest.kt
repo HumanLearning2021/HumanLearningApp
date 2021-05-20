@@ -55,7 +55,7 @@ class EvaluationResultFragmentTest {
 
     @Test
     fun graphIsDisplayed() {
-        Thread.sleep(1000)
+        Thread.sleep(100000)
         assertDisplayed(R.id.barchart_evaluation_result)
     }
 
