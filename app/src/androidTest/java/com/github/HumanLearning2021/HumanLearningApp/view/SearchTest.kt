@@ -13,19 +13,25 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers
 import org.junit.*
 import org.junit.runner.RunWith
@@ -56,6 +62,7 @@ class SearchTest {
     var dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
+    val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     private lateinit var dummyDatasets: Set<Dataset>
 
@@ -89,8 +96,13 @@ class SearchTest {
 
     @Test
     fun datasetsOverviewSearchByKeyWordYieldsCorrectResult() {
-        navigateToDatasetsOverview()
-        searchByKeyWordYieldsCorrectResult()
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToDatasetsOverview()
+            searchByKeyWordYieldsCorrectResult()
+        }
     }
 
 
@@ -102,8 +114,13 @@ class SearchTest {
 
     @Test
     fun datasetsOverviewSearchNotFoundYieldsNoResult() {
-        navigateToDatasetsOverview()
-        searchNotFoundYieldsNoResult()
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToDatasetsOverview()
+            searchNotFoundYieldsNoResult()
+        }
     }
 
     @Test
@@ -115,9 +132,14 @@ class SearchTest {
 
     @Test
     fun datasetsOverviewCanClickOnSubsetOfDatasetsMatchingSearch() {
-        navigateToDatasetsOverview()
-        canClickOnSubsetOfDatasetsMatchingSearch()
-        assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToDatasetsOverview()
+            canClickOnSubsetOfDatasetsMatchingSearch()
+            assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
+        }
     }
 
     @Test
@@ -129,8 +151,13 @@ class SearchTest {
 
     @Test
     fun datasetsOverviewEmptySpacePrefixHasNoInfluence() {
-        navigateToDatasetsOverview()
-        emptySpacePrefixHasNoInfluence()
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToDatasetsOverview()
+            emptySpacePrefixHasNoInfluence()
+        }
     }
 
     @Test

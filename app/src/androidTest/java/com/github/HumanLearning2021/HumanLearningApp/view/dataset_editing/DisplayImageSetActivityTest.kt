@@ -23,19 +23,24 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
+import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.anything
 import org.junit.After
@@ -57,7 +62,7 @@ import javax.inject.Inject
 class DisplayImageSetActivityTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
-    
+
     @Inject
     @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
@@ -75,6 +80,7 @@ class DisplayImageSetActivityTest {
     var dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
+    val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     private var dsPictures = emptySet<CategorizedPicture>()
     private lateinit var categories: Set<Category>
@@ -220,16 +226,21 @@ class DisplayImageSetActivityTest {
 
     @Test
     fun clickOnInfoButtonWorks() {
-        navigateToDisplayImagesetFragment()
-        onView(withId(R.id.display_imageset_menu_info)).perform(click())
-        waitFor(1) // increase if needed
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(0, 100)
-        waitFor(1) // increase if needed
-        onView(withId(R.id.display_image_set_imagesGridView)).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToDisplayImagesetFragment()
+            onView(withId(R.id.display_imageset_menu_info)).perform(click())
+            waitFor(1) // increase if needed
+            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(0, 100)
+            waitFor(1) // increase if needed
+            onView(withId(R.id.display_image_set_imagesGridView)).check(
+                ViewAssertions.matches(
+                    ViewMatchers.isDisplayed()
+                )
             )
-        )
+        }
     }
 
     private fun navigateToDisplayImagesetFragment() {

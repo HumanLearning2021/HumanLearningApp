@@ -16,21 +16,24 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
-import com.github.HumanLearning2021.HumanLearningApp.model.Category
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
-import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -62,6 +65,7 @@ class AddPictureNavigationTest {
     var dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
+    val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     private val catSet = setOf<Category>(
         DummyCategory("cat1", "cat1"),
@@ -91,17 +95,28 @@ class AddPictureNavigationTest {
 
     @Test
     fun navigateToChoose() {
-        navigateToAddPictureActivity()
-        onView(withId(R.id.select_existing_picture)).perform(click())
-        assertCurrentFragmentIsCorrect(R.id.selectPictureFragment)
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToAddPictureActivity()
+            onView(withId(R.id.select_existing_picture)).perform(click())
+            assertCurrentFragmentIsCorrect(R.id.selectPictureFragment)
+        }
     }
 
     @Test
     fun navigateToCamera() {
-        navigateToAddPictureActivity()
-        Espresso.onView(ViewMatchers.withId(R.id.use_camera))
-            .perform(ViewActions.click())
-        assertCurrentFragmentIsCorrect(R.id.takePictureFragment)
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToAddPictureActivity()
+            Espresso.onView(ViewMatchers.withId(R.id.use_camera))
+                .perform(ViewActions.click())
+
+            assertCurrentFragmentIsCorrect(R.id.takePictureFragment)
+        }
     }
 
 
@@ -120,7 +135,7 @@ class AddPictureNavigationTest {
 
     private fun assertCurrentFragmentIsCorrect(expected: Int) {
         activityScenarioRule.scenario.onActivity {
-            var currentFragmentContainer =
+            val currentFragmentContainer =
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
             val currentFragment = currentFragmentContainer?.findNavController()?.currentDestination
             assert(currentFragment?.id == expected)
