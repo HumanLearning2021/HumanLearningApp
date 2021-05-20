@@ -29,14 +29,27 @@ class AuthenticationPresenterTest {
     }
 
     @Test
-    fun test_signInAnonymously() = runBlocking {
+    fun test_signInAnonymouslyUser() = runBlocking {
         val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
-        presenter.onSuccessfulLogin()
+        presenter.onSuccessfulLogin(false)
         val user = presenter.currentUser
         assertThat(user, notNullValue())
         user!!
         assertThat(user.type, equalTo(User.Type.FIREBASE))
         assertThat(user.uid, equalTo(firebaseUser.uid))
+        assertThat(user.isAdmin, equalTo(false))
+    }
+
+    @Test
+    fun test_signInAnonymouslyAdmin() = runBlocking {
+        val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
+        presenter.onSuccessfulLogin(true)
+        val user = presenter.currentUser
+        assertThat(user, notNullValue())
+        user!!
+        assertThat(user.type, equalTo(User.Type.FIREBASE))
+        assertThat(user.uid, equalTo(firebaseUser.uid))
+        assertThat(user.isAdmin, equalTo(true))
     }
 
 }

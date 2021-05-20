@@ -4,18 +4,23 @@ import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.hasName
+import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.Assert.fail
@@ -58,6 +63,8 @@ class FirestoreDatabaseServiceTest {
     lateinit var pearCategoryId: String
     lateinit var fakeCategory: FirestoreCategory
     lateinit var fakeDataset: FirestoreDataset
+    private lateinit var presenter: AuthenticationPresenter
+
 
     @Before
     fun setUp() {
@@ -67,6 +74,8 @@ class FirestoreDatabaseServiceTest {
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         fakeCategory = FirestoreCategory("oopsy", "oopsy")
         fakeDataset = FirestoreDataset("oopsy", "oopsy", setOf())
+        presenter = AuthenticationPresenter(AuthUI.getInstance(), scratchInterface)
+
     }
 
     @Test
@@ -311,5 +320,16 @@ class FirestoreDatabaseServiceTest {
     @Test
     fun test_getRepresentativePicture() = runBlocking {
         assertThat(demoInterface.getRepresentativePicture(appleCategoryId), not(equalTo(null)))
+    }
+
+    @Test
+    fun test_setAdminAccess() {
+        runBlocking {
+            val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
+            presenter.onSuccessfulLogin(false)
+            val user = scratchInterface.setAdminAccess(firebaseUser, true)
+            assertThat(user.isAdmin, equalTo(true))
+            assertThat(scratchInterface.checkIsAdmin(user), equalTo(true))
+        }
     }
 }

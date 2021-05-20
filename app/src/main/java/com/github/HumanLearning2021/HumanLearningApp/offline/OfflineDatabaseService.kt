@@ -234,16 +234,17 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun updateUser(firebaseUser: FirebaseUser): OfflineUser {
-        userDao.update(
-            RoomUser(
-                firebaseUser.uid,
-                User.Type.FIREBASE,
-                firebaseUser.displayName,
-                firebaseUser.email
-            )
-        )
-        return fromUser(userDao.load(firebaseUser.uid, User.Type.FIREBASE)!!)
+        throw IllegalStateException("No Users Downloaded yet")
     }
+
+    override suspend fun setAdminAccess(firebaseUser: FirebaseUser, adminAccess: Boolean): User {
+        throw IllegalStateException("No Admin In Offline Mode Error")
+    }
+
+    override suspend fun checkIsAdmin(user: User): Boolean {
+        throw IllegalStateException("No Admin In Offline Mode Error")
+    }
+
 
     override suspend fun getUser(type: User.Type, uid: String): OfflineUser? {
         val user = userDao.load(uid, type) ?: return null

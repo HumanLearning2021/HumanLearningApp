@@ -184,6 +184,10 @@ interface DatabaseService {
 
     suspend fun updateUser(firebaseUser: FirebaseUser): User
 
+    suspend fun setAdminAccess(firebaseUser: FirebaseUser, adminAccess: Boolean): User
+
+    suspend fun checkIsAdmin(user : User): Boolean
+
     suspend fun getUser(type: User.Type, uid: String): User?
 
     /**

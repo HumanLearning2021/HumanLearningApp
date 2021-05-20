@@ -38,13 +38,13 @@ class RoomUserTest {
     private fun getRandomString() = "${UUID.randomUUID()}"
     private fun getRandomUserType() = User.Type.values().toList().shuffled().first()
     private fun getRandomUser() =
-        RoomUser(getRandomString(), getRandomUserType(), getRandomString(), getRandomString())
+        RoomUser(getRandomString(), getRandomUserType(), getRandomString(), getRandomString(),false)
 
     @Test
     fun insertThenLoadBasicUser() = runBlocking {
         val id = getRandomString()
         val type = getRandomUserType()
-        val testUser = RoomUser(id, type, null, null)
+        val testUser = RoomUser(id, type, null, null,false)
 
         userDao.insertAll(testUser)
 
@@ -155,7 +155,7 @@ class RoomUserTest {
         userDao.insertAll(*testUsers.toTypedArray())
         val toUpdateUser = testUsers.random()
         val updatedUser =
-            RoomUser(toUpdateUser.userId, toUpdateUser.type, getRandomString(), toUpdateUser.email)
+            RoomUser(toUpdateUser.userId, toUpdateUser.type, getRandomString(), toUpdateUser.email,false)
         userDao.update(updatedUser)
         val res = userDao.loadAll()
 
