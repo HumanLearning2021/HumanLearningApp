@@ -283,6 +283,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
             uid = uid,
             email = firebaseUser.email,
             displayName = firebaseUser.displayName,
+            isAdmin = false
         ).also { users[it.id] = it }
     }
 
