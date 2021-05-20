@@ -8,6 +8,7 @@
 ## Jaakik, Marouane
 
 ## Konrad, Jonas Franz
+This week I added the ability to download the database. This way the app can be used without an internet connection. I also resolved a bug where setting a picture as the representative picture for a category would remove it from storage, hence leading to an inconsistent state in the database. Overall it went ok, some parallelism difficulties where encountered unexpectedly, but I managed to solve them in the end.
 
 ## Lachat, Niels Marco
 
