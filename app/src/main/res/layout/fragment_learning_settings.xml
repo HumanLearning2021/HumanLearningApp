@@ -44,6 +44,17 @@
         app:layout_constraintBottom_toTopOf="@id/learning_settings_guideline4" />
 
 
+    <Button
+        android:id="@+id/learningSettings_btChooseEvaluation"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="@string/learning_settings_btEvaluation"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/learning_settings_guideline5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/learning_settings_guideline4" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/learning_settings_guideline1"
         android:layout_width="wrap_content"
@@ -71,5 +82,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.32" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/learning_settings_guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.42" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
