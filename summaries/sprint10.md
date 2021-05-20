@@ -12,6 +12,9 @@ During this sprint, I have finally managed to merge the required backend changes
 This week I added the ability to download the database. This way the app can be used without an internet connection. I also resolved a bug where setting a picture as the representative picture for a category would remove it from storage, hence leading to an inconsistent state in the database. Overall it went ok, some parallelism difficulties where encountered unexpectedly, but I managed to solve them in the end.
 
 ## Lachat, Niels Marco
+This week I started by fixing the tests that prevented me from merging last week. This took up quite some time, but I think I made useful changes to make the tests more robust. 
+After that, I started implementing the evaluation mode for the learning. This went quite well and was not too hard to integrate, but I think that the code could benefit from a little refactoring to abstract the model inside the presenter.
+Overall I am quite happy with the final result of my task this week. I spent around 10 hours on the project.
 
 ## Lenweiter, Martin
 This week I did one the 2 parts of the destabilization sprint (Niels did the other) which consists of an evaluation of a user following the comVoor method. I implemented the UI that displays the result of an evaluation. The main difficulty I had was to get familiar with `MPAndroidChart`, a graph library. I spent about 8 hours of work including reviews.
