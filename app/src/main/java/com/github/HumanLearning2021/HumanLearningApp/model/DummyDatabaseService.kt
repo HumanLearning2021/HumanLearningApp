@@ -283,8 +283,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
             uid = uid,
             email = firebaseUser.email,
             displayName = firebaseUser.displayName,
-            isAdmin = false,
-            ).also { users[it.id] = it }
+        ).also { users[it.id] = it }
     }
 
     override suspend fun setAdminAccess(firebaseUser: FirebaseUser, adminAccess: Boolean): User {
