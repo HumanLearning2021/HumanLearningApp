@@ -327,9 +327,9 @@ class FirestoreDatabaseServiceTest {
         runBlocking {
             val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
             presenter.onSuccessfulLogin(false)
-            val fireStoreUser = scratchInterface.setAdminAccess(firebaseUser, true)
-            assertThat(fireStoreUser.isAdmin, equalTo(true))
-            assertThat(scratchInterface.checkIsAdmin(fireStoreUser), equalTo(true))
+            val user = scratchInterface.setAdminAccess(firebaseUser, true)
+            assertThat(user.isAdmin, equalTo(true))
+            assertThat(scratchInterface.checkIsAdmin(user), equalTo(true))
         }
     }
 }

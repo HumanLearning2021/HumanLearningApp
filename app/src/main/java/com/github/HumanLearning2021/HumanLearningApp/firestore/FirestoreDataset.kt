@@ -1,12 +1,9 @@
 package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
-import com.github.HumanLearning2021.HumanLearningApp.model.Id
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
-class FirestoreDataset(
-    override val id: Id,
-    override val name: String,
-    override val categories: Set<FirestoreCategory>
-) : Dataset
+@Deprecated(
+    "merged with superclass",
+    ReplaceWith("Dataset", "com.github.HumanLearning2021.HumanLearningApp.model.Dataset")
+)
+typealias FirestoreDataset = Dataset
