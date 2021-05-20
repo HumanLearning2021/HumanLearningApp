@@ -69,8 +69,8 @@ class UniqueDatabaseManagement @Inject constructor(
         )
     }
 
-    fun downloadDatabase(databaseName: String): Deferred<DefaultDatabaseManagement> =
-        CoroutineScope(Dispatchers.IO).async {
+    suspend fun downloadDatabase(databaseName: String): DatabaseManagement =
+        withContext(Dispatchers.IO) {
             CachePictureRepository(
                 databaseName,
                 context

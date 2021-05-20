@@ -9,7 +9,6 @@ import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
@@ -56,14 +55,13 @@ class UniqueDatabaseManagementTest {
         assertThat(uDbMan.getDownloadedDatabases(), hasItem("demo"))
     }
 
-    @ExperimentalCoroutinesApi
     @Test
     fun offlineAndFirestoreDatabasesContainTheSameElements() = runBlocking {
         val dbName = "demo"
         val fDbMan = uDbMan.accessCloudDatabase(dbName)
         val tmp = uDbMan.downloadDatabase(dbName)
         tmp.await()
-        val oDbman = tmp.getCompleted()
+        val oDbman = tmp.await()
         assertThat(
             fDbMan.getDatasets().map { ds -> ds.id },
             equalTo(oDbman.getDatasets().map { ds -> ds.id })

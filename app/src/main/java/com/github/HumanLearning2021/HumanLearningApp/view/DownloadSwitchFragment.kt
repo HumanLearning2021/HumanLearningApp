@@ -83,7 +83,11 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
         switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 progressIcon.visibility = View.VISIBLE
-                globalDatabaseManagement.downloadDatabase(dbName).invokeOnCompletion {
+                CoroutineScope(Dispatchers.IO).launch {
+                    globalDatabaseManagement.downloadDatabase(
+                        dbName
+                    )
+                }.invokeOnCompletion {
                     CoroutineScope(Dispatchers.Main).launch {
                         progressIcon.visibility = View.INVISIBLE
                     }

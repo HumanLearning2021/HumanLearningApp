@@ -173,7 +173,7 @@ object DatabaseServiceModule {
         @RoomDatabase room: RoomOfflineDatabase,
     ): DatabaseService =
         runBlocking {
-            uDb.downloadDatabase("demo").await()
+            uDb.downloadDatabase("demo")
             OfflineDatabaseService("demo", context, room)
         }
 
@@ -185,7 +185,7 @@ object DatabaseServiceModule {
         @RoomDatabase room: RoomOfflineDatabase
     ): DatabaseService =
         runBlocking {
-            uDb.downloadDatabase("scratch").await()
+            uDb.downloadDatabase("scratch")
             OfflineDatabaseService(
                 "scratch",
                 context,
