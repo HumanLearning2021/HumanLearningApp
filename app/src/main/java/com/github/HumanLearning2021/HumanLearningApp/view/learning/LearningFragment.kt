@@ -201,7 +201,12 @@ class LearningFragment : Fragment() {
 
             evaluationModel?.addSuccess()
             if (evaluationModel?.isEvaluationComplete() == true) {
-                // TODO start navigation to evaluation result fragment
+                findNavController().navigate(
+                    LearningFragmentDirections.actionLearningFragmentToEvaluationResultFragment(
+                        evaluationModel!!.getCurrentEvaluationResult()
+                    )
+                )
+
                 Log.d("Evaluation", "EVALUATION COMPLETE !!!")
             }
             // update image views in case addSuccess started the next evaluation phase
