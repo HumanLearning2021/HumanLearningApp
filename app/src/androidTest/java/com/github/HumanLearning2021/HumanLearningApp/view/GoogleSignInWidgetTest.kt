@@ -48,8 +48,6 @@ class GoogleSignInWidgetTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    private val navController: NavController = Mockito.mock(NavController::class.java)
-
     @Before
     fun setUp() {
         hiltRule.inject()
@@ -65,6 +63,7 @@ class GoogleSignInWidgetTest {
     @Test
     fun checkBoxUiTest() {
         launchFragment()
+        onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
         onView(withId(R.id.checkBox)).check(matches(not(isChecked())));
         onView(withId(R.id.checkBox)).perform(click()).check(matches(isChecked()))
         onView(withId(R.id.checkBox)).perform(click()).check(matches(not(isChecked())))
@@ -75,6 +74,7 @@ class GoogleSignInWidgetTest {
         launchFragment()
         onView(withId(R.id.checkBox)).perform(click())
         assertThat(GoogleSignInWidget.isAdmin, equalTo(true))
+
     }
 
     @Test
