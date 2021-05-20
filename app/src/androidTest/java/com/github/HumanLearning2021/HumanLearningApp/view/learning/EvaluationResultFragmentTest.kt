@@ -15,11 +15,13 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.learning.EvaluationResult
+import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -53,12 +55,14 @@ class EvaluationResultFragmentTest {
 
     @Test
     fun graphIsDisplayed() {
-        Thread.sleep(1)
+        Thread.sleep(100000)
+        assertDisplayed(R.id.barchart_evaluation_result)
     }
 
-    @Test
-    fun rightStuffIsDisplayedOnGraph() {
 
+    @Test
+    @Ignore("I don't know the library well enough to test its content yet")
+    fun rightStuffIsDisplayedOnGraph() {
     }
 
     @Test

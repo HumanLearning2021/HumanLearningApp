@@ -38,25 +38,22 @@ class EvaluationResultFragment : Fragment() {
         barChart.setDrawGridBackground(true)
 
         val barEntries = ArrayList<BarEntry>()
-        for (i in IntRange(0, 5))
-            if (i == 0)
+
+        successFailureCountPerPhase.forEachIndexed { index, pair ->
+            if (index == 0)
                 barEntries.add(BarEntry(0f, 0f))
             else {
-                val nSuccess = successFailureCountPerPhase[i].first as Float
-                val nFailures = successFailureCountPerPhase[i].second as Float
-                barEntries.add(BarEntry(i as Float, nSuccess / nFailures))
+                val nSuccess = pair.first
+                val nFailures = pair.second
+                barEntries.add(BarEntry(index.toFloat(), nSuccess.toFloat() / nFailures.toFloat()))
             }
-
+        }
 
         val barDataset = BarDataSet(barEntries, getString(R.string.evaluation_result_graph_label))
         barDataset.color = R.color.blue
-
         val barData = BarData(barDataset)
-
         barData.barWidth = 0.9f
-
         barChart.data = barData
-
 
         binding.learnAgainButton.setOnClickListener {
             findNavController().navigate(EvaluationResultFragmentDirections.actionEvaluationResultFragmentToLearningDatasetSelectionFragment())
