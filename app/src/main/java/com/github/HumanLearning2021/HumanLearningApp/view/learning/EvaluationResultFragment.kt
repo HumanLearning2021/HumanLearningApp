@@ -9,14 +9,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentEvaluationResultBinding
-import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
 
 
 /**
@@ -92,11 +90,5 @@ class EvaluationResultFragment : Fragment() {
                     "$it categories"
             }.toTypedArray()
         )
-    }
-}
-
-class LabelFormatter(private val mLabels: Array<String>) : ValueFormatter() {
-    override fun getFormattedValue(value: Float, axis: AxisBase): String {
-        return mLabels[value.toInt()]
     }
 }
