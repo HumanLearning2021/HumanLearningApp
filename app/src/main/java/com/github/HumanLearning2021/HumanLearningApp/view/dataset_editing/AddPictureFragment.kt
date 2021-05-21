@@ -38,7 +38,6 @@ class AddPictureFragment : Fragment() {
         const val REQUEST_KEY = "AddPictureFragmentRequestKey"
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
