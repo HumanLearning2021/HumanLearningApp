@@ -20,7 +20,7 @@ class DummyDatabaseManagementTest {
 
     @Before
     fun bef() {
-        testDatabaseManagement = DummyDatabaseManagement(DummyDatabaseService())
+        testDatabaseManagement = DefaultDatabaseManagement(DummyDatabaseService())
         runBlocking {
             with(testDatabaseManagement) {
                 fork = putCategory("Fork")
@@ -153,7 +153,7 @@ class DummyDatabaseManagementTest {
     @ExperimentalCoroutinesApi
     @Test
     fun removeNonexistentPicture() = runBlockingTest {
-        testDatabaseManagement.removePicture(DummyCategorizedPicture("tableid", table, Uri.EMPTY))
+        testDatabaseManagement.removePicture(CategorizedPicture("tableid", table, Uri.EMPTY))
     }
 
     @ExperimentalCoroutinesApi
@@ -216,7 +216,7 @@ class DummyDatabaseManagementTest {
     @Test(expected = DatabaseService.NotFoundException::class)
     fun putRepresentativePictureOverloadThrowsExpectedException() = runBlockingTest {
         testDatabaseManagement.putRepresentativePicture(
-            DummyCategorizedPicture(
+            CategorizedPicture(
                 "tableid",
                 table,
                 Uri.EMPTY
@@ -255,7 +255,7 @@ class DummyDatabaseManagementTest {
     @Test(expected = DatabaseService.NotFoundException::class)
     fun removeCategoryFromDatasetThrowsNotFoundExceptionIfCategoryNotInDb() = runBlockingTest {
         val name = "Utensils"
-        val dataset = DummyDataset(name, name, setOf())
+        val dataset = Dataset(name, name, setOf())
         testDatabaseManagement.removeCategoryFromDataset(dataset, fork)
     }
 
@@ -263,7 +263,7 @@ class DummyDatabaseManagementTest {
     @Test(expected = DatabaseService.NotFoundException::class)
     fun removeCategoryFromDatasetThrowsNotFoundExceptionIfDatasetNotInDb() = runBlockingTest {
         testDatabaseManagement.removeCategoryFromDataset(
-            DummyDataset(
+            Dataset(
                 "some_id",
                 "some_name",
                 setOf()
@@ -304,7 +304,7 @@ class DummyDatabaseManagementTest {
     @Test(expected = DatabaseService.NotFoundException::class)
     fun addCategoryToDatasetThrowsIfDatasetNotInDatabase() = runBlockingTest {
         testDatabaseManagement.addCategoryToDataset(
-            DummyDataset("some_id", "some_name", setOf()),
+            Dataset("some_id", "some_name", setOf()),
             spoon
         )
     }

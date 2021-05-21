@@ -22,12 +22,7 @@ import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManageme
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DummyCategory
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -72,9 +67,9 @@ class TakePictureActivityTest {
     lateinit var datasetId: String
 
     private val catSet = setOf<Category>(
-        DummyCategory("cat1", "cat1"),
-        DummyCategory("cat2", "cat2"),
-        DummyCategory("cat3", "cat3"),
+        Category("cat1", "cat1"),
+        Category("cat2", "cat2"),
+        Category("cat3", "cat3"),
     )
 
     val catSetArray = catSet.toTypedArray()

@@ -3,6 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.offline
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.hilt.CachedDemoDatabase
+import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -47,7 +48,7 @@ class CachedDatabaseServiceTest {
     fun getPicturePutsItIntoCache() = runBlocking {
         val ids = demoInterface.getPictureIds(demoInterface.getCategory(appleCategoryId)!!)
         val pic = demoInterface.getPicture(ids.random())
-        assert(pic is OfflineCategorizedPicture)
+        assert(pic is CategorizedPicture)
         assertThat(pic, not(equalTo(null)))
         assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
     }

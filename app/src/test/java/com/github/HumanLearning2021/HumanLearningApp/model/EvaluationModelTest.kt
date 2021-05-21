@@ -1,4 +1,4 @@
-package com.github.HumanLearning2021.HumanLearningApp.model;
+package com.github.HumanLearning2021.HumanLearningApp.model
 
 import com.github.HumanLearning2021.HumanLearningApp.model.learning.EvaluationModel
 import org.hamcrest.MatcherAssert.assertThat
@@ -7,11 +7,11 @@ import org.junit.Test
 
 class EvaluationModelTest {
     private var catUniqueId = 0
-    private fun makeMockDataset(name: String, nbCat: Int) = DummyDataset(
+    private fun makeMockDataset(name: String, nbCat: Int) = Dataset(
         name,
         name,
         (0 until nbCat).map
-        { DummyCategory("${catUniqueId++}", "name") }.toSet()
+        { Category("${catUniqueId++}", "name") }.toSet()
     )
 
     @Test

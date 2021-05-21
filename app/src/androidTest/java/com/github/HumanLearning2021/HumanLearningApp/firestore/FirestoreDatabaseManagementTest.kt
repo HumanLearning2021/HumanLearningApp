@@ -39,16 +39,16 @@ class FirestoreDatabaseManagementTest {
 
     lateinit var appleCategoryId: String
     lateinit var pearCategoryId: String
-    lateinit var fakeCategory: FirestoreCategory
-    lateinit var fakeDataset: FirestoreDataset
+    lateinit var fakeCategory: Category
+    lateinit var fakeDataset: Dataset
 
     @Before
     fun setUp() {
         hiltRule.inject()
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory = FirestoreCategory("oopsy", "oopsy")
-        fakeDataset = FirestoreDataset("oopsy", "oopsy", setOf())
+        fakeCategory = Category("oopsy", "oopsy")
+        fakeDataset = Dataset("oopsy", "oopsy", setOf())
     }
 
     private fun getRandomString() = "${UUID.randomUUID()}"
@@ -56,7 +56,7 @@ class FirestoreDatabaseManagementTest {
     @Test
     fun test_getPicture_categoryNotPresent() = runBlocking {
         runCatching {
-            scratchManagement.getPicture(FirestoreCategory(getRandomString(), getRandomString()))
+            scratchManagement.getPicture(Category(getRandomString(), getRandomString()))
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -94,7 +94,7 @@ class FirestoreDatabaseManagementTest {
             val uri = Uri.fromFile(tmp)
             scratchManagement.putPicture(
                 uri,
-                FirestoreCategory(getRandomString(), getRandomString())
+                Category(getRandomString(), getRandomString())
             )
             tmp.delete()
         }.fold({
@@ -290,7 +290,7 @@ class FirestoreDatabaseManagementTest {
     fun test_putRepresentativePicture_fromCategorizedPicture_pictureNotPresent() = runBlocking {
         runCatching {
             scratchManagement.putRepresentativePicture(
-                FirestoreCategorizedPicture(
+                CategorizedPicture(
                     "${UUID.randomUUID()}",
                     fakeCategory,
                     Uri.EMPTY
@@ -359,7 +359,7 @@ class FirestoreDatabaseManagementTest {
 
     @Test
     fun test_editDatasetName_datasetNotPresent() = runBlocking {
-        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf())
+        val fakeDs = Dataset(getRandomString(), getRandomString(), setOf())
         runCatching {
             scratchManagement.editDatasetName(fakeDs, getRandomString())
         }.fold({
@@ -381,7 +381,7 @@ class FirestoreDatabaseManagementTest {
 
     @Test
     fun test_addCategoryToDataset_categoryNotPresent() = runBlocking {
-        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf())
+        val fakeDs = Dataset(getRandomString(), getRandomString(), setOf())
         runCatching {
             scratchManagement.addCategoryToDataset(fakeDs, fakeCategory)
         }.fold({

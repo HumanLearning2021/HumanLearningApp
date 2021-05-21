@@ -15,9 +15,6 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getDatasetWithNCa
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement

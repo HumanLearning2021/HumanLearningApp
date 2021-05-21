@@ -40,7 +40,7 @@ class OfflineDatabaseService internal constructor(
      * @return a CategorizedPicture from the desired category. Null if no picture of the desired
      * category is present in the database or if the category is not present
      */
-    override suspend fun getPicture(category: Category): OfflineCategorizedPicture? {
+    override suspend fun getPicture(category: Category): CategorizedPicture? {
         val pics =
             categoryDao.loadAllPictures(category.id) ?: throw DatabaseService.NotFoundException(
                 category.id
@@ -49,7 +49,7 @@ class OfflineDatabaseService internal constructor(
         return fromPicture(categoryDao.loadPicture(randomId)!!, categoryDao)
     }
 
-    override suspend fun getPicture(pictureId: Id): OfflineCategorizedPicture? {
+    override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
         val pic = categoryDao.loadPicture(pictureId) ?: return null
         return fromPicture(pic, categoryDao)
     }
@@ -68,12 +68,12 @@ class OfflineDatabaseService internal constructor(
         return pics.pictures.map { p -> p.pictureId }
     }
 
-    override suspend fun getRepresentativePicture(categoryId: Id): OfflineCategorizedPicture? {
+    override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? {
         val cat = categoryDao.loadRepresentativePicture(categoryId) ?: return null
         return fromPicture(cat, categoryDao)
     }
 
-    override suspend fun putPicture(picture: Uri, category: Category): OfflineCategorizedPicture {
+    override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
         val cat = categoryDao.loadById(category.id) ?: throw DatabaseService.NotFoundException(
             category.id
         )
@@ -85,12 +85,12 @@ class OfflineDatabaseService internal constructor(
         return fromPicture(pic, categoryDao)
     }
 
-    override suspend fun getCategory(id: Id): OfflineCategory? {
+    override suspend fun getCategory(id: Id): Category? {
         val cat = categoryDao.loadById(id) ?: return null
         return fromCategory(cat)
     }
 
-    override suspend fun putCategory(categoryName: String): OfflineCategory {
+    override suspend fun putCategory(categoryName: String): Category {
         val cat = RoomCategory(getID(), categoryName)
         val ref = RoomDatabaseCategoriesCrossRef(dbName, cat.categoryId)
         categoryDao.insertAll(cat)
@@ -98,7 +98,7 @@ class OfflineDatabaseService internal constructor(
         return fromCategory(cat)
     }
 
-    override suspend fun getCategories(): Set<OfflineCategory> {
+    override suspend fun getCategories(): Set<Category> {
         return databaseDao.loadByName(dbName)!!.categories.map { c -> fromCategory(c) }.toSet()
     }
 
@@ -108,7 +108,7 @@ class OfflineDatabaseService internal constructor(
      * @param category - the category whose pictures we want to retrieve
      * @return the pictures categorized with the specified category, empty if the category is not contained in the dataset
      */
-    override suspend fun getAllPictures(category: Category): Set<OfflineCategorizedPicture> {
+    override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
         val cats =
             categoryDao.loadAllPictures(category.id) ?: throw DatabaseService.NotFoundException(
                 category.id
@@ -144,7 +144,7 @@ class OfflineDatabaseService internal constructor(
         }
     }
 
-    override suspend fun putDataset(name: String, categories: Set<Category>): OfflineDataset {
+    override suspend fun putDataset(name: String, categories: Set<Category>): Dataset {
         val id = getID()
         val ds = RoomDatasetWithoutCategories(id, name)
         val dsRefs = mutableListOf<RoomDatasetCategoriesCrossRef>()
@@ -159,7 +159,7 @@ class OfflineDatabaseService internal constructor(
         return fromDataset(RoomDataset(ds, cats))
     }
 
-    override suspend fun getDataset(id: Id): OfflineDataset? {
+    override suspend fun getDataset(id: Id): Dataset? {
         val ds = datasetDao.loadById(id) ?: return null
         return fromDataset(ds)
     }
@@ -188,12 +188,12 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
-        require(picture is OfflineCategorizedPicture)
+        require(picture is CategorizedPicture)
         putRepresentativePicture(picture.picture, picture.category)
         categoryDao.loadPicture(picture.id)?.let { categoryDao.delete(it) }
     }
 
-    override suspend fun getDatasets(): Set<OfflineDataset> {
+    override suspend fun getDatasets(): Set<Dataset> {
         return databaseDao.loadByName(dbName)?.datasets?.map { d ->
             fromDataset(
                 datasetDao.loadById(
@@ -206,14 +206,14 @@ class OfflineDatabaseService internal constructor(
     override suspend fun removeCategoryFromDataset(
         dataset: Dataset,
         category: Category
-    ): OfflineDataset {
+    ): Dataset {
         datasetDao.delete(RoomDatasetCategoriesCrossRef(dataset.id, category.id))
         val ds =
             datasetDao.loadById(dataset.id) ?: throw DatabaseService.NotFoundException(dataset.id)
         return fromDataset(ds)
     }
 
-    override suspend fun editDatasetName(dataset: Dataset, newName: String): OfflineDataset {
+    override suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset {
         val ds =
             datasetDao.loadById(dataset.id) ?: throw DatabaseService.NotFoundException(dataset.id)
         val updatedDs = RoomDatasetWithoutCategories(ds.datasetWithoutCategories.datasetId, newName)
@@ -224,7 +224,7 @@ class OfflineDatabaseService internal constructor(
     override suspend fun addCategoryToDataset(
         dataset: Dataset,
         category: Category
-    ): OfflineDataset {
+    ): Dataset {
         val ds =
             datasetDao.loadById(dataset.id) ?: throw DatabaseService.NotFoundException(dataset.id)
         val cat = categoryDao.loadById(category.id) ?: throw DatabaseService.NotFoundException(
@@ -241,7 +241,7 @@ class OfflineDatabaseService internal constructor(
         return fromDataset(RoomDataset(ds.datasetWithoutCategories, updatedCats))
     }
 
-    override suspend fun updateUser(firebaseUser: FirebaseUser): OfflineUser {
+    override suspend fun updateUser(firebaseUser: FirebaseUser): User {
         throw IllegalStateException("No Users Downloaded yet")
     }
 
@@ -254,7 +254,7 @@ class OfflineDatabaseService internal constructor(
     }
 
 
-    override suspend fun getUser(type: User.Type, uid: String): OfflineUser? {
+    override suspend fun getUser(type: User.Type, uid: String): User? {
         val user = userDao.load(uid, type) ?: return null
         return fromUser(user)
     }

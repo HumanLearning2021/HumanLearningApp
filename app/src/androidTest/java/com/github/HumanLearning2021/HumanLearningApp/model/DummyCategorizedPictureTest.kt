@@ -49,8 +49,8 @@ class DummyCategorizedPictureTest {
     fun displayOnWorksAsExpected() {
         val pictureUri =
             Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
-        val dummyCategory = DummyCategory("Fork", "Fork")
-        val dummyCategorizedPicture = DummyCategorizedPicture("some id", dummyCategory, pictureUri)
+        val dummyCategory = Category("Fork", "Fork")
+        val dummyCategorizedPicture = CategorizedPicture("some id", dummyCategory, pictureUri)
         val drawable = AppCompatResources.getDrawable(
             ApplicationProvider.getApplicationContext(),
             R.drawable.fork
@@ -80,8 +80,8 @@ class DummyCategorizedPictureTest {
     fun downloadToWorksAsExpected() {
         val pictureUri =
             Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
-        val dummyCategory = DummyCategory("Fork", "Fork")
-        val dummyCategorizedPicture = DummyCategorizedPicture("some id", dummyCategory, pictureUri)
+        val dummyCategory = Category("Fork", "Fork")
+        val dummyCategorizedPicture = CategorizedPicture("some id", dummyCategory, pictureUri)
         val tmpFile = File.createTempFile("myImage", ".png")
         try {
             with(ImageDownloader(ApplicationProvider.getApplicationContext())) {

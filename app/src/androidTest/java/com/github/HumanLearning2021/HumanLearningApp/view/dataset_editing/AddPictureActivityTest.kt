@@ -12,10 +12,10 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -49,9 +49,9 @@ class AddPictureActivityTest {
     private lateinit var datasetId: Id
 
     private val catSet = setOf<Category>(
-        DummyCategory("cat1", "cat1"),
-        DummyCategory("cat2", "cat2"),
-        DummyCategory("cat3", "cat3"),
+        Category("cat1", "cat1"),
+        Category("cat2", "cat2"),
+        Category("cat3", "cat3"),
     )
 
     val categories = catSet.toTypedArray()

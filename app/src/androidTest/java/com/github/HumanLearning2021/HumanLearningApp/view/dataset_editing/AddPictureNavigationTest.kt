@@ -21,10 +21,10 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseManagementModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.Demo2Database
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.Category
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
@@ -73,9 +73,9 @@ class AddPictureNavigationTest {
     val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
     private val catSet = setOf<Category>(
-        DummyCategory("cat1", "cat1"),
-        DummyCategory("cat2", "cat2"),
-        DummyCategory("cat3", "cat3"),
+        Category("cat1", "cat1"),
+        Category("cat2", "cat2"),
+        Category("cat3", "cat3"),
     )
 
     val categories = catSet.toTypedArray()

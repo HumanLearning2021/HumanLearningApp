@@ -32,7 +32,7 @@ class DummyDatabaseServiceTest {
     @Suppress("DEPRECATION")
     @Test(expected = DatabaseService.NotFoundException::class)
     fun getPictureCategoryNotPresentThrows() = runBlockingTest {
-        dummyDatabaseService.getPicture(DummyCategory("Plate", "Plate"))
+        dummyDatabaseService.getPicture(Category("Plate", "Plate"))
         Unit
     }
 
@@ -72,7 +72,7 @@ class DummyDatabaseServiceTest {
         dummyDatabaseService.putCategory("Table")
         assertThat(
             dummyDatabaseService.getCategory("Table"),
-            equalTo(DummyCategory("Table", "Table"))
+            equalTo(Category("Table", "Table"))
         )
     }
 
@@ -87,7 +87,7 @@ class DummyDatabaseServiceTest {
     fun putCategoryNotPresent() = runBlockingTest {
         assertThat(
             dummyDatabaseService.putCategory("Table"),
-            equalTo(DummyCategory("Table", "Table"))
+            equalTo(Category("Table", "Table"))
         )
     }
 
@@ -97,7 +97,7 @@ class DummyDatabaseServiceTest {
         dummyDatabaseService.putCategory("Table")
         assertThat(
             dummyDatabaseService.putCategory("Table"),
-            equalTo(DummyCategory("Table", "Table"))
+            equalTo(Category("Table", "Table"))
         )
     }
 
@@ -172,17 +172,17 @@ class DummyDatabaseServiceTest {
         dummyDatabaseService.putPicture(forkUri, fork)
         dummyDatabaseService.putPicture(spoonUri, fork)
         val res = dummyDatabaseService.getAllPictures(fork).map { p ->
-            DummyCategorizedPicture(
+            CategorizedPicture(
                 "forkpicid",
                 p.category,
-                (p as DummyCategorizedPicture).picture
+                p.picture
             )
         }
         assert(
             res.containsAll(
                 setOf(
-                    DummyCategorizedPicture("forkpicid", fork, forkUri),
-                    DummyCategorizedPicture("forkpicid", fork, spoonUri)
+                    CategorizedPicture("forkpicid", fork, forkUri),
+                    CategorizedPicture("forkpicid", fork, spoonUri)
                 )
             )
         )
@@ -192,9 +192,9 @@ class DummyDatabaseServiceTest {
     @Test(expected = DatabaseService.NotFoundException::class)
     fun removePictureThrowsNotFoundException() = runBlockingTest {
         dummyDatabaseService.removePicture(
-            DummyCategorizedPicture(
+            CategorizedPicture(
                 "tablepicid",
-                DummyCategory("Table", "Table"),
+                Category("Table", "Table"),
                 Uri.EMPTY
             )
         )
@@ -221,7 +221,7 @@ class DummyDatabaseServiceTest {
         dummyDatabaseService.putDataset("kitchen utensils", setOf())
         assert(
             dummyDatabaseService.getDatasets().contains(
-                DummyDataset(
+                Dataset(
                     "kitchen utensils",
                     "kitchen utensils",
                     setOf()
@@ -234,8 +234,8 @@ class DummyDatabaseServiceTest {
     @Test(expected = DatabaseService.NotFoundException::class)
     fun removeCategoryFromDatasetThrowsNotFoundExceptionIfCategoryNotInDb() = runBlockingTest {
         val name = "Utensils"
-        val fork = DummyCategory("Fork", "Fork")
-        val dataset = DummyDataset(name, name, setOf())
+        val fork = Category("Fork", "Fork")
+        val dataset = Dataset(name, name, setOf())
         dummyDatabaseService.removeCategoryFromDataset(dataset, fork)
         Unit
     }
@@ -245,7 +245,7 @@ class DummyDatabaseServiceTest {
     fun removeCategoryFromDatasetThrowsNotFoundExceptionIfDatasetNotInDb() = runBlockingTest {
         val fork = dummyDatabaseService.putCategory("Fork")
         dummyDatabaseService.removeCategoryFromDataset(
-            DummyDataset(
+            Dataset(
                 "some_id",
                 "some_name",
                 setOf()
@@ -257,9 +257,9 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test
     fun removeCategoryFromDatasetWorks() = runBlockingTest {
-        val fork = DummyCategory("Fork", "Fork")
-        val knife = DummyCategory("Knife", "Knife")
-        val spoon = DummyCategory("Spoon", "Spoon")
+        val fork = Category("Fork", "Fork")
+        val knife = Category("Knife", "Knife")
+        val spoon = Category("Spoon", "Spoon")
         val name = "Utensils"
         val dataset = dummyDatabaseService.putDataset(name, setOf(fork, knife, spoon))
         val newDataset = dummyDatabaseService.removeCategoryFromDataset(dataset, fork)
@@ -270,9 +270,9 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test
     fun editDatasetNameWorks() = runBlockingTest {
-        val fork = DummyCategory("Fork", "Fork")
-        val knife = DummyCategory("Knife", "Knife")
-        val spoon = DummyCategory("Spoon", "Spoon")
+        val fork = Category("Fork", "Fork")
+        val knife = Category("Knife", "Knife")
+        val spoon = Category("Spoon", "Spoon")
         val name = "Utensils"
         val newName = "NoLongerUtensils"
         val dataset = dummyDatabaseService.putDataset(name, setOf(fork, knife, spoon))
@@ -298,8 +298,8 @@ class DummyDatabaseServiceTest {
     @ExperimentalCoroutinesApi
     @Test(expected = DatabaseService.NotFoundException::class)
     fun addCategoryToDatasetThrowsIfCategoryNotInDatabase() = runBlockingTest {
-        val fork = DummyCategory("Fork", "Fork")
-        val knife = DummyCategory("Knife", "Knife")
+        val fork = Category("Fork", "Fork")
+        val knife = Category("Knife", "Knife")
         val name = "Utensils"
         val dataset = dummyDatabaseService.putDataset(name, setOf(fork, knife))
         dummyDatabaseService.addCategoryToDataset(dataset, Category("Table", "Table"))
@@ -311,7 +311,7 @@ class DummyDatabaseServiceTest {
     fun addCategoryToDatasetThrowsIfDatasetNotInDatabase() = runBlockingTest {
         val spoon = dummyDatabaseService.putCategory("Spoon")
         dummyDatabaseService.addCategoryToDataset(
-            DummyDataset("some_id", "some_name", setOf()),
+            Dataset("some_id", "some_name", setOf()),
             spoon
         )
         Unit

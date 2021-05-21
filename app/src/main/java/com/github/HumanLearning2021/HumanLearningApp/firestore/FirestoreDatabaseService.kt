@@ -49,7 +49,7 @@ class FirestoreDatabaseService internal constructor(
             this.name = name
         }
 
-        fun toPublic() = FirestoreCategory(self.id, name)
+        fun toPublic() = Category(self.id, name)
     }
 
     private class PictureSchema() {
@@ -63,10 +63,10 @@ class FirestoreDatabaseService internal constructor(
             this.url = url
         }
 
-        suspend fun toPublic(): FirestoreCategorizedPicture {
+        suspend fun toPublic(): CategorizedPicture {
             val cat = category.get().await().toObject(CategorySchema::class.java)
             requireNotNull(cat, { "category not found" })
-            return FirestoreCategorizedPicture(self.id, cat.toPublic(), Uri.parse(url))
+            return CategorizedPicture(self.id, cat.toPublic(), Uri.parse(url))
         }
     }
 
@@ -82,15 +82,15 @@ class FirestoreDatabaseService internal constructor(
         }
 
         @OptIn(ExperimentalStdlibApi::class)
-        suspend fun toPublic(): FirestoreDataset {
-            val cats: Set<FirestoreCategory> = buildSet(categories.size) {
+        suspend fun toPublic(): Dataset {
+            val cats: Set<Category> = buildSet(categories.size) {
                 for (cat in categories) {
                     val catRef = cat.get()
                     requireNotNull(catRef, { "at least one of the categories was not found" })
                     add(catRef.await().toObject(CategorySchema::class.java)!!.toPublic())
                 }
             }
-            return FirestoreDataset(self.id, name, cats)
+            return Dataset(self.id, name, cats)
         }
     }
 
@@ -125,7 +125,7 @@ class FirestoreDatabaseService internal constructor(
         var displayName: String? = null
         var email: String? = null
         var isAdmin: Boolean = false
-        fun toPublic() = FirestoreUser(
+        fun toPublic() = User(
             displayName = displayName,
             email = email,
             isAdmin = isAdmin,
@@ -134,15 +134,15 @@ class FirestoreDatabaseService internal constructor(
         )
     }
 
-    override suspend fun getCategories(): Set<FirestoreCategory> = withContext(Dispatchers.IO) {
+    override suspend fun getCategories(): Set<Category> = withContext(Dispatchers.IO) {
         val query = categories
         val cats = query.get().await().toObjects(CategorySchema::class.java)
         cats.map { cat -> cat.toPublic() }.toSet()
     }
 
-    override suspend fun getAllPictures(category: Category): Set<FirestoreCategorizedPicture> =
+    override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> =
         withContext(Dispatchers.IO) {
-            require(category is FirestoreCategory)
+            require(category is Category)
             if (!categories.document(category.id).get().await().exists()) {
                 throw DatabaseService.NotFoundException(category.id)
             }
@@ -152,7 +152,7 @@ class FirestoreDatabaseService internal constructor(
         }
 
     override suspend fun removeCategory(category: Category): Unit = withContext(Dispatchers.IO) {
-        require(category is FirestoreCategory)
+        require(category is Category)
         val ref = categories.document(category.id)
         if (!ref.get().await().exists()) {
             throw DatabaseService.NotFoundException(category.id)
@@ -166,7 +166,7 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun removePicture(picture: CategorizedPicture): Unit =
         withContext(Dispatchers.IO) {
-            require(picture is FirestoreCategorizedPicture)
+            require(picture is CategorizedPicture)
             val ref = pictures.document(picture.id)
             if (!ref.get().await().exists()) {
                 throw DatabaseService.NotFoundException(picture.id)
@@ -188,11 +188,11 @@ class FirestoreDatabaseService internal constructor(
         }
 
 
-    override suspend fun putDataset(name: String, cats: Set<Category>): FirestoreDataset =
+    override suspend fun putDataset(name: String, cats: Set<Category>): Dataset =
         withContext(Dispatchers.IO) {
             val catRefs: MutableSet<DocumentReference> = mutableSetOf()
             for (cat in cats) {
-                require(cat is FirestoreCategory)
+                require(cat is Category)
                 catRefs.add(categories.document(cat.id))
             }
             val data = DatasetSchema(name, catRefs.toList())
@@ -200,7 +200,7 @@ class FirestoreDatabaseService internal constructor(
             documentRef.get().await().toObject(DatasetSchema::class.java)!!.toPublic()
         }
 
-    override suspend fun getDataset(id: Id): FirestoreDataset? = withContext(Dispatchers.IO) {
+    override suspend fun getDataset(id: Id): Dataset? = withContext(Dispatchers.IO) {
         val ds = datasets.document(id).get().await().toObject(DatasetSchema::class.java)
         ds?.toPublic()
     }
@@ -258,7 +258,7 @@ class FirestoreDatabaseService internal constructor(
         }
     }
 
-    override suspend fun getDatasets(): Set<FirestoreDataset> = withContext(Dispatchers.IO) {
+    override suspend fun getDatasets(): Set<Dataset> = withContext(Dispatchers.IO) {
         val ds = datasets.get().await().documents
         ds.mapNotNull { d -> d.toObject(DatasetSchema::class.java)?.toPublic() }.toSet()
     }
@@ -266,9 +266,9 @@ class FirestoreDatabaseService internal constructor(
     override suspend fun removeCategoryFromDataset(
         dataset: Dataset,
         category: Category
-    ): FirestoreDataset = withContext(Dispatchers.IO) {
-        require(dataset is FirestoreDataset)
-        require(category is FirestoreCategory)
+    ): Dataset = withContext(Dispatchers.IO) {
+        require(dataset is Dataset)
+        require(category is Category)
         if (!categories.document(category.id).get().await().exists())
             throw DatabaseService.NotFoundException(category.id)
         try {
@@ -286,9 +286,9 @@ class FirestoreDatabaseService internal constructor(
             ?.toPublic() ?: throw DatabaseService.NotFoundException(dataset.id)
     }
 
-    override suspend fun editDatasetName(dataset: Dataset, newName: String): FirestoreDataset =
+    override suspend fun editDatasetName(dataset: Dataset, newName: String): Dataset =
         withContext(Dispatchers.IO) {
-            require(dataset is FirestoreDataset)
+            require(dataset is Dataset)
             if (!datasets.document(dataset.id).get().await().exists())
                 throw DatabaseService.NotFoundException(dataset.id)
             try {
@@ -307,9 +307,9 @@ class FirestoreDatabaseService internal constructor(
     override suspend fun addCategoryToDataset(
         dataset: Dataset,
         category: Category
-    ): FirestoreDataset = withContext(Dispatchers.IO) {
-        require(dataset is FirestoreDataset)
-        require(category is FirestoreCategory)
+    ): Dataset = withContext(Dispatchers.IO) {
+        require(dataset is Dataset)
+        require(category is Category)
         if (!datasets.document(dataset.id).get().await().exists())
             throw DatabaseService.NotFoundException(dataset.id)
         try {
@@ -327,7 +327,7 @@ class FirestoreDatabaseService internal constructor(
             .toPublic()
     }
 
-    override suspend fun updateUser(firebaseUser: FirebaseUser): FirestoreUser =
+    override suspend fun updateUser(firebaseUser: FirebaseUser): User =
         withContext(Dispatchers.IO) {
             val uid = firebaseUser.uid
             val type = User.Type.FIREBASE
@@ -358,7 +358,7 @@ class FirestoreDatabaseService internal constructor(
         return fireStoreUser.isAdmin
     }
 
-    override suspend fun getUser(type: User.Type, uid: String): FirestoreUser? {
+    override suspend fun getUser(type: User.Type, uid: String): User? {
         val documentRef = users.document("$uid@$type")
         val user = documentRef.get().await().toObject(UserSchema::class.java)
         return user?.toPublic()
@@ -378,9 +378,9 @@ class FirestoreDatabaseService internal constructor(
             }.await()
         }
 
-    override suspend fun getPicture(category: Category): FirestoreCategorizedPicture? =
+    override suspend fun getPicture(category: Category): CategorizedPicture? =
         withContext(Dispatchers.IO) {
-            require(category is FirestoreCategory)
+            require(category is Category)
             if (!categories.document(category.id).get().await().exists())
                 throw DatabaseService.NotFoundException(category.id)
             val query =
@@ -389,7 +389,7 @@ class FirestoreDatabaseService internal constructor(
             pic?.toPublic()
         }
 
-    override suspend fun getPicture(pictureId: Id): FirestoreCategorizedPicture? =
+    override suspend fun getPicture(pictureId: Id): CategorizedPicture? =
         withContext(Dispatchers.IO) {
             val pic =
                 pictures.document(pictureId).get().await().toObject(PictureSchema::class.java)
@@ -398,12 +398,12 @@ class FirestoreDatabaseService internal constructor(
 
     override suspend fun getPictureIds(category: Category): List<String> =
         withContext(Dispatchers.IO) {
-            require(category is FirestoreCategory)
+            require(category is Category)
             val query = pictures.whereEqualTo("category", categories.document(category.id))
             query.get().await().map { r -> r.id }
         }
 
-    override suspend fun getRepresentativePicture(categoryId: Id): FirestoreCategorizedPicture? =
+    override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? =
         withContext(Dispatchers.IO) {
             val query =
                 representativePictures.whereEqualTo("category", categories.document(categoryId))
@@ -415,9 +415,9 @@ class FirestoreDatabaseService internal constructor(
     override suspend fun putPicture(
         picture: Uri,
         category: Category
-    ): FirestoreCategorizedPicture =
+    ): CategorizedPicture =
         withContext(Dispatchers.IO) {
-            require(category is FirestoreCategory)
+            require(category is Category)
             val id = "${UUID.randomUUID()}"
             val ref = imagesDir.child(id)
             if (!categories.document(category.id).get().await().exists())
@@ -432,13 +432,13 @@ class FirestoreDatabaseService internal constructor(
             documentRef.get().await().toObject(PictureSchema::class.java)!!.toPublic()
         }
 
-    override suspend fun getCategory(id: Id): FirestoreCategory? = withContext(Dispatchers.IO) {
+    override suspend fun getCategory(id: Id): Category? = withContext(Dispatchers.IO) {
         val cat = categories.document(id).get().await()
             .toObject(CategorySchema::class.java)
         cat?.toPublic()
     }
 
-    override suspend fun putCategory(categoryName: String): FirestoreCategory =
+    override suspend fun putCategory(categoryName: String): Category =
         withContext(Dispatchers.IO) {
             val data = CategorySchema(categoryName)
             val documentRef = categories.add(data).await()

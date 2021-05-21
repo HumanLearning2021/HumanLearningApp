@@ -54,7 +54,7 @@ class CachedDatabaseService internal constructor(
         if (pic != null) db.removePicture(pic)
     }
 
-    private suspend fun putIntoCache(picture: CategorizedPicture): OfflineCategorizedPicture =
+    private suspend fun putIntoCache(picture: CategorizedPicture): CategorizedPicture =
         withContext(Dispatchers.IO) {
             val uri = cache.savePicture(picture)
             cachedPictures[picture.id] = picture
