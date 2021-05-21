@@ -2,15 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
 
-@Deprecated(
-    "replaced by DefaultDatabaseManagement",
-    ReplaceWith(
-        "DefaultDatabaseManagement",
-        "com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement"
-    )
-)
-typealias DummyDatabaseManagement = DefaultDatabaseManagement
-
 class DefaultDatabaseManagement internal constructor(
     private val databaseService: DatabaseService
 ) : DatabaseManagement {

@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.content.Intent
 import com.firebase.ui.auth.AuthUI
-import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.User
@@ -30,10 +29,10 @@ class AuthenticationPresenter @Inject constructor(
     /**
      * Callback to be executed by the view to let the presenter register a successful login
      */
-    suspend fun onSuccessfulLogin(isAdmin :Boolean) {
+    suspend fun onSuccessfulLogin(isAdmin: Boolean) {
         Firebase.auth.currentUser?.let {
             _currentUser = db.updateUser(it)
-            _currentUser = db.setAdminAccess(it,isAdmin)
+            _currentUser = db.setAdminAccess(it, isAdmin)
 
         }
     }

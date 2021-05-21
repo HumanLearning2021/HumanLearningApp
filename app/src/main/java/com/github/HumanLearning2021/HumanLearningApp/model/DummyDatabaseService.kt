@@ -50,7 +50,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
         requireCategoryPresent(category)
 
-        val addedPicture = DummyCategorizedPicture("", category, picture)
+        val addedPicture = CategorizedPicture("", category, picture)
         val id = pictures.createWith { addedPicture.copy(id = it) }
 
         return addedPicture.copy(id = id)
@@ -104,11 +104,11 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     override suspend fun putRepresentativePicture(picture: Uri, category: Category) {
         requireCategoryPresent(category)
         representativePictures[category.id] =
-            DummyCategorizedPicture("${UUID.randomUUID()}", category, picture)
+            CategorizedPicture("${UUID.randomUUID()}", category, picture)
     }
 
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
-        require(picture is DummyCategorizedPicture)
+        require(picture is CategorizedPicture)
         requirePicturePresent(picture)
         putRepresentativePicture(picture.picture, picture.category)
         pictures.delete(picture.id)
@@ -157,7 +157,7 @@ class DummyDatabaseService internal constructor() : DatabaseService {
     override suspend fun setAdminAccess(firebaseUser: FirebaseUser, adminAccess: Boolean): User {
         val type = User.Type.FIREBASE
         val uid = firebaseUser.uid
-        return DummyUser(
+        return User(
             type = type,
             uid = uid,
             email = firebaseUser.email,

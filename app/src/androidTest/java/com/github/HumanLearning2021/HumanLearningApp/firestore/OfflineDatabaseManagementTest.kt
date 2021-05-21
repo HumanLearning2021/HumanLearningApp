@@ -7,11 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineDemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.hasName
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineCategory
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -47,16 +43,16 @@ class OfflineDatabaseManagementTest {
     val hiltRule = HiltAndroidRule(this)
     lateinit var appleCategoryId: String
     lateinit var pearCategoryId: String
-    lateinit var fakeCategory: FirestoreCategory
-    lateinit var fakeDataset: FirestoreDataset
+    lateinit var fakeCategory: Category
+    lateinit var fakeDataset: Dataset
 
     @Before
     fun setUp() = runBlocking {
         hiltRule.inject()
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory = FirestoreCategory("oopsy", "oopsy")
-        fakeDataset = FirestoreDataset("oopsy", "oopsy", setOf())
+        fakeCategory = Category("oopsy", "oopsy")
+        fakeDataset = Dataset("oopsy", "oopsy", setOf())
     }
 
     @After
@@ -70,7 +66,7 @@ class OfflineDatabaseManagementTest {
     @Test
     fun test_getPicture_categoryNotPresent() = runBlocking {
         runCatching {
-            demoManagement.getPicture(FirestoreCategory(getRandomString(), getRandomString()))
+            demoManagement.getPicture(Category(getRandomString(), getRandomString()))
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
@@ -107,7 +103,7 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_getPictureById() = runBlocking {
-        val appleCategory = demoManagement.getCategoryById(appleCategoryId) as OfflineCategory
+        val appleCategory = demoManagement.getCategoryById(appleCategoryId) as Category
         requireNotNull(appleCategory, { "category of apples no found in demo database" })
         val picId = demoManagement.getPictureIds(appleCategory).random()
         val pic = demoManagement.getPicture(picId)
@@ -140,7 +136,7 @@ class OfflineDatabaseManagementTest {
                 ApplicationProvider.getApplicationContext<Context>().filesDir
             )
             val uri = Uri.fromFile(tmp)
-            demoManagement.putPicture(uri, FirestoreCategory(getRandomString(), getRandomString()))
+            demoManagement.putPicture(uri, Category(getRandomString(), getRandomString()))
             tmp.delete()
         }.fold({
             Assert.fail("unexpected successful completion")
@@ -420,7 +416,7 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_editDatasetName_datasetNotPresent() = runBlocking {
-        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf())
+        val fakeDs = Dataset(getRandomString(), getRandomString(), setOf())
         runCatching {
             demoManagement.editDatasetName(fakeDs, getRandomString())
         }.fold({
@@ -451,7 +447,7 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_addCategoryToDataset_categoryNotPresent() = runBlocking {
-        val fakeDs = FirestoreDataset(getRandomString(), getRandomString(), setOf())
+        val fakeDs = Dataset(getRandomString(), getRandomString(), setOf())
         runCatching {
             demoManagement.addCategoryToDataset(fakeDs, fakeCategory)
         }.fold({

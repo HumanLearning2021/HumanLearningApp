@@ -39,7 +39,7 @@ class EvaluationResultFragment : Fragment() {
         val successFailureCountPerPhase = args.evaluationResult.successFailureCountPerPhase
 
         barChart.setDrawBarShadow(false)
-        barChart.setScaleEnabled(false);
+        barChart.setScaleEnabled(false)
         barChart.description.isEnabled = false
 
         val barEntries = ArrayList<BarEntry>()
@@ -76,7 +76,7 @@ class EvaluationResultFragment : Fragment() {
 
         val xAxis: XAxis = barChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setDrawGridLines(false);
+        xAxis.setDrawGridLines(false)
         xAxis.labelCount = successFailureCountPerPhase.size - 1
 
         xAxis.valueFormatter = IndexAxisValueFormatter(

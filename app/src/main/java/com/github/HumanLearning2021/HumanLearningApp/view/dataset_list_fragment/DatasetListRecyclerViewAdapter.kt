@@ -97,12 +97,13 @@ class DatasetListRecyclerViewAdapter(
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val filterPattern = constraint.toString().toLowerCase(Locale.getDefault()).trim()
+                val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
                 val filteredList = originalDatasetList.filter {
-                    it.name.toLowerCase(Locale.getDefault()).startsWith(filterPattern)
+                    it.name.lowercase(Locale.getDefault()).startsWith(filterPattern)
                 }
                 return FilterResults().apply { values = filteredList }
             }

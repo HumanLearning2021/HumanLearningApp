@@ -22,7 +22,7 @@ data class Statistic(
     val occurrences: Map<Event, Int>,
 ) : Parcelable {
     @Parcelize
-    data class Id(val userId: User.Id, val datasetId: DatasetId) : Parcelable{
+    data class Id(val userId: User.Id, val datasetId: DatasetId) : Parcelable {
         override fun toString() = "$userId+$datasetId"
 
         companion object {

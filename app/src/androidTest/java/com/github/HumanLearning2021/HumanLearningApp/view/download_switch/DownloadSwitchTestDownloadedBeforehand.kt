@@ -86,6 +86,6 @@ class DownloadSwitchTestDownloadedBeforehand {
     }
 
     private fun launchFragment() {
-        launchFragmentInHiltContainer<DownloadSwitchFragment>() { }
+        launchFragmentInHiltContainer<DownloadSwitchFragment> { }
     }
 }

@@ -8,9 +8,7 @@ import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.hasCategory
-import com.github.HumanLearning2021.HumanLearningApp.model.hasName
+import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -45,8 +43,8 @@ class FirestoreDatabaseServiceTest {
     val hiltRule = HiltAndroidRule(this)
     lateinit var appleCategoryId: String
     lateinit var pearCategoryId: String
-    lateinit var fakeCategory: FirestoreCategory
-    lateinit var fakeDataset: FirestoreDataset
+    lateinit var fakeCategory: Category
+    lateinit var fakeDataset: Dataset
     private lateinit var presenter: AuthenticationPresenter
 
 
@@ -55,8 +53,8 @@ class FirestoreDatabaseServiceTest {
         hiltRule.inject()
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory = FirestoreCategory("oopsy", "oopsy")
-        fakeDataset = FirestoreDataset("oopsy", "oopsy", setOf())
+        fakeCategory = Category("oopsy", "oopsy")
+        fakeDataset = Dataset("oopsy", "oopsy", setOf())
         presenter = AuthenticationPresenter(AuthUI.getInstance(), scratchInterface)
 
     }
@@ -110,7 +108,7 @@ class FirestoreDatabaseServiceTest {
     fun test_removePicture_throwsIfPictureNotPresent(): Unit = runBlocking {
         runCatching {
             scratchInterface.removePicture(
-                FirestoreCategorizedPicture(
+                CategorizedPicture(
                     "some id",
                     fakeCategory,
                     Uri.EMPTY

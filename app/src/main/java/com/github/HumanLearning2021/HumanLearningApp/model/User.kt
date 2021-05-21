@@ -12,10 +12,10 @@ data class User(
     val email: String?,
     val uid: String,
     val type: Type,
-    val isAdmin : Boolean
+    val isAdmin: Boolean
 
 ) : Parcelable {
-    
+
     enum class Type {
         FIREBASE,
         TEST,

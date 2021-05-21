@@ -2,8 +2,9 @@ package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.widget.SearchView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

@@ -6,11 +6,11 @@ class DummyDatasetTest {
 
     @Test
     fun datasetCreatesCorrectly() {
-        val fork = DummyCategory("Fork", "Fork")
-        val knife = DummyCategory("Knife", "Knife")
-        val spoon = DummyCategory("Spoon", "Spoon")
+        val fork = Category("Fork", "Fork")
+        val knife = Category("Knife", "Knife")
+        val spoon = Category("Spoon", "Spoon")
         val name = "Utensils"
-        val dataset = DummyDataset(name, name, setOf(fork, knife, spoon))
+        val dataset = Dataset(name, name, setOf(fork, knife, spoon))
 
         assert(dataset.name == name)
         assert(dataset.id == name)

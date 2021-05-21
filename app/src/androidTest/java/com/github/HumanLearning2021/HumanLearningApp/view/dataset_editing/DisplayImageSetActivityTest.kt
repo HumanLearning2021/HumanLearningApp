@@ -254,7 +254,7 @@ class DisplayImageSetActivityTest {
                 )
             )
         onData(anything()).inAdapterView(withId(R.id.display_dataset_imagesGridView)).atPosition(0)
-            .perform(click());
+            .perform(click())
     }
 
     private fun launchFragment() {
