@@ -96,4 +96,5 @@
     <string name="evaluation_result_graph_label">Success percentage</string>
     <string name="learn_again">Learn Again!</string>
     <string name="home">Home</string>
+    <string name="LoginButtonSignOut">SIGN OUT</string>
 </resources>

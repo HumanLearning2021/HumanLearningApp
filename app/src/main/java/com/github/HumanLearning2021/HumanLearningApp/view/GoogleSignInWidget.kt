@@ -43,7 +43,17 @@ class GoogleSignInWidget : Fragment() {
         view.findViewById<Button>(R.id.checkBox).setOnClickListener {
             isAdmin = view.findViewById<CheckBox>(R.id.checkBox).isChecked
         }
+        view.findViewById<Button>(R.id.singOutButton).setOnClickListener {
+            onSignOutPress()
+        }
 
+        updateUi()
+    }
+
+    private fun onSignOutPress() {
+        lifecycleScope.launch {
+            presenter.signOut()
+        }
         updateUi()
     }
 
@@ -104,6 +114,16 @@ class GoogleSignInWidget : Fragment() {
                     user.displayName
                 )
             } ?: "Not logged in!"
+        if (user == null) {
+            view?.findViewById<Button>(R.id.singOutButton)?.visibility = View.GONE
+            view?.findViewById<Button>(R.id.checkBox)?.visibility = View.VISIBLE
+            view?.findViewById<Button>(R.id.loginButton)?.visibility = View.VISIBLE
+        } else {
+            view?.findViewById<Button>(R.id.singOutButton)?.visibility = View.VISIBLE
+            view?.findViewById<Button>(R.id.checkBox)?.visibility = View.GONE
+            view?.findViewById<Button>(R.id.loginButton)?.visibility = View.GONE
+        }
+
     }
 
     companion object {

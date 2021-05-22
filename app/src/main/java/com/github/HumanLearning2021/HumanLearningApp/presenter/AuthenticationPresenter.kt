@@ -26,6 +26,11 @@ class AuthenticationPresenter @Inject constructor(
             .build()
     }
 
+    suspend fun signOut() {
+        Firebase.auth.signOut()
+        _currentUser = null
+    }
+
     /**
      * Callback to be executed by the view to let the presenter register a successful login
      */
