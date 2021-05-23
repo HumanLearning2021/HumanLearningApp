@@ -1,6 +1,9 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
@@ -9,6 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 @Singleton  // need to persist currentUser across activities
 class AuthenticationPresenter @Inject constructor(
@@ -38,6 +42,7 @@ class AuthenticationPresenter @Inject constructor(
         Firebase.auth.currentUser?.let {
             _currentUser = db.updateUser(it)
             _currentUser = db.setAdminAccess(it, isAdmin)
+
 
         }
     }
