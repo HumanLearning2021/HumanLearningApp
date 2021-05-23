@@ -165,5 +165,6 @@ class GoogleSignInWidget : Fragment() {
 
     companion object {
         val RC_SIGN_IN: Int = "firebase auth".hashCode()
+        var isAdmin = false
     }
 }
