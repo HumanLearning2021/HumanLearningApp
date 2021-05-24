@@ -55,7 +55,11 @@
     <string name="Yes">Yes</string>
     <string name="No">No</string>
     <string name="Close">Close</string>
-    <string name="numberOfSelectedPicturesText">%d selected pictures</string>
+    <plurals name="numberOfSelectedPicturesText">
+        <item quantity="zero">%d picture selected </item>
+        <item quantity="one">%d picture selected </item>
+        <item quantity="other">%d pictures selected </item>
+    </plurals>
     <string name="SignInFragment_loginStatusSuccessMessage">Welcome %1$s</string>
     <string name="SignInFragment_loginStatusDefaultMessage">Not logged in</string>
     <string name="DatasetList_default_ds_name">Dataset name</string>
