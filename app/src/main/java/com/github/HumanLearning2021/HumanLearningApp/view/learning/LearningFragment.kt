@@ -6,10 +6,12 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
@@ -64,6 +66,8 @@ class LearningFragment : Fragment() {
 
     private lateinit var parentActivity: Activity
 
+    private lateinit var learningVisualFeedback: LearningVisualFeedback
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         runBlocking {
@@ -103,8 +107,25 @@ class LearningFragment : Fragment() {
             // sets the listeners for the image views of the sorting
             setEventListeners()
         }
+
+        learningVisualFeedback = with(binding) {
+            LearningVisualFeedback(
+                lifecycleScope,
+                neutralColor = getColor(requireContext(), R.color.white),
+                positiveColor = getColor(requireContext(), R.color.light_green),
+                sourceCardView = learningToSortCv!!, // TODO remove !!
+                targetCardViews = listOf(
+                    learningCat0Cv!!,
+                    learningCat1Cv!!,
+                    learningCat2Cv!!
+                ) // TODO remove !!
+            )
+        }
+        learningVisualFeedback.setupBlinking()
+
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
+
 
     /**
      * Get the new target image views, depending on the state of the evaluation model if in
@@ -204,6 +225,10 @@ class LearningFragment : Fragment() {
             DragEvent.ACTION_DROP -> dropCallback(event, v)
 
             // DragEvent.ACTION_DRAG_ENDED &
+            DragEvent.ACTION_DRAG_ENDED -> {
+                learningVisualFeedback.setBGBlinkingStates(sourceState = true, targetsState = false)
+                true
+            }
             // DragEvent.ACTION_DRAG_LOCATION & DragEvent.ACTION_DRAG_STARTED
             else -> true
         }
@@ -216,6 +241,7 @@ class LearningFragment : Fragment() {
      */
     private fun dropCallback(event: DragEvent, v: View): Boolean {
         setOpacity(v, opaque)
+        learningVisualFeedback.setBGBlinkingStates(sourceState = true, targetsState = false)
 
         val sortingCorrect = learningPresenter.isSortingCorrect(v as ImageView)
         audioFeedback.stopAndPrepareMediaPlayers()
@@ -268,6 +294,7 @@ class LearningFragment : Fragment() {
      * Callback triggered when the image view holding the image to sort is touched.
      */
     private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
+        learningVisualFeedback.setBGBlinkingStates(sourceState = false, targetsState = true)
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 view.startDragAndDrop(
