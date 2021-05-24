@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -36,8 +35,6 @@ import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentTakePic
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 import java.util.concurrent.Executors
 
 class TakePictureFragment : Fragment() {
@@ -140,22 +137,16 @@ class TakePictureFragment : Fragment() {
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     parentActivity.runOnUiThread {
-                        pictureUri = applyImageSizeReduction(outputStream.toByteArray())
+                        val bytes = outputStream.toByteArray()
+                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        pictureUri =
+                            AddPictureFragment.applyImageSizeReduction(bitmap, requireContext())
                         imageTaken = true
                         setCaptureButton()
                         notifySaveButton()
                     }
                 }
             })
-    }
-
-    private fun applyImageSizeReduction(bytes: ByteArray): Uri {
-        val file = File(parentActivity.filesDir, "temp")
-        val fileOutputStream = FileOutputStream(file)
-        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 25, fileOutputStream)
-        fileOutputStream.close()
-        return Uri.fromFile(file)
     }
 
     @Suppress("UNUSED_PARAMETER")

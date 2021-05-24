@@ -1,5 +1,8 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +17,9 @@ import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentAddPictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import java.io.File
+import java.io.FileOutputStream
+import java.util.*
 
 class AddPictureFragment : Fragment() {
 
@@ -35,7 +41,21 @@ class AddPictureFragment : Fragment() {
     }
 
     companion object {
+        private const val imageCompressionQuality = 25
         const val REQUEST_KEY = "AddPictureFragmentRequestKey"
+
+        fun applyImageSizeReduction(bitmap: Bitmap, context: Context): Uri {
+            // random string as name as a fallback in case the app crashes and the image file does
+            // not get deleted, avoids crashes during image taking process.
+            val file = File(
+                context.cacheDir,
+                UUID.randomUUID().toString()
+            )
+            val fileOutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, imageCompressionQuality, fileOutputStream)
+            fileOutputStream.close()
+            return Uri.fromFile(file)
+        }
     }
 
     override fun onCreateView(
