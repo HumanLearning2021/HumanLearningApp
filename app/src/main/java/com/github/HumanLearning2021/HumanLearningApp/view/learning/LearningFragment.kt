@@ -27,6 +27,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class LearningFragment : Fragment() {
     private lateinit var audioFeedback: LearningAudioFeedback
+    private lateinit var visualFeedback: LearningVisualFeedback
     private lateinit var datasetId: Id
     private lateinit var dataset: Dataset
     private val args: LearningFragmentArgs by navArgs()
@@ -66,7 +67,6 @@ class LearningFragment : Fragment() {
 
     private lateinit var parentActivity: Activity
 
-    private lateinit var learningVisualFeedback: LearningVisualFeedback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,11 +108,13 @@ class LearningFragment : Fragment() {
             setEventListeners()
         }
 
-        learningVisualFeedback = with(binding) {
+        visualFeedback = with(binding) {
             LearningVisualFeedback(
                 lifecycleScope,
-                neutralColor = getColor(requireContext(), R.color.white),
+                baseColor = getColor(requireContext(), R.color.white),
+                neutralColor = getColor(requireContext(), R.color.blue),
                 positiveColor = getColor(requireContext(), R.color.light_green),
+                negativeColor = getColor(requireContext(), R.color.red),
                 sourceCardView = learningToSortCv!!, // TODO remove !!
                 targetCardViews = listOf(
                     learningCat0Cv!!,
@@ -121,7 +123,7 @@ class LearningFragment : Fragment() {
                 ) // TODO remove !!
             )
         }
-        learningVisualFeedback.setupBlinking()
+        visualFeedback.setupBlinking()
 
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
@@ -226,7 +228,7 @@ class LearningFragment : Fragment() {
 
             // DragEvent.ACTION_DRAG_ENDED &
             DragEvent.ACTION_DRAG_ENDED -> {
-                learningVisualFeedback.setBGBlinkingStates(sourceState = true, targetsState = false)
+                visualFeedback.setBGBlinkingStates(sourceState = true, targetsState = false)
                 true
             }
             // DragEvent.ACTION_DRAG_LOCATION & DragEvent.ACTION_DRAG_STARTED
@@ -241,12 +243,13 @@ class LearningFragment : Fragment() {
      */
     private fun dropCallback(event: DragEvent, v: View): Boolean {
         setOpacity(v, opaque)
-        learningVisualFeedback.setBGBlinkingStates(sourceState = true, targetsState = false)
+        visualFeedback.setBGBlinkingStates(sourceState = true, targetsState = false)
 
         val sortingCorrect = learningPresenter.isSortingCorrect(v as ImageView)
         audioFeedback.stopAndPrepareMediaPlayers()
         if (sortingCorrect) {
             audioFeedback.startCorrectFeedback()
+            enclosingCardView(v)?.let { visualFeedback.startCorrectFeedback(it) }
 
             evaluationModel?.addSuccess()
             if (evaluationModel?.isEvaluationComplete() == true) {
@@ -271,6 +274,7 @@ class LearningFragment : Fragment() {
             }
         } else {
             audioFeedback.startIncorrectFeedback()
+            enclosingCardView(v)?.let { visualFeedback.startIncorrectFeedback(it) }
             evaluationModel?.addFailure()
             lifecycleScope.launch {
                 learningPresenter.saveEvent(Event.MISTAKE)
@@ -278,6 +282,20 @@ class LearningFragment : Fragment() {
         }
         Log.d("Evaluation", evaluationModel?.getCurrentEvaluationResult().toString())
         return sortingCorrect
+    }
+
+    /**
+     * Get the CardView that encloses the given ImageView.
+     * @param v The image view whose containing CardView we want to find.
+     * @return the enclosing CardView, or null if no enclosing CardView found
+     */
+    private fun enclosingCardView(v: ImageView) = with(binding) {
+        when (v) {
+            learningCat0 -> learningCat0Cv
+            learningCat1 -> learningCat1Cv
+            learningCat2 -> learningCat2Cv
+            else -> null
+        }
     }
 
     /**
@@ -294,7 +312,7 @@ class LearningFragment : Fragment() {
      * Callback triggered when the image view holding the image to sort is touched.
      */
     private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
-        learningVisualFeedback.setBGBlinkingStates(sourceState = false, targetsState = true)
+        visualFeedback.setBGBlinkingStates(sourceState = false, targetsState = true)
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 view.startDragAndDrop(

@@ -9,8 +9,10 @@ typealias Color = Int
 
 class LearningVisualFeedback(
     private val lifecycleScope: LifecycleCoroutineScope,
+    private val baseColor: Color,
     private val neutralColor: Color,
     private val positiveColor: Color,
+    private val negativeColor: Color,
     private val sourceCardView: CardView,
     private val targetCardViews: List<CardView>
 ) {
@@ -18,7 +20,7 @@ class LearningVisualFeedback(
 
     fun setupBlinking() {
         setBGBlinkingStates(sourceState = true, targetsState = false)
-        initCardViewBGBlinking()
+        startBlinkingCardViews()
     }
 
     fun setBGBlinkingStates(
@@ -29,37 +31,62 @@ class LearningVisualFeedback(
         for (cv in targetCardViews) {
             cardViewBGShouldBlink[cv] = targetsState
         }
+        startBlinkingCardViews()
     }
 
-    private fun initCardViewBGBlinking() {
-        startBlinking(sourceCardView)
-        targetCardViews.forEach { startBlinking(it) }
+
+    private fun startBlinkingCardViews() {
+        startBlinkingForever(sourceCardView)
+        targetCardViews.forEach { startBlinkingForever(it) }
     }
 
-    private fun startBlinking(cardView: CardView) {
+    private fun startBlinkingForever(cardView: CardView) {
         lifecycleScope.launch {
             blinkCardViewBGColor(cardView)
         }
     }
 
-    private tailrec suspend fun blinkCardViewBGColor(
-        cardView: CardView,
-        nextColor: Color = positiveColor
-    ) {
-        if (cardViewBGShouldBlink[cardView] == true) {
-            cardView.setCardBackgroundColor(nextColor)
-        } else {
-            cardView.setCardBackgroundColor(neutralColor)
+
+    private suspend fun blinkCardViewBGColor(cardView: CardView) {
+        while (cardViewBGShouldBlink[cardView] == true) {
+            blink(cardView, baseColor, neutralColor, BLINK_DURATION_MS)
         }
-        delay(BLINK_DURATION_MS)
-        when (nextColor) {
-            positiveColor -> blinkCardViewBGColor(cardView, neutralColor)
-            else -> blinkCardViewBGColor(cardView, positiveColor)
+    }
+
+    private suspend fun blink(
+        cardView: CardView,
+        baseColor: Color,
+        blinkColor: Color,
+        delayMs: Long
+    ) {
+        cardView.setCardBackgroundColor(baseColor)
+        delay(delayMs)
+        cardView.setCardBackgroundColor(blinkColor)
+        delay(delayMs)
+        cardView.setCardBackgroundColor(baseColor)
+    }
+
+    fun startIncorrectFeedback(cv: CardView) {
+        startFeedback(cv, negativeColor)
+    }
+
+    fun startCorrectFeedback(cv: CardView) {
+        startFeedback(cv, positiveColor)
+    }
+
+    private fun startFeedback(cv: CardView, blinkColor: Color) {
+        setBGBlinkingStates(false, false)
+        lifecycleScope.launch {
+            for (i in 1..NB_BLINKS_FOR_SORTING_FEEDBACK) {
+                blink(cv, baseColor, blinkColor, SHORT_BLINK_DURATION_MS)
+            }
         }
     }
 
     companion object {
-        private val BLINK_DURATION_MS: Long = 600
+        private val BLINK_DURATION_MS: Long = 800
+        private val SHORT_BLINK_DURATION_MS: Long = 150
+        private val NB_BLINKS_FOR_SORTING_FEEDBACK = 4
     }
 
 }
