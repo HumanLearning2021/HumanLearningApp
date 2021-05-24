@@ -45,5 +45,5 @@ data class RoomRepresentativePicture(
     @Relation(
         parentColumn = "categoryId",
         entityColumn = "categoryId"
-    ) val picture: RoomUnlinkedRepresentativePicture
+    ) val picture: RoomUnlinkedRepresentativePicture?
 )

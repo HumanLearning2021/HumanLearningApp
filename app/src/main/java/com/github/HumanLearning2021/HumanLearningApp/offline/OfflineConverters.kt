@@ -18,9 +18,10 @@ object OfflineConverters {
     suspend fun fromPicture(
         picture: RoomRepresentativePicture,
         categoryDao: CategoryDao
-    ): CategorizedPicture {
-        val cat = fromCategory(categoryDao.loadById(picture.picture.categoryId)!!)
-        return CategorizedPicture(picture.picture.pictureId, cat, picture.picture.uri)
+    ): CategorizedPicture? {
+        val pic = picture.picture ?: return null
+        val cat = fromCategory(categoryDao.loadById(pic.categoryId)!!)
+        return CategorizedPicture(pic.pictureId, cat, pic.uri)
     }
 
     fun fromCategory(category: RoomCategory): Category {

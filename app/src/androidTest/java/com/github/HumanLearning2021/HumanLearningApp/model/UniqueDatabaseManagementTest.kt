@@ -13,7 +13,9 @@ import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.hasSize
 import org.junit.*
+import org.junit.Assume.assumeThat
 import org.junit.runner.RunWith
 import javax.inject.Inject
 
@@ -86,5 +88,26 @@ class UniqueDatabaseManagementTest {
     fun accessOfflineDatabaseReturnsCorrectType() = runBlocking {
         uDbMan.downloadDatabase("demo")
         assert(uDbMan.accessDatabase("demo") is DefaultDatabaseManagement)
+    }
+
+    @Test
+    fun removeDatabaseFromDownloadsClearsRoomDatabase() = runBlocking {
+        room.clearAllTables()
+        val dbName = "demo"
+        uDbMan.downloadDatabase(dbName)
+
+        assumeThat(room.databaseDao().loadAll(), not(hasSize(0)))
+        assumeThat(room.datasetDao().loadAll(), not(hasSize(0)))
+        assumeThat(room.categoryDao().loadAll(), not(hasSize(0)))
+        assumeThat(room.pictureDao().loadAllPictures(), not(hasSize(0)))
+        assumeThat(room.pictureDao().loadAllRepresentativePictures(), not(hasSize(0)))
+
+        uDbMan.removeDatabaseFromDownloadsAsync(dbName).await()
+
+        assertThat(room.databaseDao().loadAll(), hasSize(0))
+        assertThat(room.datasetDao().loadAll(), hasSize(0))
+        assertThat(room.categoryDao().loadAll(), hasSize(0))
+        assertThat(room.pictureDao().loadAllPictures(), hasSize(0))
+        assertThat(room.pictureDao().loadAllRepresentativePictures(), hasSize(0))
     }
 }

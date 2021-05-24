@@ -136,6 +136,10 @@ class UniqueDatabaseManagement @Inject constructor(
 
     fun removeDatabaseFromDownloadsAsync(databaseName: String) =
         CoroutineScope(Dispatchers.IO).async {
+            databaseDao.loadByName(databaseName)?.let {
+                it.datasets.forEach { ds -> datasetDao.delete(ds) }
+                it.categories.forEach { cat -> categoryDao.delete(cat) }
+            }
             room.databaseDao().delete(RoomEmptyHLDatabase(databaseName))
             OfflineDatabaseService(databaseName, context, room).clear()
         }
