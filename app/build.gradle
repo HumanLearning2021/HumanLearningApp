@@ -70,6 +70,10 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    lintOptions {
+        disable 'ObsoleteSdkInt'
+    }
 }
 
 tasks.withType(Test) {
