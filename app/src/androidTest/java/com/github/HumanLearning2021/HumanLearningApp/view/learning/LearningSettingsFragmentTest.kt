@@ -48,7 +48,7 @@ class LearningSettingsFragmentTest {
 
     @BindValue
     @ProductionDatabaseName
-    var dbName = "dummy"
+    val dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
 
