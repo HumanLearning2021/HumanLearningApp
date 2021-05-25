@@ -5,7 +5,7 @@ import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineDemoDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineTestDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
@@ -36,7 +36,7 @@ class OfflineDatabaseManagementTest {
     lateinit var context: Context
 
     @Inject
-    @OfflineDemoDatabase
+    @OfflineTestDatabase
     lateinit var demoManagement: DatabaseManagement
 
     @get:Rule

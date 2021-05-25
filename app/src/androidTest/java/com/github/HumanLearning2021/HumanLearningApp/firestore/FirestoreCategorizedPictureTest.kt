@@ -8,7 +8,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.TestDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.DefaultImageDisplayer
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
@@ -30,7 +30,7 @@ import javax.inject.Inject
 @RunWith(AndroidJUnit4::class)
 class FirestoreCategorizedPictureTest {
     @Inject
-    @DemoDatabase
+    @TestDatabase
     lateinit var db: DatabaseService
 
     @get:Rule
