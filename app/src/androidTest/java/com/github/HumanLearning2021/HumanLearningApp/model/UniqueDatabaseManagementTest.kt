@@ -36,6 +36,8 @@ class UniqueDatabaseManagementTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    private val dbName = "test"
+
     @Before
     fun setup() {
         hiltRule.inject()
@@ -46,18 +48,17 @@ class UniqueDatabaseManagementTest {
 
     @Test
     fun getDatabaseNamesWorks() = runBlocking {
-        assertThat(uDbMan.getDatabases(), hasItems("demo"))
+        assertThat(uDbMan.getDatabases(), hasItems(dbName))
     }
 
     @Test
     fun getDownloadedDatabaseNamesWorks() = runBlocking {
-        uDbMan.downloadDatabase("demo")
-        assertThat(uDbMan.getDownloadedDatabases(), hasItem("demo"))
+        uDbMan.downloadDatabase(dbName)
+        assertThat(uDbMan.getDownloadedDatabases(), hasItem(dbName))
     }
 
     @Test
     fun offlineAndFirestoreDatabasesContainTheSameElements() = runBlocking {
-        val dbName = "demo"
         val fDbMan = uDbMan.accessCloudDatabase(dbName)
         val oDbman = uDbMan.downloadDatabase(dbName)
         assertThat(
@@ -74,7 +75,7 @@ class UniqueDatabaseManagementTest {
     @Test
     fun offlineDatabaseThrowsIfNotDownloaded() = runBlocking {
         kotlin.runCatching {
-            DefaultDatabaseManagement(OfflineDatabaseService("demo", context, room))
+            DefaultDatabaseManagement(OfflineDatabaseService(dbName, context, room))
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {

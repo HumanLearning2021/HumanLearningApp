@@ -36,11 +36,11 @@ annotation class DummyDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class DemoDatabase
+annotation class TestDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class CachedDemoDatabase
+annotation class CachedTestDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -52,7 +52,7 @@ annotation class ScratchDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class OfflineDemoDatabase
+annotation class OfflineTestDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -68,7 +68,7 @@ annotation class RoomDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class DemoCachePictureRepository
+annotation class TestCachePictureRepository
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -149,9 +149,9 @@ object EmulationModule {
 @InstallIn(SingletonComponent::class)
 object PictureRepositoryModule {
     @Provides
-    @DemoCachePictureRepository
-    fun provideDemoCachePictureRepository(@ApplicationContext context: Context): PictureRepository =
-        CachePictureRepository("demo", context)
+    @TestCachePictureRepository
+    fun provideTestCachePictureRepository(@ApplicationContext context: Context): PictureRepository =
+        CachePictureRepository("test", context)
 
     @Provides
     @Demo2CachePictureRepository
@@ -189,16 +189,16 @@ object DatabaseServiceModule {
         }
     }
 
-    @OfflineDemoDatabase
+    @OfflineTestDatabase
     @Provides
-    fun provideOfflineDemoService(
+    fun provideOfflineTestService(
         @ApplicationContext context: Context,
         @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
         @RoomDatabase room: RoomOfflineDatabase,
     ): DatabaseService =
         runBlocking {
-            uDb.downloadDatabase("demo")
-            OfflineDatabaseService("demo", context, room)
+            uDb.downloadDatabase("test")
+            OfflineDatabaseService("test", context, room)
         }
 
     @OfflineScratchDatabase
@@ -217,10 +217,10 @@ object DatabaseServiceModule {
             )
         }
 
-    @DemoDatabase
+    @TestDatabase
     @Provides
-    fun provideDemoService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
-        FirestoreDatabaseService("demo", firestore)
+    fun provideTestService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
+        FirestoreDatabaseService("test", firestore)
 
     @Demo2Database
     @Provides
@@ -244,9 +244,9 @@ object DatabaseManagementModule {
     fun provideDummyManagement(@DummyDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
-    @DemoDatabase
+    @TestDatabase
     @Provides
-    fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement =
+    fun provideTestService(@TestDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
     @Demo2Database
@@ -260,9 +260,9 @@ object DatabaseManagementModule {
     fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
-    @OfflineDemoDatabase
+    @OfflineTestDatabase
     @Provides
-    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement =
+    fun provideOfflineTestService(@OfflineTestDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
     @OfflineScratchDatabase
