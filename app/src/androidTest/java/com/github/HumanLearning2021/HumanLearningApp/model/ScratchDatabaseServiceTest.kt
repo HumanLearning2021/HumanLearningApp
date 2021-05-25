@@ -4,10 +4,8 @@ import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -84,18 +82,6 @@ abstract class ScratchDatabaseServiceTest {
 class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
 
     @Inject
-    @ProdDatabase
-    lateinit var demo2DbService: DatabaseService
-
-    @BindValue
-    @ProdDatabase
-    lateinit var demo2DbMgt: DatabaseManagement
-
-    @Inject
-    @ProdCachePictureRepository
-    lateinit var repository: PictureCache
-
-    @Inject
     @ScratchDatabase
     override lateinit var db: DatabaseService
 
@@ -105,7 +91,6 @@ class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
     @Before
     fun setUpDb() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideProdService(demo2DbService)
     }
 }
 
@@ -113,18 +98,6 @@ class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class ScratchDummyDatabaseServiceTest : ScratchDatabaseServiceTest() {
-
-    @Inject
-    @ProdDatabase
-    lateinit var demo2DbService: DatabaseService
-
-    @BindValue
-    @ProdDatabase
-    lateinit var demo2DbMgt: DatabaseManagement
-
-    @Inject
-    @ProdCachePictureRepository
-    lateinit var repository: PictureCache
 
     @Inject
     @DummyDatabase
@@ -136,6 +109,5 @@ class ScratchDummyDatabaseServiceTest : ScratchDatabaseServiceTest() {
     @Before
     fun setUpDb() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideProdService(demo2DbService)
     }
 }
