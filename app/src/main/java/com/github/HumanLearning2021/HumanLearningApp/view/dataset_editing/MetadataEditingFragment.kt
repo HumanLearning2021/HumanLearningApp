@@ -23,6 +23,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+/**
+ * Fragment used to modify the name and categories of the dataset if the user comes
+ * from the display dataset fragment or to create a new dataset if the user comes
+ * from the datasets overview fragment.
+ */
 @AndroidEntryPoint
 class MetadataEditingFragment : Fragment() {
 
@@ -37,7 +42,6 @@ class MetadataEditingFragment : Fragment() {
     lateinit var dBManagement: DatabaseManagement
 
     private var _binding: FragmentMetadataEditingBinding? = null
-    private val binding get() = _binding!!
 
     private var dsCategories = emptySet<Category>()
     private var datasetId: Id? = null
@@ -73,7 +77,7 @@ class MetadataEditingFragment : Fragment() {
         parentActivity = requireActivity()
         _binding = FragmentMetadataEditingBinding.inflate(layoutInflater)
         setHasOptionsMenu(true)
-        return binding.root
+        return _binding!!.root
 
     }
 
@@ -90,14 +94,14 @@ class MetadataEditingFragment : Fragment() {
                      * and the name of the dataset to the layout and set them as non clickable.
                      */
                     dataset = datasetId?.let { dBManagement.getDatasetById(it) }!!
-                    binding.datasetName?.setText(dataset.name)
+                    _binding?.datasetName?.setText(dataset.name)
                     dsCategories = dataset.categories
                     val count = dsCategories.size
                     var v: View?
 
                     for (i in 0 until count) {
                         addNewView()
-                        v = binding.parentLinearLayout.getChildAt(i)
+                        v = _binding!!.parentLinearLayout.getChildAt(i)
                         val categoryName: EditText =
                             v.findViewById(R.id.data_creation_category_name)
                         categoryName.setText(
@@ -118,7 +122,7 @@ class MetadataEditingFragment : Fragment() {
                      */
                     for (i in 0 until 3) {
                         addNewView()
-                        val v = binding.parentLinearLayout.getChildAt(i)
+                        val v = _binding!!.parentLinearLayout.getChildAt(i)
                         val categoryName: EditText =
                             v.findViewById(R.id.data_creation_category_name)
                         categoryName.setText(
@@ -126,7 +130,7 @@ class MetadataEditingFragment : Fragment() {
                             TextView.BufferType.EDITABLE
                         )
                     }
-                    binding.datasetName?.setText(R.string.ds_name)
+                    _binding?.datasetName?.setText(R.string.ds_name)
                 }
 
                 setButtonsListener()
@@ -154,47 +158,53 @@ class MetadataEditingFragment : Fragment() {
      */
     private fun addNewView() {
         val viewToAdd = View.inflate(parentActivity, R.layout.row_add_category, null)
-        binding.parentLinearLayout.addView(viewToAdd, binding.parentLinearLayout.childCount)
+        _binding!!.parentLinearLayout.addView(viewToAdd, _binding!!.parentLinearLayout.childCount)
         viewToAdd.findViewById<ImageButton>(R.id.button_remove)
             .setOnClickListener { removeView(it) }
     }
 
     /**
      * This method is called after having clicked the delete category button.
-     * It removes the view and the category from the dataset if needed.
+     * It removes the view and the category from the dataset if it was already present in the dataset.
      *
      * @param view the view to be removed.
      */
     private fun removeView(view: View) {
+        /**
+         * We know that this view has a parent since the remove button is
+         * inside the view created in addNewView.
+         */
         val categoryName: EditText =
             (view.parent as View).findViewById(R.id.data_creation_category_name)
         lifecycleScope.launch {
-            for (i in dsCategories.indices) {
-                if (dsCategories.elementAt(i).name == categoryName.text.toString()) {
-                    binding.parentLinearLayout.removeView(view.parent as View)
-                    removedCategory = dsCategories.elementAt(i)
-                    dsCategories = dsCategories.minus(removedCategory)
-                    dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
-                    break
-                }
+            /**
+             * If there are multiple categories with the same name, remove the last category.
+             */
+            val categoriesWithNameToBeRemoved =
+                dsCategories.filter { it.name == categoryName.text.toString() }
+            if (categoriesWithNameToBeRemoved.isNotEmpty()) {
+                _binding!!.parentLinearLayout.removeView(view.parent as View)
+                removedCategory = categoriesWithNameToBeRemoved.last()
+                dsCategories = dsCategories.minus(removedCategory)
+                dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
             }
-            binding.parentLinearLayout.removeView(view.parent as View)
+            _binding?.parentLinearLayout?.removeView(view.parent as View)
         }
     }
 
     /**
      * This method creates the added categories and add them to the dataset.
      * If the dataset is new, it is added to the database.
-     * It ends by going to the Display dataset fragment.
+     * It ends by going to the display dataset fragment.
      */
     private fun saveData() {
         lifecycleScope.launch {
-            val count = binding.parentLinearLayout.childCount
+            val count = _binding!!.parentLinearLayout.childCount
             var v: View?
             var newCategories = emptySet<Category>()
 
             for (i in dsCategories.size until count) {
-                v = binding.parentLinearLayout.getChildAt(i)
+                v = _binding!!.parentLinearLayout.getChildAt(i)
                 val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
                 val cat = dBManagement.putCategory(categoryName.text.toString())
                 newCategories = newCategories.plus(cat)
@@ -206,7 +216,7 @@ class MetadataEditingFragment : Fragment() {
                 }
             } else {
                 dataset =
-                    dBManagement.putDataset(binding.datasetName?.text.toString(), newCategories)
+                    dBManagement.putDataset(_binding!!.datasetName?.text.toString(), newCategories)
                 datasetId = dataset.id
             }
 
@@ -230,10 +240,10 @@ class MetadataEditingFragment : Fragment() {
      * "Save data" button : Save the categories into the dataset and go back to Display dataset fragment
      */
     private fun setButtonsListener() {
-        binding.buttonAdd.setOnClickListener {
+        _binding!!.buttonAdd.setOnClickListener {
             addNewView()
         }
-        binding.buttonSubmitList.setOnClickListener {
+        _binding!!.buttonSubmitList.setOnClickListener {
             saveData()
         }
     }
@@ -242,11 +252,11 @@ class MetadataEditingFragment : Fragment() {
      * Set the listener to modify the name of the dataset whenever the name is modified
      */
     private fun setTextChangeListener() {
-        binding.datasetName?.doAfterTextChanged {
+        _binding!!.datasetName?.doAfterTextChanged {
             lifecycleScope.launch {
                 dataset = dBManagement.editDatasetName(
                     dataset,
-                    binding.datasetName?.text.toString()
+                    _binding!!.datasetName?.text.toString()
                 )
             }
         }

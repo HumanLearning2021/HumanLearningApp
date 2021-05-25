@@ -26,7 +26,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-
+/**
+ * Fragment to display all the pictures of a category.
+ *
+ * The name of the category and all the pictures of the category are displayed.
+ *
+ * Possible actions :
+ * - Get the information of what the user can do by clicking on the info menu button.
+ * - Can delete one or multiple pictures with a long click on one picture and then by clicking
+ * on the trashcan icon (Possibility to select multiple pictures after the long click).
+ * - Can set a picture as representative of the category with a long click and then by clicking
+ * on the star icon (this action deletes the picture from the pictures of the category).
+ */
 @AndroidEntryPoint
 class DisplayImageSetFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
@@ -53,7 +64,6 @@ class DisplayImageSetFragment : Fragment() {
 
     private val args: DisplayImageSetFragmentArgs by navArgs()
     private var _binding: FragmentDisplayImageSetBinding? = null
-    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +91,7 @@ class DisplayImageSetFragment : Fragment() {
         parentActivity = requireActivity()
         _binding = FragmentDisplayImageSetBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return binding.root
+        return _binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,9 +100,12 @@ class DisplayImageSetFragment : Fragment() {
         category = args.category
         datasetId = args.datasetId
 
+        /**
+         * Retrieve all the pictures of the category and display them.
+         */
         lifecycleScope.launch {
             categorizedPicturesList = dBManagement.getAllPictures(category)
-            binding.displayImageSetName.text =
+            _binding?.displayImageSetName?.text =
                 category.name
             if (categorizedPicturesList.isNotEmpty()) {
                 displayImageSetAdapter =
@@ -105,7 +118,7 @@ class DisplayImageSetFragment : Fragment() {
                 setPictureItemListener()
             }
         }
-        binding.displayImageSetImagesGridView.choiceMode = GridView.CHOICE_MODE_MULTIPLE_MODAL
+        _binding?.displayImageSetImagesGridView?.choiceMode = GridView.CHOICE_MODE_MULTIPLE_MODAL
         setGridViewMultipleChoiceModeListener()
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
@@ -125,7 +138,12 @@ class DisplayImageSetFragment : Fragment() {
 
     }
 
-
+    /**
+     * Adapter of the grid displaying pictures of the category.
+     *
+     * @param pictures the pictures of the category
+     * @constructor Creates an adapter with the given pictures.
+     */
     private inner class DisplayImageSetAdapter(
         pictures: Set<CategorizedPicture>,
     ) : BaseAdapter() {
@@ -162,14 +180,22 @@ class DisplayImageSetFragment : Fragment() {
             return adapterPictures.size
         }
 
+        /**
+         * updates the adapter and display the new pictures
+         *
+         * @param newPictures the new pictures to be displayed.
+         */
         fun updatePictures(newPictures: Set<CategorizedPicture>) {
             adapterPictures = newPictures
             notifyDataSetChanged()
         }
     }
 
+    /**
+     * Listener to navigate to the display image fragment when a picture is clicked.
+     */
     private fun setPictureItemListener() {
-        binding.displayImageSetImagesGridView.setOnItemClickListener { _, _, i, _ ->
+        _binding?.displayImageSetImagesGridView?.setOnItemClickListener { _, _, i, _ ->
             val action =
                 DisplayImageSetFragmentDirections.actionDisplayImageSetFragmentToDisplayImageFragment(
                     categorizedPicturesList.elementAt(i),
@@ -179,8 +205,11 @@ class DisplayImageSetFragment : Fragment() {
         }
     }
 
+    /**
+     * Listener for the multiple selection of the pictures after a long click.
+     */
     private fun setGridViewMultipleChoiceModeListener() {
-        binding.displayImageSetImagesGridView.setMultiChoiceModeListener(object :
+        _binding?.displayImageSetImagesGridView?.setMultiChoiceModeListener(object :
             AbsListView.MultiChoiceModeListener {
 
             val tenDp = TypedValue.applyDimension(
@@ -200,6 +229,9 @@ class DisplayImageSetFragment : Fragment() {
 
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 when (item!!.itemId) {
+                    /**
+                     * delete all the selected pictures.
+                     */
                     R.id.delete_pictures ->
                         lifecycleScope.launch {
                             for (pic in categorizedPicturesSelectedList) {
@@ -210,6 +242,9 @@ class DisplayImageSetFragment : Fragment() {
                             numberOfSelectedPictures = 0
                             mode!!.finish()
                         }
+                    /**
+                     * Set the selected picture as representative of the category.
+                     */
                     R.id.set_representative_picture ->
                         lifecycleScope.launch {
                             val pic = categorizedPicturesSelectedList.first()
@@ -230,8 +265,8 @@ class DisplayImageSetFragment : Fragment() {
 
             override fun onDestroyActionMode(mode: ActionMode?) {
                 for (i in categorizedPicturesList.indices) {
-                    binding.displayImageSetImagesGridView[i].alpha = 1F
-                    binding.displayImageSetImagesGridView[i].elevation = tenDp
+                    _binding!!.displayImageSetImagesGridView[i].alpha = 1F
+                    _binding!!.displayImageSetImagesGridView[i].elevation = tenDp
                 }
                 displayImageSetAdapter.updatePictures(categorizedPicturesList)
                 displayImageSetAdapter.notifyDataSetChanged()
@@ -243,12 +278,15 @@ class DisplayImageSetFragment : Fragment() {
                 id: Long,
                 checked: Boolean
             ) {
+                /**
+                 * When a picture is selected, lower it's alpha value to clearly see that the image is selected.
+                 */
                 if (checked) {
                     numberOfSelectedPictures += 1
                     mode!!.title =
                         getString(R.string.numberOfSelectedPicturesText, numberOfSelectedPictures)
-                    binding.displayImageSetImagesGridView[position].alpha = 0.35F
-                    binding.displayImageSetImagesGridView[position].elevation = 0F
+                    _binding!!.displayImageSetImagesGridView[position].alpha = 0.35F
+                    _binding!!.displayImageSetImagesGridView[position].elevation = 0F
                     categorizedPicturesSelectedList =
                         categorizedPicturesSelectedList.plus(
                             categorizedPicturesList.elementAt(
@@ -257,8 +295,8 @@ class DisplayImageSetFragment : Fragment() {
                         )
                 } else {
                     numberOfSelectedPictures -= 1
-                    binding.displayImageSetImagesGridView[position].alpha = 1F
-                    binding.displayImageSetImagesGridView[position].elevation = tenDp
+                    _binding!!.displayImageSetImagesGridView[position].alpha = 1F
+                    _binding!!.displayImageSetImagesGridView[position].elevation = tenDp
                     mode!!.title =
                         getString(R.string.numberOfSelectedPicturesText, numberOfSelectedPictures)
                     categorizedPicturesSelectedList =
@@ -269,6 +307,10 @@ class DisplayImageSetFragment : Fragment() {
                         )
                 }
 
+                /**
+                 * The star icon to set as representative picture is only displayed when exactly one
+                 * picture is selected.
+                 */
                 mode.menu[1].isVisible = numberOfSelectedPictures == 1
             }
 
@@ -282,6 +324,10 @@ class DisplayImageSetFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            /**
+             * When the info menu button is clicked, display information to the user about
+             * the possible actions possible.
+             */
             R.id.display_imageset_menu_info -> {
                 AlertDialog.Builder(this.context)
                     .setIcon(android.R.drawable.ic_dialog_info)

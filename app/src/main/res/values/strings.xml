@@ -35,7 +35,7 @@
     <string name="main_btAddImage">ADD IMAGE TO THE DATASET</string>
 
     <string name="info">Info</string>
-    <string name="modify_categories">Modify categories</string>
+    <string name="modify_categories">Modify name and categories</string>
     <string name="add_new_picture">Add new picture</string>
     <string name="delete_dataset">Delete dataset</string>
     <string name="enter_dataset_name">Enter dataset name</string>

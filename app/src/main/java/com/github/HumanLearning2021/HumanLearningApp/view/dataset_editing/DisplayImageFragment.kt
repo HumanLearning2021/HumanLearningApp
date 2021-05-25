@@ -21,6 +21,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+/**
+ * Fragment used to display a single image with the name of it's category.
+ */
 @AndroidEntryPoint
 class DisplayImageFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
@@ -44,7 +47,6 @@ class DisplayImageFragment : Fragment() {
 
     private val args: DisplayImageFragmentArgs by navArgs()
     private var _binding: FragmentDisplayImageBinding? = null
-    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +73,7 @@ class DisplayImageFragment : Fragment() {
     ): View {
         parentActivity = requireActivity()
         _binding = FragmentDisplayImageBinding.inflate(inflater, container, false)
-        return binding.root
+        return _binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -15,6 +15,11 @@ import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentAddPict
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
 
+/**
+ * Fragment used to be able to select the way the user wants
+ * to add a new picture to the dataset. The two options are
+ * selecting an existing picture or take a new picture with the camera.
+ */
 class AddPictureFragment : Fragment() {
 
     private lateinit var parentActivity: FragmentActivity
@@ -24,7 +29,6 @@ class AddPictureFragment : Fragment() {
     private val args: AddPictureFragmentArgs by navArgs()
 
     private var _binding: FragmentAddPictureBinding? = null
-    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +47,10 @@ class AddPictureFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         _binding = FragmentAddPictureBinding.inflate(inflater, container, false)
-        return binding.root
+        return _binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,8 +59,11 @@ class AddPictureFragment : Fragment() {
         categories = categories.plus(givenCategories)
 
 
-
-        binding.selectExistingPicture.setOnClickListener {
+        /**
+         * Set the listeners for the two buttons to navigate to the correct fragment
+         * to add a new picture to the dataset.
+         */
+        _binding?.selectExistingPicture?.setOnClickListener {
             val action =
                 AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(
                     args.categories,
@@ -65,7 +72,7 @@ class AddPictureFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        binding.useCamera.setOnClickListener {
+        _binding?.useCamera?.setOnClickListener {
             val action = AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(
                 args.categories,
                 datasetId
