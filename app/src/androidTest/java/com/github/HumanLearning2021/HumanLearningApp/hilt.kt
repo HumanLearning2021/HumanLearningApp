@@ -11,12 +11,33 @@ import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseServi
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import javax.inject.Singleton
+
+
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [FirebaseFirestoreModule::class],
+)
+@Module
+class FirebaseFirestoreTestModule {
+    @Provides
+    @Singleton
+    fun provideFirestore(): FirebaseFirestore {
+        FirebaseFirestore.getInstance()
+            .terminate() //TODO("Find out why it is initialized before this instead of just terminating it before restarting")
+        val db = FirebaseFirestore.getInstance()
+        db.useEmulator("10.0.2.2", 8080)
+        val settings = FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build()
+        db.firestoreSettings = settings
+        return db
+    }
+}
 
 @TestInstallIn(
     components = [SingletonComponent::class],
@@ -31,18 +52,18 @@ object DatabaseServiceTestModule {
 
     @TestDatabase
     @Provides
-    fun provideTestService(@EmulatedFirestore firestore: FirebaseFirestore) =
+    fun provideTestService(firestore: FirebaseFirestore) =
         DatabaseServiceModule.provideTestService(firestore)
 
     /** override prod with scratch */
     @ProdDatabase
     @Provides
-    fun provideProdService(@EmulatedFirestore firestore: FirebaseFirestore) =
+    fun provideProdService(firestore: FirebaseFirestore) =
         provideScratchService(firestore)
 
     @ScratchDatabase
     @Provides
-    fun provideScratchService(@EmulatedFirestore firestore: FirebaseFirestore) =
+    fun provideScratchService(firestore: FirebaseFirestore) =
         DatabaseServiceModule.provideScratchService(firestore)
 
     @OfflineTestDatabase
@@ -113,7 +134,7 @@ object DatabaseManagementTestModule {
     fun provideUniqueDatabaseManagement(
         @ApplicationContext context: Context,
         @RoomDatabase room: RoomOfflineDatabase,
-        @EmulatedFirestore firestore: FirebaseFirestore,
+        firestore: FirebaseFirestore,
         @DummyDatabase dummyDb: DatabaseManagement
     ): UniqueDatabaseManagement =
         DatabaseManagementModule.provideGlobalDatabaseManagement(context, room, firestore, dummyDb)

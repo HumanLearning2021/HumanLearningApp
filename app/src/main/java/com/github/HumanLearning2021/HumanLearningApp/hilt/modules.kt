@@ -13,7 +13,6 @@ import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.Module
@@ -95,18 +94,6 @@ object RoomDatabaseModule {
         ).build()
 }
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class EmulatedFirestore
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class ProductionFirestore
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class ProductionFirebaseApp
-
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseNameModule {
@@ -119,7 +106,6 @@ object DatabaseNameModule {
 @InstallIn(SingletonComponent::class)
 object FirebaseAppModule {
     @Provides
-    @ProductionFirebaseApp
     fun provideApp(): FirebaseApp = FirebaseApp.getInstance()
 }
 
@@ -127,29 +113,15 @@ object FirebaseAppModule {
 @InstallIn(SingletonComponent::class)
 object FirebaseAuthUIModule {
     @Provides
-    fun provideAuthUI(@ProductionFirebaseApp app: FirebaseApp) = AuthUI.getInstance(app)
+    fun provideAuthUI(app: FirebaseApp) = AuthUI.getInstance(app)
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-object EmulationModule {
+object FirebaseFirestoreModule {
     @Provides
-    @ProductionFirestore
-    fun provideNotEmulated(@ProductionFirebaseApp app: FirebaseApp): FirebaseFirestore =
+    fun provideFirestore(app: FirebaseApp): FirebaseFirestore =
         Firebase.firestore(app)
-
-    @Provides
-    @EmulatedFirestore
-    @Singleton
-    fun provideEmulated(): FirebaseFirestore {
-        FirebaseFirestore.getInstance()
-            .terminate() //TODO("Find out why it is initialized before this instead of just terminating it before restarting")
-        val db = FirebaseFirestore.getInstance()
-        db.useEmulator("10.0.2.2", 8080)
-        val settings = FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build()
-        db.firestoreSettings = settings
-        return db
-    }
 }
 
 @Module
@@ -237,20 +209,20 @@ object DatabaseServiceModule {
 
     @TestDatabase
     @Provides
-    fun provideTestService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
+    fun provideTestService(firestore: FirebaseFirestore): DatabaseService =
         FirestoreDatabaseService("test", firestore)
 
     @ProdDatabase
     @Provides
     fun provideProdService(
-        @ProductionFirestore firestore: FirebaseFirestore,
+        firestore: FirebaseFirestore,
         @ProdCachePictureRepository repository: PictureCache
     ): DatabaseService =
         CachedDatabaseService(FirestoreDatabaseService("prod", firestore), repository)
 
     @ScratchDatabase
     @Provides
-    fun provideScratchService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
+    fun provideScratchService(firestore: FirebaseFirestore): DatabaseService =
         FirestoreDatabaseService("scratch", firestore)
 }
 
@@ -293,7 +265,7 @@ object DatabaseManagementModule {
     fun provideGlobalDatabaseManagement(
         @ApplicationContext context: Context,
         @RoomDatabase room: RoomOfflineDatabase,
-        @ProductionFirestore firestore: FirebaseFirestore,
+        firestore: FirebaseFirestore,
         @DummyDatabase dummyDb: DatabaseManagement,
     ): UniqueDatabaseManagement = UniqueDatabaseManagement(context, room, firestore, dummyDb)
 }
