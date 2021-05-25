@@ -3,12 +3,12 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.*
+import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.hamcrest.MatcherAssert.assertThat
@@ -76,7 +76,6 @@ abstract class ScratchDatabaseServiceTest {
     }
 }
 
-@UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
@@ -94,11 +93,9 @@ class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
     }
 }
 
-@UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class ScratchDummyDatabaseServiceTest : ScratchDatabaseServiceTest() {
-
     @Inject
     @DummyDatabase
     override lateinit var db: DatabaseService
