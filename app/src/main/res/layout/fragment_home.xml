@@ -20,6 +20,7 @@
 
     <ImageView
         android:id="@+id/imageViewLogo"
+        android:contentDescription="@string/imageViewLogoContentDescription"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="24dp"
