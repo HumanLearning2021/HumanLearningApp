@@ -43,7 +43,7 @@ class DownloadSwitchTestDownloadedBeforehand {
 
     @BindValue
     @ProductionDatabaseName
-    var dbName = "dummy"
+    val dbName = "dummy"
 
     @Inject
     @RoomDatabase
