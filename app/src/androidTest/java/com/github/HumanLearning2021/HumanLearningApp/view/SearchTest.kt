@@ -176,7 +176,7 @@ class SearchTest {
     }
 
     @Test
-    @Ignore // haven't found a way to clear the text
+    @Ignore("haven't found a way to clear the text")
     fun learningDatasetSelectionTypeTextAndThenClearYieldsAllResults() {
         navigateToLearningDatasetSelection()
         typeTextAndThenClearYieldsAllResults()
