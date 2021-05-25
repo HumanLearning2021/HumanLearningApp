@@ -36,6 +36,7 @@ class RoomHLDatabaseTest {
     @Before
     fun createDb() {
         hiltRule.inject()
+        db.clearAllTables()
         databaseDao = db.databaseDao()
         datasetDao = db.datasetDao()
         categoryDao = db.categoryDao()
