@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.firebase.ui.auth.IdpResponse
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.model.User
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -25,6 +26,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class GoogleSignInWidget : Fragment() {
+
     @Inject
     lateinit var presenter: AuthenticationPresenter
 
@@ -67,6 +69,7 @@ class GoogleSignInWidget : Fragment() {
         }
         editor?.putString("name", "")
         editor?.putString("email", "")
+        editor?.putString("uid", "")
         editor?.putBoolean("hasLogin", false)
         editor?.putBoolean("isAdmin", false)
         editor?.apply()
@@ -93,12 +96,12 @@ class GoogleSignInWidget : Fragment() {
         if (user != null) {
             editor?.putString("name", user?.displayName)
             editor?.putString("email", user?.email)
+            editor?.putString("uid", user?.uid)
             editor?.putBoolean("hasLogin", true)
             editor?.putBoolean("isAdmin", isAdmin)
             editor?.apply()
         }
     }
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -134,15 +137,35 @@ class GoogleSignInWidget : Fragment() {
         }
     }
 
+    private fun setSingInUi() {
+        view?.findViewById<Button>(R.id.singOutButton)?.visibility = View.GONE
+        view?.findViewById<Button>(R.id.checkBox)?.visibility = View.VISIBLE
+        view?.findViewById<Button>(R.id.loginButton)?.visibility = View.VISIBLE
+    }
+
+    private fun setSingOutUi() {
+        view?.findViewById<Button>(R.id.singOutButton)?.visibility = View.VISIBLE
+        view?.findViewById<Button>(R.id.checkBox)?.visibility = View.GONE
+        view?.findViewById<Button>(R.id.loginButton)?.visibility = View.GONE
+
+    }
+
 
     private fun updateUi() {
+        var user: User
         if (prefs!!.getBoolean("hasLogin", false)) {
             view?.findViewById<TextView>(R.id.loginStatus)?.text =
                 prefs?.getString("name", "Not logged in!")
-            isAdmin = prefs?.getBoolean("isAdmin", false)!!
-            view?.findViewById<Button>(R.id.singOutButton)?.visibility = View.VISIBLE
-            view?.findViewById<Button>(R.id.checkBox)?.visibility = View.GONE
-            view?.findViewById<Button>(R.id.loginButton)?.visibility = View.GONE
+            user = User(
+                prefs!!.getString("name", ""),
+                prefs!!.getString("email", ""),
+                prefs!!.getString("uid", "")!!,
+                User.Type.FIREBASE,
+                prefs!!.getBoolean("isAdmin", false)
+            )
+            presenter.currentUser = user
+            setSingOutUi()
+
         } else {
             val user = presenter.currentUser
             view?.findViewById<TextView>(R.id.loginStatus)?.text =
@@ -153,13 +176,10 @@ class GoogleSignInWidget : Fragment() {
                     )
                 } ?: "Not logged in!"
             if (user == null) {
-                view?.findViewById<Button>(R.id.singOutButton)?.visibility = View.GONE
-                view?.findViewById<Button>(R.id.checkBox)?.visibility = View.VISIBLE
-                view?.findViewById<Button>(R.id.loginButton)?.visibility = View.VISIBLE
+                setSingInUi()
             } else {
-                view?.findViewById<Button>(R.id.singOutButton)?.visibility = View.VISIBLE
-                view?.findViewById<Button>(R.id.checkBox)?.visibility = View.GONE
-                view?.findViewById<Button>(R.id.loginButton)?.visibility = View.GONE            }
+                setSingOutUi()
+            }
         }
     }
 

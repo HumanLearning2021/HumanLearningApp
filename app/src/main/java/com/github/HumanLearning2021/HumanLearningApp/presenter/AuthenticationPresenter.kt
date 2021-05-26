@@ -58,7 +58,7 @@ class AuthenticationPresenter @Inject constructor(
     /**
      * Return information about the currently signed-in user
      */
-    val currentUser: User?
+    var currentUser: User? = null
         get() {
             checkStaleCurrentUser()
             return _currentUser
