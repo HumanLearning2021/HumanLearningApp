@@ -1,17 +1,25 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
+import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,9 +34,11 @@ class GoogleSignInWidgetTest {
 
     private lateinit var fragment: GoogleSignInWidget
 
+
     @Before
     fun setUp() {
         hiltRule.inject()
+
     }
 
     @Test
@@ -61,6 +71,36 @@ class GoogleSignInWidgetTest {
         onView(withId(R.id.checkBox)).perform(click())
         onView(withId(R.id.checkBox)).perform(click())
         assertThat(GoogleSignInWidget.isAdmin, equalTo(false))
+    }
+
+
+
+    @Test
+    fun test_signOutIsDisplayed() {
+        launchFragment()
+
+        runBlocking {
+            val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
+            fragment.presenter.onSuccessfulLogin(false)
+        }
+        fragment.updateUi()
+        onView(withId(R.id.singOutButton)).check(matches((isDisplayed())))
+        onView(withId(R.id.loginButton)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun signOutUserSuccess(){
+        launchFragment()
+        runBlocking {
+            val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
+            fragment.presenter.onSuccessfulLogin(false)
+        }
+        fragment.updateUi()
+        onView(withId(R.id.singOutButton)).perform(scrollTo()).perform(click())
+        assertThat(fragment.presenter.currentUser, Matchers.nullValue())
+        onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
+        onView(withId(R.id.checkBox)).check(matches(isDisplayed()))
+        onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
     }
 
     private fun launchFragment() {

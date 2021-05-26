@@ -151,7 +151,7 @@ class GoogleSignInWidget : Fragment() {
     }
 
 
-    private fun updateUi() {
+    fun updateUi() {
         var user: User
         if (prefs!!.getBoolean("hasLogin", false)) {
             view?.findViewById<TextView>(R.id.loginStatus)?.text =
