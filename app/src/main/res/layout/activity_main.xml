@@ -26,7 +26,10 @@
             android:layout_height="match_parent"
             android:layout_above="@id/bottom_nav"
             android:layout_below="@+id/toolbar"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="0dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="0dp"
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph" />
 

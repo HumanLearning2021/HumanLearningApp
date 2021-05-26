@@ -3,6 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
@@ -20,6 +21,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,6 +42,7 @@ class GoogleSignInWidgetTest {
         hiltRule.inject()
 
     }
+
 
     @Test
     fun test_success() {

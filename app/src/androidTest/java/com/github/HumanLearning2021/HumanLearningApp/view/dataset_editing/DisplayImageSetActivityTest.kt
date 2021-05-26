@@ -11,7 +11,8 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.longClick
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
@@ -229,8 +230,7 @@ class DisplayImageSetActivityTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(
-                scrollTo()).perform(click())
+            onView(withId(R.id.startLearningButton)).perform(click())
             navigateToDisplayImagesetFragment()
             onView(withId(R.id.display_imageset_menu_info)).perform(click())
             waitFor(1) // increase if needed
