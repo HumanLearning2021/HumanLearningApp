@@ -77,31 +77,33 @@ class GoogleSignInWidgetTest {
 
     @Test
     fun test_signOutIsDisplayed() {
-        launchFragment()
 
         runBlocking {
+            launchFragment()
             val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
             fragment.presenter.onSuccessfulLogin(false)
+            fragment.updateUi()
+            onView(withId(R.id.singOutButton)).check(matches((isDisplayed())))
+            onView(withId(R.id.loginButton)).check(matches(not(isDisplayed())))
         }
-        fragment.updateUi()
-        onView(withId(R.id.singOutButton)).check(matches((isDisplayed())))
-        onView(withId(R.id.loginButton)).check(matches(not(isDisplayed())))
+
     }
 
     @Test
     fun signOutUserSuccess(){
-        launchFragment()
         runBlocking {
+            launchFragment()
             val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
             fragment.presenter.onSuccessfulLogin(false)
+            fragment.updateUi()
+            onView(withId(R.id.singOutButton)).perform(scrollTo()).perform(click())
+            assertThat(fragment.presenter.currentUser, Matchers.nullValue())
+            fragment.updateUi()
+            onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
+            onView(withId(R.id.checkBox)).check(matches(isDisplayed()))
+            onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
         }
-        fragment.updateUi()
-        onView(withId(R.id.singOutButton)).perform(scrollTo()).perform(click())
-        assertThat(fragment.presenter.currentUser, Matchers.nullValue())
-        fragment.updateUi()
-        onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
-        onView(withId(R.id.checkBox)).check(matches(isDisplayed()))
-        onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
+
     }
 
     private fun launchFragment() {

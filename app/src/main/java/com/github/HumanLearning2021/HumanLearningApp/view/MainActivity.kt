@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                 isAdmin.let {
                     goToDsEditingButton?.isVisible = it
                 }
-                isAdmin = prefs!!.getBoolean("hasLogin", false) ?: false
+                isAdmin = prefs!!.getBoolean("hasLogin", false)
                 isAdmin.let {
                     goToDsEditingButton?.isVisible = it
                 }
