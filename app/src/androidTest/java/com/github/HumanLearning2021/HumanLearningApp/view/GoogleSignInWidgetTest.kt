@@ -98,6 +98,7 @@ class GoogleSignInWidgetTest {
         fragment.updateUi()
         onView(withId(R.id.singOutButton)).perform(scrollTo()).perform(click())
         assertThat(fragment.presenter.currentUser, Matchers.nullValue())
+        fragment.updateUi()
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
         onView(withId(R.id.checkBox)).check(matches(isDisplayed()))
         onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
