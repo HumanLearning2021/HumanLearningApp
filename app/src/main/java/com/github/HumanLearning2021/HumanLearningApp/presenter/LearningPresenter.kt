@@ -2,9 +2,11 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.util.Log
 import android.widget.ImageView
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.model.learning.LearningModel
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
+import kotlinx.coroutines.launch
 
 
 /**
@@ -13,6 +15,8 @@ import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
  * @param learningMode learning mode. Influences which pictures are displayed for example.
  * @param dataset dataset used for the learning
  * @param auth The authentication presenter, used to save statistics for the current user
+ * @param imageDisplayer handles image displaying
+ * @param lifecycleScope allows to launch lifecycle aware coroutines
  */
 class LearningPresenter(
     private val dbMgt: DatabaseManagement,
@@ -20,6 +24,7 @@ class LearningPresenter(
     private val dataset: Dataset,
     private val auth: AuthenticationPresenter,
     private val imageDisplayer: ImageDisplayer,
+    private val lifecycleScope: LifecycleCoroutineScope
 ) {
 
     /**
@@ -33,7 +38,7 @@ class LearningPresenter(
      * @param targetViews the views that display the target categories
      * @param sourceView the view that displays the current picture to sort
      */
-    suspend fun updateForNextSorting(
+    fun updateForNextSorting(
         targetViews: List<ImageView>,
         sourceView: ImageView
     ) {
@@ -45,7 +50,9 @@ class LearningPresenter(
         learningModel.updateForNextSorting(targetViews).forEach {
             val (iv, cat) = it
             with(imageDisplayer) {
-                dbMgt.getRepresentativePicture(cat.id)?.displayOn(iv)
+                lifecycleScope.launch {
+                    dbMgt.getRepresentativePicture(cat.id)?.displayOn(iv)
+                }
             }
             // set new content description. ONLY FOR ACCESSIBILITY REASONS, NOT FOR FUNCTIONALITY
             iv.contentDescription = cat.name
@@ -53,7 +60,9 @@ class LearningPresenter(
 
         // It matters that this method is called last, because the picture to sort must have a
         // category amongst those that are displayed
-        updatePictureToSort(sourceView)
+        lifecycleScope.launch {
+            updatePictureToSort(sourceView)
+        }
     }
 
     /**

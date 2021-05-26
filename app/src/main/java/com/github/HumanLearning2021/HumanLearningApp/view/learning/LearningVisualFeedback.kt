@@ -7,6 +7,19 @@ import kotlinx.coroutines.launch
 
 typealias Color = Int
 
+/**
+ * This class is tasked with the logic that adds visual feedback for the learning fragment
+ * (for example blinking the border in green on correct classification).
+ * @property lifecycleScope allows launching coroutines for visual feedback
+ * @property baseColor color that represents the color of elements before they are affected by
+ * the visual feedback. eg. this is white for the background of a CardView
+ * @property neutralColor color different from the baseColor that has no connotation (eg. blue).
+ * Will be used to indicate elements on screen
+ * @property positiveColor color that indicates a positive event, for example a correct sorting.
+ * @property negativeColor color that indicates a negative event, for example an incorrect sorting
+ * @property sourceCardView CardView in which the image to sort (source image) is contained
+ * @property targetCardViews CardViews that contain the representatives of the target categories
+ */
 class LearningVisualFeedback(
     private val lifecycleScope: LifecycleCoroutineScope,
     private val baseColor: Color,
@@ -18,11 +31,22 @@ class LearningVisualFeedback(
 ) {
     private val cardViewBGShouldBlink: MutableMap<CardView, Boolean> = HashMap()
 
-    fun setupBlinking() {
+    /**
+     * Starts blinking steadily the CardView behind the source image with the neutralColor.
+     * Also does the setup that will allow the target images backgrounds to blink.
+     */
+    fun setupBlinkingForHints() {
         setBGBlinkingStates(sourceState = true, targetsState = false)
         startBlinkingCardViews()
     }
 
+    /**
+     * Sets the blinking states for visual hints.
+     * @param sourceState state of blinking for the source image.
+     * True indicates that it should blink
+     * @param targetsState state of blinking for the target images.
+     * True indicates that they should blink
+     */
     fun setBGBlinkingStates(
         sourceState: Boolean,
         targetsState: Boolean
@@ -36,11 +60,11 @@ class LearningVisualFeedback(
 
 
     private fun startBlinkingCardViews() {
-        startBlinkingForever(sourceCardView)
-        targetCardViews.forEach { startBlinkingForever(it) }
+        startBlinkingUntilInterrupted(sourceCardView)
+        targetCardViews.forEach { startBlinkingUntilInterrupted(it) }
     }
 
-    private fun startBlinkingForever(cardView: CardView) {
+    private fun startBlinkingUntilInterrupted(cardView: CardView) {
         lifecycleScope.launch {
             blinkCardViewBGColor(cardView)
         }
@@ -66,10 +90,18 @@ class LearningVisualFeedback(
         cardView.setCardBackgroundColor(baseColor)
     }
 
+    /**
+     * Starts blinking rapidly with the negativeColor to indicate a mistake.
+     * @param cv the CardView whose background will blink
+     */
     fun startIncorrectFeedback(cv: CardView) {
         startFeedback(cv, negativeColor)
     }
 
+    /**
+     * Starts blinking rapidly with the positiveColor to indicate a success.
+     * @param cv the CardView whose background will blink
+     */
     fun startCorrectFeedback(cv: CardView) {
         startFeedback(cv, positiveColor)
     }

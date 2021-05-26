@@ -43,7 +43,7 @@ class LearningFragment : Fragment() {
 
     /**
      * model for evaluation mode
-     * A null value represents the fact that the learning mode is not EVALUATION
+     * A null value represents the fact that the learning mode is *not* EVALUATION
      *
      * TODO ideally the model would be wrapped inside the presenter (but no time right now)
      */
@@ -98,7 +98,10 @@ class LearningFragment : Fragment() {
             }
             targetImageViews = updateTargetImageViews()
             learningPresenter =
-                LearningPresenter(dbMgt, args.learningMode, dataset, authPresenter, imageDisplayer)
+                LearningPresenter(
+                    dbMgt, args.learningMode, dataset, authPresenter, imageDisplayer,
+                    lifecycleScope
+                )
             learningPresenter.updateForNextSorting(
                 targetImageViews,
                 binding.learningToSort
@@ -123,7 +126,7 @@ class LearningFragment : Fragment() {
                 )
             )
         }
-        visualFeedback.setupBlinking()
+        visualFeedback.setupBlinkingForHints()
 
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
