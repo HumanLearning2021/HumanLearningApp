@@ -75,7 +75,6 @@ class LearningVisualFeedback(
     }
 
     private fun startFeedback(cv: CardView, blinkColor: Color) {
-        setBGBlinkingStates(false, false)
         lifecycleScope.launch {
             for (i in 1..NB_BLINKS_FOR_SORTING_FEEDBACK) {
                 blink(cv, baseColor, blinkColor, SHORT_BLINK_DURATION_MS)

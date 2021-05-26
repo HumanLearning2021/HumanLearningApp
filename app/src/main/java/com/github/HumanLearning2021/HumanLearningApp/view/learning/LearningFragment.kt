@@ -100,7 +100,6 @@ class LearningFragment : Fragment() {
             learningPresenter =
                 LearningPresenter(dbMgt, args.learningMode, dataset, authPresenter, imageDisplayer)
             learningPresenter.updateForNextSorting(
-                parentActivity,
                 targetImageViews,
                 binding.learningToSort
             )
@@ -115,12 +114,13 @@ class LearningFragment : Fragment() {
                 neutralColor = getColor(requireContext(), R.color.blue),
                 positiveColor = getColor(requireContext(), R.color.light_green),
                 negativeColor = getColor(requireContext(), R.color.red),
-                sourceCardView = learningToSortCv!!, // TODO remove !!
+                // TODO remove !! once enclosing CardViews put in all layouts
+                sourceCardView = learningToSortCv!!,
                 targetCardViews = listOf(
                     learningCat0Cv!!,
                     learningCat1Cv!!,
                     learningCat2Cv!!
-                ) // TODO remove !!
+                )
             )
         }
         visualFeedback.setupBlinking()
@@ -258,8 +258,6 @@ class LearningFragment : Fragment() {
                         evaluationModel!!.getCurrentEvaluationResult()
                     )
                 )
-
-                Log.d("Evaluation", "EVALUATION COMPLETE !!!")
             }
             // update image views in case addSuccess started the next evaluation phase
             targetImageViews = updateTargetImageViews()
@@ -267,7 +265,6 @@ class LearningFragment : Fragment() {
             lifecycleScope.launch {
                 learningPresenter.saveEvent(Event.SUCCESS)
                 learningPresenter.updateForNextSorting(
-                    parentActivity,
                     targetImageViews,
                     binding.learningToSort
                 )
@@ -280,7 +277,7 @@ class LearningFragment : Fragment() {
                 learningPresenter.saveEvent(Event.MISTAKE)
             }
         }
-        Log.d("Evaluation", evaluationModel?.getCurrentEvaluationResult().toString())
+        evaluationModel?.let { Log.d("Evaluation", it.getCurrentEvaluationResult().toString()) }
         return sortingCorrect
     }
 
