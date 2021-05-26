@@ -180,7 +180,7 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.startLearningButton)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-            onView(withText("Modify categories")).perform(click())
+            onView(withText("Modify name and categories")).perform(click())
             activityScenarioRule.scenario.onActivity {
                 val currentFragment =
                     it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
