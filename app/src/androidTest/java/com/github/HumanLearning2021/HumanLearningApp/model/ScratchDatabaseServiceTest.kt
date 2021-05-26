@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.BindValue
@@ -93,7 +93,7 @@ class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
 
     @Inject
     @Demo2CachePictureRepository
-    lateinit var repository: PictureRepository
+    lateinit var cache: PictureCache
 
     @Inject
     @ScratchDatabase
@@ -124,7 +124,7 @@ class ScratchDummyDatabaseServiceTest : ScratchDatabaseServiceTest() {
 
     @Inject
     @Demo2CachePictureRepository
-    lateinit var repository: PictureRepository
+    lateinit var cache: PictureCache
 
     @Inject
     @DummyDatabase

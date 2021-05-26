@@ -7,10 +7,9 @@ import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -150,13 +149,13 @@ object EmulationModule {
 object PictureRepositoryModule {
     @Provides
     @DemoCachePictureRepository
-    fun provideDemoCachePictureRepository(@ApplicationContext context: Context): PictureRepository =
-        CachePictureRepository("demo", context)
+    fun provideDemoCachePictureRepository(@ApplicationContext context: Context): PictureCache =
+        PictureCache.applicationPictureCache("demo", context)
 
     @Provides
     @Demo2CachePictureRepository
-    fun provideDemo2CachePictureRepository(@ApplicationContext context: Context): PictureRepository =
-        CachePictureRepository("demo2", context)
+    fun provideDemo2CachePictureRepository(@ApplicationContext context: Context): PictureCache =
+        PictureCache.applicationPictureCache("demo2", context)
 }
 
 @Module
@@ -226,9 +225,9 @@ object DatabaseServiceModule {
     @Provides
     fun provideDemo2Service(
         @ProductionFirestore firestore: FirebaseFirestore,
-        @Demo2CachePictureRepository repository: PictureRepository
+        @Demo2CachePictureRepository cache: PictureCache
     ): DatabaseService =
-        CachedDatabaseService(FirestoreDatabaseService("demo2", firestore), repository)
+        CachedDatabaseService(FirestoreDatabaseService("demo2", firestore), cache)
 
     @ScratchDatabase
     @Provides

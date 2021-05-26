@@ -8,7 +8,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -57,7 +57,7 @@ object DatabaseServiceTestModule {
     @Provides
     fun provideCacheDemoDatabase(
         @DemoDatabase db: DatabaseService,
-        @DemoCachePictureRepository cache: PictureRepository
+        @DemoCachePictureRepository cache: PictureCache
     ): DatabaseService = CachedDatabaseService(db, cache)
 }
 

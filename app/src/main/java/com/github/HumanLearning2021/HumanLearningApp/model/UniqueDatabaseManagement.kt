@@ -3,12 +3,12 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.content.Context
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
 import com.github.HumanLearning2021.HumanLearningApp.room.*
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -16,12 +16,11 @@ import javax.inject.Inject
  * @param context: the application context
  */
 class UniqueDatabaseManagement @Inject constructor(
-    val context: Context,
+    @ApplicationContext val context: Context,
     private val room: RoomOfflineDatabase,
     private val firestore: FirebaseFirestore,
     @DummyDatabase var dummyDb: DatabaseManagement
 ) {
-
 
     private val databaseDao = room.databaseDao()
     private val datasetDao = room.datasetDao()
@@ -51,7 +50,7 @@ class UniqueDatabaseManagement @Inject constructor(
                         FirestoreDatabaseService(
                             databaseName,
                             firestore
-                        ), CachePictureRepository(databaseName, context)
+                        ), PictureCache.applicationPictureCache(databaseName, context)
                     )
                 )
             }
@@ -64,17 +63,15 @@ class UniqueDatabaseManagement @Inject constructor(
                 FirestoreDatabaseService(
                     databaseName,
                     firestore
-                ), CachePictureRepository(databaseName, context)
+                ), PictureCache.applicationPictureCache(databaseName, context)
             )
         )
     }
 
     suspend fun downloadDatabase(databaseName: String): DatabaseManagement =
         withContext(Dispatchers.IO) {
-            CachePictureRepository(
-                databaseName,
-                context
-            ).clear() //TODO("reuse content from cache instead")
+            PictureCache.applicationPictureCache(databaseName, context)
+                .clear() //TODO("reuse content from cache instead")
             val firestoreDbManagement =
                 // necessary for current testing setup
                 if (databaseName == "dummy") {
@@ -87,7 +84,7 @@ class UniqueDatabaseManagement @Inject constructor(
                         )
                     )
                 }
-            val pictureRepository = PictureRepository(databaseName, context)
+            val pictureRepository = PictureCache(databaseName, context)
 
             val datasets = firestoreDbManagement.getDatasets()
             val categories = datasets.flatMap { ds -> ds.categories }

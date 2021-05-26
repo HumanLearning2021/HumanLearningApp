@@ -2,7 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -57,7 +57,7 @@ class FirestoreDemoDatabaseServiceTest : DemoDatabaseServiceTest() {
 
     @Inject
     @Demo2CachePictureRepository
-    lateinit var repository: PictureRepository
+    lateinit var cache: PictureCache
 
     @Inject
     @DemoDatabase
