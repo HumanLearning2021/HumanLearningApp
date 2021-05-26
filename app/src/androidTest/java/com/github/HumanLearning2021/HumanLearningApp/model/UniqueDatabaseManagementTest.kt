@@ -82,10 +82,4 @@ class UniqueDatabaseManagementTest {
             assertThat(it, Matchers.instanceOf(IllegalStateException::class.java))
         })
     }
-
-    @Test
-    fun accessOfflineDatabaseReturnsCorrectType() = runBlocking {
-        uDbMan.downloadDatabase("demo")
-        assert(uDbMan.accessDatabase("demo") is DefaultDatabaseManagement)
-    }
 }
