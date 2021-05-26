@@ -45,7 +45,6 @@
     <string name="Yes">Yes</string>
     <string name="No">No</string>
     <plurals name="numberOfSelectedPicturesText">
-        <item quantity="zero">%d picture selected </item>
         <item quantity="one">%d picture selected </item>
         <item quantity="other">%d pictures selected </item>
     </plurals>
