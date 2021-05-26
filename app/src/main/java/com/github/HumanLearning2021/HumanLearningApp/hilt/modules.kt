@@ -44,7 +44,7 @@ annotation class CachedTestDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class Demo2Database
+annotation class ProdDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -72,7 +72,7 @@ annotation class TestCachePictureRepository
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class Demo2CachePictureRepository
+annotation class ProdCachePictureRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -105,7 +105,7 @@ annotation class ProductionFirebaseApp
 object DatabaseNameModule {
     @Provides
     @ProductionDatabaseName
-    fun provideProductionDatabasename(): String = "demo2"
+    fun provideProductionDatabaseName(): String = "prod"
 }
 
 @Module
@@ -154,9 +154,9 @@ object PictureRepositoryModule {
         CachePictureRepository("test", context)
 
     @Provides
-    @Demo2CachePictureRepository
-    fun provideDemo2CachePictureRepository(@ApplicationContext context: Context): PictureRepository =
-        CachePictureRepository("demo2", context)
+    @ProdCachePictureRepository
+    fun provideProdCachePictureRepository(@ApplicationContext context: Context): PictureRepository =
+        CachePictureRepository("prod", context)
 }
 
 @Module
@@ -222,13 +222,13 @@ object DatabaseServiceModule {
     fun provideTestService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
         FirestoreDatabaseService("test", firestore)
 
-    @Demo2Database
+    @ProdDatabase
     @Provides
-    fun provideDemo2Service(
+    fun provideProdService(
         @ProductionFirestore firestore: FirebaseFirestore,
-        @Demo2CachePictureRepository repository: PictureRepository
+        @ProdCachePictureRepository repository: PictureRepository
     ): DatabaseService =
-        CachedDatabaseService(FirestoreDatabaseService("demo2", firestore), repository)
+        CachedDatabaseService(FirestoreDatabaseService("prod", firestore), repository)
 
     @ScratchDatabase
     @Provides
@@ -249,10 +249,10 @@ object DatabaseManagementModule {
     fun provideTestService(@TestDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
-    @Demo2Database
+    @ProdDatabase
     @Provides
-    fun provideDemo2Service(
-        @Demo2Database db: DatabaseService,
+    fun provideProdService(
+        @ProdDatabase db: DatabaseService,
     ): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @ScratchDatabase

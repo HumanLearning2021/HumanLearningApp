@@ -34,10 +34,10 @@ object DatabaseServiceTestModule {
     fun provideTestService(@EmulatedFirestore firestore: FirebaseFirestore) =
         DatabaseServiceModule.provideTestService(firestore)
 
-    /** override demo2 with scratch */
-    @Demo2Database
+    /** override prod with scratch */
+    @ProdDatabase
     @Provides
-    fun provideDemo2Service(@EmulatedFirestore firestore: FirebaseFirestore) =
+    fun provideProdService(@EmulatedFirestore firestore: FirebaseFirestore) =
         provideScratchService(firestore)
 
     @ScratchDatabase
