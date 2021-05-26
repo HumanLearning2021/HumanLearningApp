@@ -101,7 +101,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.startLearningButton)).perform(scrollTo()).perform(click())
             navigateToDatasetsOverview()
             searchByKeyWordYieldsCorrectResult()
         }
@@ -119,7 +119,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.startLearningButton)).perform(scrollTo()).perform(click())
             navigateToDatasetsOverview()
             searchNotFoundYieldsNoResult()
         }
@@ -137,7 +137,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.startLearningButton)).perform(scrollTo()).perform(click())
             navigateToDatasetsOverview()
             canClickOnSubsetOfDatasetsMatchingSearch()
             assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
@@ -156,7 +156,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.startLearningButton)).perform(scrollTo()).perform(click())
             navigateToDatasetsOverview()
             emptySpacePrefixHasNoInfluence()
         }

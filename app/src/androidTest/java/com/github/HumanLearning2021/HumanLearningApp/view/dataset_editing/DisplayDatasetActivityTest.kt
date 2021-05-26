@@ -12,6 +12,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
@@ -177,7 +178,7 @@ class DisplayDatasetActivityTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.startLearningButton)).perform(scrollTo()).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
             onView(withText("Modify categories")).perform(click())
@@ -194,7 +195,8 @@ class DisplayDatasetActivityTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.startLearningButton)).perform(
+                scrollTo()).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
             onView(withText(R.string.add_new_picture)).perform(click())
@@ -227,7 +229,8 @@ class DisplayDatasetActivityTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.startLearningButton)).perform(
+                scrollTo()).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
             onView(withText(R.string.delete_dataset)).perform(click())
@@ -257,7 +260,8 @@ class DisplayDatasetActivityTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.startLearningButton)).perform(
+                scrollTo()).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
             UiDevice.getInstance(getInstrumentation()).click(0, 100)
