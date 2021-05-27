@@ -6,4 +6,7 @@
     <dimen name="DatasetList_im_size_land">80dp</dimen>
     <dimen name="DatasetList_im_size_tablet">85dp</dimen>
     <dimen name="DatasetList_im_size_tablet_land">100dp</dimen>
+    <dimen name="fragment_horizontal_margin">16dp</dimen>
+    <dimen name="fragment_vertical_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

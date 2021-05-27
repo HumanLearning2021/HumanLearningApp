@@ -72,7 +72,17 @@ android {
     }
 
     lintOptions {
+        // This one suggests deleting the v24 res folders as the minSdk is higher than 24, yet doing
+        // so causes the app to not build
         disable 'ObsoleteSdkInt'
+
+        // This one complains that bitmaps should not be in the drawable folder. However, it works as
+        // is and when moving them to the suggested folder, the images become very low resolution
+        disable 'IconLocation'
+
+        // Didn't find a way to fix this, but it does not seem to cause any issue as we've been
+        // using the learning for a while
+        disable 'ClickableViewAccessibility'
     }
 }
 
