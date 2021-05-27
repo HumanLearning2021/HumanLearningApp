@@ -64,6 +64,7 @@ class DisplayImageSetFragment : Fragment() {
 
     private val args: DisplayImageSetFragmentArgs by navArgs()
     private var _binding: FragmentDisplayImageSetBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +92,7 @@ class DisplayImageSetFragment : Fragment() {
         parentActivity = requireActivity()
         _binding = FragmentDisplayImageSetBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return _binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -105,7 +106,7 @@ class DisplayImageSetFragment : Fragment() {
          */
         lifecycleScope.launch {
             categorizedPicturesList = dBManagement.getAllPictures(category)
-            _binding?.displayImageSetName?.text =
+            binding.displayImageSetName.text =
                 category.name
             if (categorizedPicturesList.isNotEmpty()) {
                 displayImageSetAdapter =
@@ -118,7 +119,7 @@ class DisplayImageSetFragment : Fragment() {
                 setPictureItemListener()
             }
         }
-        _binding?.displayImageSetImagesGridView?.choiceMode = GridView.CHOICE_MODE_MULTIPLE_MODAL
+        binding.displayImageSetImagesGridView.choiceMode = GridView.CHOICE_MODE_MULTIPLE_MODAL
         setGridViewMultipleChoiceModeListener()
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
@@ -195,7 +196,7 @@ class DisplayImageSetFragment : Fragment() {
      * Listener to navigate to the display image fragment when a picture is clicked.
      */
     private fun setPictureItemListener() {
-        _binding?.displayImageSetImagesGridView?.setOnItemClickListener { _, _, i, _ ->
+        binding.displayImageSetImagesGridView.setOnItemClickListener { _, _, i, _ ->
             val action =
                 DisplayImageSetFragmentDirections.actionDisplayImageSetFragmentToDisplayImageFragment(
                     categorizedPicturesList.elementAt(i),
@@ -209,7 +210,7 @@ class DisplayImageSetFragment : Fragment() {
      * Listener for the multiple selection of the pictures after a long click.
      */
     private fun setGridViewMultipleChoiceModeListener() {
-        _binding?.displayImageSetImagesGridView?.setMultiChoiceModeListener(object :
+        binding.displayImageSetImagesGridView.setMultiChoiceModeListener(object :
             AbsListView.MultiChoiceModeListener {
 
             val tenDp = TypedValue.applyDimension(
@@ -265,8 +266,8 @@ class DisplayImageSetFragment : Fragment() {
 
             override fun onDestroyActionMode(mode: ActionMode?) {
                 for (i in categorizedPicturesList.indices) {
-                    _binding!!.displayImageSetImagesGridView[i].alpha = 1F
-                    _binding!!.displayImageSetImagesGridView[i].elevation = tenDp
+                    binding.displayImageSetImagesGridView[i].alpha = 1F
+                    binding.displayImageSetImagesGridView[i].elevation = tenDp
                 }
                 displayImageSetAdapter.updatePictures(categorizedPicturesList)
                 displayImageSetAdapter.notifyDataSetChanged()
@@ -285,8 +286,8 @@ class DisplayImageSetFragment : Fragment() {
                     numberOfSelectedPictures += 1
                     mode!!.title =
                         getString(R.string.numberOfSelectedPicturesText, numberOfSelectedPictures)
-                    _binding!!.displayImageSetImagesGridView[position].alpha = 0.35F
-                    _binding!!.displayImageSetImagesGridView[position].elevation = 0F
+                    binding.displayImageSetImagesGridView[position].alpha = 0.35F
+                    binding.displayImageSetImagesGridView[position].elevation = 0F
                     categorizedPicturesSelectedList =
                         categorizedPicturesSelectedList.plus(
                             categorizedPicturesList.elementAt(
@@ -295,8 +296,8 @@ class DisplayImageSetFragment : Fragment() {
                         )
                 } else {
                     numberOfSelectedPictures -= 1
-                    _binding!!.displayImageSetImagesGridView[position].alpha = 1F
-                    _binding!!.displayImageSetImagesGridView[position].elevation = tenDp
+                    binding.displayImageSetImagesGridView[position].alpha = 1F
+                    binding.displayImageSetImagesGridView[position].elevation = tenDp
                     mode!!.title =
                         getString(R.string.numberOfSelectedPicturesText, numberOfSelectedPictures)
                     categorizedPicturesSelectedList =

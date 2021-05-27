@@ -26,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DatasetsOverviewFragment : Fragment() {
     private var _binding: FragmentDatasetsOverviewBinding? = null
+    private val binding get() = _binding!!
     lateinit var parentActivity: FragmentActivity
 
     override fun onCreateView(
@@ -35,7 +36,7 @@ class DatasetsOverviewFragment : Fragment() {
     ): View {
         parentActivity = requireActivity()
         _binding = FragmentDatasetsOverviewBinding.inflate(inflater, container, false)
-        return _binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,7 +70,7 @@ class DatasetsOverviewFragment : Fragment() {
         /**
          * Button listener to go to the dataset creation fragment when clicked.
          */
-        _binding?.createDatasetButton?.setOnClickListener {
+        binding.createDatasetButton.setOnClickListener {
             val action =
                 DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment()
             findNavController().navigate(action)

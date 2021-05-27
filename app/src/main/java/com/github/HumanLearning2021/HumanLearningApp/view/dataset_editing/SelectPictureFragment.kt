@@ -32,6 +32,7 @@ class SelectPictureFragment : Fragment() {
     private lateinit var datasetId: Id // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesnt seem to work
 
     private var _binding: FragmentSelectPictureBinding? = null
+    private val binding get() = _binding!!
 
     private val args: SelectPictureFragmentArgs by navArgs()
 
@@ -45,21 +46,21 @@ class SelectPictureFragment : Fragment() {
 
 
         _binding = FragmentSelectPictureBinding.inflate(inflater, container, false)
-        return _binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         datasetId = args.datasetId
         categories = categories.plus(args.categories.toList())
 
-        _binding?.choosePictureButton?.setOnClickListener {
+        binding.choosePictureButton.setOnClickListener {
             /**
              * Allow the user to select an existing picture in it's device.
              */
             launchOpenPicture()
         }
 
-        _binding?.selectCategoryButton2?.setOnClickListener {
+        binding.selectCategoryButton2.setOnClickListener {
             /**
              * Allow the user to select the category of the selected picture.
              */
@@ -69,7 +70,7 @@ class SelectPictureFragment : Fragment() {
         /**
          * sends the picture to the display dataset fragment who adds the picture to the dataset.
          */
-        _binding?.saveButton3?.setOnClickListener {
+        binding.saveButton3.setOnClickListener {
             setFragmentResult(
                 AddPictureFragment.REQUEST_KEY,
                 bundleOf("chosenCategory" to selectedCategory!!, "pictureUri" to selectedPicture!!)
@@ -124,7 +125,7 @@ class SelectPictureFragment : Fragment() {
     }
 
     private fun displayPicture(pic: Uri) {
-        Glide.with(this).load(pic).into(_binding!!.selectedPicturePreview)
+        Glide.with(this).load(pic).into(binding.selectedPicturePreview)
     }
 
     private fun onSelectCategoryButton() {
@@ -132,7 +133,7 @@ class SelectPictureFragment : Fragment() {
         builder.apply {
             setTitle(getString(R.string.AddPicture_categorySelectionDialogTitle))
             setItems(categories.map { cat -> cat.name }.toTypedArray()) { _, category_index ->
-                val button = _binding!!.selectCategoryButton2
+                val button = binding.selectCategoryButton2
                 categories.elementAt(category_index).let {
                     button.text = it.name
                     selectedCategory = it
@@ -153,7 +154,7 @@ class SelectPictureFragment : Fragment() {
         /**
          * the save button is only enabled if the picture and the category have been selected.
          */
-        _binding?.saveButton3?.isEnabled =
+        binding.saveButton3.isEnabled =
             selectedCategory != null && selectedPicture != null
     }
 

@@ -29,6 +29,7 @@ class AddPictureFragment : Fragment() {
     private val args: AddPictureFragmentArgs by navArgs()
 
     private var _binding: FragmentAddPictureBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +51,7 @@ class AddPictureFragment : Fragment() {
     ): View {
         parentActivity = requireActivity()
         _binding = FragmentAddPictureBinding.inflate(inflater, container, false)
-        return _binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,7 +64,7 @@ class AddPictureFragment : Fragment() {
          * Set the listeners for the two buttons to navigate to the correct fragment
          * to add a new picture to the dataset.
          */
-        _binding?.selectExistingPicture?.setOnClickListener {
+        binding.selectExistingPicture.setOnClickListener {
             val action =
                 AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(
                     args.categories,
@@ -72,7 +73,7 @@ class AddPictureFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        _binding?.useCamera?.setOnClickListener {
+        binding.useCamera.setOnClickListener {
             val action = AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(
                 args.categories,
                 datasetId

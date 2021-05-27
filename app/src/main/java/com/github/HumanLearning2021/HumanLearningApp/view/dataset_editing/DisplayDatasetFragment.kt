@@ -61,6 +61,7 @@ class DisplayDatasetFragment : Fragment() {
     private lateinit var dataset: Dataset
 
     private var _binding: FragmentDisplayDatasetBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +105,7 @@ class DisplayDatasetFragment : Fragment() {
         parentActivity = requireActivity()
         _binding = FragmentDisplayDatasetBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return _binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -116,7 +117,7 @@ class DisplayDatasetFragment : Fragment() {
 
         lifecycleScope.launch {
             dataset = dbManagement.getDatasetById(datasetId)!!
-            (_binding?.displayDatasetName as? TextView)?.text = dataset.name
+            (binding.displayDatasetName as TextView).text = dataset.name
             categories = dataset.categories
 
             /**
@@ -138,7 +139,7 @@ class DisplayDatasetFragment : Fragment() {
                     categories,
                 )
 
-            _binding?.displayDatasetImagesGridView?.adapter = displayDatasetAdapter
+            binding.displayDatasetImagesGridView.adapter = displayDatasetAdapter
 
             setGridViewItemListener()
         }
@@ -277,8 +278,8 @@ class DisplayDatasetFragment : Fragment() {
      * Navigate to the display imageSet fragment to display all the pictures of the category.
      */
     private fun setGridViewItemListener() {
-        _binding?.displayDatasetImagesGridView
-            ?.setOnItemClickListener { _, _, i, _ ->
+        binding.displayDatasetImagesGridView
+            .setOnItemClickListener { _, _, i, _ ->
                 val category = categories.elementAt(i)
                 val action =
                     DisplayDatasetFragmentDirections.actionDisplayDatasetFragmentToDisplayImageSetFragment(

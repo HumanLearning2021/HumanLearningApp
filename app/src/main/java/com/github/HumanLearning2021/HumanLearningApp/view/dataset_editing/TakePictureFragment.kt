@@ -53,6 +53,7 @@ class TakePictureFragment : Fragment() {
     private var categorySet: Boolean = false
 
     private var _binding: FragmentTakePictureBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,7 +67,7 @@ class TakePictureFragment : Fragment() {
         categories = categories.plus(givenCategories)
 
         _binding = FragmentTakePictureBinding.inflate(inflater, container, false)
-        return _binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -166,7 +167,7 @@ class TakePictureFragment : Fragment() {
             var catCopy = emptySet<Category>()
             catCopy = catCopy.plus(categories)
             setItems(catCopy.map { cat -> cat.name }.toTypedArray()) { _, category_index ->
-                val button = _binding!!.selectCategoryButton
+                val button = binding.selectCategoryButton
                 chosenCategory = categories.elementAt(category_index)
                 button.text = chosenCategory.name
                 button.apply {
@@ -182,9 +183,9 @@ class TakePictureFragment : Fragment() {
     }
 
     private fun setupFragmentLayout() {
-        _binding?.selectCategoryButton?.setOnClickListener(this::onSelectCategoryButton)
-        _binding?.saveButton?.setOnClickListener(this::onSave)
-        _binding?.cameraImageView?.isVisible = false
+        binding.selectCategoryButton.setOnClickListener(this::onSelectCategoryButton)
+        binding.saveButton.setOnClickListener(this::onSave)
+        binding.cameraImageView.isVisible = false
         val cameraProviderFuture = ProcessCameraProvider.getInstance(parentActivity)
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
@@ -199,11 +200,11 @@ class TakePictureFragment : Fragment() {
         val cameraSelector: CameraSelector =
             CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
 
-        preview.setSurfaceProvider(_binding?.cameraPreviewView?.surfaceProvider)
+        preview.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
 
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
 
-        _binding?.takePictureButton?.setOnClickListener(this::onTakePicture)
+        binding.takePictureButton.setOnClickListener(this::onTakePicture)
     }
 
     private fun setupRequestPermissionLauncher(): ActivityResultLauncher<String> {
@@ -259,32 +260,32 @@ class TakePictureFragment : Fragment() {
 
     @Suppress("UNUSED_PARAMETER")
     private fun resetCaptureButton(view: View) {
-        val button = _binding!!.takePictureButton
+        val button = binding.takePictureButton
         updateButton(
             button,
             R.string.AddPicture_takePictureButtonText,
             R.color.white,
             R.color.button_default
         )
-        _binding?.cameraPreviewView?.isVisible = true
-        _binding?.cameraImageView?.isVisible = false
+        binding.cameraPreviewView.isVisible = true
+        binding.cameraImageView.isVisible = false
         imageTaken = false
         notifySaveButton()
         button.setOnClickListener(this::onTakePicture)
     }
 
     private fun setCaptureButton() {
-        val button = _binding!!.takePictureButton
+        val button = binding.takePictureButton
         updateButton(
             button,
             R.string.AddPicture_takePictureButtonTextWhenImageTaken,
             R.color.black,
             R.color.button_set
         )
-        _binding?.cameraPreviewView?.isVisible = false
-        val imageView = _binding?.cameraImageView
-        imageView?.isVisible = true
-        imageView?.setImageDrawable(Drawable.createFromPath(pictureUri.path))
+        binding.cameraPreviewView.isVisible = false
+        val imageView = binding.cameraImageView
+        imageView.isVisible = true
+        imageView.setImageDrawable(Drawable.createFromPath(pictureUri.path))
         button.setOnClickListener(this::resetCaptureButton)
     }
 
@@ -305,6 +306,6 @@ class TakePictureFragment : Fragment() {
         /**
          * Can only save the picture if the user took a picture and selected a category.
          */
-        _binding?.saveButton?.isEnabled = categorySet && imageTaken
+        binding.saveButton.isEnabled = categorySet && imageTaken
     }
 }

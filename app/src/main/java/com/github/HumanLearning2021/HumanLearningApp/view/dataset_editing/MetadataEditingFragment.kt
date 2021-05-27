@@ -42,6 +42,7 @@ class MetadataEditingFragment : Fragment() {
     lateinit var dBManagement: DatabaseManagement
 
     private var _binding: FragmentMetadataEditingBinding? = null
+    private val binding get() = _binding!!
 
     private var dsCategories = emptySet<Category>()
     private var datasetId: Id? = null
@@ -77,7 +78,7 @@ class MetadataEditingFragment : Fragment() {
         parentActivity = requireActivity()
         _binding = FragmentMetadataEditingBinding.inflate(layoutInflater)
         setHasOptionsMenu(true)
-        return _binding!!.root
+        return binding.root
 
     }
 
@@ -94,14 +95,14 @@ class MetadataEditingFragment : Fragment() {
                      * and the name of the dataset to the layout and set them as non clickable.
                      */
                     dataset = datasetId?.let { dBManagement.getDatasetById(it) }!!
-                    _binding?.datasetName?.setText(dataset.name)
+                    binding.datasetName.setText(dataset.name)
                     dsCategories = dataset.categories
                     val count = dsCategories.size
                     var v: View?
 
                     for (i in 0 until count) {
                         addNewView()
-                        v = _binding!!.parentLinearLayout.getChildAt(i)
+                        v = binding.parentLinearLayout.getChildAt(i)
                         val categoryName: EditText =
                             v.findViewById(R.id.data_creation_category_name)
                         categoryName.setText(
@@ -122,7 +123,7 @@ class MetadataEditingFragment : Fragment() {
                      */
                     for (i in 0 until 3) {
                         addNewView()
-                        val v = _binding!!.parentLinearLayout.getChildAt(i)
+                        val v = binding.parentLinearLayout.getChildAt(i)
                         val categoryName: EditText =
                             v.findViewById(R.id.data_creation_category_name)
                         categoryName.setText(
@@ -130,7 +131,7 @@ class MetadataEditingFragment : Fragment() {
                             TextView.BufferType.EDITABLE
                         )
                     }
-                    _binding?.datasetName?.setText(R.string.ds_name)
+                    binding.datasetName?.setText(R.string.ds_name)
                 }
 
                 setButtonsListener()
@@ -158,7 +159,7 @@ class MetadataEditingFragment : Fragment() {
      */
     private fun addNewView() {
         val viewToAdd = View.inflate(parentActivity, R.layout.row_add_category, null)
-        _binding!!.parentLinearLayout.addView(viewToAdd, _binding!!.parentLinearLayout.childCount)
+        binding.parentLinearLayout.addView(viewToAdd, binding.parentLinearLayout.childCount)
         viewToAdd.findViewById<ImageButton>(R.id.button_remove)
             .setOnClickListener { removeView(it) }
     }
@@ -183,12 +184,12 @@ class MetadataEditingFragment : Fragment() {
             val categoriesWithNameToBeRemoved =
                 dsCategories.filter { it.name == categoryName.text.toString() }
             if (categoriesWithNameToBeRemoved.isNotEmpty()) {
-                _binding!!.parentLinearLayout.removeView(view.parent as View)
+                binding.parentLinearLayout.removeView(view.parent as View)
                 removedCategory = categoriesWithNameToBeRemoved.last()
                 dsCategories = dsCategories.minus(removedCategory)
                 dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
             }
-            _binding?.parentLinearLayout?.removeView(view.parent as View)
+            binding.parentLinearLayout.removeView(view.parent as View)
         }
     }
 
@@ -199,12 +200,12 @@ class MetadataEditingFragment : Fragment() {
      */
     private fun saveData() {
         lifecycleScope.launch {
-            val count = _binding!!.parentLinearLayout.childCount
+            val count = binding.parentLinearLayout.childCount
             var v: View?
             var newCategories = emptySet<Category>()
 
             for (i in dsCategories.size until count) {
-                v = _binding!!.parentLinearLayout.getChildAt(i)
+                v = binding.parentLinearLayout.getChildAt(i)
                 val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
                 val cat = dBManagement.putCategory(categoryName.text.toString())
                 newCategories = newCategories.plus(cat)
@@ -216,7 +217,7 @@ class MetadataEditingFragment : Fragment() {
                 }
             } else {
                 dataset =
-                    dBManagement.putDataset(_binding!!.datasetName?.text.toString(), newCategories)
+                    dBManagement.putDataset(binding.datasetName?.text.toString(), newCategories)
                 datasetId = dataset.id
             }
 
@@ -240,10 +241,10 @@ class MetadataEditingFragment : Fragment() {
      * "Save data" button : Save the categories into the dataset and go back to Display dataset fragment
      */
     private fun setButtonsListener() {
-        _binding!!.buttonAdd.setOnClickListener {
+        binding.buttonAdd.setOnClickListener {
             addNewView()
         }
-        _binding!!.buttonSubmitList.setOnClickListener {
+        binding.buttonSubmitList.setOnClickListener {
             saveData()
         }
     }
@@ -252,11 +253,11 @@ class MetadataEditingFragment : Fragment() {
      * Set the listener to modify the name of the dataset whenever the name is modified
      */
     private fun setTextChangeListener() {
-        _binding!!.datasetName?.doAfterTextChanged {
+        binding.datasetName?.doAfterTextChanged {
             lifecycleScope.launch {
                 dataset = dBManagement.editDatasetName(
                     dataset,
-                    _binding!!.datasetName?.text.toString()
+                    binding.datasetName?.text.toString()
                 )
             }
         }

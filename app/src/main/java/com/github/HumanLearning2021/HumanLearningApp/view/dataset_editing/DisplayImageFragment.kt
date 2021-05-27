@@ -47,6 +47,7 @@ class DisplayImageFragment : Fragment() {
 
     private val args: DisplayImageFragmentArgs by navArgs()
     private var _binding: FragmentDisplayImageBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +74,7 @@ class DisplayImageFragment : Fragment() {
     ): View {
         parentActivity = requireActivity()
         _binding = FragmentDisplayImageBinding.inflate(inflater, container, false)
-        return _binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
