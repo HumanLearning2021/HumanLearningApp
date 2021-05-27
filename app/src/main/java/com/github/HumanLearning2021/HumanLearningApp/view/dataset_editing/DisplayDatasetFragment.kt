@@ -23,6 +23,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.io.File
 import javax.inject.Inject
 
 
@@ -65,6 +66,7 @@ class DisplayDatasetFragment : Fragment() {
             val chosenCategory = bundle.getParcelable<Category>("chosenCategory")
             lifecycleScope.launch {
                 dbManagement.putPicture(pictureUri!!, chosenCategory!!)
+                File(pictureUri.path!!).delete()
             }
         }
     }
