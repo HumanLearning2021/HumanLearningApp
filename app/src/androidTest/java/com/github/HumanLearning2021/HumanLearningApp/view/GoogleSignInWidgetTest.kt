@@ -1,6 +1,7 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.annotation.UiThreadTest
 import androidx.test.espresso.Espresso.onView
@@ -20,6 +21,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers.equalTo
@@ -31,6 +33,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.system.exitProcess
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -47,6 +50,7 @@ class GoogleSignInWidgetTest {
         hiltRule.inject()
 
     }
+
 
 
     @Test
@@ -96,24 +100,7 @@ class GoogleSignInWidgetTest {
         }
     }
 
-    @Test
-    fun signOutUserSuccess() {
-        runBlocking {
-            launchFragment()
-            val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
-            fragment.presenter.onSuccessfulLogin(false)
-            fragment.activity?.runOnUiThread {
-                fragment.updateUi()
-                onView(withId(R.id.singOutButton)).perform(scrollTo()).perform(click())
-                assertThat(fragment.presenter.currentUser, Matchers.nullValue())
-                fragment.updateUi()
-                onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
-                onView(withId(R.id.checkBox)).check(matches(isDisplayed()))
-                onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
-            }
-        }
 
-    }
 
 
     private fun launchFragment() {
