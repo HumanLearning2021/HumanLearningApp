@@ -28,7 +28,7 @@ import javax.inject.Inject
 class FirestoreDatabaseManagementTest {
     @Inject
     @TestDatabase
-    lateinit var demoManagement: DatabaseManagement
+    lateinit var dbMgt: DatabaseManagement
 
     @Inject
     @ScratchDatabase
@@ -67,22 +67,22 @@ class FirestoreDatabaseManagementTest {
     @Suppress("DEPRECATED")
     @Test
     fun test_getPicture() = runBlocking {
-        val appleCategory = demoManagement.getCategoryById(appleCategoryId)
+        val appleCategory = dbMgt.getCategoryById(appleCategoryId)
         requireNotNull(appleCategory, { "category of apples no found in demo database" })
-        val pic = demoManagement.getPicture(appleCategory)
+        val pic = dbMgt.getPicture(appleCategory)
         assertThat(pic, hasCategory(equalTo(appleCategory)))
     }
 
     @Test
     fun test_getRepresentativePicture_null() = runBlocking {
-        assertThat(demoManagement.getRepresentativePicture(pearCategoryId), equalTo(null))
+        assertThat(dbMgt.getRepresentativePicture(pearCategoryId), equalTo(null))
     }
 
     @Test
     fun test_getRepresentativePicture() = runBlocking {
-        val appleCategory = demoManagement.getCategoryById(appleCategoryId)
+        val appleCategory = dbMgt.getCategoryById(appleCategoryId)
         assertThat(
-            demoManagement.getRepresentativePicture(appleCategoryId),
+            dbMgt.getRepresentativePicture(appleCategoryId),
             hasCategory(equalTo(appleCategory))
         )
     }
@@ -127,17 +127,17 @@ class FirestoreDatabaseManagementTest {
 
     @Test
     fun test_getCategoryById_null() = runBlocking {
-        assertThat(demoManagement.getCategoryById(getRandomString()), equalTo(null))
+        assertThat(dbMgt.getCategoryById(getRandomString()), equalTo(null))
     }
 
     @Test
     fun test_getCategoryById() = runBlocking {
-        assertThat(demoManagement.getCategoryById(appleCategoryId), hasName("Pomme"))
+        assertThat(dbMgt.getCategoryById(appleCategoryId), hasName("Pomme"))
     }
 
     @Test
     fun test_getCategoryByName() = runBlocking {
-        assertThat(demoManagement.getCategoryByName("Poire").first(), hasName("Poire"))
+        assertThat(dbMgt.getCategoryByName("Poire").first(), hasName("Poire"))
     }
 
     @Test
@@ -148,7 +148,7 @@ class FirestoreDatabaseManagementTest {
 
     @Test
     fun test_getCategories() = runBlocking {
-        val cats = demoManagement.getCategories()
+        val cats = dbMgt.getCategories()
         assertThat(cats, hasItems(hasName("Pomme")))
     }
 
@@ -165,8 +165,8 @@ class FirestoreDatabaseManagementTest {
 
     @Test
     fun test_getAllPictures() = runBlocking {
-        val cat = demoManagement.getCategoryById(appleCategoryId)
-        val pics = demoManagement.getAllPictures(cat!!)
+        val cat = dbMgt.getCategoryById(appleCategoryId)
+        val pics = dbMgt.getAllPictures(cat!!)
         assertThat(pics, hasSize(5))
         assertThat(pics, hasItems(hasCategory(equalTo(cat))))
     }
@@ -216,7 +216,7 @@ class FirestoreDatabaseManagementTest {
 
     @Test
     fun test_getPictureIds() = runBlocking {
-        val ids = demoManagement.getPictureIds(demoManagement.getCategoryById(appleCategoryId)!!)
+        val ids = dbMgt.getPictureIds(dbMgt.getCategoryById(appleCategoryId)!!)
         assertThat(ids, hasSize(5))
         assertThat(
             ids,
@@ -226,8 +226,8 @@ class FirestoreDatabaseManagementTest {
 
     @Test
     fun test_getPictureById() = runBlocking {
-        val pic = demoManagement.getPicture("apple01")!!
-        assertThat(pic.category, equalTo(demoManagement.getCategoryById(appleCategoryId)))
+        val pic = dbMgt.getPicture("apple01")!!
+        assertThat(pic.category, equalTo(dbMgt.getCategoryById(appleCategoryId)))
     }
 
     @Test
@@ -239,12 +239,12 @@ class FirestoreDatabaseManagementTest {
 
     @Test
     fun test_getDatasetById() = runBlocking {
-        assertThat(demoManagement.getDatasetById("PzuR0B48GpYN5ERxM3DW"), not(equalTo(null)))
+        assertThat(dbMgt.getDatasetById("PzuR0B48GpYN5ERxM3DW"), not(equalTo(null)))
     }
 
     @Test
     fun test_getDatasetByName() = runBlocking {
-        assertThat(demoManagement.getDatasetByName("Fruit").size, equalTo(1))
+        assertThat(dbMgt.getDatasetByName("Fruit").size, equalTo(1))
     }
 
     @Test
@@ -329,20 +329,20 @@ class FirestoreDatabaseManagementTest {
 
     @Test
     fun test_getDatasets() = runBlocking {
-        assertThat(demoManagement.getDatasets().size, equalTo(1))
-        assertThat(demoManagement.getDatasets().first().name, equalTo("Fruit"))
+        assertThat(dbMgt.getDatasets().size, equalTo(1))
+        assertThat(dbMgt.getDatasets().first().name, equalTo("Fruit"))
     }
 
     @Test
     fun test_getDatasetNames() = runBlocking {
-        assertThat(demoManagement.getDatasetNames().size, equalTo(1))
-        assertThat(demoManagement.getDatasetNames().first(), equalTo("Fruit"))
+        assertThat(dbMgt.getDatasetNames().size, equalTo(1))
+        assertThat(dbMgt.getDatasetNames().first(), equalTo("Fruit"))
     }
 
     @Test
     fun test_getDatasetIds() = runBlocking {
-        assertThat(demoManagement.getDatasetIds().size, equalTo(1))
-        assertThat(demoManagement.getDatasetIds().first(), equalTo("PzuR0B48GpYN5ERxM3DW"))
+        assertThat(dbMgt.getDatasetIds().size, equalTo(1))
+        assertThat(dbMgt.getDatasetIds().first(), equalTo("PzuR0B48GpYN5ERxM3DW"))
     }
 
     @Test
