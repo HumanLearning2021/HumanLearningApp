@@ -55,7 +55,7 @@ class SelectPictureFragment : Fragment() {
 
         binding.choosePictureButton.setOnClickListener {
             /**
-             * Allow the user to select an existing picture in it's device.
+             * Allow the user to select an existing picture in their device.
              */
             launchOpenPicture()
         }
