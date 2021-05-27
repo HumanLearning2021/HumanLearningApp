@@ -21,5 +21,5 @@ This week I worked on making the learning clearer by adding visual feedback. The
 This week I worked on addressing Lint issues. I managed to fix most of them, with a few which we decided to ignore. I spent only about 5 hours of work on this task, which was welcome as I was pretty busy with other classes.
 
 ## Vial, Nicolas
-
+In this sprint, I simply wrote the KDoc for the dataset editing fragments and did some refactoring following the code review. I worked only 6 hours during this sprint counting the reviews because I was very busy with other projects.
 ## Overall Team: Lessons Learned
