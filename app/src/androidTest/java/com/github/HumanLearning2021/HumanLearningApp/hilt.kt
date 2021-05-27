@@ -5,10 +5,7 @@ import androidx.room.Room
 import com.github.HumanLearning2021.HumanLearningApp.hilt.*
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.model.DefaultDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -18,7 +15,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import javax.inject.Singleton
-
 
 @TestInstallIn(
     components = [SingletonComponent::class],
@@ -55,12 +51,6 @@ object DatabaseServiceTestModule {
     fun provideTestService(firestore: FirebaseFirestore) =
         DatabaseServiceModule.provideTestService(firestore)
 
-    /** override prod with scratch */
-    @ProdDatabase
-    @Provides
-    fun provideProdService(firestore: FirebaseFirestore) =
-        provideScratchService(firestore)
-
     @ScratchDatabase
     @Provides
     fun provideScratchService(firestore: FirebaseFirestore) =
@@ -73,13 +63,6 @@ object DatabaseServiceTestModule {
         @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
         @RoomDatabase room: RoomOfflineDatabase,
     ) = DatabaseServiceModule.provideOfflineTestService(context, uDb, room)
-
-    @CachedTestDatabase
-    @Provides
-    fun provideCacheTestDatabase(
-        @TestDatabase db: DatabaseService,
-        @TestCachePictureRepository cache: PictureCache
-    ): DatabaseService = CachedDatabaseService(db, cache)
 }
 
 @TestInstallIn(
@@ -113,11 +96,6 @@ object DatabaseManagementTestModule {
     @Provides
     fun provideTestDatabaseManagement(@TestDatabase db: DatabaseService): DatabaseManagement =
         DatabaseManagementModule.provideTestService(db)
-
-    @CachedTestDatabase
-    @Provides
-    fun provideCachedTestDatabaseManagement(@TestDatabase db: DatabaseService): DatabaseManagement =
-        DefaultDatabaseManagement(db)
 
     @ScratchDatabase
     @Provides
