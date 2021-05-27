@@ -2,10 +2,10 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.util.Log
 import android.widget.ImageView
-import androidx.lifecycle.LifecycleCoroutineScope
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.model.learning.LearningModel
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
  * @param dataset dataset used for the learning
  * @param auth The authentication presenter, used to save statistics for the current user
  * @param imageDisplayer handles image displaying
- * @param lifecycleScope allows to launch lifecycle aware coroutines
+ * @param coroutineScope allows to launch coroutines (for image displaying for example)
  */
 class LearningPresenter(
     private val dbMgt: DatabaseManagement,
@@ -24,7 +24,7 @@ class LearningPresenter(
     private val dataset: Dataset,
     private val auth: AuthenticationPresenter,
     private val imageDisplayer: ImageDisplayer,
-    private val lifecycleScope: LifecycleCoroutineScope
+    private val coroutineScope: CoroutineScope
 ) {
 
     /**
@@ -50,7 +50,7 @@ class LearningPresenter(
         learningModel.updateForNextSorting(targetViews).forEach {
             val (iv, cat) = it
             with(imageDisplayer) {
-                lifecycleScope.launch {
+                coroutineScope.launch {
                     dbMgt.getRepresentativePicture(cat.id)?.displayOn(iv)
                 }
             }
@@ -60,7 +60,7 @@ class LearningPresenter(
 
         // It matters that this method is called last, because the picture to sort must have a
         // category amongst those that are displayed
-        lifecycleScope.launch {
+        coroutineScope.launch {
             updatePictureToSort(sourceView)
         }
     }
