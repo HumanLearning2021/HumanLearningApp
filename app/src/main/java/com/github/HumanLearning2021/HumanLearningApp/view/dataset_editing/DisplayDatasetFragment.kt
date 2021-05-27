@@ -116,7 +116,7 @@ class DisplayDatasetFragment : Fragment() {
 
         lifecycleScope.launch {
             dataset = dbManagement.getDatasetById(datasetId)!!
-            (_binding?.displayDatasetName as TextView).text = dataset.name
+            (_binding?.displayDatasetName as? TextView)?.text = dataset.name
             categories = dataset.categories
 
             /**
