@@ -121,6 +121,24 @@ class GoogleSignInWidgetTest {
 
     }
 
+    @Test
+    fun testLoginPersistance() {
+        runBlocking {
+            launchFragment()
+            val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
+            fragment.presenter.onSuccessfulLogin(false)
+            fragment.handleSignIn()
+            assertThat(fragment.prefs!!.getBoolean("hasLogin", false), equalTo(true))
+            assertThat(fragment.prefs!!.getBoolean("isAdmin", false), equalTo(false))
+            fragment.activity?.runOnUiThread {
+                fragment.onSignOutPress()
+                assertThat(fragment.prefs!!.getBoolean("hasLogin", false), equalTo(false))
+            }
+        }
+
+
+    }
+
 
     private fun launchFragment() {
         launchFragmentInHiltContainer<GoogleSignInWidget> {
