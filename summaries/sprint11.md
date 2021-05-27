@@ -18,6 +18,7 @@ Then I fixed a bug where downloading a database where not every category has a r
 This week I worked on making the learning clearer by adding visual feedback. The image to sort now blinks in blue and the target categories turn blue to indicate where to sort the image. Upon sorting, there is a blinking in green or red to give feedback about the sorting. I received some very useful feedback from Jonas and Nicolas, and I am quite happy with how this feature turned out. I spent around 8 hours on the project, including reviews.
 
 ## Lenweiter, Martin
+This week I worked on addressing Lint issues. I managed to fix most of them, with a few which we decided to ignore. I spent only about 5 hours of work on this task, which was welcome as I was pretty busy with other classes.
 
 ## Vial, Nicolas
 
