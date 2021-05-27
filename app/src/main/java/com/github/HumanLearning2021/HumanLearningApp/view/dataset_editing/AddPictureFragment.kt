@@ -21,6 +21,12 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.*
 
+
+/**
+ * Fragment used to be able to select the way the user wants
+ * to add a new picture to the dataset. The two options are
+ * selecting an existing picture or take a new picture with the camera.
+ */
 class AddPictureFragment : Fragment() {
 
     private lateinit var parentActivity: FragmentActivity
@@ -62,7 +68,7 @@ class AddPictureFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         _binding = FragmentAddPictureBinding.inflate(inflater, container, false)
         return binding.root
@@ -74,7 +80,10 @@ class AddPictureFragment : Fragment() {
         categories = categories.plus(givenCategories)
 
 
-
+        /**
+         * Set the listeners for the two buttons to navigate to the correct fragment
+         * to add a new picture to the dataset.
+         */
         binding.selectExistingPicture.setOnClickListener {
             val action =
                 AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(

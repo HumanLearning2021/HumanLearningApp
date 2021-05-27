@@ -22,6 +22,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+/**
+ * Fragment used to modify the name and categories of the dataset if the user comes
+ * from the display dataset fragment or to create a new dataset if the user comes
+ * from the datasets overview fragment.
+ */
 @AndroidEntryPoint
 class MetadataEditingFragment : Fragment() {
 
@@ -159,22 +164,28 @@ class MetadataEditingFragment : Fragment() {
 
     /**
      * This method is called after having clicked the delete category button.
-     * It removes the view and the category from the dataset if needed.
+     * It removes the view and the category from the dataset if it was already present in the dataset.
      *
      * @param view the view to be removed.
      */
     private fun removeView(view: View) {
+        /**
+         * We know that this view has a parent since the remove button is
+         * inside the view created in addNewView.
+         */
         val categoryName: EditText =
             (view.parent as View).findViewById(R.id.data_creation_category_name)
         lifecycleScope.launch {
-            for (i in dsCategories.indices) {
-                if (dsCategories.elementAt(i).name == categoryName.text.toString()) {
-                    binding.parentLinearLayout.removeView(view.parent as View)
-                    removedCategory = dsCategories.elementAt(i)
-                    dsCategories = dsCategories.minus(removedCategory)
-                    dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
-                    break
-                }
+            /**
+             * If there are multiple categories with the same name, remove the last category.
+             */
+            val categoriesWithNameToBeRemoved =
+                dsCategories.filter { it.name == categoryName.text.toString() }
+            if (categoriesWithNameToBeRemoved.isNotEmpty()) {
+                binding.parentLinearLayout.removeView(view.parent as View)
+                removedCategory = categoriesWithNameToBeRemoved.last()
+                dsCategories = dsCategories.minus(removedCategory)
+                dataset = dBManagement.removeCategoryFromDataset(dataset, removedCategory)
             }
             binding.parentLinearLayout.removeView(view.parent as View)
         }
@@ -183,7 +194,7 @@ class MetadataEditingFragment : Fragment() {
     /**
      * This method creates the added categories and add them to the dataset.
      * If the dataset is new, it is added to the database.
-     * It ends by going to the Display dataset fragment.
+     * It ends by going to the display dataset fragment.
      */
     private fun saveData() {
         lifecycleScope.launch {
