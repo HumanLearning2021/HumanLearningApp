@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.model.learning
 
+import android.util.Log
 import android.widget.ImageView
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
@@ -33,8 +34,14 @@ class LearningModel(private val dataset: Dataset) {
      * @param imageViewId View displaying the target category
      * @return true iff the sorting is correct
      */
-    fun isSortingCorrect(imageView: ImageView): Boolean =
-        imageViewToCategory.contains(imageView) && imageViewToCategory[imageView] == currentCategory
+    fun isSortingCorrect(imageView: ImageView): Boolean {
+        Log.d(
+            "isSortingCorrect", "\n\tcurrent category: $currentCategory" +
+                    "\ndropped on target category: ${imageViewToCategory[imageView]}"
+        )
+        return imageViewToCategory.contains(imageView) &&
+                imageViewToCategory[imageView] == currentCategory
+    }
 
     /**
      * Update the model to be ready for the next sorting.

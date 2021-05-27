@@ -6,12 +6,13 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningBinding
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.model.learning.EvaluationModel
@@ -25,6 +26,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class LearningFragment : Fragment() {
     private lateinit var audioFeedback: LearningAudioFeedback
+    private lateinit var visualFeedback: LearningVisualFeedback
     private lateinit var datasetId: Id
     private lateinit var dataset: Dataset
     private val args: LearningFragmentArgs by navArgs()
@@ -40,7 +42,7 @@ class LearningFragment : Fragment() {
 
     /**
      * model for evaluation mode
-     * A null value represents the fact that the learning mode is not EVALUATION
+     * A null value represents the fact that the learning mode is *not* EVALUATION
      *
      * TODO ideally the model would be wrapped inside the presenter (but no time right now)
      */
@@ -50,7 +52,6 @@ class LearningFragment : Fragment() {
     lateinit var authPresenter: AuthenticationPresenter
 
     @Inject
-    @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
     @Inject
@@ -63,6 +64,7 @@ class LearningFragment : Fragment() {
     lateinit var imageDisplayer: ImageDisplayer
 
     private lateinit var parentActivity: Activity
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,17 +96,38 @@ class LearningFragment : Fragment() {
             }
             targetImageViews = updateTargetImageViews()
             learningPresenter =
-                LearningPresenter(dbMgt, args.learningMode, dataset, authPresenter, imageDisplayer)
+                LearningPresenter(
+                    dbMgt, args.learningMode, dataset, authPresenter, imageDisplayer,
+                    lifecycleScope
+                )
             learningPresenter.updateForNextSorting(
-                parentActivity,
                 targetImageViews,
                 binding.learningToSort
             )
             // sets the listeners for the image views of the sorting
             setEventListeners()
         }
+
+        visualFeedback = with(binding) {
+            LearningVisualFeedback(
+                lifecycleScope,
+                baseColor = getColor(requireContext(), R.color.white),
+                neutralColor = getColor(requireContext(), R.color.blue),
+                positiveColor = getColor(requireContext(), R.color.light_green),
+                negativeColor = getColor(requireContext(), R.color.red),
+                // TODO remove !! once enclosing CardViews put in all layouts
+                sourceCardView = learningToSortCv!!,
+                targetCardViews = listOf(
+                    learningCat0Cv!!,
+                    learningCat1Cv!!,
+                    learningCat2Cv!!
+                )
+            )
+        }.also { it.sourceCardViewShouldBlink(true) }
+
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
+
 
     /**
      * Get the new target image views, depending on the state of the evaluation model if in
@@ -121,7 +144,7 @@ class LearningFragment : Fragment() {
     /**
      * This function adapts the display to the number of categories given
      * For example, if the dataset only has 2 categories, one of the categories will not be displayed
-     * @param dataset dataset that is used for the learning
+     * @param nbCategories number of categories that need to be displayed
      * @return the ImageViews that are visible on screen
      */
     private fun adaptDisplayToNumberOfCategories(nbCategories: Int): List<ImageView> {
@@ -201,9 +224,13 @@ class LearningFragment : Fragment() {
         when (event.action) {
             DragEvent.ACTION_DRAG_ENTERED -> dragInOutCallback(v, halfOpaque)
             DragEvent.ACTION_DRAG_EXITED -> dragInOutCallback(v, opaque)
-            DragEvent.ACTION_DROP -> dropCallback(event, v)
+            DragEvent.ACTION_DROP -> dropCallback(v)
 
             // DragEvent.ACTION_DRAG_ENDED &
+            DragEvent.ACTION_DRAG_ENDED -> {
+                visualFeedback.dragEnded()
+                true
+            }
             // DragEvent.ACTION_DRAG_LOCATION & DragEvent.ACTION_DRAG_STARTED
             else -> true
         }
@@ -211,16 +238,17 @@ class LearningFragment : Fragment() {
 
     /**
      * This callback is called when the image to sort is dropped on a target ImageView
-     * @param event the DragEvent representing the interaction
      * @param v The ImageView representing the target category
      */
-    private fun dropCallback(event: DragEvent, v: View): Boolean {
+    private fun dropCallback(v: View): Boolean {
         setOpacity(v, opaque)
+        visualFeedback.dragEnded()
 
         val sortingCorrect = learningPresenter.isSortingCorrect(v as ImageView)
         audioFeedback.stopAndPrepareMediaPlayers()
         if (sortingCorrect) {
             audioFeedback.startCorrectFeedback()
+            enclosingCardView(v)?.let { visualFeedback.startCorrectFeedback(it) }
 
             evaluationModel?.addSuccess()
             if (evaluationModel?.isEvaluationComplete() == true) {
@@ -229,8 +257,6 @@ class LearningFragment : Fragment() {
                         evaluationModel!!.getCurrentEvaluationResult()
                     )
                 )
-
-                Log.d("Evaluation", "EVALUATION COMPLETE !!!")
             }
             // update image views in case addSuccess started the next evaluation phase
             targetImageViews = updateTargetImageViews()
@@ -238,20 +264,35 @@ class LearningFragment : Fragment() {
             lifecycleScope.launch {
                 learningPresenter.saveEvent(Event.SUCCESS)
                 learningPresenter.updateForNextSorting(
-                    parentActivity,
                     targetImageViews,
                     binding.learningToSort
                 )
             }
         } else {
             audioFeedback.startIncorrectFeedback()
+            enclosingCardView(v)?.let { visualFeedback.startIncorrectFeedback(it) }
             evaluationModel?.addFailure()
             lifecycleScope.launch {
                 learningPresenter.saveEvent(Event.MISTAKE)
             }
         }
-        Log.d("Evaluation", evaluationModel?.getCurrentEvaluationResult().toString())
+        evaluationModel?.let { Log.d("Evaluation", it.getCurrentEvaluationResult().toString()) }
         return sortingCorrect
+    }
+
+
+    /**
+     * Get the CardView that encloses the given ImageView.
+     * @param v The image view whose containing CardView we want to find.
+     * @return the enclosing CardView, or null if no enclosing CardView found
+     */
+    private fun enclosingCardView(v: ImageView) = with(binding) {
+        when (v) {
+            learningCat0 -> learningCat0Cv
+            learningCat1 -> learningCat1Cv
+            learningCat2 -> learningCat2Cv
+            else -> null
+        }
     }
 
     /**
@@ -268,6 +309,7 @@ class LearningFragment : Fragment() {
      * Callback triggered when the image view holding the image to sort is touched.
      */
     private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
+        visualFeedback.dragStarted()
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 view.startDragAndDrop(
@@ -281,6 +323,7 @@ class LearningFragment : Fragment() {
             else -> false
         }
     }
+
 
     companion object {
         /**

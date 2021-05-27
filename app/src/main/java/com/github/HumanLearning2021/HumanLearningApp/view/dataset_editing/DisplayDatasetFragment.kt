@@ -17,12 +17,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayDatasetBinding
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.io.File
 import javax.inject.Inject
 
 
@@ -31,7 +31,6 @@ class DisplayDatasetFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
 
     @Inject
-    @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
     @Inject
@@ -65,6 +64,7 @@ class DisplayDatasetFragment : Fragment() {
             val chosenCategory = bundle.getParcelable<Category>("chosenCategory")
             lifecycleScope.launch {
                 dbManagement.putPicture(pictureUri!!, chosenCategory!!)
+                File(pictureUri.path!!).delete()
             }
         }
     }

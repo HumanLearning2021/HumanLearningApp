@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentMetadataEditingBinding
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +26,6 @@ import javax.inject.Inject
 class MetadataEditingFragment : Fragment() {
 
     @Inject
-    @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
     @Inject
