@@ -147,7 +147,7 @@ class GoogleSignInWidget : Fragment() {
     }
 
     fun updateUi() {
-        val savedUser: User
+        val savedUser: User?
         if (prefs!!.getBoolean("hasLogin", false)) {
             view?.findViewById<TextView>(R.id.loginStatus)?.text =
                 prefs?.getString("name", "Not logged in!")
@@ -158,7 +158,6 @@ class GoogleSignInWidget : Fragment() {
                 User.Type.FIREBASE,
                 prefs!!.getBoolean("isAdmin", false)
             )
-            presenter.currentUser = savedUser
             setSignOutUi()
 
         } else {
