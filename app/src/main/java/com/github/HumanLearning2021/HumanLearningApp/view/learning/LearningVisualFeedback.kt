@@ -29,51 +29,53 @@ class LearningVisualFeedback(
     private val sourceCardView: CardView,
     private val targetCardViews: List<CardView>
 ) {
-    private val cardViewBGShouldBlink: MutableMap<CardView, Boolean> = HashMap()
+    private var sourceCardViewShouldBlink = false
 
     /**
-     * Starts blinking steadily the CardView behind the source image with the neutralColor.
-     * Also does the setup that will allow the target images backgrounds to blink.
+     * Sets whether the background of the source view should blink
+     * @param v the new value. True indicates that it should blink
      */
-    fun setupBlinkingForHints() {
-        setBGBlinkingStates(sourceState = true, targetsState = false)
-        startBlinkingCardViews()
+    fun sourceCardViewShouldBlink(v: Boolean) {
+        sourceCardViewShouldBlink = v
     }
 
     /**
-     * Sets the blinking states for visual hints.
-     * @param sourceState state of blinking for the source image.
-     * True indicates that it should blink
-     * @param targetsState state of blinking for the target images.
-     * True indicates that they should blink
+     * This method should be called upon events that are considered as the start of a drag action.
+     * For example if the source image is touched.
      */
-    fun setBGBlinkingStates(
-        sourceState: Boolean,
-        targetsState: Boolean
-    ) {
-        cardViewBGShouldBlink[sourceCardView] = sourceState
-        for (cv in targetCardViews) {
-            cardViewBGShouldBlink[cv] = targetsState
+    fun dragStarted() {
+        setTargetsBGTo(neutralColor)
+        sourceCardViewShouldBlink(false)
+    }
+
+    /**
+     * This method should be called upon events that are considered as the end of a drag action.
+     * For example if the source image is dropped on a category, or if it is release without being
+     * dropped.
+     */
+    fun dragEnded() {
+        setTargetsBGTo(baseColor)
+        sourceCardViewShouldBlink(true)
+    }
+
+    init {
+        // this thread runs until the fragment is destroyed, and makes the source CardView blink
+        // only when sourceCardViewShouldBlink is true
+        lifecycleScope.launchWhenResumed {
+            while (true) {
+                if (sourceCardViewShouldBlink) {
+                    blink(sourceCardView, baseColor, neutralColor, BLINK_DURATION_MS)
+                } else {
+                    // make less aggressive busy wait
+                    delay(BLINK_DURATION_MS)
+                }
+            }
         }
-        startBlinkingCardViews()
     }
 
-
-    private fun startBlinkingCardViews() {
-        startBlinkingUntilInterrupted(sourceCardView)
-        targetCardViews.forEach { startBlinkingUntilInterrupted(it) }
-    }
-
-    private fun startBlinkingUntilInterrupted(cardView: CardView) {
-        lifecycleScope.launch {
-            blinkCardViewBGColor(cardView)
-        }
-    }
-
-
-    private suspend fun blinkCardViewBGColor(cardView: CardView) {
-        while (cardViewBGShouldBlink[cardView] == true) {
-            blink(cardView, baseColor, neutralColor, BLINK_DURATION_MS)
+    private fun setTargetsBGTo(color: Color) {
+        targetCardViews.forEach {
+            it.setCardBackgroundColor(color)
         }
     }
 

@@ -125,8 +125,7 @@ class LearningFragment : Fragment() {
                     learningCat2Cv!!
                 )
             )
-        }
-        visualFeedback.setupBlinkingForHints()
+        }.also { it.sourceCardViewShouldBlink(true) }
 
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
@@ -231,7 +230,7 @@ class LearningFragment : Fragment() {
 
             // DragEvent.ACTION_DRAG_ENDED &
             DragEvent.ACTION_DRAG_ENDED -> {
-                visualFeedback.setBGBlinkingStates(sourceState = true, targetsState = false)
+                visualFeedback.dragEnded()
                 true
             }
             // DragEvent.ACTION_DRAG_LOCATION & DragEvent.ACTION_DRAG_STARTED
@@ -246,7 +245,7 @@ class LearningFragment : Fragment() {
      */
     private fun dropCallback(event: DragEvent, v: View): Boolean {
         setOpacity(v, opaque)
-        visualFeedback.setBGBlinkingStates(sourceState = true, targetsState = false)
+        visualFeedback.dragEnded()
 
         val sortingCorrect = learningPresenter.isSortingCorrect(v as ImageView)
         audioFeedback.stopAndPrepareMediaPlayers()
@@ -284,6 +283,7 @@ class LearningFragment : Fragment() {
         return sortingCorrect
     }
 
+
     /**
      * Get the CardView that encloses the given ImageView.
      * @param v The image view whose containing CardView we want to find.
@@ -312,7 +312,7 @@ class LearningFragment : Fragment() {
      * Callback triggered when the image view holding the image to sort is touched.
      */
     private fun onImageToSortTouched(view: View, event: MotionEvent): Boolean {
-        visualFeedback.setBGBlinkingStates(sourceState = false, targetsState = true)
+        visualFeedback.dragStarted()
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 view.startDragAndDrop(
@@ -326,6 +326,7 @@ class LearningFragment : Fragment() {
             else -> false
         }
     }
+
 
     companion object {
         /**
