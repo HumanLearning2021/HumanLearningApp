@@ -129,10 +129,11 @@ class GoogleSignInWidgetTest {
 
     @Test
     fun test_setSignOutUI() {
-        fragment.setSignOutUi()
+        fragment.activity?.runOnUiThread {
+            fragment.setSignOutUi()
+        }
         onView(withId(R.id.singOutButton)).check(matches((isDisplayed())))
     }
-
 
     private fun launchFragment() {
         launchFragmentInHiltContainer<GoogleSignInWidget> {
