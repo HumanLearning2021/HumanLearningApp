@@ -25,7 +25,9 @@ import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentSelectP
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
 
-
+/**
+ * Fragment used to select a picture from the user's device which is then added to the dataset.
+ */
 class SelectPictureFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
     private var selectedPicture: Uri? = null
@@ -42,7 +44,7 @@ class SelectPictureFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
 
 
@@ -56,13 +58,22 @@ class SelectPictureFragment : Fragment() {
         categories = categories.plus(args.categories.toList())
 
         binding.choosePictureButton.setOnClickListener {
+            /**
+             * Allow the user to select an existing picture in their device.
+             */
             launchOpenPicture()
         }
 
         binding.selectCategoryButton2.setOnClickListener {
+            /**
+             * Allow the user to select the category of the selected picture.
+             */
             onSelectCategoryButton()
         }
 
+        /**
+         * sends the picture to the display dataset fragment who adds the picture to the dataset.
+         */
         binding.saveButton3.setOnClickListener {
             setFragmentResult(
                 AddPictureFragment.REQUEST_KEY,
@@ -152,6 +163,9 @@ class SelectPictureFragment : Fragment() {
 
 
     private fun notifySaveButton() {
+        /**
+         * the save button is only enabled if the picture and the category have been selected.
+         */
         binding.saveButton3.isEnabled =
             selectedCategory != null && selectedPicture != null
     }

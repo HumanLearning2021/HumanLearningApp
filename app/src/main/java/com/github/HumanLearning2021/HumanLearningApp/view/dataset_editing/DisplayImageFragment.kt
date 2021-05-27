@@ -20,6 +20,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+/**
+ * Fragment used to display a single image with the name of it's category.
+ */
 @AndroidEntryPoint
 class DisplayImageFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
