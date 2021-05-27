@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/display_dataset_menu_modify_categories"
+        android:id="@+id/display_dataset_menu_modify_name_and_categories"
         android:title="@string/modify_categories" />
     <item
         android:id="@+id/display_dataset_menu_add_new_picture"

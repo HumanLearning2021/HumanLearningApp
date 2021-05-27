@@ -8,9 +8,10 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -33,20 +34,15 @@ class AudioFeedbackTest {
     val hiltRule = HiltAndroidRule(this)
 
     @Inject
-    @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
     @BindValue
     @ProductionDatabaseName
-    var dbName = "dummy"
+    val dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
 
-    private var datasetPictures = emptySet<CategorizedPicture>()
-    private var categories = emptySet<Category>()
-    private lateinit var dataset: Dataset
     private lateinit var datasetId: Id
-    private var index = 0
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
@@ -58,20 +54,17 @@ class AudioFeedbackTest {
         launchFragment()
     }
 
-    fun makeLearningAudioFeedback(): LearningAudioFeedback {
-        launchFragment()
+    private fun makeLearningAudioFeedback(): LearningAudioFeedback {
         return LearningAudioFeedback(getInstrumentation().targetContext)
     }
 
-    fun assertBothMPsNotPlaying(af: LearningAudioFeedback) {
-        launchFragment()
+    private fun assertBothMPsNotPlaying(af: LearningAudioFeedback) {
         assertThat(af.__testing_getCorrectMP().isPlaying, `is`(false))
         assertThat(af.__testing_getIncorrectMP().isPlaying, `is`(false))
     }
 
     @Test
     fun initPutsMediaPlayersInCorrectState() {
-        launchFragment()
         val af = makeLearningAudioFeedback()
         af.initMediaPlayers()
         assertThat(af.__testing_getCorrectMP(), notNullValue())
@@ -83,7 +76,6 @@ class AudioFeedbackTest {
 
     @Test
     fun canStartAndStopMediaPlayersRapidly() {
-        launchFragment()
         val af = makeLearningAudioFeedback()
         af.initMediaPlayers()
         af.startCorrectFeedback()

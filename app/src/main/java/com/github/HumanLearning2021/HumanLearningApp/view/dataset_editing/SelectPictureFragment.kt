@@ -1,12 +1,16 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.content.Intent
+import android.graphics.ImageDecoder.createSource
+import android.graphics.ImageDecoder.decodeBitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
@@ -21,7 +25,9 @@ import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentSelectP
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
 
-
+/**
+ * Fragment used to select a picture from the user's device which is then added to the dataset.
+ */
 class SelectPictureFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
     private var selectedPicture: Uri? = null
@@ -38,7 +44,7 @@ class SelectPictureFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
 
 
@@ -52,13 +58,22 @@ class SelectPictureFragment : Fragment() {
         categories = categories.plus(args.categories.toList())
 
         binding.choosePictureButton.setOnClickListener {
+            /**
+             * Allow the user to select an existing picture in their device.
+             */
             launchOpenPicture()
         }
 
         binding.selectCategoryButton2.setOnClickListener {
+            /**
+             * Allow the user to select the category of the selected picture.
+             */
             onSelectCategoryButton()
         }
 
+        /**
+         * sends the picture to the display dataset fragment who adds the picture to the dataset.
+         */
         binding.saveButton3.setOnClickListener {
             setFragmentResult(
                 AddPictureFragment.REQUEST_KEY,
@@ -85,13 +100,21 @@ class SelectPictureFragment : Fragment() {
         startActivityForResult(intent, RC_OPEN_PICTURE)
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             RC_OPEN_PICTURE -> {
                 data?.data?.also {
-                    selectedPicture = it
+                    val bitmap =
+                        decodeBitmap(
+                            createSource(
+                                requireContext().contentResolver, it
+                            )
+                        )
+                    selectedPicture =
+                        AddPictureFragment.applyImageSizeReduction(bitmap, requireContext())
                     displayPicture(it)
                     notifySaveButton()
                 }
@@ -140,6 +163,9 @@ class SelectPictureFragment : Fragment() {
 
 
     private fun notifySaveButton() {
+        /**
+         * the save button is only enabled if the picture and the category have been selected.
+         */
         binding.saveButton3.isEnabled =
             selectedCategory != null && selectedPicture != null
     }

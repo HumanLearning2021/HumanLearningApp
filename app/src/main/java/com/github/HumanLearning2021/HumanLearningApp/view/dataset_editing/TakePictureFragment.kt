@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -33,9 +34,12 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentTakePictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
-import java.io.File
+import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executors
 
+/**
+ * Fragment used to take a picture with the camera which is then added to the dataset.
+ */
 class TakePictureFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
 
@@ -56,7 +60,7 @@ class TakePictureFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
 
         datasetId = args.datasetId
@@ -70,14 +74,16 @@ class TakePictureFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        /**
+         * Ask the permission to use the camera to the user if needed and launch the camera.
+         */
         if (cameraIsAvailable()) {
             when {
                 ContextCompat.checkSelfPermission(
                     parentActivity,
                     Manifest.permission.CAMERA
                 ) == PackageManager.PERMISSION_GRANTED -> {
-                    setupActivityLayout()
+                    setupFragmentLayout()
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
                     permissionNeededDialog()
@@ -108,7 +114,9 @@ class TakePictureFragment : Fragment() {
 
     }
 
-
+    /**
+     * Send the new picture to the display dataset fragment who adds the picture to the dataset.
+     */
     @Suppress("UNUSED_PARAMETER")
     private fun onSave(view: View) {
         setFragmentResult(
@@ -118,11 +126,14 @@ class TakePictureFragment : Fragment() {
         findNavController().popBackStack()
     }
 
+    /**
+     * Save the picture taken and display it.
+     */
     @Suppress("UNUSED_PARAMETER")
     private fun onTakePicture(view: View) {
         val executor = Executors.newSingleThreadExecutor()
-        val file: File = parentActivity.cacheDir
-        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(file).build()
+        val outputStream = ByteArrayOutputStream()
+        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(outputStream).build()
         imageCapture.takePicture(
             outputFileOptions,
             executor,
@@ -137,7 +148,10 @@ class TakePictureFragment : Fragment() {
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     parentActivity.runOnUiThread {
-                        pictureUri = Uri.fromFile(file)
+                        val bytes = outputStream.toByteArray()
+                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        pictureUri =
+                            AddPictureFragment.applyImageSizeReduction(bitmap, requireContext())
                         imageTaken = true
                         setCaptureButton()
                         notifySaveButton()
@@ -146,6 +160,9 @@ class TakePictureFragment : Fragment() {
             })
     }
 
+    /**
+     * Allow the user to select the category of the picture.
+     */
     @Suppress("UNUSED_PARAMETER")
     private fun onSelectCategoryButton(view: View) {
         val builder = AlertDialog.Builder(parentActivity)
@@ -169,7 +186,7 @@ class TakePictureFragment : Fragment() {
         dialog.show()
     }
 
-    private fun setupActivityLayout() {
+    private fun setupFragmentLayout() {
         binding.selectCategoryButton.setOnClickListener(this::onSelectCategoryButton)
         binding.saveButton.setOnClickListener(this::onSave)
         binding.cameraImageView.isVisible = false
@@ -197,7 +214,7 @@ class TakePictureFragment : Fragment() {
     private fun setupRequestPermissionLauncher(): ActivityResultLauncher<String> {
         return registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
-                setupActivityLayout()
+                setupFragmentLayout()
                 Toast.makeText(
                     parentActivity.applicationContext,
                     getString(R.string.AddPicture_permissionGrantedToast),
@@ -209,7 +226,9 @@ class TakePictureFragment : Fragment() {
         }
     }
 
-
+    /**
+     * Ask the permission to the user to use the camera.
+     */
     private fun permissionNeededDialog() {
 
         val builder = AlertDialog.Builder(parentActivity)
@@ -288,6 +307,9 @@ class TakePictureFragment : Fragment() {
     }
 
     private fun notifySaveButton() {
+        /**
+         * Can only save the picture if the user took a picture and selected a category.
+         */
         binding.saveButton.isEnabled = categorySet && imageTaken
     }
 }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".view.learning.LearningFragment">
 
     <!-- Sadly this file contains a lot of copy pasted things (The CardViews with ImageView inside)
@@ -22,11 +23,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/learning_guideline1"
-        >
+        app:layout_constraintTop_toBottomOf="@id/learning_guideline1">
 
         <ImageView
             android:id="@+id/learning_to_sort"
+            android:contentDescription="@string/learning_im_to_sort_contentDescription"
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
             android:layout_height="match_parent"
@@ -51,11 +52,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/learning_cat_1_cv"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/learning_cat_0"
+                android:contentDescription="@string/learning_cat_0_contentDescription"
                 android:layout_width="match_parent"
                 android:scaleType="centerCrop"
                 android:layout_height="match_parent"
@@ -73,11 +74,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/learning_cat_2_cv"
             app:layout_constraintStart_toEndOf="@+id/learning_cat_0_cv"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/learning_cat_1"
+                android:contentDescription="@string/learning_cat_1_contentDescription"
                 android:layout_width="match_parent"
                 android:scaleType="centerCrop"
                 android:layout_height="match_parent"
@@ -95,11 +96,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/learning_cat_1_cv"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/learning_cat_2"
+                android:contentDescription="@string/learning_cat_2_contentDescription"
                 android:layout_width="match_parent"
                 android:scaleType="centerCrop"
                 android:layout_height="match_parent"

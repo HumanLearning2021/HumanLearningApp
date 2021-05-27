@@ -6,6 +6,7 @@ import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.hamcrest.MatcherAssert.assertThat
@@ -20,12 +21,7 @@ class LearningPresenterTest {
     val dbMgt = DefaultDatabaseManagement(db)
     val authPres = AuthenticationPresenter(AuthUI.getInstance(), db)
     val dataset = runBlocking { db.putDataset("Stuff'n'things", setOf()) }
-    val presenter = LearningPresenter(
-        dbMgt, LearningMode.PRESENTATION,
-        dataset,
-        authPres,
-	NoopImageDisplayer,
-    )
+    lateinit var presenter: LearningPresenter
 
     @Before
     fun setUp() {
@@ -33,6 +29,13 @@ class LearningPresenterTest {
             Firebase.auth.signInAnonymously().await()
             authPres.onSuccessfulLogin(false)
         }
+        presenter = LearningPresenter(
+            dbMgt, LearningMode.PRESENTATION,
+            dataset,
+            authPres,
+            NoopImageDisplayer,
+            MainScope()
+        )
     }
 
     @Test
