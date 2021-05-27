@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
+
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
@@ -52,4 +53,14 @@ class AuthenticationPresenterTest {
         assertThat(user.isAdmin, equalTo(true))
     }
 
+    @Test
+    fun signOutUserSuccess() {
+        runBlocking {
+            val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
+            presenter.onSuccessfulLogin(true)
+            presenter.signOut()
+            val user = presenter.currentUser
+            assertThat(user, nullValue())
+        }
+    }
 }

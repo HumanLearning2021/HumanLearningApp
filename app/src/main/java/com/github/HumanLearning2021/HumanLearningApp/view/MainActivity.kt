@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -32,6 +33,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var authPresenter: AuthenticationPresenter
 
+    lateinit var prefs: SharedPreferences
+
+
     @Inject
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
@@ -54,6 +58,8 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
         navController = navHostFragment.navController
+        prefs = getSharedPreferences("LOGIN", MODE_PRIVATE)
+
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -74,7 +80,12 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 goToDsEditingButton?.isVisible = false
                 val user = authPresenter.currentUser
-                val isAdmin = user?.isAdmin ?: false
+                var isAdmin: Boolean
+                if (prefs!!.getBoolean("hasLogin", false)) {
+                    isAdmin = prefs!!.getBoolean("isAdmin", false)
+                } else {
+                    isAdmin = user?.isAdmin ?: false
+                }
                 isAdmin.let {
                     goToDsEditingButton?.isVisible = it
                 }

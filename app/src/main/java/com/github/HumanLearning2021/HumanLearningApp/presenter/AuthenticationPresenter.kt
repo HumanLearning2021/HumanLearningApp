@@ -10,12 +10,14 @@ import com.google.firebase.ktx.Firebase
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
 @Singleton  // need to persist currentUser across activities
 class AuthenticationPresenter @Inject constructor(
     private val authUI: AuthUI,
     @DummyDatabase
     private val db: DatabaseService,
 ) {
+
     /**
      * Create an Intent that can be used to perform authentication via startActivityForResult
      */
@@ -26,6 +28,11 @@ class AuthenticationPresenter @Inject constructor(
             .build()
     }
 
+    fun signOut() {
+        Firebase.auth.signOut()
+        _currentUser = null
+    }
+
     /**
      * Callback to be executed by the view to let the presenter register a successful login
      */
@@ -33,6 +40,7 @@ class AuthenticationPresenter @Inject constructor(
         Firebase.auth.currentUser?.let {
             _currentUser = db.updateUser(it)
             _currentUser = db.setAdminAccess(it, isAdmin)
+
 
         }
     }

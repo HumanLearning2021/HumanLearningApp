@@ -82,6 +82,7 @@
     <string name="evaluation_result_graph_label">Success percentage</string>
     <string name="learn_again">Learn Again!</string>
     <string name="home">Home</string>
+    <string name="LoginButtonSignOut">SIGN OUT</string>
     <string name="imageViewLogoContentDescription">Home Logo</string>
     <string name="learning_im_to_sort_contentDescription">Image To Sort</string>
     <string name="learning_cat_2_contentDescription">Third category to sort</string>
