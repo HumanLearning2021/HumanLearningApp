@@ -84,7 +84,7 @@ android {
         // using the learning for a while
         disable 'ClickableViewAccessibility'
 
-        // Most unused resources have been removed, but the removing the representative pictures
+        // Most unused resources have been removed, but removing the representative pictures
         // seems to break the app, so these have been kept
         disable 'UnusedResources'
     }
