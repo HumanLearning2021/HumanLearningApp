@@ -175,25 +175,36 @@ object DatabaseServiceModule {
     @Singleton  // allows dummy data to persist across activities
     fun provideDummyService(): DatabaseService = DummyDatabaseService().apply {
         // Inject expected dummy data
+        val resPrefix = "android.resource://com.github.HumanLearning2021.HumanLearningApp/"
         val forkUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
+            Uri.parse(resPrefix + R.drawable.fork)
+        val forkRepUri = Uri.parse(resPrefix + R.drawable.fork_rep)
         val knifeUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
+            Uri.parse(resPrefix + R.drawable.knife)
+        val knifeRepUri = Uri.parse(resPrefix + R.drawable.knife_rep)
         val spoonUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.spoon)
+            Uri.parse(resPrefix + R.drawable.spoon)
+        val spoonRepUri = Uri.parse(resPrefix + R.drawable.spoon_rep)
         runBlocking {
             // fork2 allows us to have a dataset with 4 categories without needing a new test picture
             val fork2 = putCategory("Fork2")
             val fork = putCategory("Fork")
             val knife = putCategory("Knife")
             val spoon = putCategory("Spoon")
+
             putDataset("kitchen utensils", setOf(fork, spoon, knife))
             putDataset("one category", setOf(fork))
             putDataset("two categories", setOf(fork, knife))
             putDataset("four categories", setOf(fork, knife, spoon, fork2))
+
             putPicture(forkUri, fork)
             putPicture(knifeUri, knife)
             putPicture(spoonUri, spoon)
+
+            putRepresentativePicture(forkRepUri, fork)
+            putRepresentativePicture(forkRepUri, fork2)
+            putRepresentativePicture(knifeRepUri, knife)
+            putRepresentativePicture(spoonRepUri, spoon)
         }
     }
 
