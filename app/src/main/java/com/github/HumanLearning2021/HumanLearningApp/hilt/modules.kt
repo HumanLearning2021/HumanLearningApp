@@ -7,9 +7,7 @@ import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -42,15 +40,6 @@ preloaded with known data in the Firebase emulator.
 @Retention(AnnotationRetention.BINARY)
 annotation class TestDatabase
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class CachedTestDatabase
-
-/** Production database used by the app. */
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class ProdDatabase
-
 /** Writable database used in unit tests. */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -71,14 +60,6 @@ annotation class GlobalDatabaseManagement
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class RoomDatabase
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class TestCachePictureRepository
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class ProdCachePictureRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -122,20 +103,6 @@ object FirebaseFirestoreModule {
     @Provides
     fun provideFirestore(app: FirebaseApp): FirebaseFirestore =
         Firebase.firestore(app)
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object PictureRepositoryModule {
-    @Provides
-    @TestCachePictureRepository
-    fun provideTestCachePictureRepository(@ApplicationContext context: Context): PictureCache =
-        PictureCache.applicationPictureCache("test", context)
-
-    @Provides
-    @ProdCachePictureRepository
-    fun provideProdCachePictureRepository(@ApplicationContext context: Context): PictureCache =
-        PictureCache.applicationPictureCache("prod", context)
 }
 
 @Module
@@ -212,14 +179,6 @@ object DatabaseServiceModule {
     fun provideTestService(firestore: FirebaseFirestore): DatabaseService =
         FirestoreDatabaseService("test", firestore)
 
-    @ProdDatabase
-    @Provides
-    fun provideProdService(
-        firestore: FirebaseFirestore,
-        @ProdCachePictureRepository repository: PictureCache
-    ): DatabaseService =
-        CachedDatabaseService(FirestoreDatabaseService("prod", firestore), repository)
-
     @ScratchDatabase
     @Provides
     fun provideScratchService(firestore: FirebaseFirestore): DatabaseService =
@@ -238,12 +197,6 @@ object DatabaseManagementModule {
     @Provides
     fun provideTestService(@TestDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
-
-    @ProdDatabase
-    @Provides
-    fun provideProdService(
-        @ProdDatabase db: DatabaseService,
-    ): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @ScratchDatabase
     @Provides

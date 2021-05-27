@@ -2,9 +2,8 @@ package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.hilt.CachedTestDatabase
-import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
-import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
+import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -23,14 +22,15 @@ import javax.inject.Inject
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class CachedDatabaseServiceTest {
+    @Inject
+    lateinit var firestore: FirebaseFirestore
 
     @Inject
     @ApplicationContext
     lateinit var context: Context
 
-    @Inject
-    @CachedTestDatabase
-    lateinit var demoInterface: DatabaseService
+    private val dbName = "test"
+    private lateinit var demoInterface: CachedDatabaseService
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -42,15 +42,18 @@ class CachedDatabaseServiceTest {
         hiltRule.inject()
         appleCategoryId = "LbaIwsl1kizvTod4q1TG"
         pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
+        demoInterface = CachedDatabaseService(
+            FirestoreDatabaseService(dbName, firestore),
+            PictureCache.applicationPictureCache(dbName, context),
+        )
     }
 
     @Test
     fun getPicturePutsItIntoCache() = runBlocking {
         val ids = demoInterface.getPictureIds(demoInterface.getCategory(appleCategoryId)!!)
         val pic = demoInterface.getPicture(ids.random())
-        assert(pic is CategorizedPicture)
         assertThat(pic, not(equalTo(null)))
-        assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
+        assertThat(demoInterface.cachedPictures.keys, hasItem(pic!!.id))
     }
 
     @Test
@@ -58,10 +61,10 @@ class CachedDatabaseServiceTest {
         val ids = demoInterface.getPictureIds(demoInterface.getCategory(appleCategoryId)!!)
         val pic = demoInterface.getPicture(ids.random())
         assumeThat(pic, not(equalTo(null)))
-        assumeThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
+        assumeThat(demoInterface.cachedPictures.keys, hasItem(pic!!.id))
         demoInterface.removePicture(pic)
         assertThat(
-            (demoInterface as CachedDatabaseService).cachedPictures.keys,
+            demoInterface.cachedPictures.keys,
             not(hasItem(pic.id))
         )
     }
@@ -71,7 +74,7 @@ class CachedDatabaseServiceTest {
         val ids = demoInterface.getPictureIds(demoInterface.getCategory(appleCategoryId)!!)
         val pic = demoInterface.getPicture(ids.random())
         assumeThat(pic, not(equalTo(null)))
-        assumeThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
+        assumeThat(demoInterface.cachedPictures.keys, hasItem(pic!!.id))
         val pic2 = demoInterface.getPicture(pic.id)
         assertThat(pic2, not(equalTo(null)))
     }
@@ -80,14 +83,14 @@ class CachedDatabaseServiceTest {
     fun getRepresentativePicturePutsItIntoCache() = runBlocking {
         val pic = demoInterface.getRepresentativePicture(appleCategoryId)
         assumeThat(pic, not(equalTo(null)))
-        assertThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
+        assertThat(demoInterface.cachedPictures.keys, hasItem(pic!!.id))
     }
 
     @Test
     fun getRepresentativePictureWorks() = runBlocking {
         val pic = demoInterface.getRepresentativePicture(appleCategoryId)
         assumeThat(pic, not(equalTo(null)))
-        assumeThat((demoInterface as CachedDatabaseService).cachedPictures.keys, hasItem(pic!!.id))
+        assumeThat(demoInterface.cachedPictures.keys, hasItem(pic!!.id))
         val pic2 = demoInterface.getPicture(pic.id)
         assertThat(pic2, not(equalTo(null)))
     }
