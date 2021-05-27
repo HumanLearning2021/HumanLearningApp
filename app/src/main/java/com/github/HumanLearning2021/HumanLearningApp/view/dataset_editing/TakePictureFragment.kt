@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -33,7 +34,7 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentTakePictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
-import java.io.File
+import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executors
 
 class TakePictureFragment : Fragment() {
@@ -69,7 +70,6 @@ class TakePictureFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         if (cameraIsAvailable()) {
             when {
@@ -121,8 +121,8 @@ class TakePictureFragment : Fragment() {
     @Suppress("UNUSED_PARAMETER")
     private fun onTakePicture(view: View) {
         val executor = Executors.newSingleThreadExecutor()
-        val file: File = parentActivity.cacheDir
-        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(file).build()
+        val outputStream = ByteArrayOutputStream()
+        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(outputStream).build()
         imageCapture.takePicture(
             outputFileOptions,
             executor,
@@ -137,7 +137,10 @@ class TakePictureFragment : Fragment() {
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     parentActivity.runOnUiThread {
-                        pictureUri = Uri.fromFile(file)
+                        val bytes = outputStream.toByteArray()
+                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        pictureUri =
+                            AddPictureFragment.applyImageSizeReduction(bitmap, requireContext())
                         imageTaken = true
                         setCaptureButton()
                         notifySaveButton()

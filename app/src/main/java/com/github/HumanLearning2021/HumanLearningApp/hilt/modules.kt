@@ -30,29 +30,37 @@ import javax.inject.Singleton
 @Retention(AnnotationRetention.BINARY)
 annotation class ProductionDatabaseName
 
+/** In-memory database for testing,
+preloaded with known data.
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DummyDatabase
 
+/** Read-only database used in unit tests,
+preloaded with known data in the Firebase emulator.
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class DemoDatabase
+annotation class TestDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class CachedDemoDatabase
+annotation class CachedTestDatabase
 
+/** Production database used by the app. */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class Demo2Database
+annotation class ProdDatabase
 
+/** Writable database used in unit tests. */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ScratchDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class OfflineDemoDatabase
+annotation class OfflineTestDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -68,11 +76,11 @@ annotation class RoomDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class DemoCachePictureRepository
+annotation class TestCachePictureRepository
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class Demo2CachePictureRepository
+annotation class ProdCachePictureRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -105,7 +113,7 @@ annotation class ProductionFirebaseApp
 object DatabaseNameModule {
     @Provides
     @ProductionDatabaseName
-    fun provideProductionDatabaseName(): String = "demo2"
+    fun provideProductionDatabaseName(): String = "prod"
 }
 
 @Module
@@ -149,14 +157,14 @@ object EmulationModule {
 @InstallIn(SingletonComponent::class)
 object PictureRepositoryModule {
     @Provides
-    @DemoCachePictureRepository
-    fun provideDemoCachePictureRepository(@ApplicationContext context: Context): PictureRepository =
-        CachePictureRepository("demo", context)
+    @TestCachePictureRepository
+    fun provideTestCachePictureRepository(@ApplicationContext context: Context): PictureRepository =
+        CachePictureRepository("test", context)
 
     @Provides
-    @Demo2CachePictureRepository
-    fun provideDemo2CachePictureRepository(@ApplicationContext context: Context): PictureRepository =
-        CachePictureRepository("demo2", context)
+    @ProdCachePictureRepository
+    fun provideProdCachePictureRepository(@ApplicationContext context: Context): PictureRepository =
+        CachePictureRepository("prod", context)
 }
 
 @Module
@@ -200,16 +208,16 @@ object DatabaseServiceModule {
         }
     }
 
-    @OfflineDemoDatabase
+    @OfflineTestDatabase
     @Provides
-    fun provideOfflineDemoService(
+    fun provideOfflineTestService(
         @ApplicationContext context: Context,
         @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
         @RoomDatabase room: RoomOfflineDatabase,
     ): DatabaseService =
         runBlocking {
-            uDb.downloadDatabase("demo")
-            OfflineDatabaseService("demo", context, room)
+            uDb.downloadDatabase("test")
+            OfflineDatabaseService("test", context, room)
         }
 
     @OfflineScratchDatabase
@@ -228,18 +236,18 @@ object DatabaseServiceModule {
             )
         }
 
-    @DemoDatabase
+    @TestDatabase
     @Provides
-    fun provideDemoService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
-        FirestoreDatabaseService("demo", firestore)
+    fun provideTestService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
+        FirestoreDatabaseService("test", firestore)
 
-    @Demo2Database
+    @ProdDatabase
     @Provides
-    fun provideDemo2Service(
+    fun provideProdService(
         @ProductionFirestore firestore: FirebaseFirestore,
-        @Demo2CachePictureRepository repository: PictureRepository
+        @ProdCachePictureRepository repository: PictureRepository
     ): DatabaseService =
-        CachedDatabaseService(FirestoreDatabaseService("demo2", firestore), repository)
+        CachedDatabaseService(FirestoreDatabaseService("prod", firestore), repository)
 
     @ScratchDatabase
     @Provides
@@ -255,15 +263,15 @@ object DatabaseManagementModule {
     fun provideDummyManagement(@DummyDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
-    @DemoDatabase
+    @TestDatabase
     @Provides
-    fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement =
+    fun provideTestService(@TestDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
-    @Demo2Database
+    @ProdDatabase
     @Provides
-    fun provideDemo2Service(
-        @Demo2Database db: DatabaseService,
+    fun provideProdService(
+        @ProdDatabase db: DatabaseService,
     ): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @ScratchDatabase
@@ -271,9 +279,9 @@ object DatabaseManagementModule {
     fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
-    @OfflineDemoDatabase
+    @OfflineTestDatabase
     @Provides
-    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement =
+    fun provideOfflineTestService(@OfflineTestDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
     @OfflineScratchDatabase

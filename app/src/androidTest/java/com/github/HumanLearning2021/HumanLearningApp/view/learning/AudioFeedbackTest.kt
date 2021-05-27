@@ -58,20 +58,17 @@ class AudioFeedbackTest {
         launchFragment()
     }
 
-    fun makeLearningAudioFeedback(): LearningAudioFeedback {
-        launchFragment()
+    private fun makeLearningAudioFeedback(): LearningAudioFeedback {
         return LearningAudioFeedback(getInstrumentation().targetContext)
     }
 
-    fun assertBothMPsNotPlaying(af: LearningAudioFeedback) {
-        launchFragment()
+    private fun assertBothMPsNotPlaying(af: LearningAudioFeedback) {
         assertThat(af.__testing_getCorrectMP().isPlaying, `is`(false))
         assertThat(af.__testing_getIncorrectMP().isPlaying, `is`(false))
     }
 
     @Test
     fun initPutsMediaPlayersInCorrectState() {
-        launchFragment()
         val af = makeLearningAudioFeedback()
         af.initMediaPlayers()
         assertThat(af.__testing_getCorrectMP(), notNullValue())
@@ -83,7 +80,6 @@ class AudioFeedbackTest {
 
     @Test
     fun canStartAndStopMediaPlayersRapidly() {
-        launchFragment()
         val af = makeLearningAudioFeedback()
         af.initMediaPlayers()
         af.startCorrectFeedback()
