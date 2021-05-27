@@ -7,14 +7,10 @@ import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachePictureRepository
-import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.Module
@@ -30,29 +26,28 @@ import javax.inject.Singleton
 @Retention(AnnotationRetention.BINARY)
 annotation class ProductionDatabaseName
 
+/** In-memory database for testing,
+preloaded with known data.
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DummyDatabase
 
+/** Read-only database used in unit tests,
+preloaded with known data in the Firebase emulator.
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class DemoDatabase
+annotation class TestDatabase
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class CachedDemoDatabase
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class Demo2Database
-
+/** Writable database used in unit tests. */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ScratchDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class OfflineDemoDatabase
+annotation class OfflineTestDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -60,19 +55,7 @@ annotation class OfflineScratchDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class GlobalDatabaseManagement
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class RoomDatabase
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class DemoCachePictureRepository
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class Demo2CachePictureRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -88,31 +71,18 @@ object RoomDatabaseModule {
         ).build()
 }
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class EmulatedFirestore
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class ProductionFirestore
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class ProductionFirebaseApp
-
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseNameModule {
     @Provides
     @ProductionDatabaseName
-    fun provideProductionDatabasename(): String = "demo2"
+    fun provideProductionDatabaseName(): String = "prod"
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
 object FirebaseAppModule {
     @Provides
-    @ProductionFirebaseApp
     fun provideApp(): FirebaseApp = FirebaseApp.getInstance()
 }
 
@@ -120,43 +90,15 @@ object FirebaseAppModule {
 @InstallIn(SingletonComponent::class)
 object FirebaseAuthUIModule {
     @Provides
-    fun provideAuthUI(@ProductionFirebaseApp app: FirebaseApp) = AuthUI.getInstance(app)
+    fun provideAuthUI(app: FirebaseApp) = AuthUI.getInstance(app)
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-object EmulationModule {
+object FirebaseFirestoreModule {
     @Provides
-    @ProductionFirestore
-    fun provideNotEmulated(@ProductionFirebaseApp app: FirebaseApp): FirebaseFirestore =
+    fun provideFirestore(app: FirebaseApp): FirebaseFirestore =
         Firebase.firestore(app)
-
-    @Provides
-    @EmulatedFirestore
-    @Singleton
-    fun provideEmulated(): FirebaseFirestore {
-        FirebaseFirestore.getInstance()
-            .terminate() //TODO("Find out why it is initialized before this instead of just terminating it before restarting")
-        val db = FirebaseFirestore.getInstance()
-        db.useEmulator("10.0.2.2", 8080)
-        val settings = FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build()
-        db.firestoreSettings = settings
-        return db
-    }
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object PictureRepositoryModule {
-    @Provides
-    @DemoCachePictureRepository
-    fun provideDemoCachePictureRepository(@ApplicationContext context: Context): PictureRepository =
-        CachePictureRepository("demo", context)
-
-    @Provides
-    @Demo2CachePictureRepository
-    fun provideDemo2CachePictureRepository(@ApplicationContext context: Context): PictureRepository =
-        CachePictureRepository("demo2", context)
 }
 
 @Module
@@ -167,45 +109,56 @@ object DatabaseServiceModule {
     @Singleton  // allows dummy data to persist across activities
     fun provideDummyService(): DatabaseService = DummyDatabaseService().apply {
         // Inject expected dummy data
+        val resPrefix = "android.resource://com.github.HumanLearning2021.HumanLearningApp/"
         val forkUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.fork)
+            Uri.parse(resPrefix + R.drawable.fork)
+        val forkRepUri = Uri.parse(resPrefix + R.drawable.fork_rep)
         val knifeUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
+            Uri.parse(resPrefix + R.drawable.knife)
+        val knifeRepUri = Uri.parse(resPrefix + R.drawable.knife_rep)
         val spoonUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.spoon)
+            Uri.parse(resPrefix + R.drawable.spoon)
+        val spoonRepUri = Uri.parse(resPrefix + R.drawable.spoon_rep)
         runBlocking {
             // fork2 allows us to have a dataset with 4 categories without needing a new test picture
             val fork2 = putCategory("Fork2")
             val fork = putCategory("Fork")
             val knife = putCategory("Knife")
             val spoon = putCategory("Spoon")
+
             putDataset("kitchen utensils", setOf(fork, spoon, knife))
             putDataset("one category", setOf(fork))
             putDataset("two categories", setOf(fork, knife))
             putDataset("four categories", setOf(fork, knife, spoon, fork2))
+
             putPicture(forkUri, fork)
             putPicture(knifeUri, knife)
             putPicture(spoonUri, spoon)
+
+            putRepresentativePicture(forkRepUri, fork)
+            putRepresentativePicture(forkRepUri, fork2)
+            putRepresentativePicture(knifeRepUri, knife)
+            putRepresentativePicture(spoonRepUri, spoon)
         }
     }
 
-    @OfflineDemoDatabase
+    @OfflineTestDatabase
     @Provides
-    fun provideOfflineDemoService(
+    fun provideOfflineTestService(
         @ApplicationContext context: Context,
-        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
+        uDb: UniqueDatabaseManagement,
         @RoomDatabase room: RoomOfflineDatabase,
     ): DatabaseService =
         runBlocking {
-            uDb.downloadDatabase("demo")
-            OfflineDatabaseService("demo", context, room)
+            uDb.downloadDatabase("test")
+            OfflineDatabaseService("test", context, room)
         }
 
     @OfflineScratchDatabase
     @Provides
     fun provideOfflineScratchService(
         @ApplicationContext context: Context,
-        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
+        uDb: UniqueDatabaseManagement,
         @RoomDatabase room: RoomOfflineDatabase
     ): DatabaseService =
         runBlocking {
@@ -217,22 +170,14 @@ object DatabaseServiceModule {
             )
         }
 
-    @DemoDatabase
+    @TestDatabase
     @Provides
-    fun provideDemoService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
-        FirestoreDatabaseService("demo", firestore)
-
-    @Demo2Database
-    @Provides
-    fun provideDemo2Service(
-        @ProductionFirestore firestore: FirebaseFirestore,
-        @Demo2CachePictureRepository repository: PictureRepository
-    ): DatabaseService =
-        CachedDatabaseService(FirestoreDatabaseService("demo2", firestore), repository)
+    fun provideTestService(firestore: FirebaseFirestore): DatabaseService =
+        FirestoreDatabaseService("test", firestore)
 
     @ScratchDatabase
     @Provides
-    fun provideScratchService(@ProductionFirestore firestore: FirebaseFirestore): DatabaseService =
+    fun provideScratchService(firestore: FirebaseFirestore): DatabaseService =
         FirestoreDatabaseService("scratch", firestore)
 }
 
@@ -244,25 +189,19 @@ object DatabaseManagementModule {
     fun provideDummyManagement(@DummyDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
-    @DemoDatabase
+    @TestDatabase
     @Provides
-    fun provideDemoService(@DemoDatabase db: DatabaseService): DatabaseManagement =
+    fun provideTestService(@TestDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
-
-    @Demo2Database
-    @Provides
-    fun provideDemo2Service(
-        @Demo2Database db: DatabaseService,
-    ): DatabaseManagement = DefaultDatabaseManagement(db)
 
     @ScratchDatabase
     @Provides
     fun provideScratchService(@ScratchDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
-    @OfflineDemoDatabase
+    @OfflineTestDatabase
     @Provides
-    fun provideOfflineDemoService(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement =
+    fun provideOfflineTestService(@OfflineTestDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
     @OfflineScratchDatabase
@@ -270,12 +209,11 @@ object DatabaseManagementModule {
     fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
-    @GlobalDatabaseManagement
     @Provides
     fun provideGlobalDatabaseManagement(
         @ApplicationContext context: Context,
         @RoomDatabase room: RoomOfflineDatabase,
-        @ProductionFirestore firestore: FirebaseFirestore,
+        firestore: FirebaseFirestore,
         @DummyDatabase dummyDb: DatabaseManagement,
     ): UniqueDatabaseManagement = UniqueDatabaseManagement(context, room, firestore, dummyDb)
 }

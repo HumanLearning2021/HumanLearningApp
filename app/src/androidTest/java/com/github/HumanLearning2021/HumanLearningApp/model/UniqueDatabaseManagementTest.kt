@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
@@ -28,7 +27,6 @@ class UniqueDatabaseManagementTest {
     lateinit var room: RoomOfflineDatabase
 
     @Inject
-    @GlobalDatabaseManagement
     lateinit var uDbMan: UniqueDatabaseManagement
 
     @Inject
@@ -37,6 +35,8 @@ class UniqueDatabaseManagementTest {
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
+
+    private val dbName = "test"
 
     @Before
     fun setup() {
@@ -48,18 +48,17 @@ class UniqueDatabaseManagementTest {
 
     @Test
     fun getDatabaseNamesWorks() = runBlocking {
-        assertThat(uDbMan.getDatabases(), hasItems("demo"))
+        assertThat(uDbMan.getDatabases(), hasItems(dbName))
     }
 
     @Test
     fun getDownloadedDatabaseNamesWorks() = runBlocking {
-        uDbMan.downloadDatabase("demo")
-        assertThat(uDbMan.getDownloadedDatabases(), hasItem("demo"))
+        uDbMan.downloadDatabase(dbName)
+        assertThat(uDbMan.getDownloadedDatabases(), hasItem(dbName))
     }
 
     @Test
     fun offlineAndFirestoreDatabasesContainTheSameElements() = runBlocking {
-        val dbName = "demo"
         val fDbMan = uDbMan.accessCloudDatabase(dbName)
         val oDbman = uDbMan.downloadDatabase(dbName)
         assertThat(
@@ -76,38 +75,11 @@ class UniqueDatabaseManagementTest {
     @Test
     fun offlineDatabaseThrowsIfNotDownloaded() = runBlocking {
         kotlin.runCatching {
-            DefaultDatabaseManagement(OfflineDatabaseService("demo", context, room))
+            DefaultDatabaseManagement(OfflineDatabaseService(dbName, context, room))
         }.fold({
             Assert.fail("unexpected successful completion")
         }, {
             assertThat(it, Matchers.instanceOf(IllegalStateException::class.java))
         })
-    }
-
-    @Test
-    fun accessOfflineDatabaseReturnsCorrectType() = runBlocking {
-        uDbMan.downloadDatabase("demo")
-        assert(uDbMan.accessDatabase("demo") is DefaultDatabaseManagement)
-    }
-
-    @Test
-    fun removeDatabaseFromDownloadsClearsRoomDatabase() = runBlocking {
-        room.clearAllTables()
-        val dbName = "demo"
-        uDbMan.downloadDatabase(dbName)
-
-        assumeThat(room.databaseDao().loadAll(), not(hasSize(0)))
-        assumeThat(room.datasetDao().loadAll(), not(hasSize(0)))
-        assumeThat(room.categoryDao().loadAll(), not(hasSize(0)))
-        assumeThat(room.pictureDao().loadAllPictures(), not(hasSize(0)))
-        assumeThat(room.pictureDao().loadAllRepresentativePictures(), not(hasSize(0)))
-
-        uDbMan.removeDatabaseFromDownloadsAsync(dbName).await()
-
-        assertThat(room.databaseDao().loadAll(), hasSize(0))
-        assertThat(room.datasetDao().loadAll(), hasSize(0))
-        assertThat(room.categoryDao().loadAll(), hasSize(0))
-        assertThat(room.pictureDao().loadAllPictures(), hasSize(0))
-        assertThat(room.pictureDao().loadAllRepresentativePictures(), hasSize(0))
     }
 }

@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -25,7 +24,6 @@ import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
@@ -34,7 +32,6 @@ import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.schibsted.spain.barista.interaction.PermissionGranter
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -70,16 +67,11 @@ class DisplayDatasetActivityTest {
     )
 
     @Inject
-    @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
     @BindValue
     @ProductionDatabaseName
-    var dbName = "dummy"
-
-    @Inject
-    @ApplicationContext
-    lateinit var context: Context
+    val dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
 
@@ -109,7 +101,6 @@ class DisplayDatasetActivityTest {
         }
 
         Intents.init()
-        context.cacheDir.deleteRecursively()
     }
 
     @After
@@ -180,7 +171,7 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.startLearningButton)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-            onView(withText("Modify categories")).perform(click())
+            onView(withText("Modify name and categories")).perform(click())
             activityScenarioRule.scenario.onActivity {
                 val currentFragment =
                     it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
