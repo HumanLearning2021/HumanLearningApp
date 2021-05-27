@@ -125,8 +125,8 @@ class LearningVisualFeedback(
 
 
     companion object {
-        private val BLINK_DURATION_MS: Long = 800
-        private val SHORT_BLINK_DURATION_MS: Long = 150
-        private val NB_BLINKS_FOR_SORTING_FEEDBACK = 4
+        private const val BLINK_DURATION_MS: Long = 800
+        private const val SHORT_BLINK_DURATION_MS: Long = 150
+        private const val NB_BLINKS_FOR_SORTING_FEEDBACK = 4
     }
 }

@@ -146,7 +146,7 @@ class LearningFragment : Fragment() {
     /**
      * This function adapts the display to the number of categories given
      * For example, if the dataset only has 2 categories, one of the categories will not be displayed
-     * @param dataset dataset that is used for the learning
+     * @param nbCategories number of categories that need to be displayed
      * @return the ImageViews that are visible on screen
      */
     private fun adaptDisplayToNumberOfCategories(nbCategories: Int): List<ImageView> {
@@ -226,7 +226,7 @@ class LearningFragment : Fragment() {
         when (event.action) {
             DragEvent.ACTION_DRAG_ENTERED -> dragInOutCallback(v, halfOpaque)
             DragEvent.ACTION_DRAG_EXITED -> dragInOutCallback(v, opaque)
-            DragEvent.ACTION_DROP -> dropCallback(event, v)
+            DragEvent.ACTION_DROP -> dropCallback(v)
 
             // DragEvent.ACTION_DRAG_ENDED &
             DragEvent.ACTION_DRAG_ENDED -> {
@@ -240,10 +240,9 @@ class LearningFragment : Fragment() {
 
     /**
      * This callback is called when the image to sort is dropped on a target ImageView
-     * @param event the DragEvent representing the interaction
      * @param v The ImageView representing the target category
      */
-    private fun dropCallback(event: DragEvent, v: View): Boolean {
+    private fun dropCallback(v: View): Boolean {
         setOpacity(v, opaque)
         visualFeedback.dragEnded()
 
