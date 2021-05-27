@@ -3,6 +3,10 @@
 ## Scrum master (Marouane Jaakik)
 
 ## Bettens, Louis
+This week I worked on two internal issues within the codebase, namely cleaning
+up our DI modules somewhat, and clarifying the naming of our different
+databases. I spent most of my alloted time on the first task as it required
+more extensive code changes. Overall, this reduced our technical debt.
 
 ## Jaakik, Marouane
 
