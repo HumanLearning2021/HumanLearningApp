@@ -327,7 +327,7 @@ class DisplayImageSetFragment : Fragment() {
         return when (item.itemId) {
             /**
              * When the info menu button is clicked, display information to the user about
-             * the possible actions possible.
+             * the possible actions.
              */
             R.id.display_imageset_menu_info -> {
                 AlertDialog.Builder(this.context)
