@@ -84,16 +84,16 @@ abstract class ScratchDatabaseServiceTest {
 class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
 
     @Inject
-    @Demo2Database
+    @ProdDatabase
     lateinit var demo2DbService: DatabaseService
 
     @BindValue
-    @Demo2Database
+    @ProdDatabase
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
-    @Demo2CachePictureRepository
-    lateinit var cache: PictureCache
+    @ProdCachePictureRepository
+    lateinit var repository: PictureCache
 
     @Inject
     @ScratchDatabase
@@ -105,7 +105,7 @@ class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
     @Before
     fun setUpDb() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideProdService(demo2DbService)
     }
 }
 
@@ -115,16 +115,16 @@ class FirestoreScratchDatabaseServiceTest : ScratchDatabaseServiceTest() {
 class ScratchDummyDatabaseServiceTest : ScratchDatabaseServiceTest() {
 
     @Inject
-    @Demo2Database
+    @ProdDatabase
     lateinit var demo2DbService: DatabaseService
 
     @BindValue
-    @Demo2Database
+    @ProdDatabase
     lateinit var demo2DbMgt: DatabaseManagement
 
     @Inject
-    @Demo2CachePictureRepository
-    lateinit var cache: PictureCache
+    @ProdCachePictureRepository
+    lateinit var repository: PictureCache
 
     @Inject
     @DummyDatabase
@@ -136,6 +136,6 @@ class ScratchDummyDatabaseServiceTest : ScratchDatabaseServiceTest() {
     @Before
     fun setUpDb() {
         hiltRule.inject()
-        demo2DbMgt = DatabaseManagementModule.provideDemo2Service(demo2DbService)
+        demo2DbMgt = DatabaseManagementModule.provideProdService(demo2DbService)
     }
 }

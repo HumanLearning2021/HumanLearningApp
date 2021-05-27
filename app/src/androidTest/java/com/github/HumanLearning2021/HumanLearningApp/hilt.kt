@@ -29,15 +29,15 @@ object DatabaseServiceTestModule {
     @Singleton
     fun provideDummyService() = DatabaseServiceModule.provideDummyService()
 
-    @DemoDatabase
+    @TestDatabase
     @Provides
-    fun provideDemoService(@EmulatedFirestore firestore: FirebaseFirestore) =
-        DatabaseServiceModule.provideDemoService(firestore)
+    fun provideTestService(@EmulatedFirestore firestore: FirebaseFirestore) =
+        DatabaseServiceModule.provideTestService(firestore)
 
-    /** override demo2 with scratch */
-    @Demo2Database
+    /** override prod with scratch */
+    @ProdDatabase
     @Provides
-    fun provideDemo2Service(@EmulatedFirestore firestore: FirebaseFirestore) =
+    fun provideProdService(@EmulatedFirestore firestore: FirebaseFirestore) =
         provideScratchService(firestore)
 
     @ScratchDatabase
@@ -45,19 +45,19 @@ object DatabaseServiceTestModule {
     fun provideScratchService(@EmulatedFirestore firestore: FirebaseFirestore) =
         DatabaseServiceModule.provideScratchService(firestore)
 
-    @OfflineDemoDatabase
+    @OfflineTestDatabase
     @Provides
-    fun provideDemoDatabase(
+    fun provideTestDatabase(
         @ApplicationContext context: Context,
         @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
         @RoomDatabase room: RoomOfflineDatabase,
-    ) = DatabaseServiceModule.provideOfflineDemoService(context, uDb, room)
+    ) = DatabaseServiceModule.provideOfflineTestService(context, uDb, room)
 
-    @CachedDemoDatabase
+    @CachedTestDatabase
     @Provides
-    fun provideCacheDemoDatabase(
-        @DemoDatabase db: DatabaseService,
-        @DemoCachePictureRepository cache: PictureCache
+    fun provideCacheTestDatabase(
+        @TestDatabase db: DatabaseService,
+        @TestCachePictureRepository cache: PictureCache
     ): DatabaseService = CachedDatabaseService(db, cache)
 }
 
@@ -88,14 +88,14 @@ object DatabaseManagementTestModule {
     fun provideDummyDatabaseManagement(@DummyDatabase db: DatabaseService): DatabaseManagement =
         DatabaseManagementModule.provideDummyManagement(db)
 
-    @DemoDatabase
+    @TestDatabase
     @Provides
-    fun provideDemoDatabaseManagement(@DemoDatabase db: DatabaseService): DatabaseManagement =
-        DatabaseManagementModule.provideDemoService(db)
+    fun provideTestDatabaseManagement(@TestDatabase db: DatabaseService): DatabaseManagement =
+        DatabaseManagementModule.provideTestService(db)
 
-    @CachedDemoDatabase
+    @CachedTestDatabase
     @Provides
-    fun provideCachedDemoDatabaseManagement(@DemoDatabase db: DatabaseService): DatabaseManagement =
+    fun provideCachedTestDatabaseManagement(@TestDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
     @ScratchDatabase
@@ -103,10 +103,10 @@ object DatabaseManagementTestModule {
     fun provideScratchDatabaseManagement(@ScratchDatabase db: DatabaseService): DatabaseManagement =
         DatabaseManagementModule.provideScratchService(db)
 
-    @OfflineDemoDatabase
+    @OfflineTestDatabase
     @Provides
-    fun provideOfflineDemoDatabaseManagement(@OfflineDemoDatabase db: DatabaseService): DatabaseManagement =
-        DatabaseManagementModule.provideOfflineDemoService(db)
+    fun provideOfflineTestDatabaseManagement(@OfflineTestDatabase db: DatabaseService): DatabaseManagement =
+        DatabaseManagementModule.provideOfflineTestService(db)
 
     @GlobalDatabaseManagement
     @Provides

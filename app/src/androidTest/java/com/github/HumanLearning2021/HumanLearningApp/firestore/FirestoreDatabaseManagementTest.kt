@@ -5,8 +5,8 @@ import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.TestDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -27,7 +27,7 @@ import javax.inject.Inject
 @RunWith(AndroidJUnit4::class)
 class FirestoreDatabaseManagementTest {
     @Inject
-    @DemoDatabase
+    @TestDatabase
     lateinit var demoManagement: DatabaseManagement
 
     @Inject

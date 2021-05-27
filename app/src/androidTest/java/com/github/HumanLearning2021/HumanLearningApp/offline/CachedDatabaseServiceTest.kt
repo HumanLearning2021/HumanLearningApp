@@ -2,7 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.offline
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.hilt.CachedDemoDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.CachedTestDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.CategorizedPicture
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -29,7 +29,7 @@ class CachedDatabaseServiceTest {
     lateinit var context: Context
 
     @Inject
-    @CachedDemoDatabase
+    @CachedTestDatabase
     lateinit var demoInterface: DatabaseService
 
     @get:Rule
