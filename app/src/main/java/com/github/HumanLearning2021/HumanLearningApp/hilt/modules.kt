@@ -55,10 +55,6 @@ annotation class OfflineScratchDatabase
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class GlobalDatabaseManagement
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class RoomDatabase
 
 @Module
@@ -150,7 +146,7 @@ object DatabaseServiceModule {
     @Provides
     fun provideOfflineTestService(
         @ApplicationContext context: Context,
-        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
+        uDb: UniqueDatabaseManagement,
         @RoomDatabase room: RoomOfflineDatabase,
     ): DatabaseService =
         runBlocking {
@@ -162,7 +158,7 @@ object DatabaseServiceModule {
     @Provides
     fun provideOfflineScratchService(
         @ApplicationContext context: Context,
-        @GlobalDatabaseManagement uDb: UniqueDatabaseManagement,
+        uDb: UniqueDatabaseManagement,
         @RoomDatabase room: RoomOfflineDatabase
     ): DatabaseService =
         runBlocking {
@@ -213,7 +209,6 @@ object DatabaseManagementModule {
     fun provideOfflineScratchService(@OfflineScratchDatabase db: DatabaseService): DatabaseManagement =
         DefaultDatabaseManagement(db)
 
-    @GlobalDatabaseManagement
     @Provides
     fun provideGlobalDatabaseManagement(
         @ApplicationContext context: Context,

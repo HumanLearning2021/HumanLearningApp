@@ -2,7 +2,6 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
@@ -26,7 +25,6 @@ class UniqueDatabaseManagementTest {
     lateinit var room: RoomOfflineDatabase
 
     @Inject
-    @GlobalDatabaseManagement
     lateinit var uDbMan: UniqueDatabaseManagement
 
     @Inject
