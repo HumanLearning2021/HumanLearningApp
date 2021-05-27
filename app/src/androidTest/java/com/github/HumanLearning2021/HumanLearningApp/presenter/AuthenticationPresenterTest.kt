@@ -70,6 +70,7 @@ class AuthenticationPresenterTest {
             presenter.onSuccessfulLogin(true)
             presenter.signOut()
             val user = presenter.currentUser
+            assertThat(user, nullValue())
 
         }
 
