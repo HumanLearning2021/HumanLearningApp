@@ -1,12 +1,16 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.content.Intent
+import android.graphics.ImageDecoder.createSource
+import android.graphics.ImageDecoder.decodeBitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
@@ -85,13 +89,21 @@ class SelectPictureFragment : Fragment() {
         startActivityForResult(intent, RC_OPEN_PICTURE)
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             RC_OPEN_PICTURE -> {
                 data?.data?.also {
-                    selectedPicture = it
+                    val bitmap =
+                        decodeBitmap(
+                            createSource(
+                                requireContext().contentResolver, it
+                            )
+                        )
+                    selectedPicture =
+                        AddPictureFragment.applyImageSizeReduction(bitmap, requireContext())
                     displayPicture(it)
                     notifySaveButton()
                 }

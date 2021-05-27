@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -34,7 +33,6 @@ import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.schibsted.spain.barista.interaction.PermissionGranter
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -77,10 +75,6 @@ class DisplayDatasetActivityTest {
     @ProductionDatabaseName
     var dbName = "dummy"
 
-    @Inject
-    @ApplicationContext
-    lateinit var context: Context
-
     lateinit var dbMgt: DatabaseManagement
 
     @BindValue
@@ -109,7 +103,6 @@ class DisplayDatasetActivityTest {
         }
 
         Intents.init()
-        context.cacheDir.deleteRecursively()
     }
 
     @After
