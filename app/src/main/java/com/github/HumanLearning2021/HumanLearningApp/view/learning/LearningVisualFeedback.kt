@@ -31,33 +31,6 @@ class LearningVisualFeedback(
 ) {
     private var sourceCardViewShouldBlink = false
 
-    /**
-     * Sets whether the background of the source view should blink
-     * @param v the new value. True indicates that it should blink
-     */
-    fun sourceCardViewShouldBlink(v: Boolean) {
-        sourceCardViewShouldBlink = v
-    }
-
-    /**
-     * This method should be called upon events that are considered as the start of a drag action.
-     * For example if the source image is touched.
-     */
-    fun dragStarted() {
-        setTargetsBGTo(neutralColor)
-        sourceCardViewShouldBlink(false)
-    }
-
-    /**
-     * This method should be called upon events that are considered as the end of a drag action.
-     * For example if the source image is dropped on a category, or if it is release without being
-     * dropped.
-     */
-    fun dragEnded() {
-        setTargetsBGTo(baseColor)
-        sourceCardViewShouldBlink(true)
-    }
-
     init {
         // this thread runs until the fragment is destroyed, and makes the source CardView blink
         // only when sourceCardViewShouldBlink is true
@@ -73,11 +46,60 @@ class LearningVisualFeedback(
         }
     }
 
+    /**
+     * Starts blinking rapidly with the positiveColor to indicate a success.
+     * @param cv the CardView whose background will blink
+     */
+    fun startCorrectFeedback(cv: CardView) {
+        startFeedback(cv, positiveColor)
+    }
+
+
+    /**
+     * Starts blinking rapidly with the negativeColor to indicate a mistake.
+     * @param cv the CardView whose background will blink
+     */
+    fun startIncorrectFeedback(cv: CardView) {
+        startFeedback(cv, negativeColor)
+    }
+
+
+    /**
+     * Sets whether the background of the source view should blink
+     * @param v the new value. True indicates that it should blink
+     */
+    fun sourceCardViewShouldBlink(v: Boolean) {
+        sourceCardViewShouldBlink = v
+    }
+
+
+    /**
+     * This method should be called upon events that are considered as the start of a drag action.
+     * For example if the source image is touched.
+     */
+    fun dragStarted() {
+        setTargetsBGTo(neutralColor)
+        sourceCardViewShouldBlink(false)
+    }
+
+
+    /**
+     * This method should be called upon events that are considered as the end of a drag action.
+     * For example if the source image is dropped on a category, or if it is release without being
+     * dropped.
+     */
+    fun dragEnded() {
+        setTargetsBGTo(baseColor)
+        sourceCardViewShouldBlink(true)
+    }
+
+
     private fun setTargetsBGTo(color: Color) {
         targetCardViews.forEach {
             it.setCardBackgroundColor(color)
         }
     }
+
 
     private suspend fun blink(
         cardView: CardView,
@@ -92,21 +114,6 @@ class LearningVisualFeedback(
         cardView.setCardBackgroundColor(baseColor)
     }
 
-    /**
-     * Starts blinking rapidly with the negativeColor to indicate a mistake.
-     * @param cv the CardView whose background will blink
-     */
-    fun startIncorrectFeedback(cv: CardView) {
-        startFeedback(cv, negativeColor)
-    }
-
-    /**
-     * Starts blinking rapidly with the positiveColor to indicate a success.
-     * @param cv the CardView whose background will blink
-     */
-    fun startCorrectFeedback(cv: CardView) {
-        startFeedback(cv, positiveColor)
-    }
 
     private fun startFeedback(cv: CardView, blinkColor: Color) {
         lifecycleScope.launch {
@@ -116,10 +123,10 @@ class LearningVisualFeedback(
         }
     }
 
+
     companion object {
         private val BLINK_DURATION_MS: Long = 800
         private val SHORT_BLINK_DURATION_MS: Long = 150
         private val NB_BLINKS_FOR_SORTING_FEEDBACK = 4
     }
-
 }
