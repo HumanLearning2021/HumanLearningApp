@@ -1,9 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.presenter
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
-import android.content.SharedPreferences
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseService
@@ -31,7 +28,7 @@ class AuthenticationPresenter @Inject constructor(
             .build()
     }
 
-    suspend fun signOut() {
+    fun signOut() {
         Firebase.auth.signOut()
         _currentUser = null
     }

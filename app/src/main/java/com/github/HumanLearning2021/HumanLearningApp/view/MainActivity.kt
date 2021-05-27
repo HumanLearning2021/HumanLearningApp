@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var authPresenter: AuthenticationPresenter
 
-    var prefs: SharedPreferences? = null
+    lateinit var prefs: SharedPreferences
 
 
     @Inject

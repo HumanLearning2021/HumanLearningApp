@@ -1,12 +1,10 @@
 package com.github.HumanLearning2021.HumanLearningApp.view
 
 import android.app.Activity
-import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -31,8 +29,8 @@ class GoogleSignInWidget : Fragment() {
     lateinit var presenter: AuthenticationPresenter
 
     var isAdmin = false
-    var prefs: SharedPreferences? = null
-    var editor: SharedPreferences.Editor? = null
+    lateinit var prefs: SharedPreferences
+    lateinit private var editor: SharedPreferences.Editor
 
 
     override fun onCreateView(
@@ -45,7 +43,7 @@ class GoogleSignInWidget : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prefs = activity?.getSharedPreferences("LOGIN", MODE_PRIVATE)
+        prefs = activity?.getSharedPreferences("LOGIN", MODE_PRIVATE)!!
         editor = prefs!!.edit()
 
         view.findViewById<Button>(R.id.loginButton).setOnClickListener {
@@ -55,9 +53,9 @@ class GoogleSignInWidget : Fragment() {
         view.findViewById<Button>(R.id.checkBox).setOnClickListener {
             isAdmin = view.findViewById<CheckBox>(R.id.checkBox).isChecked
         }
+
         view.findViewById<Button>(R.id.singOutButton).setOnClickListener {
             onSignOutPress()
-
         }
 
         updateUi()
@@ -73,7 +71,6 @@ class GoogleSignInWidget : Fragment() {
         editor?.putBoolean("hasLogin", false)
         editor?.putBoolean("isAdmin", false)
         editor?.apply()
-
         updateUi()
     }
 
@@ -137,48 +134,46 @@ class GoogleSignInWidget : Fragment() {
         }
     }
 
-    private fun setSingInUi() {
+    fun setSignInUi() {
         view?.findViewById<Button>(R.id.singOutButton)?.visibility = View.GONE
         view?.findViewById<Button>(R.id.checkBox)?.visibility = View.VISIBLE
         view?.findViewById<Button>(R.id.loginButton)?.visibility = View.VISIBLE
     }
 
-    private fun setSingOutUi() {
+    fun setSignOutUi() {
         view?.findViewById<Button>(R.id.singOutButton)?.visibility = View.VISIBLE
         view?.findViewById<Button>(R.id.checkBox)?.visibility = View.GONE
         view?.findViewById<Button>(R.id.loginButton)?.visibility = View.GONE
-
     }
 
-
     fun updateUi() {
-        var user: User
+        val savedUser: User
         if (prefs!!.getBoolean("hasLogin", false)) {
             view?.findViewById<TextView>(R.id.loginStatus)?.text =
                 prefs?.getString("name", "Not logged in!")
-            user = User(
+            savedUser = User(
                 prefs!!.getString("name", ""),
                 prefs!!.getString("email", ""),
                 prefs!!.getString("uid", "")!!,
                 User.Type.FIREBASE,
                 prefs!!.getBoolean("isAdmin", false)
             )
-            presenter.currentUser = user
-            setSingOutUi()
+            presenter.currentUser = savedUser
+            setSignOutUi()
 
         } else {
-            val user = presenter.currentUser
+            val loggedUser = presenter.currentUser
             view?.findViewById<TextView>(R.id.loginStatus)?.text =
-                user?.let {
+                loggedUser?.let {
                     getString(
                         R.string.SignInFragment_loginStatusSuccessMessage,
-                        user.displayName
+                        loggedUser.displayName
                     )
                 } ?: "Not logged in!"
-            if (user == null) {
-                setSingInUi()
+            if (loggedUser == null) {
+                setSignInUi()
             } else {
-                setSingOutUi()
+                setSignOutUi()
             }
         }
     }
