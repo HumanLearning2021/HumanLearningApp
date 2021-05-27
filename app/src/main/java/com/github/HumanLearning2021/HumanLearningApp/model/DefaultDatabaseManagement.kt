@@ -5,6 +5,7 @@ import android.net.Uri
 class DefaultDatabaseManagement internal constructor(
     private val databaseService: DatabaseService
 ) : DatabaseManagement {
+
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         return try {
             databaseService.getPicture(category)
@@ -176,11 +177,11 @@ class DefaultDatabaseManagement internal constructor(
         }
     }
 
-    override suspend fun countOccurrence(user: User.Id, dataset: Id, event: Event) {
-        (databaseService.getStatistic(user, dataset) ?: Statistic(
+    override suspend fun countOccurrence(userId: User.Id, datasetId: Id, event: Event) {
+        (databaseService.getStatistic(userId, datasetId) ?: Statistic(
             Statistic.Id(
-                user,
-                dataset
+                userId,
+                datasetId
             ),
             mapOf()
         )).let { stat ->

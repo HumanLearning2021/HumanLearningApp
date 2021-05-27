@@ -2,6 +2,8 @@ package com.github.HumanLearning2021.HumanLearningApp.firestore
 
 import android.net.Uri
 import android.util.Log
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
+import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionFirebaseApp
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
@@ -15,13 +17,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.*
+import javax.inject.Inject
 
-class FirestoreDatabaseService internal constructor(
-    /**
-     * name of a database within the Firebase App
-     */
-    dbName: String,
-    firestore: FirebaseFirestore
+/**
+ * Class used to interact with the Firebase Firestore database
+ * @param dbName name of the database
+ * @param firestore Firebase Firestore the application uses
+ */
+class FirestoreDatabaseService @Inject internal constructor(
+    @ProductionDatabaseName dbName: String,
+    @ProductionFirebaseApp firestore: FirebaseFirestore
 ) : DatabaseService {
     private val db = firestore
     private val categories = db.collection("/databases/$dbName/categories")
@@ -81,15 +86,11 @@ class FirestoreDatabaseService internal constructor(
             this.categories = categories.toList()
         }
 
-        @OptIn(ExperimentalStdlibApi::class)
         suspend fun toPublic(): Dataset {
-            val cats: Set<Category> = buildSet(categories.size) {
-                for (cat in categories) {
-                    val catRef = cat.get()
-                    requireNotNull(catRef, { "at least one of the categories was not found" })
-                    add(catRef.await().toObject(CategorySchema::class.java)!!.toPublic())
-                }
-            }
+            val cats = categories.map { c ->
+                c.get().await().toObject(CategorySchema::class.java)?.toPublic()
+                    ?: throw DatabaseService.NotFoundException(c.id)
+            }.toSet()
             return Dataset(self.id, name, cats)
         }
     }
@@ -185,11 +186,11 @@ class FirestoreDatabaseService internal constructor(
         }
 
 
-    override suspend fun putDataset(name: String, cats: Set<Category>): Dataset =
+    override suspend fun putDataset(name: String, categories: Set<Category>): Dataset =
         withContext(Dispatchers.IO) {
             val catRefs: MutableSet<DocumentReference> = mutableSetOf()
-            for (cat in cats) {
-                catRefs.add(categories.document(cat.id))
+            for (cat in categories) {
+                catRefs.add(this@FirestoreDatabaseService.categories.document(cat.id))
             }
             val data = DatasetSchema(name, catRefs.toList())
             val documentRef = datasets.add(data).await()
@@ -345,8 +346,8 @@ class FirestoreDatabaseService internal constructor(
         return documentRef.get().await().toObject(UserSchema::class.java)!!.toPublic()
     }
 
-    override suspend fun checkIsAdmin(fireStoreUser: User): Boolean {
-        return fireStoreUser.isAdmin
+    override suspend fun checkIsAdmin(user: User): Boolean {
+        return user.isAdmin
     }
 
     override suspend fun getUser(type: User.Type, uid: String): User? {

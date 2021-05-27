@@ -11,13 +11,19 @@ import com.github.HumanLearning2021.HumanLearningApp.room.*
 import com.google.firebase.auth.FirebaseUser
 import java.util.*
 
+/**
+ * Class used to interact with the database save locally on the device
+ * @param dbName name of the database
+ * @param context the application context
+ * @param room Room database of the application
+ */
 class OfflineDatabaseService internal constructor(
     val dbName: String,
     val context: Context,
     val room: RoomOfflineDatabase
 ) : DatabaseService {
 
-    private val pictureRepository: PictureRepository = PictureRepository(dbName, context)
+    private val pictureCache: PictureCache = PictureCache(dbName, context)
     private val databaseDao: DatabaseDao = room.databaseDao()
     private val datasetDao: DatasetDao = room.datasetDao()
     private val categoryDao: CategoryDao = room.categoryDao()
@@ -30,36 +36,22 @@ class OfflineDatabaseService internal constructor(
      */
     suspend fun clear() {
         room.databaseDao().delete(RoomEmptyHLDatabase(dbName))
-        pictureRepository.clear()
+        pictureCache.clear()
     }
 
-    /**
-     * A function to retrieve a picture from the database given a category
-     *
-     * @param category the category of the image to be retrieved
-     * @return a CategorizedPicture from the desired category. Null if no picture of the desired
-     * category is present in the database or if the category is not present
-     */
     override suspend fun getPicture(category: Category): CategorizedPicture? {
-        val pics =
-            categoryDao.loadAllPictures(category.id) ?: throw DatabaseService.NotFoundException(
-                category.id
-            )
-        val randomId = pics.pictures.map { p -> p.pictureId }.random()
-        return fromPicture(categoryDao.loadPicture(randomId)!!, categoryDao)
+        categoryDao.loadById(category.id) ?: throw DatabaseService.NotFoundException(category.id)
+        val randomId =
+            categoryDao.loadAllPictures(category.id)?.pictures?.map { pic -> pic.pictureId }
+                ?.random()
+        val picture = randomId?.let { categoryDao.loadPicture(it) }
+        return picture?.let { fromPicture(picture, categoryDao) }
     }
 
-    override suspend fun getPicture(pictureId: Id): CategorizedPicture? {
-        val pic = categoryDao.loadPicture(pictureId) ?: return null
-        return fromPicture(pic, categoryDao)
-    }
+    override suspend fun getPicture(pictureId: Id): CategorizedPicture? =
+        categoryDao.loadPicture(pictureId)?.let { fromPicture(it, categoryDao) }
 
-    /**
-     * A function to retrieve the ids of all the pictures from the database given a category
-     *
-     * @param category the category of image to be retrieved
-     * @return a List of ids. Can be empty if no pictures where found or if the category is not contained in the database
-     */
+
     override suspend fun getPictureIds(category: Category): List<String> {
         val pics =
             categoryDao.loadAllPictures(category.id) ?: throw DatabaseService.NotFoundException(
@@ -68,10 +60,8 @@ class OfflineDatabaseService internal constructor(
         return pics.pictures.map { p -> p.pictureId }
     }
 
-    override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? {
-        val cat = categoryDao.loadRepresentativePicture(categoryId) ?: return null
-        return fromPicture(cat, categoryDao)
-    }
+    override suspend fun getRepresentativePicture(categoryId: Id): CategorizedPicture? =
+        categoryDao.loadRepresentativePicture(categoryId)?.let { fromPicture(it, categoryDao) }
 
     override suspend fun putPicture(picture: Uri, category: Category): CategorizedPicture {
         val cat = categoryDao.loadById(category.id) ?: throw DatabaseService.NotFoundException(
@@ -79,16 +69,14 @@ class OfflineDatabaseService internal constructor(
         )
         val pic = RoomPicture(getID(), picture, cat.categoryId)
         val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
-        pictureRepository.savePicture(picture)
+        pictureCache.savePicture(picture)
         categoryDao.insertAll(pic)
         databaseDao.insertAll(ref)
         return fromPicture(pic, categoryDao)
     }
 
-    override suspend fun getCategory(id: Id): Category? {
-        val cat = categoryDao.loadById(id) ?: return null
-        return fromCategory(cat)
-    }
+    override suspend fun getCategory(id: Id): Category? =
+        categoryDao.loadById(id)?.let { fromCategory(it) }
 
     override suspend fun putCategory(categoryName: String): Category {
         val cat = RoomCategory(getID(), categoryName)
@@ -99,15 +87,10 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun getCategories(): Set<Category> {
-        return databaseDao.loadByName(dbName)!!.categories.map { c -> fromCategory(c) }.toSet()
+        return databaseDao.loadByName(dbName)?.categories?.map { c -> fromCategory(c) }?.toSet()
+            ?: setOf()
     }
 
-    /**
-     * Retrieves all the pictures categorized with the specified category
-     *
-     * @param category - the category whose pictures we want to retrieve
-     * @return the pictures categorized with the specified category, empty if the category is not contained in the dataset
-     */
     override suspend fun getAllPictures(category: Category): Set<CategorizedPicture> {
         val cats =
             categoryDao.loadAllPictures(category.id) ?: throw DatabaseService.NotFoundException(
@@ -116,11 +99,6 @@ class OfflineDatabaseService internal constructor(
         return cats.pictures.map { p -> fromPicture(p, categoryDao) }.toSet()
     }
 
-    /**
-     * Remove the category from the database and from all the datasets contained in this database and using this category
-     *
-     * @param category - the category to remove from the database
-     */
     override suspend fun removeCategory(category: Category) {
         categoryDao.delete(fromCategory(category))
         val dbRef = RoomDatabaseCategoriesCrossRef(dbName, category.id)
@@ -129,16 +107,10 @@ class OfflineDatabaseService internal constructor(
         datasetDao.delete(*dsRefs.toTypedArray())
     }
 
-    /**
-     * Removes the corresponding picture from the database
-     *
-     * @param picture - the picture to remove from the database
-     */
     override suspend fun removePicture(picture: CategorizedPicture) {
-        val pic = categoryDao.loadPicture(picture.id)
-        if (pic != null) {
+        categoryDao.loadPicture(picture.id)?.let { pic ->
             val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
-            pictureRepository.deletePicture(pic.pictureId)
+            pictureCache.deletePicture(pic.pictureId)
             categoryDao.delete(pic)
             databaseDao.delete(ref)
         }
@@ -148,8 +120,8 @@ class OfflineDatabaseService internal constructor(
         val id = getID()
         val ds = RoomDatasetWithoutCategories(id, name)
         val dsRefs = mutableListOf<RoomDatasetCategoriesCrossRef>()
-        for (c in categories) {
-            dsRefs.add(RoomDatasetCategoriesCrossRef(id, c.id))
+        categories.forEach { cat ->
+            dsRefs.add(RoomDatasetCategoriesCrossRef(id, cat.id))
         }
         val dbRef = RoomDatabaseDatasetsCrossRef(dbName, id)
         val cats = categories.map { c -> fromCategory(c) }
@@ -159,19 +131,12 @@ class OfflineDatabaseService internal constructor(
         return fromDataset(RoomDataset(ds, cats))
     }
 
-    override suspend fun getDataset(id: Id): Dataset? {
-        val ds = datasetDao.loadById(id) ?: return null
-        return fromDataset(ds)
-    }
+    override suspend fun getDataset(id: Id): Dataset? =
+        datasetDao.loadById(id)?.let { fromDataset(it) }
 
-    /**
-     * Deletes the specified dataset from the database
-     *
-     * @param id - the name of the dataset to delete
-     */
+
     override suspend fun deleteDataset(id: Id) {
-        val ds = datasetDao.loadById(id)
-        if (ds != null) {
+        datasetDao.loadById(id)?.let { ds ->
             val dsRefs = datasetDao.loadAll(ds.datasetWithoutCategories.datasetId)
             val dbRef = RoomDatabaseDatasetsCrossRef(dbName, ds.datasetWithoutCategories.datasetId)
             datasetDao.delete(ds.datasetWithoutCategories)
@@ -193,12 +158,10 @@ class OfflineDatabaseService internal constructor(
     }
 
     override suspend fun getDatasets(): Set<Dataset> {
-        return databaseDao.loadByName(dbName)?.datasets?.map { d ->
-            fromDataset(
-                datasetDao.loadById(
-                    d.datasetId
-                )!!
-            )
+        return databaseDao.loadByName(dbName)?.datasets?.mapNotNull { d ->
+            datasetDao.loadById(
+                d.datasetId
+            )?.let { fromDataset(it) }
         }?.toSet() ?: setOf()
     }
 
@@ -258,7 +221,7 @@ class OfflineDatabaseService internal constructor(
         return fromUser(user)
     }
 
-    override suspend fun getStatistic(user: User.Id, dataset: Id): Statistic? {
+    override suspend fun getStatistic(userId: User.Id, datasetId: Id): Statistic? {
         TODO("Not yet implemented")
     }
 
