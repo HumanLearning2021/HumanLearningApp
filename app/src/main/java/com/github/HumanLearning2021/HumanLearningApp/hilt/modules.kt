@@ -30,10 +30,16 @@ import javax.inject.Singleton
 @Retention(AnnotationRetention.BINARY)
 annotation class ProductionDatabaseName
 
+/** In-memory database for testing,
+preloaded with known data.
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DummyDatabase
 
+/** Read-only database used in unit tests,
+preloaded with known data in the Firebase emulator.
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class TestDatabase
@@ -42,10 +48,12 @@ annotation class TestDatabase
 @Retention(AnnotationRetention.BINARY)
 annotation class CachedTestDatabase
 
+/** Production database used by the app. */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ProdDatabase
 
+/** Writable database used in unit tests. */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ScratchDatabase
