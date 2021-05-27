@@ -17,7 +17,6 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
@@ -49,12 +48,11 @@ class TakePictureActivityTest {
     val hiltRule = HiltAndroidRule(this)
 
     @Inject
-    @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
     @BindValue
     @ProductionDatabaseName
-    var dbName = "dummy"
+    val dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
 

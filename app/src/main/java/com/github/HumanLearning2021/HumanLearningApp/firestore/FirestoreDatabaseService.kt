@@ -3,7 +3,6 @@ package com.github.HumanLearning2021.HumanLearningApp.firestore
 import android.net.Uri
 import android.util.Log
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
-import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionFirebaseApp
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
@@ -26,7 +25,7 @@ import javax.inject.Inject
  */
 class FirestoreDatabaseService @Inject internal constructor(
     @ProductionDatabaseName dbName: String,
-    @ProductionFirebaseApp firestore: FirebaseFirestore
+    firestore: FirebaseFirestore
 ) : DatabaseService {
     private val db = firestore
     private val categories = db.collection("/databases/$dbName/categories")

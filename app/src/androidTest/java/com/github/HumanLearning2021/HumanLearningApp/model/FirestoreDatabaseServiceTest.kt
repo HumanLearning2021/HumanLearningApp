@@ -1,11 +1,9 @@
 package com.github.HumanLearning2021.HumanLearningApp.model
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.TestDatabase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -16,7 +14,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
 
-@UninstallModules(DatabaseServiceModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class FirestoreDatabaseServiceTest {
