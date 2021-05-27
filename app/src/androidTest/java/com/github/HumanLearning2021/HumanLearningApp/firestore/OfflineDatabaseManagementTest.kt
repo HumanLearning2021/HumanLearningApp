@@ -8,7 +8,7 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.OfflineTestDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.offline.PictureRepository
+import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -57,7 +57,7 @@ class OfflineDatabaseManagementTest {
 
     @After
     fun tearDown() = runBlocking {
-        PictureRepository("demo", context).clear()
+        PictureCache("demo", context).clear()
         room.clearAllTables()
     }
 

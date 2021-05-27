@@ -21,9 +21,8 @@ interface DatabaseManagement {
     /**
      * A function to retrieve a picture from the database given its id
      *
-     * @param category the category of the image to be retrieved
-     * @return a CategorizedPicture from the desired category. Null if no picture of the desired
-     * category is present in the database.
+     * @param pictureId the id the image to be retrieved
+     * @return the desired image, null if it does not exist in the database
      * @throws DatabaseService.NotFoundException if there is not picture of the provided id in the database
      */
     suspend fun getPicture(pictureId: Id): CategorizedPicture?
@@ -149,7 +148,7 @@ interface DatabaseManagement {
     /**
      * Get the dataset of the specified name from the underlying database
      *
-     * @param name - the name of the desired dataset
+     * @param datasetName - the name of the desired dataset
      * @return all the matching datasets
      */
     suspend fun getDatasetByName(datasetName: String): Collection<Dataset>
