@@ -19,7 +19,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
@@ -60,7 +59,6 @@ class AddPictureNavigationTest {
     )
 
     @Inject
-    @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
     @BindValue
