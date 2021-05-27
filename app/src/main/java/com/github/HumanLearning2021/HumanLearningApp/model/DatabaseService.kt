@@ -2,13 +2,12 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import com.google.firebase.auth.FirebaseUser
 
-
 /**
  * An interface representing the part of the model interacting with data sets
  */
 interface DatabaseService {
 
-    data class NotFoundException(val id: Id) : Exception("${id} not found in database")
+    data class NotFoundException(val id: Id) : Exception("$id not found in database")
 
     @Deprecated(
         "Pictures now have an identifying id which should be used. If a random picture is wanted, first retrieve all the ids, select one among them at random then retrieve the picture.",
@@ -26,9 +25,8 @@ interface DatabaseService {
     /**
      * A function to retrieve a picture from the database given its id
      *
-     * @param category the category of the image to be retrieved
-     * @return a CategorizedPicture from the desired category. Null if no picture of the desired
-     * category is present in the database.
+     * @param pictureId the id the image to be retrieved
+     * @return the desired image, null if it does not exist in the database
      */
     suspend fun getPicture(pictureId: Id): CategorizedPicture?
 
@@ -72,7 +70,7 @@ interface DatabaseService {
     /**
      * A function to retrieve a category from the database
      *
-     * @param categoryId the id of the desired category
+     * @param id the id of the desired category
      * @return the desired category if present, null otherwise
      */
     suspend fun getCategory(id: Id): Category?
@@ -198,5 +196,5 @@ interface DatabaseService {
     /**
      * Store the given statistic in the database, overriding any conflicting ones.
      */
-    suspend fun putStatistic(statistic: Statistic): Unit
+    suspend fun putStatistic(statistic: Statistic)
 }

@@ -13,7 +13,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class EvaluationResult(val successFailureCountPerPhase: List<Pair<Int, Int>>) : Parcelable
 
-
 class EvaluationModel(private val dataset: Dataset) {
     /**
      * Phase number corresponds to nb of target categories on which to sort

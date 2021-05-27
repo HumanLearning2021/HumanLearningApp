@@ -6,8 +6,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DemoDatabase
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ScratchDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.TestDatabase
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.google.firebase.auth.ktx.auth
@@ -32,8 +32,8 @@ import javax.inject.Inject
 class FirestoreDatabaseServiceTest {
 
     @Inject
-    @DemoDatabase
-    lateinit var demoInterface: DatabaseService
+    @TestDatabase
+    lateinit var db: DatabaseService
 
     @Inject
     @ScratchDatabase
@@ -61,9 +61,9 @@ class FirestoreDatabaseServiceTest {
 
     @Test
     fun test_getAllPictures() = runBlocking {
-        val appleCategory = demoInterface.getCategory(appleCategoryId)
+        val appleCategory = db.getCategory(appleCategoryId)
         requireNotNull(appleCategory, { "apple category not found in demo database" })
-        val pics = demoInterface.getAllPictures(appleCategory)
+        val pics = db.getAllPictures(appleCategory)
         assertThat(pics, hasSize(5))
         for (p in pics) {
             assertThat(p, hasCategory(equalTo(appleCategory)))
@@ -73,7 +73,7 @@ class FirestoreDatabaseServiceTest {
     @Test
     fun test_getAllPictures_throwsIfCategoryNotPresent(): Unit = runBlocking {
         runCatching {
-            demoInterface.getAllPictures(fakeCategory)
+            db.getAllPictures(fakeCategory)
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -84,7 +84,7 @@ class FirestoreDatabaseServiceTest {
     @Test
     fun test_removeCategory_throws(): Unit = runBlocking {
         runCatching {
-            demoInterface.removeCategory(fakeCategory)
+            db.removeCategory(fakeCategory)
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -166,20 +166,20 @@ class FirestoreDatabaseServiceTest {
 
     @Test
     fun test_getDataset() = runBlocking {
-        assertThat(demoInterface.getDataset("PzuR0B48GpYN5ERxM3DW")!!.name, equalTo("Fruit"))
+        assertThat(db.getDataset("PzuR0B48GpYN5ERxM3DW")!!.name, equalTo("Fruit"))
     }
 
     @Test
     fun test_getDataset_na() = runBlocking {
         val randomDatasetName = "${UUID.randomUUID()}"
-        assertThat(demoInterface.getDataset(randomDatasetName), equalTo(null))
+        assertThat(db.getDataset(randomDatasetName), equalTo(null))
     }
 
     @Test
     fun test_deleteDataset_throwsIfDatasetNotPresent(): Unit = runBlocking {
         val randomDatasetName = "${UUID.randomUUID()}"
         runCatching {
-            demoInterface.deleteDataset(randomDatasetName)
+            db.deleteDataset(randomDatasetName)
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -199,7 +199,7 @@ class FirestoreDatabaseServiceTest {
     @Test
     fun test_putRepresentativePicture_throwsIfCategoryNotPresent() = runBlocking {
         runCatching {
-            demoInterface.putRepresentativePicture(Uri.EMPTY, fakeCategory)
+            db.putRepresentativePicture(Uri.EMPTY, fakeCategory)
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -230,14 +230,14 @@ class FirestoreDatabaseServiceTest {
 
     @Test
     fun test_getDatasets() = runBlocking {
-        assertThat(demoInterface.getDatasets().first().name, equalTo("Fruit"))
+        assertThat(db.getDatasets().first().name, equalTo("Fruit"))
     }
 
     @Test
     fun test_removeCategoryFromDataset_throwsIfDatasetNotContained(): Unit = runBlocking {
-        val cat = demoInterface.getCategories().first()
+        val cat = db.getCategories().first()
         runCatching {
-            demoInterface.removeCategoryFromDataset(fakeDataset, cat)
+            db.removeCategoryFromDataset(fakeDataset, cat)
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -247,9 +247,9 @@ class FirestoreDatabaseServiceTest {
 
     @Test
     fun test_removeCategoryFromDataset_throwsIfCategoryNotContained(): Unit = runBlocking {
-        val ds = demoInterface.getDatasets().first()
+        val ds = db.getDatasets().first()
         runCatching {
-            demoInterface.removeCategoryFromDataset(ds, fakeCategory)
+            db.removeCategoryFromDataset(ds, fakeCategory)
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -274,7 +274,7 @@ class FirestoreDatabaseServiceTest {
     @Test
     fun test_editDatasetName_throwsIfDatasetNotPresent(): Unit = runBlocking {
         runCatching {
-            demoInterface.editDatasetName(fakeDataset, "Some name")
+            db.editDatasetName(fakeDataset, "Some name")
         }.fold({
             fail("unexpected successful completion")
         }, {
@@ -295,12 +295,12 @@ class FirestoreDatabaseServiceTest {
 
     @Test
     fun test_getRepresentativePicture_null() = runBlocking {
-        assertThat(demoInterface.getRepresentativePicture(pearCategoryId), equalTo(null))
+        assertThat(db.getRepresentativePicture(pearCategoryId), equalTo(null))
     }
 
     @Test
     fun test_getRepresentativePicture() = runBlocking {
-        assertThat(demoInterface.getRepresentativePicture(appleCategoryId), not(equalTo(null)))
+        assertThat(db.getRepresentativePicture(appleCategoryId), not(equalTo(null)))
     }
 
     @Test

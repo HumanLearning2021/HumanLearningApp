@@ -27,7 +27,6 @@ import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
@@ -63,7 +62,6 @@ class DisplayImageSetActivityTest {
     val hiltRule = HiltAndroidRule(this)
 
     @Inject
-    @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
     @get:Rule
@@ -76,7 +74,7 @@ class DisplayImageSetActivityTest {
 
     @BindValue
     @ProductionDatabaseName
-    var dbName = "dummy"
+    val dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
 

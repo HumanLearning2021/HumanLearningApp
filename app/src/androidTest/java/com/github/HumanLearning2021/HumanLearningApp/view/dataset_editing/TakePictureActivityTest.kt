@@ -1,7 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
 import android.Manifest
-import android.content.Context
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -18,14 +17,12 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.GlobalDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.PermissionGranter
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -51,16 +48,11 @@ class TakePictureActivityTest {
     val hiltRule = HiltAndroidRule(this)
 
     @Inject
-    @GlobalDatabaseManagement
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
     @BindValue
     @ProductionDatabaseName
-    var dbName = "dummy"
-
-    @Inject
-    @ApplicationContext
-    lateinit var context: Context
+    val dbName = "dummy"
 
     lateinit var dbMgt: DatabaseManagement
 
@@ -83,7 +75,6 @@ class TakePictureActivityTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        context.cacheDir.deleteRecursively()
         dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         TestUtils.getFirstDataset(dbMgt).id
         datasetId = TestUtils.getFirstDataset(dbMgt).id
