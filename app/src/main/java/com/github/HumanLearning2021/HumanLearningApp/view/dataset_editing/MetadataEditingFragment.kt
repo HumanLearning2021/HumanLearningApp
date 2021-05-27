@@ -95,7 +95,7 @@ class MetadataEditingFragment : Fragment() {
                      * and the name of the dataset to the layout and set them as non clickable.
                      */
                     dataset = datasetId?.let { dBManagement.getDatasetById(it) }!!
-                    binding.datasetName.setText(dataset.name)
+                    binding.datasetName?.setText(dataset.name)
                     dsCategories = dataset.categories
                     val count = dsCategories.size
                     var v: View?
