@@ -135,6 +135,7 @@ class GeneralNavigationTest {
         assertCurrentFragmentIsCorrect(R.id.learningDatasetSelectionFragment)
     }
 
+
     private fun navigateToDisplayDataset() {
         onView(withId(R.id.datasetsOverviewFragment)).perform(click())
         onView(withId(R.id.DatasetList_list))

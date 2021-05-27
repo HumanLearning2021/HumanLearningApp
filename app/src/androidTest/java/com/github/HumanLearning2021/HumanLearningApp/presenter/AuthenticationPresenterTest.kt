@@ -63,4 +63,16 @@ class AuthenticationPresenterTest {
         assertThat(user.isAdmin, equalTo(true))
     }
 
+    @Test
+    fun signOutUserSuccess() {
+        runBlocking {
+            val firebaseUser = Firebase.auth.signInAnonymously().await().user!!
+            presenter.onSuccessfulLogin(true)
+            presenter.signOut()
+            val user = presenter.currentUser
+
+        }
+
+    }
+
 }

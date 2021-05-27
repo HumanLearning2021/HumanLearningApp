@@ -20,6 +20,7 @@ class AuthenticationPresenter @Inject constructor(
     @DummyDatabase
     private val db: DatabaseService,
 ) {
+
     /**
      * Create an Intent that can be used to perform authentication via startActivityForResult
      */

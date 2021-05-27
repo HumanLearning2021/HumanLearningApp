@@ -63,7 +63,7 @@ class GoogleSignInWidget : Fragment() {
         updateUi()
     }
 
-    private fun onSignOutPress() {
+    fun onSignOutPress() {
         lifecycleScope.launch {
             presenter.signOut()
         }
@@ -91,7 +91,7 @@ class GoogleSignInWidget : Fragment() {
         )
     }
 
-    private fun handleSignIn() {
+    fun handleSignIn() {
         val user = presenter.currentUser
         if (user != null) {
             editor?.putString("name", user?.displayName)

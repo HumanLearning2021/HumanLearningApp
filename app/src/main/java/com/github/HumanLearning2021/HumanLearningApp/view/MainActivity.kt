@@ -82,11 +82,12 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 goToDsEditingButton?.isVisible = false
                 val user = authPresenter.currentUser
-                var isAdmin = user?.isAdmin ?: false
-                isAdmin.let {
-                    goToDsEditingButton?.isVisible = it
+                var isAdmin: Boolean
+                if (prefs!!.getBoolean("hasLogin", false)) {
+                    isAdmin = prefs!!.getBoolean("isAdmin", false)
+                } else {
+                    isAdmin = user?.isAdmin ?: false
                 }
-                isAdmin = prefs!!.getBoolean("hasLogin", false)
                 isAdmin.let {
                     goToDsEditingButton?.isVisible = it
                 }
