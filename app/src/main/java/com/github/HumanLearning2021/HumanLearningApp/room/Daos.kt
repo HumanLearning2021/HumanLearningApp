@@ -5,6 +5,9 @@ import com.github.HumanLearning2021.HumanLearningApp.model.User
 
 @Dao
 interface CategoryDao {
+    @Query("SELECT * FROM category")
+    suspend fun loadAll(): List<RoomCategory>
+
     @Query("SELECT * FROM category WHERE categoryId = :id")
     suspend fun loadById(id: String): RoomCategory?
 
@@ -111,6 +114,15 @@ interface DatabaseDao {
 
     @Delete
     suspend fun delete(ref: RoomDatabasePicturesCrossRef)
+}
+
+@Dao
+interface PictureDao {
+    @Query("SELECT * FROM picture")
+    suspend fun loadAllPictures(): List<RoomPicture>
+
+    @Query("SELECT * FROM RoomUnlinkedRepresentativePicture")
+    suspend fun loadAllRepresentativePictures(): List<RoomUnlinkedRepresentativePicture>
 }
 
 @Dao

@@ -16,4 +16,5 @@ abstract class RoomOfflineDatabase : RoomDatabase() {
     abstract fun datasetDao(): DatasetDao
     abstract fun userDao(): UserDao
     abstract fun databaseDao(): DatabaseDao
+    abstract fun pictureDao(): PictureDao
 }
