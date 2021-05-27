@@ -9,6 +9,7 @@ databases. I spent most of my alloted time on the first task as it required
 more extensive code changes. Overall, this reduced our technical debt.
 
 ## Jaakik, Marouane
+This Sprint, I have implemented the signing out of the user as well as making the logging persist even after closing the app. I spent around 11 hours this week and felt smooth. 
 
 ## Konrad, Jonas Franz
 This week I worked on three tasks. First I added image compression to every image that gets added to the database. This drasticly reduced load times with no noticeable quality loss.
@@ -22,4 +23,6 @@ This week I worked on addressing Lint issues. I managed to fix most of them, wit
 
 ## Vial, Nicolas
 In this sprint, I simply wrote the KDoc for the dataset editing fragments and did some refactoring following the code review. I worked only 6 hours during this sprint counting the reviews because I was very busy with other projects.
+
 ## Overall Team: Lessons Learned
+This week the Team has done very well again. For the 3rd time we were able to merge all our pull requests. Good reactivtiy from everyone , this week went well with no major problems. 
