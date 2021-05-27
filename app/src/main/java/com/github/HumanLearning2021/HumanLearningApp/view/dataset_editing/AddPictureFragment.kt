@@ -21,6 +21,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.*
 
+
 /**
  * Fragment used to be able to select the way the user wants
  * to add a new picture to the dataset. The two options are

@@ -73,7 +73,7 @@ class TakePictureFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         /**
          * Ask the permission to use the camera to the user if needed and launch the camera.
          */

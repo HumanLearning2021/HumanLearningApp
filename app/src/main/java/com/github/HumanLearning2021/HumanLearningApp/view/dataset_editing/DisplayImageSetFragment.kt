@@ -283,7 +283,11 @@ class DisplayImageSetFragment : Fragment() {
                 if (checked) {
                     numberOfSelectedPictures += 1
                     mode!!.title =
-                        getString(R.string.numberOfSelectedPicturesText, numberOfSelectedPictures)
+                        resources.getQuantityString(
+                            R.plurals.numberOfSelectedPicturesText,
+                            numberOfSelectedPictures,
+                            numberOfSelectedPictures
+                        )
                     binding.displayImageSetImagesGridView[position].alpha = 0.35F
                     binding.displayImageSetImagesGridView[position].elevation = 0F
                     categorizedPicturesSelectedList =
@@ -297,7 +301,11 @@ class DisplayImageSetFragment : Fragment() {
                     binding.displayImageSetImagesGridView[position].alpha = 1F
                     binding.displayImageSetImagesGridView[position].elevation = tenDp
                     mode!!.title =
-                        getString(R.string.numberOfSelectedPicturesText, numberOfSelectedPictures)
+                        resources.getQuantityString(
+                            R.plurals.numberOfSelectedPicturesText,
+                            numberOfSelectedPictures,
+                            numberOfSelectedPictures
+                        )
                     categorizedPicturesSelectedList =
                         categorizedPicturesSelectedList.minus(
                             categorizedPicturesList.elementAt(

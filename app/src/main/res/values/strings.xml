@@ -27,13 +27,6 @@
     <string name="learning_settings_btEvaluation">EVALUATION</string>
     <string name="learning_settings_tvLearningMode">LEARNING MODE</string>
 
-    <string name="LearningDatasetSelection_title">Select the dataset on which to learn</string>
-
-    <string name="main_btLearning">LEARNING</string>
-    <string name="main_btDatasetsOverview">DATASETS OVERVIEW</string>
-    <string name="main_btDisplayDataset">DISPLAY DATASET</string>
-    <string name="main_btAddImage">ADD IMAGE TO THE DATASET</string>
-
     <string name="info">Info</string>
     <string name="modify_categories">Modify name and categories</string>
     <string name="add_new_picture">Add new picture</string>
@@ -41,11 +34,8 @@
     <string name="enter_dataset_name">Enter dataset name</string>
     <string name="ds_name">Dataset name</string>
     <string name="imagetobedisplayed">image to be displayed</string>
-    <string name="buttontoremovepicturefromdataset">button to remove picture from dataset</string>
-    <string name="picturehasbeenremoved">This Picture has been removed from this dataset.</string>
     <string name="DataOverview_CreateButton">Create dataset</string>
     <string name="DatasetsOverview_Title">Datasets Overview</string>
-    <string name="setAsRepresentativePicture">Set as representative picture</string>
     <string name="deletingDataset">Deleting dataset</string>
     <string name="deleteConfirmationMessage">Are you sure you want to delete this dataset?</string>
     <string name="categoriesEditingInfo">- A category is a word representing a type of object (Ex: Fork) -\n\n
@@ -54,8 +44,10 @@
         - To set an image as representative of the category : click longer on the image and select the star icon -</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
-    <string name="Close">Close</string>
-    <string name="numberOfSelectedPicturesText">%d selected pictures</string>
+    <plurals name="numberOfSelectedPicturesText">
+        <item quantity="one">%d picture selected </item>
+        <item quantity="other">%d pictures selected </item>
+    </plurals>
     <string name="SignInFragment_loginStatusSuccessMessage">Welcome %1$s</string>
     <string name="SignInFragment_loginStatusDefaultMessage">Not logged in</string>
     <string name="DatasetList_default_ds_name">Dataset name</string>
@@ -64,13 +56,9 @@
     <string name="select_existing_picture">Select Existing Picture</string>
     <string name="use_camera">Use camera</string>
     <string name="choose_picture">Choose Picture</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delete_selected_pictures">Delete selected pictures</string>
     <string name="set_as_representative_picture">Set as representative picture</string>
-    <string name="SearchTitle">look up dataset</string>
-    <string name="SearchNoMatch">No Match Found</string>
     <string name="menu_goto_learning">Learning</string>
-    <string name="goto_dataset_editing">Dataset Editing</string>
     <string name="login">Login</string>
     <string name="startLearning">START LEARNING!</string>
     <string name="menu_goto_dataset_editing">Dataset Editing</string>
@@ -90,10 +78,16 @@
     <string name="LoginAdminCheckBox">Check if Admin</string>
     <string name="nav_graph_label_evaluation_result">Evaluation Result</string>
     <string name="search">Search</string>
-    <string name="download">download</string>
     <string name="download_icon">download_icon</string>
-    <string name="download_database">Download database</string>
     <string name="evaluation_result_graph_label">Success percentage</string>
     <string name="learn_again">Learn Again!</string>
     <string name="home">Home</string>
+    <string name="imageViewLogoContentDescription">Home Logo</string>
+    <string name="learning_im_to_sort_contentDescription">Image To Sort</string>
+    <string name="learning_cat_2_contentDescription">Third category to sort</string>
+    <string name="learning_cat_1_contentDescription">Second category to sort</string>
+    <string name="learning_cat_0_contentDescription">First category to sort</string>
+    <string name="selectPicturePreviewContentDescription">Selected Image Preview</string>
+    <string name="image_and_category_item_contentDescription">Image/Category Pair</string>
+    <string name="image_item_contentDescription">Image Item</string>
 </resources>
