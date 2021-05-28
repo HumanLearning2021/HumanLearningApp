@@ -2,16 +2,18 @@ package com.github.HumanLearning2021.HumanLearningApp
 
 import android.util.Log
 import android.view.View
+import android.widget.SearchView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.both
 import org.hamcrest.TypeSafeMatcher
 
 object TestUtils {
@@ -111,5 +113,24 @@ object TestUtils {
         require(maybeDataset != null)
         { "There has to be a dataset with $N categories in $dbMgt" }
         return maybeDataset
+    }
+
+    // per https://stackoverflow.com/a/60032604
+    fun setTextInSearchView(value: String): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> =
+                both(
+                    isDisplayed()
+                ).and(
+                    isAssignableFrom(SearchView::class.java)
+                )
+
+            override fun perform(uiController: UiController, view: View) {
+                view as SearchView
+                view.setQuery(value, false)
+            }
+
+            override fun getDescription(): String = "replace text($value)"
+        }
     }
 }

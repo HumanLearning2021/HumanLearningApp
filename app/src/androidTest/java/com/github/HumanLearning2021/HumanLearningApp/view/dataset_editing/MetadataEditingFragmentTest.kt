@@ -16,8 +16,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -33,18 +31,18 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.hasSize
-import org.junit.*
+import org.junit.After
 import org.junit.Assume.assumeTrue
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
@@ -165,22 +163,6 @@ class MetadataEditingFragmentTest {
                 datasetId
             )
         )
-    }
-
-    @Ignore("will be fixed later")
-    @Test
-    fun clickOnInfoButtonWorks() {
-        runBlocking {
-            Firebase.auth.signInAnonymously().await().user!!
-            authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
-            navigateToCreateDatasetFragment()
-            onView(withId(R.id.categories_editing_menu_info)).perform(click())
-            waitFor(1) // increase if needed
-            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(0, 100)
-            waitFor(1) // increase if needed
-            onView(withId(R.id.button_add)).check(ViewAssertions.matches(isDisplayed()))
-        }
     }
 
     @Test
