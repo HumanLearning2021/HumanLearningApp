@@ -3,7 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view
 
 import androidx.navigation.NavController
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -26,12 +26,12 @@ import org.junit.runner.RunWith
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class GoogleSignInWidgetTest {
+class GoogleSignInFragmentTest {
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    private lateinit var fragment: GoogleSignInWidget
+    private lateinit var fragment: GoogleSignInFragment
     private lateinit var navController: NavController
 
 
@@ -44,8 +44,8 @@ class GoogleSignInWidgetTest {
 
     @Test
     fun test_success() {
-        launchFragmentInHiltContainer<GoogleSignInWidget> {
-            onActivityResult(GoogleSignInWidget.RC_SIGN_IN, 0, null)
+        launchFragmentInHiltContainer<GoogleSignInFragment> {
+            onActivityResult(GoogleSignInFragment.RC_SIGN_IN, 0, null)
         }
     }
 
@@ -68,7 +68,7 @@ class GoogleSignInWidgetTest {
     fun uncheckedBoxSetAdminfalse() {
         onView(withId(R.id.checkBox)).perform(click())
         onView(withId(R.id.checkBox)).perform(click())
-        assertThat(GoogleSignInWidget.isAdmin, equalTo(false))
+        assertThat(GoogleSignInFragment.isAdmin, equalTo(false))
     }
 
 
@@ -136,7 +136,7 @@ class GoogleSignInWidgetTest {
     }
 
     private fun launchFragment() {
-        launchFragmentInHiltContainer<GoogleSignInWidget> {
+        launchFragmentInHiltContainer<GoogleSignInFragment> {
             fragment = this
         }
     }

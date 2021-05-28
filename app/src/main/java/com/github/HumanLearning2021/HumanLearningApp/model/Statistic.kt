@@ -3,6 +3,9 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
+/**
+ * All the possible learning events.
+ */
 enum class Event {
     /** the learner correctly performed an association */
     SUCCESS,
@@ -13,8 +16,8 @@ enum class Event {
 
 /**
  * An entity that stores a user's performance on a given dataset
- * @param user primary key designating the user
- * @param dataset primary key designating the dataset
+ * @param id primary key designating the user
+ * @param occurrences map of all the event that happened in the learning sessions
  */
 @Parcelize
 data class Statistic(

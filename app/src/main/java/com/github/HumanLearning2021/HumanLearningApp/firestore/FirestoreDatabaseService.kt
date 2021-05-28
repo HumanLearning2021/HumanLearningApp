@@ -38,6 +38,11 @@ class FirestoreDatabaseService @Inject internal constructor(
     private val imagesDir = storage.reference.child("$dbName/images")
 
     companion object {
+        /**
+         * Function to get the names of all the available databases
+         * @param app Firebase where the databases are stored
+         * @return a list containing the names of all the available databases
+         */
         suspend fun getDatabaseNames(app: FirebaseApp? = null): List<String> {
             val res = Firebase.firestore(app ?: Firebase.app).collection("databases").get().await()
             return res.documents.map { doc -> doc.id }

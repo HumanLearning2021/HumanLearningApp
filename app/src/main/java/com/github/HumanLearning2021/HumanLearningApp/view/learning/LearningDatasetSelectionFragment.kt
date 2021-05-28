@@ -14,6 +14,9 @@ import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearnin
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragment where the user is presented with a choice of datasets to learn on
+ */
 @AndroidEntryPoint
 class LearningDatasetSelectionFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity

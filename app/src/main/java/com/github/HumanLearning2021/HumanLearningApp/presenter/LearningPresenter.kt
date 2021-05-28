@@ -8,7 +8,6 @@ import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-
 /**
  * Presenter for the learning fragment
  * @param dbMgt database manager used to retrieve data for learning
@@ -98,6 +97,10 @@ class LearningPresenter(
         view.invalidate()
     }
 
+    /**
+     * Saves an event for use in statistics
+     * @param event to save
+     */
     suspend fun saveEvent(event: Event) =
         auth.currentUser?.let { user ->
             dbMgt.countOccurrence(user.id, dataset.id, event)

@@ -16,6 +16,9 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningSettingsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragment where the user is presented with a choice of learning modes/settings to choose from
+ */
 @AndroidEntryPoint
 class LearningSettingsFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
@@ -82,7 +85,6 @@ class LearningSettingsFragment : Fragment() {
         callback.isEnabled = false
         callback.remove()
         _binding = null
-
     }
 }
 

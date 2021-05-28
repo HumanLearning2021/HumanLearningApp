@@ -10,7 +10,9 @@ import androidx.navigation.fragment.findNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentHomeBinding
 
-
+/**
+ * Fragment hosting all the fragments loaded according to Navigation Component
+ */
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null

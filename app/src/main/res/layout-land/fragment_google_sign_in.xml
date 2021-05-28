@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.GoogleSignInWidget">
+    tools:context=".view.GoogleSignInFragment">
 
     <TextView
         android:id="@+id/loginStatus"
@@ -26,6 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginStatus" />
+
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"

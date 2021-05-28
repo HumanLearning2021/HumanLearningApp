@@ -23,6 +23,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+/**
+ * Fragment where the user can learn abstraction by matching pictures
+ */
 @AndroidEntryPoint
 class LearningFragment : Fragment() {
     private lateinit var audioFeedback: LearningAudioFeedback

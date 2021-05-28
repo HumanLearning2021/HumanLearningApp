@@ -22,8 +22,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Fragment where the user can sign in with his Google account
+ */
 @AndroidEntryPoint
-class GoogleSignInWidget : Fragment() {
+class GoogleSignInFragment : Fragment() {
 
     @Inject
     lateinit var presenter: AuthenticationPresenter
@@ -65,12 +68,12 @@ class GoogleSignInWidget : Fragment() {
         lifecycleScope.launch {
             presenter.signOut()
         }
-        editor?.putString("name", "")
-        editor?.putString("email", "")
-        editor?.putString("uid", "")
-        editor?.putBoolean("hasLogin", false)
-        editor?.putBoolean("isAdmin", false)
-        editor?.apply()
+        editor.putString("name", "")
+        editor.putString("email", "")
+        editor.putString("uid", "")
+        editor.putBoolean("hasLogin", false)
+        editor.putBoolean("isAdmin", false)
+        editor.apply()
         updateUi()
     }
 
@@ -89,15 +92,15 @@ class GoogleSignInWidget : Fragment() {
     }
 
     fun handleSignIn() {
-        val user = presenter.currentUser
-        if (user != null) {
-            editor?.putString("name", user?.displayName)
-            editor?.putString("email", user?.email)
-            editor?.putString("uid", user?.uid)
-            editor?.putBoolean("hasLogin", true)
-            editor?.putBoolean("isAdmin", isAdmin)
-            editor?.apply()
+        presenter.currentUser?.let { user ->
+            editor.putString("name", user.displayName)
+            editor.putString("email", user.email)
+            editor.putString("uid", user.uid)
+            editor.putBoolean("hasLogin", true)
+            editor.putBoolean("isAdmin", isAdmin)
+            editor.apply()
         }
+
     }
 
 
@@ -148,15 +151,15 @@ class GoogleSignInWidget : Fragment() {
 
     fun updateUi() {
         val savedUser: User?
-        if (prefs!!.getBoolean("hasLogin", false)) {
+        if (prefs.getBoolean("hasLogin", false)) {
             view?.findViewById<TextView>(R.id.loginStatus)?.text =
-                prefs?.getString("name", "Not logged in!")
+                prefs.getString("name", "Not logged in!")
             savedUser = User(
-                prefs!!.getString("name", ""),
-                prefs!!.getString("email", ""),
-                prefs!!.getString("uid", "")!!,
+                prefs.getString("name", ""),
+                prefs.getString("email", ""),
+                prefs.getString("uid", "")!!,
                 User.Type.FIREBASE,
-                prefs!!.getBoolean("isAdmin", false)
+                prefs.getBoolean("isAdmin", false)
             )
             setSignOutUi()
 

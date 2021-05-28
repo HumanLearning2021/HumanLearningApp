@@ -4,7 +4,11 @@ import android.net.Uri
 import androidx.room.TypeConverter
 import com.github.HumanLearning2021.HumanLearningApp.model.User
 
+/**
+ * Provides methods to convert data types to and from Room compatible data types
+ */
 class RoomTypeConverters {
+
     @TypeConverter
     fun fromUserType(type: User.Type): Int {
         return type.ordinal
