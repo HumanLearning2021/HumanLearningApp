@@ -262,7 +262,6 @@ class LearningFragment : Fragment() {
             targetImageViews = updateTargetImageViews()
 
             lifecycleScope.launch {
-                learningPresenter.saveEvent(Event.SUCCESS)
                 learningPresenter.updateForNextSorting(
                     targetImageViews,
                     binding.learningToSort
@@ -272,9 +271,6 @@ class LearningFragment : Fragment() {
             audioFeedback.startIncorrectFeedback()
             enclosingCardView(v)?.let { visualFeedback.startIncorrectFeedback(it) }
             evaluationModel?.addFailure()
-            lifecycleScope.launch {
-                learningPresenter.saveEvent(Event.MISTAKE)
-            }
         }
         evaluationModel?.let { Log.d("Evaluation", it.getCurrentEvaluationResult().toString()) }
         return sortingCorrect

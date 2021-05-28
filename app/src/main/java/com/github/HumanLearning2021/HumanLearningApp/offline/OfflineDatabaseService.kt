@@ -220,12 +220,4 @@ class OfflineDatabaseService internal constructor(
         val user = userDao.load(uid, type) ?: return null
         return fromUser(user)
     }
-
-    override suspend fun getStatistic(userId: User.Id, datasetId: Id): Statistic? {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun putStatistic(statistic: Statistic) {
-        TODO("Not yet implemented")
-    }
 }
