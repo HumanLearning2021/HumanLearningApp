@@ -23,7 +23,6 @@ import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -72,11 +71,10 @@ class DownloadSwitchTestNotDownloadedBeforehand {
             .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isChecked())))
     }
 
-    @Ignore("Fails for no apparent reason, tested on emulator, will be fixed later")
     @Test
     fun settingSwitchDownloadsDatabase(): Unit = runBlocking {
         Espresso.onView(ViewMatchers.withId(R.id.download_switch)).perform(ViewActions.click())
-        TestUtils.waitForAction(500)
+        TestUtils.waitFor(500)
         ViewMatchers.assertThat(
             globalDatabaseManagement.getDownloadedDatabases(),
             CoreMatchers.hasItem(dbName)

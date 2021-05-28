@@ -205,34 +205,6 @@ class TakePictureActivityTest {
         onView(withId(R.id.selectCategoryButton)).check(matches(hasTextColor(R.color.black)))
     }
 
-
-    /*
-    TODO: convert to fragment
-
-    @Test
-    fun receiveIntentFromCamera() {
-        Intents.init()
-        val imageUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
-        Intents.intending(hasComponent(TakePictureFragment::class.qualifiedName)).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                Intent().putExtra(
-                    "result",
-                    bundleOf("category" to DummyCategory("cat1", "cat1"), "image" to imageUri)
-                )
-            )
-        )
-        Espresso.onView(ViewMatchers.withId(R.id.use_camera))
-            .perform(ViewActions.click())
-        val result = testRule.scenario.result
-        MatcherAssert.assertThat(result.resultCode, Matchers.equalTo(Activity.RESULT_OK))
-        MatcherAssert.assertThat(result.resultData, IntentMatchers.hasExtraWithKey("result"))
-        Intents.release()
-    }
-     */
-
-
     @Test
     fun permissionNeededDialogShowsCorrectDialog() {
         grantCameraPermission()
@@ -281,18 +253,4 @@ class TakePictureActivityTest {
             method.invoke(this)
         }
     }
-
-    /*
-    private fun launchFragmentForResult() {
-        val args = bundleOf("categories" to catSetArray, "datasetId" to datasetId)
-        launchFragmentInHiltContainer<TakePictureFragment>(args) {
-            Navigation.setViewNavController(requireView(), navController)
-            this.parentFragmentManager.setFragmentResult(AddPictureFragment.REQUEST_KEY, bundleOf("chosenCategory" to chosenCategory, "pictureUri" to pictureUri))
-            assertThat(fragment.result).isEqualTo(expectedResult)
-
-        }
-    }
-
-     */
-
 }
