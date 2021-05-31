@@ -34,14 +34,12 @@ class CachedDatabaseServiceTest {
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
-    lateinit var appleCategoryId: String
-    lateinit var pearCategoryId: String
+    
+    private val appleCategoryId = "LbaIwsl1kizvTod4q1TG"
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        appleCategoryId = "LbaIwsl1kizvTod4q1TG"
-        pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
         db = CachedDatabaseService(
             FirestoreDatabaseService(dbName, firestore),
             PictureCache.applicationPictureCache(dbName, context),

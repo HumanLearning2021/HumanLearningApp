@@ -6,6 +6,7 @@ import android.widget.SearchView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
@@ -17,13 +18,13 @@ import org.hamcrest.Matchers.both
 import org.hamcrest.TypeSafeMatcher
 
 object TestUtils {
-    val WAIT_FOR_WARNING_THRESHOLD = 100
-    val WAIT_FOR_ERROR_THRESHOLD = 1001
+    const val WAIT_FOR_WARNING_THRESHOLD = 100
+    const val WAIT_FOR_ERROR_THRESHOLD = 1001
 
     /**
      * ViewAction allowing to wait for a certain number of milliseconds
      * @param millis Number of milliseconds to wait for
-     * @see TestUtils.WAIT_FOR_WARN_THRESHOLD Upper bound for the millis parameter. If not respected
+     * @see TestUtils.WAIT_FOR_WARNING_THRESHOLD Upper bound for the millis parameter. If not respected
      * -> warning.
      * @see TestUtils.WAIT_FOR_ERROR_THRESHOLD Upper bound for the millis parameter. If not respected
      * -> the program crashes.
@@ -44,7 +45,7 @@ object TestUtils {
             )
         }
         return object : ViewAction {
-            override fun getConstraints(): Matcher<View>? {
+            override fun getConstraints(): Matcher<View> {
                 return object : BaseMatcher<View>() {
                     override fun describeTo(description: Description?) {
                         description?.appendText("matches anything")
@@ -76,7 +77,7 @@ object TestUtils {
      * @param millis Number of milliseconds to wait for
      * @see TestUtils.waitForAction for restrictions on maximum accepted value of parameter
      */
-    fun waitFor(millis: Long) = onView(isRoot()).perform(waitForAction(millis))
+    fun waitFor(millis: Long): ViewInteraction = onView(isRoot()).perform(waitForAction(millis))
 
     fun getFirstDataset(dbMgt: DatabaseManagement) = runBlocking {
         dbMgt.getDatasets().first()

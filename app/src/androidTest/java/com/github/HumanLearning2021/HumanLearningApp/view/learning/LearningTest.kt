@@ -53,13 +53,13 @@ class LearningTest {
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
-    val NUMBER_OF_CATEGORIES = 3
-    val CATEGORY_VIEW_CLASS_NAME = "android.widget.ImageView"
-    val NUMBER_OF_DRAG_STEPS = 10
+    private val NUMBER_OF_CATEGORIES = 3
+    private val CATEGORY_VIEW_CLASS_NAME = "android.widget.ImageView"
+    private val NUMBER_OF_DRAG_STEPS = 10
 
-    lateinit var mDevice: UiDevice
+    private lateinit var mDevice: UiDevice
 
-    lateinit var learningFragment: LearningFragment
+    private lateinit var learningFragment: LearningFragment
 
     @Before
     fun setup() {

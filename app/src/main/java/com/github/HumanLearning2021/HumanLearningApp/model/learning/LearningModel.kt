@@ -31,7 +31,7 @@ class LearningModel(private val dataset: Dataset) {
 
     /**
      * Verifies if the currentCategory is equal to the category displayed on the given view
-     * @param imageViewId View displaying the target category
+     * @param imageView View displaying the target category
      * @return true iff the sorting is correct
      */
     fun isSortingCorrect(imageView: ImageView): Boolean {

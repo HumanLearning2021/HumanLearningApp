@@ -67,7 +67,7 @@ class DatasetListWidget : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view =
             inflater.inflate(R.layout.fragment_dataset_list, container, false) as RecyclerView
         adapter = DatasetListRecyclerViewAdapter(

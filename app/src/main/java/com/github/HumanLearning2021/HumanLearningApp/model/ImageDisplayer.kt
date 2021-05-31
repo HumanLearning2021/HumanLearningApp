@@ -97,9 +97,3 @@ object ImageDisplayerModule {
         DefaultImageDisplayer(currentActivity)
 }
 
-object NoopImageDisplayer : ImageDisplayer {
-    override suspend fun CategorizedPicture.displayOn(target: ImageView) {
-        // nothing to do!
-    }
-}
-

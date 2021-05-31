@@ -57,7 +57,7 @@ class SelectPictureActivityTest {
 
     lateinit var datasetId: Id
 
-    private val catSet = setOf<Category>(
+    private val catSet = setOf(
         Category("cat1", "cat1"),
         Category("cat2", "cat2"),
         Category("cat3", "cat3"),
