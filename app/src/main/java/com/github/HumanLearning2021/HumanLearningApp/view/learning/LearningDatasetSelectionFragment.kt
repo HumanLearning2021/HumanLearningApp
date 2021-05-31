@@ -27,7 +27,7 @@ class LearningDatasetSelectionFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         _binding = FragmentLearningDatasetSelectionBinding.inflate(inflater, container, false)
         return binding.root

@@ -27,7 +27,7 @@ class LearningSettingsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         _binding = FragmentLearningSettingsBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)

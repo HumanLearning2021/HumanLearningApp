@@ -27,6 +27,8 @@ class ImageDownloader @Inject constructor(
             Firebase.storage.getReferenceFromUrl(picture.toString()).getFile(dest).await()
         else
             withContext(Dispatchers.IO) {
+                // this should be fine on the IO dispatcher
+                @Suppress("BlockingMethodInNonBlockingContext")
                 context.contentResolver.openInputStream(picture)!!.use { src ->
                     dest.outputStream().use {
                         src.copyTo(it)

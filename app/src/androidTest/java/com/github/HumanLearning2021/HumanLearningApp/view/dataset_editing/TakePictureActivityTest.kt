@@ -14,6 +14,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
@@ -57,13 +58,13 @@ class TakePictureActivityTest {
 
     lateinit var datasetId: String
 
-    private val catSet = setOf<Category>(
+    private val catSet = setOf(
         Category("cat1", "cat1"),
         Category("cat2", "cat2"),
         Category("cat3", "cat3"),
     )
 
-    val catSetArray = catSet.toTypedArray()
+    private val catSetArray = catSet.toTypedArray()
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
@@ -75,8 +76,8 @@ class TakePictureActivityTest {
     fun setUp() {
         hiltRule.inject()
         dbMgt = globalDatabaseManagement.accessDatabase(dbName)
-        TestUtils.getFirstDataset(dbMgt).id
-        datasetId = TestUtils.getFirstDataset(dbMgt).id
+        getFirstDataset(dbMgt).id
+        datasetId = getFirstDataset(dbMgt).id
         launchFragment()
         // By waiting before the test starts, it allows time for the app to startup to prevent the
         // following error to appear on cirrus:
@@ -84,7 +85,7 @@ class TakePictureActivityTest {
         // This solution is not ideal because it slows down the tests, and it might not work
         // every time. But there isn't a better solution that I (Niels Lachat) know of.
         val delayBeforeTestStart: Long = 1 // increase if needed
-        TestUtils.waitFor(delayBeforeTestStart)
+        waitFor(delayBeforeTestStart)
     }
 
 
@@ -191,7 +192,7 @@ class TakePictureActivityTest {
     fun selectingCategoryChangesButtonText() {
         grantCameraPermission()
         onView(withId(R.id.selectCategoryButton)).perform(click())
-        TestUtils.waitFor(delayAfterSelectCategoryBtn)
+        waitFor(delayAfterSelectCategoryBtn)
         onView(withText("cat1")).perform(click())
         onView(withId(R.id.selectCategoryButton)).check(matches(withText("cat1")))
     }
@@ -200,7 +201,7 @@ class TakePictureActivityTest {
     fun selectingCategoryChangesButtonTextColor() {
         grantCameraPermission()
         onView(withId(R.id.selectCategoryButton)).perform(click())
-        TestUtils.waitFor(delayAfterSelectCategoryBtn)
+        waitFor(delayAfterSelectCategoryBtn)
         onView(withText("cat1")).perform(click())
         onView(withId(R.id.selectCategoryButton)).check(matches(hasTextColor(R.color.black)))
     }
@@ -223,7 +224,7 @@ class TakePictureActivityTest {
         launchFragmentWithErrorDialog()
         onView(withText("Error")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
     }
-    
+
     private fun launchFragment() {
         val args = bundleOf("categories" to catSetArray, "datasetId" to datasetId)
         launchFragmentInHiltContainer<TakePictureFragment>(args) {

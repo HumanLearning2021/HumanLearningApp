@@ -86,9 +86,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     user?.isAdmin ?: false
                 }
-                isAdmin.let {
-                    goToDsEditingButton?.isVisible = it
-                }
+                goToDsEditingButton?.isVisible = isAdmin
             }
         }
 

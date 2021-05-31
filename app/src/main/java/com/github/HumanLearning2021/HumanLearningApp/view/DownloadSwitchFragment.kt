@@ -60,7 +60,7 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = super.onCreateView(inflater, container, savedInstanceState) as ConstraintLayout
         switch = view.getViewById(R.id.download_switch) as SwitchCompat
         progressIcon = view.getViewById(R.id.download_progress_icon) as ProgressBar

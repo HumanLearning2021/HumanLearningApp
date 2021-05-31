@@ -22,7 +22,6 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.withIndex
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
@@ -67,8 +66,6 @@ class MetadataEditingFragmentTest {
             MainActivity::class.java
         )
     )
-
-    private val dbService = DatabaseServiceModule.provideDummyService()
 
     @BindValue
     @ProductionDatabaseName

@@ -41,12 +41,12 @@ class GoogleSignInFragmentTest {
     fun setUp() {
         hiltRule.inject()
         launchFragment()
-
     }
 
     @Test
     fun test_success() {
         launchFragmentInHiltContainer<GoogleSignInFragment> {
+            @Suppress("DEPRECATION")
             onActivityResult(GoogleSignInFragment.RC_SIGN_IN, 0, null)
         }
     }
@@ -67,7 +67,7 @@ class GoogleSignInFragmentTest {
     }
 
     @Test
-    fun uncheckedBoxSetAdminfalse() {
+    fun uncheckedBoxSetAdminFalse() {
         onView(withId(R.id.checkBox)).perform(click())
         onView(withId(R.id.checkBox)).perform(click())
         assertThat(GoogleSignInFragment.isAdmin, equalTo(false))
@@ -104,19 +104,19 @@ class GoogleSignInFragmentTest {
     }
 
     @Test
-    fun testLoginPersistance() {
+    fun testLoginPersistence() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             fragment.presenter.onSuccessfulLogin(false)
             fragment.handleSignIn()
-            assertThat(fragment.prefs!!.getBoolean("hasLogin", false), equalTo(true))
-            assertThat(fragment.prefs!!.getBoolean("isAdmin", false), equalTo(false))
+            assertThat(fragment.prefs.getBoolean("hasLogin", false), equalTo(true))
+            assertThat(fragment.prefs.getBoolean("isAdmin", false), equalTo(false))
             fragment.activity?.runOnUiThread {
                 fragment.onSignOutPress()
-                assertThat(fragment.prefs!!.getBoolean("hasLogin", false), equalTo(false))
-                assertThat(fragment.prefs!!.getString("name", ""), equalTo(""))
-                assertThat(fragment.prefs!!.getString("email", ""), equalTo(""))
-                assertThat(fragment.prefs!!.getString("uid", ""), equalTo(""))
+                assertThat(fragment.prefs.getBoolean("hasLogin", false), equalTo(false))
+                assertThat(fragment.prefs.getString("name", ""), equalTo(""))
+                assertThat(fragment.prefs.getString("email", ""), equalTo(""))
+                assertThat(fragment.prefs.getString("uid", ""), equalTo(""))
             }
         }
     }

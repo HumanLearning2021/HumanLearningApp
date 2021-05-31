@@ -86,7 +86,7 @@ class SearchTest {
         runBlocking {
             require(dbMgt.getDatasetByName(datasetName).size == 1) {
                 "The database has to contain exactly one dataset with name $datasetName " +
-                        "to be able to procede."
+                        "to be able to proceed."
             }
         }
         Intents.init()
@@ -254,7 +254,7 @@ class SearchTest {
 
     private fun assertCurrentFragmentIsCorrect(expected: Int) {
         activityScenarioRule.scenario.onActivity {
-            var currentFragmentContainer =
+            val currentFragmentContainer =
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
             val currentFragment = currentFragmentContainer?.findNavController()?.currentDestination
             ViewMatchers.assertThat(currentFragment?.id, CoreMatchers.equalTo(expected))

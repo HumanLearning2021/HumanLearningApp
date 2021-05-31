@@ -24,7 +24,7 @@ interface Repository<K, V> {
     /**
      * Transform the data stored at a given key
      * @param k the key
-     * @param v a pure function to change the stored value
+     * @param f a pure function to change the stored value
      */
     suspend fun updateWith(k: K, f: (V?) -> V?)
 
