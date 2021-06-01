@@ -8,13 +8,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayImageBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -88,15 +86,10 @@ class DisplayImageFragment : Fragment() {
                 picture!!.displayOn(parentActivity.findViewById(R.id.display_image_viewImage))
             }
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
-
-    val callback = NavigationUtils.createOnBackPressedCallback(findNavController())
-
+    
     override fun onDestroyView() {
         super.onDestroyView()
-        NavigationUtils.destroyCallback(callback)
         _binding = null
     }
 }

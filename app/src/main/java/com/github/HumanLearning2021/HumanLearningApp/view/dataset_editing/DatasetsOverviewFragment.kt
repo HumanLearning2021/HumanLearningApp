@@ -12,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDatasetsOverviewBinding
 import com.github.HumanLearning2021.HumanLearningApp.view.DownloadSwitchFragment
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -75,14 +74,11 @@ class DatasetsOverviewFragment : Fragment() {
                 DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment()
             findNavController().navigate(action)
         }
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
-    val callback = NavigationUtils.createOnBackPressedCallback(findNavController())
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NavigationUtils.destroyCallback(callback)
         _binding = null
     }
 }

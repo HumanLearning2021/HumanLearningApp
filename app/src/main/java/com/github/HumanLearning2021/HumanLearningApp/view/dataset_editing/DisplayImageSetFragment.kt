@@ -19,7 +19,6 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayImageSetBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -119,17 +118,13 @@ class DisplayImageSetFragment : Fragment() {
         }
         binding.displayImageSetImagesGridView.choiceMode = GridView.CHOICE_MODE_MULTIPLE_MODAL
         setGridViewMultipleChoiceModeListener()
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
-    }
-
-    val callback = NavigationUtils.createOnBackPressedCallback(findNavController())
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        NavigationUtils.destroyCallback(callback)
-        _binding = null
     }
     
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     /**
      * Adapter of the grid displaying pictures of the category.
      *

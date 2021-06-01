@@ -33,7 +33,6 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentTakePictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executors
 
@@ -95,16 +94,10 @@ class TakePictureFragment : Fragment() {
         } else {
             permissionNeededDialog()
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
-
     }
-
-    val callback = NavigationUtils.createOnBackPressedCallback(findNavController())
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NavigationUtils.destroyCallback(callback)
         _binding = null
     }
 

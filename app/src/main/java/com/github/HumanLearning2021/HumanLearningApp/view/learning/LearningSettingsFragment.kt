@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningSettingsBinding
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -66,16 +65,10 @@ class LearningSettingsFragment : Fragment() {
             getString(R.string.learning_settings_tooltip_representation)
         binding.learningSettingsBtChooseEvaluation?.tooltipText =
             getString(R.string.learning_settings_tooltip_evaluation)
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
-
     }
-
-    val callback = NavigationUtils.createOnBackPressedCallback(findNavController())
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NavigationUtils.destroyCallback(callback)
         _binding = null
     }
 }

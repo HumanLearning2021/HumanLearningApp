@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentEvaluationResultBinding
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
@@ -91,15 +90,10 @@ class EvaluationResultFragment : Fragment() {
                     "$it categories"
             }.toTypedArray()
         )
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
-
-    val callback = NavigationUtils.createOnBackPressedCallback(findNavController())
-
+    
     override fun onDestroyView() {
         super.onDestroyView()
-        NavigationUtils.destroyCallback(callback)
         _binding = null
     }
 }

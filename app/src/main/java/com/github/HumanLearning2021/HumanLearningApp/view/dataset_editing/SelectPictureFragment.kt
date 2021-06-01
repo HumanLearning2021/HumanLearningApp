@@ -23,7 +23,6 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentSelectPictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils
 
 /**
  * Fragment used to select a picture from the user's device which is then added to the dataset.
@@ -81,8 +80,6 @@ class SelectPictureFragment : Fragment() {
             )
             findNavController().popBackStack()
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
     private fun launchOpenPicture() {
@@ -122,11 +119,9 @@ class SelectPictureFragment : Fragment() {
         }
     }
 
-    val callback = NavigationUtils.createOnBackPressedCallback(findNavController())
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NavigationUtils.destroyCallback(callback)
         _binding = null
     }
 

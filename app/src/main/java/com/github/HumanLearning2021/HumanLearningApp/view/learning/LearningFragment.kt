@@ -17,7 +17,6 @@ import com.github.HumanLearning2021.HumanLearningApp.model.*
 import com.github.HumanLearning2021.HumanLearningApp.model.learning.EvaluationModel
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.presenter.LearningPresenter
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -124,8 +123,6 @@ class LearningFragment : Fragment() {
                 )
             )
         }.also { it.sourceCardViewShouldBlink(true) }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
 
@@ -183,14 +180,11 @@ class LearningFragment : Fragment() {
     }
 
 
-    val callback = NavigationUtils.createOnBackPressedCallback(findNavController())
-
     override fun onDestroyView() {
         super.onDestroyView()
-        NavigationUtils.destroyCallback(callback)
         _binding = null
     }
-    
+
     override fun onResume() {
         super.onResume()
         runBlocking {

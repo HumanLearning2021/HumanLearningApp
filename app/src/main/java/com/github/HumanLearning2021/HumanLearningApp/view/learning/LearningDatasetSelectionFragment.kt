@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningDatasetSelectionBinding
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,15 +43,10 @@ class LearningDatasetSelectionFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
-
-    val callback = NavigationUtils.createOnBackPressedCallback(findNavController())
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NavigationUtils.destroyCallback(callback)
         _binding = null
     }
 }

@@ -16,8 +16,6 @@ import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentAddPictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils.createOnBackPressedCallback
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils.destroyCallback
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -101,16 +99,10 @@ class AddPictureFragment : Fragment() {
             )
             findNavController().navigate(action)
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
-
     }
-
-    val callback = createOnBackPressedCallback(findNavController())
 
     override fun onDestroyView() {
         super.onDestroyView()
-        destroyCallback(callback)
         _binding = null
     }
 

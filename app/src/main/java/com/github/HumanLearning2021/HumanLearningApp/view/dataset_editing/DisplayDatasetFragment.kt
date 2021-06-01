@@ -18,7 +18,6 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayDatasetBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
-import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -143,7 +142,6 @@ class DisplayDatasetFragment : Fragment() {
 
             setGridViewItemListener()
         }
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -199,11 +197,8 @@ class DisplayDatasetFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    val callback = NavigationUtils.createOnBackPressedCallback(findNavController())
-
     override fun onDestroyView() {
         super.onDestroyView()
-        NavigationUtils.destroyCallback(callback)
         _binding = null
     }
 
