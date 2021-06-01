@@ -3,8 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.NavController
 
-class NavigationUtils {
-    companion object {
+object NavigationUtils {
         fun createOnBackPressedCallback(navController: NavController) =
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
