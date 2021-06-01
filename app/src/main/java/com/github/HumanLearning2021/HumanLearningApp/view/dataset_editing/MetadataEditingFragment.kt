@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+
 /**
  * Fragment used to modify the name and categories of the dataset if the user comes
  * from the display dataset fragment or to create a new dataset if the user comes
@@ -272,7 +273,7 @@ class MetadataEditingFragment : Fragment() {
                 AlertDialog.Builder(this.context)
                     .setIcon(android.R.drawable.ic_dialog_info)
                     .setTitle(getString(R.string.info))
-                    .setMessage(getString(R.string.categoriesEditingInfo))
+                    .setMessage(getString(R.string.metadataEditingInfo))
                     .show()
                 true
             }
