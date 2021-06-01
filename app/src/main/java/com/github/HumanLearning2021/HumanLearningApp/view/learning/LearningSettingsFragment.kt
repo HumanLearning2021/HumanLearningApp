@@ -1,10 +1,9 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
+import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
@@ -30,6 +29,7 @@ class LearningSettingsFragment : Fragment() {
     ): View? {
         parentActivity = requireActivity()
         _binding = FragmentLearningSettingsBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -60,13 +60,6 @@ class LearningSettingsFragment : Fragment() {
             )
         }
 
-        binding.learningSettingsBtChoosePresentation.tooltipText =
-            getString(R.string.learning_settings_tooltip_presentation)
-        binding.learningSettingsBtChooseRepresentation.tooltipText =
-            getString(R.string.learning_settings_tooltip_representation)
-        binding.learningSettingsBtChooseEvaluation?.tooltipText =
-            getString(R.string.learning_settings_tooltip_evaluation)
-
         requireActivity().onBackPressedDispatcher.addCallback(callback)
 
     }
@@ -83,6 +76,31 @@ class LearningSettingsFragment : Fragment() {
         callback.remove()
         _binding = null
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.learning_settings_info_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            /**
+             * When the info menu button is clicked, display information to the user about
+             * the possible actions.
+             */
+            R.id.learning_settings_menu_info -> {
+                AlertDialog.Builder(this.context)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setTitle(getString(R.string.info))
+                    .setMessage(getString(R.string.displayLearningSettingsInfo))
+                    .show()
+                true
+            }
+            else -> {
+                true
+            }
+        }
     }
 }
 
