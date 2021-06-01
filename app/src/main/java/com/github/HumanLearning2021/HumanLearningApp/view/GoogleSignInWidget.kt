@@ -14,9 +14,12 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.IdpResponse
 import com.github.HumanLearning2021.HumanLearningApp.R
+import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayDatasetBinding
+import com.github.HumanLearning2021.HumanLearningApp.model.User
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -82,8 +85,8 @@ class GoogleSignInWidget : Fragment() {
         editor?.putBoolean("hasLogin", false)
         editor?.putBoolean("isAdmin", false)
         editor?.apply()
-        updateUi()
         findNavController().navigate(GoogleSignInWidgetDirections.actionGoogleSignInWidgetToHomeFragment())
+        updateUi()
     }
 
     private fun onLoginButtonPress() {
