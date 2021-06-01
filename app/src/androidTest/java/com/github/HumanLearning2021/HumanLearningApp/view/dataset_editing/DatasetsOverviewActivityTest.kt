@@ -3,7 +3,6 @@ package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -90,14 +89,7 @@ class DatasetsOverviewActivityTest {
             )
         )
     }
-
-    @Test
-    fun backButtonWorks() {
-        Espresso.pressBack()
-        verify(navController).popBackStack()
-    }
-
-
+    
     private fun launchFragment() {
         val args = bundleOf("datasetId" to datasetId)
         launchFragmentInHiltContainer<DatasetsOverviewFragment>(args) {
