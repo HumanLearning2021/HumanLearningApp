@@ -119,17 +119,13 @@ class LearningSettingsFragmentTest {
         )
     }
 
-    private fun titleTestAndButtonsDisplayed() {
+    @Test
+    fun titleTestAndButtonsDisplayed() {
+        launchFragment()
         assertDisplayed(R.id.learningSettings_btChoosePresentation)
         assertDisplayed(R.id.learningSettings_btChooseRepresentation)
         assertDisplayed(R.id.learningSettings_btChooseEvaluation)
         assertDisplayed(R.id.learningSettings_tvMode)
-    }
-
-
-    @Test
-    fun staticUITests() {
-        titleTestAndButtonsDisplayed()
     }
 
     @Test
