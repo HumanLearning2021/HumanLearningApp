@@ -66,7 +66,6 @@ class SelectPictureActivityTest {
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
-
     @Before
     fun setup() {
         hiltRule.inject()

@@ -64,7 +64,7 @@ class SelectPictureFragment : Fragment() {
             launchOpenPicture()
         }
 
-        binding.buttonSaveSelectPictureFragment.setOnClickListener {
+        binding.buttonSelectCategorySelectPictureFragment.setOnClickListener {
             /**
              * Allow the user to select the category of the selected picture.
              */
