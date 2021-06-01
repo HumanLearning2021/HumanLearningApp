@@ -34,8 +34,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var authPresenter: AuthenticationPresenter
 
     lateinit var prefs: SharedPreferences
-
-
+    
     @Inject
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
 
