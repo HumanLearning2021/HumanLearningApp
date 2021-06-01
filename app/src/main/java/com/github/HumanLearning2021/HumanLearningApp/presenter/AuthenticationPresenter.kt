@@ -40,8 +40,6 @@ class AuthenticationPresenter @Inject constructor(
         Firebase.auth.currentUser?.let {
             _currentUser = db.updateUser(it)
             _currentUser = db.setAdminAccess(it, isAdmin)
-
-
         }
     }
 
