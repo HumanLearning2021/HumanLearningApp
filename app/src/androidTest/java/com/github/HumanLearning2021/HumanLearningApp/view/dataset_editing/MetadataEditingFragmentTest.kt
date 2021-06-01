@@ -6,8 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.closeSoftKeyboard
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -16,8 +15,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -43,8 +40,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.hasSize
-import org.junit.*
+import org.junit.After
 import org.junit.Assume.assumeTrue
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
@@ -90,7 +90,6 @@ class MetadataEditingFragmentTest {
         dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         dataset = getFirstDataset(dbMgt)
         datasetId = getFirstDataset(dbMgt).id
-        launchFragment()
         runBlocking {
             val ds = dbMgt.getDatasetById(datasetId)
             require(ds != null) {
@@ -167,7 +166,6 @@ class MetadataEditingFragmentTest {
         )
     }
 
-    @Ignore("will be fixed later")
     @Test
     fun clickOnInfoButtonWorks() {
         runBlocking {
@@ -177,7 +175,7 @@ class MetadataEditingFragmentTest {
             navigateToCreateDatasetFragment()
             onView(withId(R.id.categories_editing_menu_info)).perform(click())
             waitFor(1) // increase if needed
-            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(0, 100)
+            pressBack()
             waitFor(1) // increase if needed
             onView(withId(R.id.button_add)).check(ViewAssertions.matches(isDisplayed()))
         }

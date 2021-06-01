@@ -130,6 +130,7 @@ class DisplayImageSetFragment : Fragment() {
 
 
     override fun onDestroyView() {
+        binding.displayImageSetImagesGridView.choiceMode = GridView.CHOICE_MODE_MULTIPLE
         super.onDestroyView()
         callback.isEnabled = false
         callback.remove()
