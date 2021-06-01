@@ -14,6 +14,8 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.IdpResponse
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.model.User
@@ -33,6 +35,7 @@ class GoogleSignInWidget : Fragment() {
     lateinit private var editor: SharedPreferences.Editor
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,6 +48,7 @@ class GoogleSignInWidget : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         prefs = activity?.getSharedPreferences("LOGIN", MODE_PRIVATE)!!
         editor = prefs!!.edit()
+
 
         view.findViewById<Button>(R.id.loginButton).setOnClickListener {
             onLoginButtonPress()
@@ -72,6 +76,7 @@ class GoogleSignInWidget : Fragment() {
         editor?.putBoolean("isAdmin", false)
         editor?.apply()
         updateUi()
+        findNavController().navigate(GoogleSignInWidgetDirections.actionGoogleSignInWidgetToHomeFragment())
     }
 
     private fun onLoginButtonPress() {
