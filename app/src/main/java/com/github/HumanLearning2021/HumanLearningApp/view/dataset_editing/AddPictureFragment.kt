@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResult
@@ -17,6 +16,8 @@ import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentAddPictureBinding
 import com.github.HumanLearning2021.HumanLearningApp.model.Category
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
+import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils.Companion.createOnBackPressedCallback
+import com.github.HumanLearning2021.HumanLearningApp.view.NavigationUtils.Companion.destroyCallback
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -105,16 +106,12 @@ class AddPictureFragment : Fragment() {
 
     }
 
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
-    }
+    val callback = createOnBackPressedCallback(findNavController())
 
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
+        destroyCallback(callback)
         _binding = null
     }
+
 }
