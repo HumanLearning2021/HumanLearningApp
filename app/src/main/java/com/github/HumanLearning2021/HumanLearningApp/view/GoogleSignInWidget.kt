@@ -24,6 +24,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+/**
+ * Fragment used to log in & out the user and set the access privileges.
+ */
 @AndroidEntryPoint
 class GoogleSignInWidget : Fragment() {
 
@@ -33,7 +37,6 @@ class GoogleSignInWidget : Fragment() {
     var isAdmin = false
     lateinit var prefs: SharedPreferences
     lateinit private var editor: SharedPreferences.Editor
-
 
 
     override fun onCreateView(
@@ -65,6 +68,12 @@ class GoogleSignInWidget : Fragment() {
         updateUi()
     }
 
+    /**
+     * Handles the logging out of the user.
+     *
+     * Clears the informations of the current logged in user from the shared preferences
+     * and resets the user access priviliges.
+     */
     fun onSignOutPress() {
         lifecycleScope.launch {
             presenter.signOut()
@@ -93,6 +102,12 @@ class GoogleSignInWidget : Fragment() {
         )
     }
 
+    /**
+     * Handles the logging in of the user.
+     *
+     * puts the informations of the current logged in user in the shared preferences
+     * to persist the login after closing the app
+     */
     fun handleSignIn() {
         val user = presenter.currentUser
         if (user != null) {
@@ -105,7 +120,12 @@ class GoogleSignInWidget : Fragment() {
         }
     }
 
-
+    /**
+     * Handles the logging in of the user.
+     *
+     * puts the informations of the current logged in user in the shared preferences
+     * to persist the login after closing the app
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
@@ -151,18 +171,14 @@ class GoogleSignInWidget : Fragment() {
         view?.findViewById<Button>(R.id.loginButton)?.visibility = View.GONE
     }
 
+
+    /**
+     * Updates the Ui by taking into account logging persistance & access privileges.
+     */
     fun updateUi() {
-        val savedUser: User?
         if (prefs!!.getBoolean("hasLogin", false)) {
             view?.findViewById<TextView>(R.id.loginStatus)?.text =
                 prefs?.getString("name", "Not logged in!")
-            savedUser = User(
-                prefs!!.getString("name", ""),
-                prefs!!.getString("email", ""),
-                prefs!!.getString("uid", "")!!,
-                User.Type.FIREBASE,
-                prefs!!.getBoolean("isAdmin", false)
-            )
             setSignOutUi()
 
         } else {
