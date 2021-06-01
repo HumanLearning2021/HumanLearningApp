@@ -7,7 +7,7 @@
     tools:context=".view.dataset_editing.AddPictureFragment">
 
     <Button
-        android:id="@+id/select_existing_picture"
+        android:id="@+id/button_select_existing_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="224dp"
@@ -17,13 +17,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/use_camera"
+        android:id="@+id/button_use_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/use_camera"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/select_existing_picture"
+        app:layout_constraintTop_toBottomOf="@+id/button_select_existing_picture"
         app:layout_constraintVertical_bias="0.507" />
 </androidx.constraintlayout.widget.ConstraintLayout>

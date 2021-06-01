@@ -57,14 +57,14 @@ class SelectPictureFragment : Fragment() {
         datasetId = args.datasetId
         categories = categories.plus(args.categories.toList())
 
-        binding.choosePictureButton.setOnClickListener {
+        binding.buttonChoosePicture.setOnClickListener {
             /**
              * Allow the user to select an existing picture in their device.
              */
             launchOpenPicture()
         }
 
-        binding.selectCategoryButton2.setOnClickListener {
+        binding.buttonSaveSelectPictureFragment.setOnClickListener {
             /**
              * Allow the user to select the category of the selected picture.
              */
@@ -74,7 +74,7 @@ class SelectPictureFragment : Fragment() {
         /**
          * sends the picture to the display dataset fragment who adds the picture to the dataset.
          */
-        binding.saveButton3.setOnClickListener {
+        binding.buttonSaveSelectPictureFragment.setOnClickListener {
             setFragmentResult(
                 AddPictureFragment.REQUEST_KEY,
                 bundleOf("chosenCategory" to selectedCategory!!, "pictureUri" to selectedPicture!!)
@@ -137,7 +137,7 @@ class SelectPictureFragment : Fragment() {
     }
 
     private fun displayPicture(pic: Uri) {
-        Glide.with(this).load(pic).into(binding.selectedPicturePreview)
+        Glide.with(this).load(pic).into(binding.imageViewSelectPicturePreview)
     }
 
     private fun onSelectCategoryButton() {
@@ -145,7 +145,7 @@ class SelectPictureFragment : Fragment() {
         builder.apply {
             setTitle(getString(R.string.AddPicture_categorySelectionDialogTitle))
             setItems(categories.map { cat -> cat.name }.toTypedArray()) { _, category_index ->
-                val button = binding.selectCategoryButton2
+                val button = binding.buttonSelectCategorySelectPictureFragment
                 categories.elementAt(category_index).let {
                     button.text = it.name
                     selectedCategory = it
@@ -166,7 +166,7 @@ class SelectPictureFragment : Fragment() {
         /**
          * the save button is only enabled if the picture and the category have been selected.
          */
-        binding.saveButton3.isEnabled =
+        binding.buttonSaveSelectPictureFragment.isEnabled =
             selectedCategory != null && selectedPicture != null
     }
 

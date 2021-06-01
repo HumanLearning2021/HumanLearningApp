@@ -11,12 +11,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/datasetListFragment"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_dataset_list_datasetOverview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/datasetListFragment"
+        android:id="@+id/fragment_dataset_list_datasetOverview"
         class="com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -27,7 +27,7 @@
         tools:layout="@layout/fragment_dataset_list" />
 
     <Button
-        android:id="@+id/createDatasetButton"
+        android:id="@+id/button_create_dataset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/DataOverview_CreateButton"

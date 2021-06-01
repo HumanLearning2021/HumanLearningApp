@@ -14,7 +14,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/image_and_category_item_imageView"
+            android:id="@+id/imageView_image_and_category_item"
             android:contentDescription="@string/image_and_category_item_contentDescription"
             android:layout_width="match_parent"
             android:layout_height="175dp"
@@ -23,11 +23,11 @@
             android:src="@mipmap/ic_launcher" />
 
         <TextView
-            android:id="@+id/image_and_category_item_imageCategory"
+            android:id="@+id/textView_image_and_category_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:layout_below="@id/image_and_category_item_imageView"
+            android:layout_below="@id/imageView_image_and_category_item"
             android:layout_centerHorizontal="true" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

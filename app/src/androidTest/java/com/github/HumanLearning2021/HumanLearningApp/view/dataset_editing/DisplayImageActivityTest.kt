@@ -79,9 +79,9 @@ class DisplayImageActivityTest {
     fun pictureAndCategoryAreDisplayed() {
         launchFragmentWithPictureOfCategory(categoryWith1Picture)
 
-        onView(withId(R.id.display_image_viewImage))
+        onView(withId(R.id.imageView_display_image))
             .check(matches(isDisplayed()))
-        onView(withId(R.id.display_image_viewCategory))
+        onView(withId(R.id.textView_display_image))
             .check(matches(isDisplayed()))
     }
 

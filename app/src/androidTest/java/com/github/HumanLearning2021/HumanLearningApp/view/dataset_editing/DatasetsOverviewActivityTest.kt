@@ -60,13 +60,13 @@ class DatasetsOverviewActivityTest {
 
     @Test
     fun fragmentIsDisplayedWhenActivityIsLaunched() {
-        assertDisplayed(R.id.datasetListFragment)
-        assertDisplayed(R.id.createDatasetButton)
+        assertDisplayed(R.id.fragment_dataset_list_datasetOverview)
+        assertDisplayed(R.id.button_create_dataset)
     }
 
     @Test
     fun rightActivityIsStartedAfterCreateButtonIsClicked() {
-        onView(withId(R.id.createDatasetButton)).perform(click())
+        onView(withId(R.id.button_create_dataset)).perform(click())
         verify(navController).navigate(
             DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment(
                 null
@@ -76,7 +76,7 @@ class DatasetsOverviewActivityTest {
 
     @Test
     fun whenClickOnDatasetDisplayDatasetActivity() {
-        onView(withId(R.id.DatasetList_list))
+        onView(withId(R.id.recyclerView_dataset_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,

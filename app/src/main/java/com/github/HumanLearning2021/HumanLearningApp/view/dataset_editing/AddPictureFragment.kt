@@ -84,7 +84,7 @@ class AddPictureFragment : Fragment() {
          * Set the listeners for the two buttons to navigate to the correct fragment
          * to add a new picture to the dataset.
          */
-        binding.selectExistingPicture.setOnClickListener {
+        binding.buttonSelectExistingPicture.setOnClickListener {
             val action =
                 AddPictureFragmentDirections.actionAddPictureFragmentToSelectPictureFragment(
                     args.categories,
@@ -93,7 +93,7 @@ class AddPictureFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        binding.useCamera.setOnClickListener {
+        binding.buttonUseCamera.setOnClickListener {
             val action = AddPictureFragmentDirections.actionAddPictureFragmentToTakePictureFragment(
                 args.categories,
                 datasetId

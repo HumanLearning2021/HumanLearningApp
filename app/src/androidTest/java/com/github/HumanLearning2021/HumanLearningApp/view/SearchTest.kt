@@ -15,7 +15,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitForAction
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
@@ -100,7 +99,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDatasetsOverview()
             searchByKeyWordYieldsCorrectResult()
         }
@@ -118,7 +117,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDatasetsOverview()
             searchNotFoundYieldsNoResult()
         }
@@ -136,7 +135,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDatasetsOverview()
             canClickOnSubsetOfDatasetsMatchingSearch()
             assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
@@ -155,7 +154,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDatasetsOverview()
             emptySpacePrefixHasNoInfluence()
         }
@@ -193,7 +192,7 @@ class SearchTest {
     private fun emptySpacePrefixHasNoInfluence() {
         onView(withId(R.id.action_search)).perform(click(), typeText("          "))
         onView(isRoot()).perform(closeSoftKeyboard())
-        onView(withId(R.id.DatasetList_list)).check(
+        onView(withId(R.id.recyclerView_dataset_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(dummyDatasets.size)
             )
@@ -206,7 +205,7 @@ class SearchTest {
             typeText(discriminatingPrefix),
             clearText()
         )
-        onView(withId(R.id.DatasetList_list)).check(
+        onView(withId(R.id.recyclerView_dataset_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(dummyDatasets.size)
             )
@@ -215,7 +214,7 @@ class SearchTest {
 
     private fun canClickOnSubsetOfDatasetsMatchingSearch() {
         onView(withId(R.id.action_search)).perform(click(), typeText(discriminatingPrefix))
-        onView(withId(R.id.DatasetList_list))
+        onView(withId(R.id.recyclerView_dataset_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
@@ -229,7 +228,7 @@ class SearchTest {
             click(),
             typeText("asdfghjkledfvboijhedfvbgbzuhikmolwsxd")
         )
-        onView(withId(R.id.DatasetList_list)).check(
+        onView(withId(R.id.recyclerView_dataset_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(0)
             )
@@ -238,7 +237,7 @@ class SearchTest {
 
     private fun searchByKeyWordYieldsCorrectResult() {
         onView(withId(R.id.action_search)).perform(click(), typeText(discriminatingPrefix))
-        onView(withId(R.id.DatasetList_list)).check(
+        onView(withId(R.id.recyclerView_dataset_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(1)
             )

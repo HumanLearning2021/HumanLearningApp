@@ -82,10 +82,10 @@ class DisplayImageFragment : Fragment() {
         picture = args.picture
         datasetId = args.datasetId
         category = picture!!.category
-        parentActivity.findViewById<TextView>(R.id.display_image_viewCategory).text = category.name
+        parentActivity.findViewById<TextView>(R.id.textView_display_image).text = category.name
         with(imageDisplayer) {
             lifecycleScope.launch {
-                picture!!.displayOn(parentActivity.findViewById(R.id.display_image_viewImage))
+                picture!!.displayOn(parentActivity.findViewById(R.id.imageView_display_image))
             }
         }
 

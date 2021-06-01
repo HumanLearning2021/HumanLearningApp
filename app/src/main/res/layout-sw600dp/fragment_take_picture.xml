@@ -9,7 +9,7 @@
     tools:context=".view.dataset_editing.TakePictureFragment">
 
     <androidx.camera.view.PreviewView
-        android:id="@+id/cameraPreviewView"
+        android:id="@+id/previewView_camera"
         class="androidx.camera.view.PreviewView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -20,7 +20,7 @@
         android:clickable="false" />
 
     <ImageView
-        android:id="@+id/cameraImageView"
+        android:id="@+id/imageView_camera"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
@@ -32,30 +32,30 @@
         android:visibility="invisible" />
 
     <Button
-        android:id="@+id/takePictureButton"
+        android:id="@+id/button_take_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="28sp"
         android:text="@string/AddPicture_takePictureButtonText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/camera_guideline1"
-        app:layout_constraintBottom_toTopOf="@id/selectCategoryButton"
+        app:layout_constraintBottom_toTopOf="@id/button_select_category_take_picture_fragment"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/selectCategoryButton"
+        android:id="@+id/button_select_category_take_picture_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="28sp"
         android:text="@string/AddPicture_selectCategoryButtonText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/takePictureButton"
+        app:layout_constraintTop_toBottomOf="@id/button_take_picture"
         app:layout_constraintBottom_toTopOf="@id/camera_guideline2"
         tools:ignore="ButtonStyle" />
 
     <Button
-        android:id="@+id/saveButton"
+        android:id="@+id/button_save_take_picture_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30sp"

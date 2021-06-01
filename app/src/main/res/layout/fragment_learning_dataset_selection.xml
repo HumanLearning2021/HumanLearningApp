@@ -7,7 +7,7 @@
     tools:context=".view.learning.LearningDatasetSelectionFragment">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/LearningDatasetSelection_dataset_list"
+        android:id="@+id/fragment_dataset_list_learningDatasetSelection"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         class="com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget"

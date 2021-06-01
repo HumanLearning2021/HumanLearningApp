@@ -66,7 +66,7 @@ class LearningSettingsFragmentTest {
     @Test
     fun pressingPresentationButtonLaunchesLearningActivity() {
 
-        onView(withId(R.id.learningSettings_btChoosePresentation)).perform(click())
+        onView(withId(R.id.button_choose_presentation)).perform(click())
 
 
         verify(navController).navigate(
@@ -79,7 +79,7 @@ class LearningSettingsFragmentTest {
 
     @Test
     fun pressingRepresentationButtonLaunchesLearningActivity() {
-        onView(withId(R.id.learningSettings_btChooseRepresentation)).perform(click())
+        onView(withId(R.id.button_choose_representation)).perform(click())
         verify(navController).navigate(
             LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
                 datasetId,
@@ -90,7 +90,7 @@ class LearningSettingsFragmentTest {
 
     @Test
     fun pressingEvaluationButtonLaunchesLearningActivity() {
-        onView(withId(R.id.learningSettings_btChooseEvaluation)).perform(click())
+        onView(withId(R.id.button_choose_evaluation)).perform(click())
         verify(navController).navigate(
             LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
                 datasetId,
@@ -100,19 +100,19 @@ class LearningSettingsFragmentTest {
     }
 
     private fun titleTestAndButtonsDisplayed() {
-        assertDisplayed(R.id.learningSettings_btChoosePresentation)
-        assertDisplayed(R.id.learningSettings_btChooseRepresentation)
-        assertDisplayed(R.id.learningSettings_btChooseEvaluation)
-        assertDisplayed(R.id.learningSettings_tvMode)
+        assertDisplayed(R.id.button_choose_presentation)
+        assertDisplayed(R.id.button_choose_representation)
+        assertDisplayed(R.id.button_choose_evaluation)
+        assertDisplayed(R.id.textView_learning_mode)
     }
 
     private fun learningModeTooltipsAreCorrect() {
         val res = InstrumentationRegistry.getInstrumentation().targetContext.resources
-        onView(withId(R.id.learningSettings_btChoosePresentation))
+        onView(withId(R.id.button_choose_presentation))
             .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_presentation)))
-        onView(withId(R.id.learningSettings_btChooseRepresentation))
+        onView(withId(R.id.button_choose_representation))
             .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_representation)))
-        onView(withId(R.id.learningSettings_btChooseEvaluation))
+        onView(withId(R.id.button_choose_evaluation))
             .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_evaluation)))
     }
 

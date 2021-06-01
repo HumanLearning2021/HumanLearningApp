@@ -7,7 +7,7 @@
     tools:context=".view.dataset_editing.DisplayImageSetFragment">
 
     <TextView
-        android:id="@+id/display_image_set_name"
+        android:id="@+id/textView_display_image_set"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
@@ -15,11 +15,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/display_ds_guideline1"/>
+        app:layout_constraintBottom_toTopOf="@id/display_ds_guideline1" />
 
 
     <GridView
-        android:id="@+id/display_image_set_imagesGridView"
+        android:id="@+id/gridView_display_image_set"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:numColumns="3"

@@ -33,7 +33,7 @@ class LearningDatasetSelectionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val dsListFragment =
-            childFragmentManager.findFragmentById(R.id.LearningDatasetSelection_dataset_list)
+            childFragmentManager.findFragmentById(R.id.fragment_dataset_list_learningDatasetSelection)
         if (dsListFragment is DatasetListWidget) {
             dsListFragment.selectedDataset.observe(requireActivity()) {
                 Log.d(parentActivity.localClassName, "Selected dataset $it")

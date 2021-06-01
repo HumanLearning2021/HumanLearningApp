@@ -102,7 +102,7 @@ class LearningFragment : Fragment() {
                 )
             learningPresenter.updateForNextSorting(
                 targetImageViews,
-                binding.learningToSort
+                binding.imageViewToSort
             )
             // sets the listeners for the image views of the sorting
             setEventListeners()
@@ -116,11 +116,11 @@ class LearningFragment : Fragment() {
                 positiveColor = getColor(requireContext(), R.color.light_green),
                 negativeColor = getColor(requireContext(), R.color.red),
                 // TODO remove !! once enclosing CardViews put in all layouts
-                sourceCardView = learningToSortCv!!,
+                sourceCardView = cardViewImageToSort!!,
                 targetCardViews = listOf(
-                    learningCat0Cv!!,
-                    learningCat1Cv!!,
-                    learningCat2Cv!!
+                    cardViewImageCat0!!,
+                    cardViewImageCat1!!,
+                    cardViewImageCat2!!
                 )
             )
         }.also { it.sourceCardViewShouldBlink(true) }
@@ -159,13 +159,13 @@ class LearningFragment : Fragment() {
         return with(binding) {
             when (nbCategories) {
                 1 -> {
-                    adjustVisibilities(listOf(learningCat1), listOf(learningCat0, learningCat2))
+                    adjustVisibilities(listOf(imageViewCat1), listOf(imageViewCat0, imageViewCat2))
                 }
                 2 -> {
-                    adjustVisibilities(listOf(learningCat0, learningCat1), listOf(learningCat2))
+                    adjustVisibilities(listOf(imageViewCat0, imageViewCat1), listOf(imageViewCat2))
                 }
                 else -> adjustVisibilities(
-                    listOf(learningCat0, learningCat1, learningCat2),
+                    listOf(imageViewCat0, imageViewCat1, imageViewCat2),
                     emptyList()
                 )
             }
@@ -176,10 +176,10 @@ class LearningFragment : Fragment() {
      * Sets the event listeners for the image to sort and the target image views
      */
     private fun setEventListeners() = with(binding) {
-        learningToSort.setOnTouchListener { e, v -> onImageToSortTouched(e, v) }
-        learningCat0.setOnDragListener(targetOnDragListener)
-        learningCat1.setOnDragListener(targetOnDragListener)
-        learningCat2.setOnDragListener(targetOnDragListener)
+        imageViewToSort.setOnTouchListener { e, v -> onImageToSortTouched(e, v) }
+        imageViewCat0.setOnDragListener(targetOnDragListener)
+        imageViewCat1.setOnDragListener(targetOnDragListener)
+        imageViewCat2.setOnDragListener(targetOnDragListener)
     }
 
 
@@ -265,7 +265,7 @@ class LearningFragment : Fragment() {
                 learningPresenter.saveEvent(Event.SUCCESS)
                 learningPresenter.updateForNextSorting(
                     targetImageViews,
-                    binding.learningToSort
+                    binding.imageViewToSort
                 )
             }
         } else {
@@ -288,9 +288,9 @@ class LearningFragment : Fragment() {
      */
     private fun enclosingCardView(v: ImageView) = with(binding) {
         when (v) {
-            learningCat0 -> learningCat0Cv
-            learningCat1 -> learningCat1Cv
-            learningCat2 -> learningCat2Cv
+            imageViewCat0 -> cardViewImageCat0
+            imageViewCat1 -> cardViewImageCat1
+            imageViewCat2 -> cardViewImageCat2
             else -> null
         }
     }

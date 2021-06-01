@@ -101,9 +101,9 @@ class AddPictureNavigationTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToAddPictureActivity()
-            onView(withId(R.id.select_existing_picture)).perform(click())
+            onView(withId(R.id.button_select_existing_picture)).perform(click())
             assertCurrentFragmentIsCorrect(R.id.selectPictureFragment)
         }
     }
@@ -113,9 +113,9 @@ class AddPictureNavigationTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToAddPictureActivity()
-            Espresso.onView(ViewMatchers.withId(R.id.use_camera))
+            Espresso.onView(ViewMatchers.withId(R.id.button_use_camera))
                 .perform(ViewActions.click())
 
             assertCurrentFragmentIsCorrect(R.id.takePictureFragment)
@@ -125,7 +125,7 @@ class AddPictureNavigationTest {
 
     private fun navigateToAddPictureActivity() {
         onView(withId(R.id.datasetsOverviewFragment)).perform(click())
-        Espresso.onView(ViewMatchers.withId(R.id.DatasetList_list))
+        Espresso.onView(ViewMatchers.withId(R.id.recyclerView_dataset_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,

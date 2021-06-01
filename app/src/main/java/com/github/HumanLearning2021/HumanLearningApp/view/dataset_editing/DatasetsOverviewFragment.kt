@@ -42,7 +42,7 @@ class DatasetsOverviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val dsListFragment =
-            childFragmentManager.findFragmentById(R.id.datasetListFragment)
+            childFragmentManager.findFragmentById(R.id.fragment_dataset_list_datasetOverview)
 
         /**
          * Go to display dataset fragment and display the clicked dataset.
@@ -70,7 +70,7 @@ class DatasetsOverviewFragment : Fragment() {
         /**
          * Button listener to go to the dataset creation fragment when clicked.
          */
-        binding.createDatasetButton?.setOnClickListener {
+        binding.buttonCreateDataset?.setOnClickListener {
             val action =
                 DatasetsOverviewFragmentDirections.actionDatasetsOverviewFragmentToCategoriesEditingFragment()
             findNavController().navigate(action)

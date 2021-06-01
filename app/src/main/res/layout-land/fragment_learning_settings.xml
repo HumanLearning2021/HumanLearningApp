@@ -8,7 +8,7 @@
     tools:context=".view.learning.LearningSettingsFragment">
 
     <TextView
-        android:id="@+id/learningSettings_tvMode"
+        android:id="@+id/textView_learning_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/learning_settings_tvLearningMode"
@@ -22,7 +22,7 @@
 
 
     <Button
-        android:id="@+id/learningSettings_btChoosePresentation"
+        android:id="@+id/button_choose_presentation"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:textSize="20sp"
@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/learning_settings_guideline2" />
 
     <Button
-        android:id="@+id/learningSettings_btChooseRepresentation"
+        android:id="@+id/button_choose_representation"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:textSize="20sp"

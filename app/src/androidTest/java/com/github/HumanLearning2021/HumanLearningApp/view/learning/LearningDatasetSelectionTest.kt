@@ -60,13 +60,13 @@ class LearningDatasetSelectionTest {
 
     @Test
     fun allViewsAreDisplayed() {
-        assertDisplayed(R.id.LearningDatasetSelection_dataset_list)
+        assertDisplayed(R.id.fragment_dataset_list_learningDatasetSelection)
     }
 
 
     @Test
     fun clickingADatasetLaunchesLearningSettings() {
-        onView(ViewMatchers.withId(R.id.DatasetList_list))
+        onView(ViewMatchers.withId(R.id.recyclerView_dataset_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,

@@ -173,7 +173,7 @@ class MetadataEditingFragmentTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToCreateDatasetFragment()
             onView(withId(R.id.categories_editing_menu_info)).perform(click())
             waitFor(1) // increase if needed
@@ -242,7 +242,7 @@ class MetadataEditingFragmentTest {
 
     private fun navigateToCreateDatasetFragment() {
         onView(withId(R.id.datasetsOverviewFragment)).perform(click())
-        onView(withId(R.id.createDatasetButton)).perform(click())
+        onView(withId(R.id.button_create_dataset)).perform(click())
     }
 }
 

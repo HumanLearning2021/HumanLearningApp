@@ -48,23 +48,23 @@ class LearningSettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setButtonListener(binding.learningSettingsBtChoosePresentation, LearningMode.PRESENTATION)
+        setButtonListener(binding.buttonChoosePresentation, LearningMode.PRESENTATION)
         setButtonListener(
-            binding.learningSettingsBtChooseRepresentation,
+            binding.buttonChooseRepresentation,
             LearningMode.REPRESENTATION
         )
-        binding.learningSettingsBtChooseEvaluation?.let {
+        binding.buttonChooseEvaluation?.let {
             setButtonListener(
                 it,
                 LearningMode.EVALUATION
             )
         }
 
-        binding.learningSettingsBtChoosePresentation.tooltipText =
+        binding.buttonChoosePresentation.tooltipText =
             getString(R.string.learning_settings_tooltip_presentation)
-        binding.learningSettingsBtChooseRepresentation.tooltipText =
+        binding.buttonChooseRepresentation.tooltipText =
             getString(R.string.learning_settings_tooltip_representation)
-        binding.learningSettingsBtChooseEvaluation?.tooltipText =
+        binding.buttonChooseEvaluation?.tooltipText =
             getString(R.string.learning_settings_tooltip_evaluation)
 
         requireActivity().onBackPressedDispatcher.addCallback(callback)

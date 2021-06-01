@@ -3,7 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view
 
 import androidx.navigation.NavController
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -51,7 +51,7 @@ class GoogleSignInWidgetTest {
 
     @Test
     fun checkBoxUiTest() {
-        onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
+        onView(withId(R.id.textView_login_status)).check(matches(withText("Not logged in!")))
         onView(withId(R.id.checkBox)).check(matches(not(isChecked())))
         onView(withId(R.id.checkBox)).perform(click()).check(matches(isChecked()))
         onView(withId(R.id.checkBox)).perform(click()).check(matches(not(isChecked())))
@@ -81,7 +81,7 @@ class GoogleSignInWidgetTest {
                 fragment.updateUi()
             }
         }
-        onView(withId(R.id.singOutButton)).check(matches((isDisplayed())))
+        onView(withId(R.id.button_sign_out)).check(matches((isDisplayed())))
     }
 
 
@@ -97,9 +97,9 @@ class GoogleSignInWidgetTest {
                 assertThat(fragment.presenter.currentUser, Matchers.nullValue())
             }
         }
-        onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
+        onView(withId(R.id.button_login)).check(matches(isDisplayed()))
         onView(withId(R.id.checkBox)).check(matches(isDisplayed()))
-        onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
+        onView(withId(R.id.textView_login_status)).check(matches(withText("Not logged in!")))
     }
 
     @Test
@@ -123,7 +123,7 @@ class GoogleSignInWidgetTest {
     @Test
     fun test_setSignInUI() {
         fragment.setSignInUi()
-        onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
+        onView(withId(R.id.button_login)).check(matches(isDisplayed()))
         onView(withId(R.id.checkBox)).check(matches(isDisplayed()))
     }
 
@@ -132,7 +132,7 @@ class GoogleSignInWidgetTest {
         fragment.activity?.runOnUiThread {
             fragment.setSignOutUi()
         }
-        onView(withId(R.id.singOutButton)).check(matches((isDisplayed())))
+        onView(withId(R.id.button_sign_out)).check(matches((isDisplayed())))
     }
 
     private fun launchFragment() {

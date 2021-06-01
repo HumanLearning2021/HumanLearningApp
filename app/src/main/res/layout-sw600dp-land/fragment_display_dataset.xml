@@ -7,7 +7,7 @@
     tools:context=".view.dataset_editing.DisplayDatasetFragment">
 
     <EditText
-        android:id="@+id/display_dataset_name"
+        android:id="@+id/textView_display_dataset_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="38sp"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <GridView
-        android:id="@+id/display_dataset_imagesGridView"
+        android:id="@+id/gridView_display_dataset_images"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:numColumns="3"

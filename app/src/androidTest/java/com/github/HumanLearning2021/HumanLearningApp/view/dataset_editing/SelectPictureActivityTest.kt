@@ -83,14 +83,14 @@ class SelectPictureActivityTest {
 
     @Test
     fun correctLayoutIsDisplayAfterCreation() {
-        BaristaVisibilityAssertions.assertDisplayed(R.id.choosePictureButton)
-        BaristaVisibilityAssertions.assertDisplayed(R.id.selectCategoryButton2)
-        BaristaVisibilityAssertions.assertDisplayed(R.id.saveButton3)
+        BaristaVisibilityAssertions.assertDisplayed(R.id.button_choose_picture)
+        BaristaVisibilityAssertions.assertDisplayed(R.id.button_select_category_select_picture_fragment)
+        BaristaVisibilityAssertions.assertDisplayed(R.id.button_save_select_picture_fragment)
     }
 
     @Test
     fun categoriesCorrectlySetAfterCreation() {
-        onView(withId(R.id.selectCategoryButton2)).perform(click())
+        onView(withId(R.id.button_select_category_select_picture_fragment)).perform(click())
         onView(withText("cat1"))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         onView(withText("cat2"))
@@ -103,15 +103,15 @@ class SelectPictureActivityTest {
     fun correctNavigationOnSave() {
         val imageUri =
             Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
-        onView(withId(R.id.selectCategoryButton2)).perform(click())
+        onView(withId(R.id.button_select_category_select_picture_fragment)).perform(click())
         onView(withText("cat1")).perform(click())
         intending(hasAction(Intent.ACTION_OPEN_DOCUMENT)).respondWith(
             Intent().run {
                 data = imageUri
                 Instrumentation.ActivityResult(SelectPictureFragment.RC_OPEN_PICTURE, this)
             })
-        onView(withId(R.id.choosePictureButton)).perform(click())
-        onView(withId(R.id.saveButton3)).perform(click())
+        onView(withId(R.id.button_choose_picture)).perform(click())
+        onView(withId(R.id.button_save_select_picture_fragment)).perform(click())
         verify(navController).popBackStack()
     }
 

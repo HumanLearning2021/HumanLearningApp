@@ -72,35 +72,35 @@ class LearningTest {
     @Test
     fun allImageViewsAreDisplayed() {
         launchFragment(firstDatasetId)
-        assertDisplayed(R.id.learning_to_sort)
-        assertDisplayed(R.id.learning_cat_0)
-        assertDisplayed(R.id.learning_cat_1)
-        assertDisplayed(R.id.learning_cat_2)
+        assertDisplayed(R.id.imageView_to_sort)
+        assertDisplayed(R.id.imageView_cat_0)
+        assertDisplayed(R.id.imageView_cat_1)
+        assertDisplayed(R.id.imageView_cat_2)
     }
 
 
     @Test
     fun onlyOneImageViewVisibleWhenOneCategoryInDataset() {
         launchFragment(getDatasetWithNCategories(1, dbMgt).id)
-        assertNotDisplayed(R.id.learning_cat_0)
-        assertDisplayed(R.id.learning_cat_1)
-        assertNotDisplayed(R.id.learning_cat_2)
+        assertNotDisplayed(R.id.imageView_cat_0)
+        assertDisplayed(R.id.imageView_cat_1)
+        assertNotDisplayed(R.id.imageView_cat_2)
     }
 
     @Test
     fun onlyTwoImageViewsVisibleWhenTwoCategoriesInDataset() {
         launchFragment(getDatasetWithNCategories(2, dbMgt).id)
-        assertDisplayed(R.id.learning_cat_0)
-        assertDisplayed(R.id.learning_cat_1)
-        assertNotDisplayed(R.id.learning_cat_2)
+        assertDisplayed(R.id.imageView_cat_0)
+        assertDisplayed(R.id.imageView_cat_1)
+        assertNotDisplayed(R.id.imageView_cat_2)
     }
 
     @Test
     fun allImageViewsVisibleWhenFourCategoriesInDataset() {
         launchFragment(getDatasetWithNCategories(4, dbMgt).id)
-        assertDisplayed(R.id.learning_cat_0)
-        assertDisplayed(R.id.learning_cat_1)
-        assertDisplayed(R.id.learning_cat_2)
+        assertDisplayed(R.id.imageView_cat_0)
+        assertDisplayed(R.id.imageView_cat_1)
+        assertDisplayed(R.id.imageView_cat_2)
     }
 
 
