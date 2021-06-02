@@ -1,9 +1,7 @@
 # HumanLearningApp
 
-## Maintainability
 [![Maintainability](https://api.codeclimate.com/v1/badges/88c3d9e8784c8fa76af6/maintainability)](https://codeclimate.com/github/HumanLearning2021/HumanLearningApp/maintainability)
 
-## Test Coverage
 [![Test Coverage](https://api.codeclimate.com/v1/badges/88c3d9e8784c8fa76af6/test_coverage)](https://codeclimate.com/github/HumanLearning2021/HumanLearningApp/test_coverage)
 
 ## The application
@@ -27,7 +25,7 @@ The application's database is organized in datasets who contain categories. Pict
     - Modify dataset names
 
 ## Installation instructions
-To compile the code from source you need to do the following you need to TODO COMPLETE.
+To compile the code from source you need to put the cleartext copy of the build secrets at the root of the repository. Please contact the development team to get access to them.
 
 If you want to run the unit tests you need to first run the Firebase emulators:
 - To install the emulators follow the instructions [here](https://firebase.google.com/docs/cli?authuser=5&hl=en#install_the_firebase_cli). There is no need to run `firebase init`, everything is already setup in the project. You only have to do `firebase login`.
