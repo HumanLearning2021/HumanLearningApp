@@ -17,7 +17,6 @@ import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertD
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -51,11 +50,6 @@ class EvaluationResultFragmentTest {
         assertDisplayed(R.id.barchart_evaluation_result)
     }
 
-
-    @Test
-    @Ignore("I don't know the library well enough to test its content yet")
-    fun rightStuffIsDisplayedOnGraph() {
-    }
 
     @Test
     fun pressingButtonNavigatesToLearningDatasetSelection() {

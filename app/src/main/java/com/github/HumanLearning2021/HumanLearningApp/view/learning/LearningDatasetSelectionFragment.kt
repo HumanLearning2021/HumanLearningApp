@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
@@ -44,21 +43,10 @@ class LearningDatasetSelectionFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
-    }
-
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
         _binding = null
-
     }
 }

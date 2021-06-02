@@ -8,7 +8,6 @@ import android.view.*
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResultListener
@@ -143,7 +142,6 @@ class DisplayDatasetFragment : Fragment() {
 
             setGridViewItemListener()
         }
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -199,16 +197,9 @@ class DisplayDatasetFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
+        _binding = null
     }
 
     /**

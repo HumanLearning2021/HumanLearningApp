@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -124,8 +123,6 @@ class LearningFragment : Fragment() {
                 )
             )
         }.also { it.sourceCardViewShouldBlink(true) }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
 
@@ -183,18 +180,9 @@ class LearningFragment : Fragment() {
     }
 
 
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
         _binding = null
-
     }
 
     override fun onResume() {
@@ -262,7 +250,6 @@ class LearningFragment : Fragment() {
             targetImageViews = updateTargetImageViews()
 
             lifecycleScope.launch {
-                learningPresenter.saveEvent(Event.SUCCESS)
                 learningPresenter.updateForNextSorting(
                     targetImageViews,
                     binding.imageViewToSort
@@ -272,9 +259,6 @@ class LearningFragment : Fragment() {
             audioFeedback.startIncorrectFeedback()
             enclosingCardView(v)?.let { visualFeedback.startIncorrectFeedback(it) }
             evaluationModel?.addFailure()
-            lifecycleScope.launch {
-                learningPresenter.saveEvent(Event.MISTAKE)
-            }
         }
         evaluationModel?.let { Log.d("Evaluation", it.getCurrentEvaluationResult().toString()) }
         return sortingCorrect

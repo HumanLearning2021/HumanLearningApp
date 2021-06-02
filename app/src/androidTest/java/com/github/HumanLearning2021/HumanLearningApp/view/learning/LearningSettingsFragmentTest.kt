@@ -140,7 +140,6 @@ class LearningSettingsFragmentTest {
 
     private fun launchFragment() {
         val args = bundleOf("datasetId" to datasetId)
-
         launchFragmentInHiltContainer<LearningSettingsFragment>(fragmentArgs = args) {
             Navigation.setViewNavController(requireView(), navController)
         }

@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayImageBinding
@@ -88,21 +86,10 @@ class DisplayImageFragment : Fragment() {
                 picture!!.displayOn(parentActivity.findViewById(R.id.imageView_display_image))
             }
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
-
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
-    }
-
+    
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
         _binding = null
-
     }
 }

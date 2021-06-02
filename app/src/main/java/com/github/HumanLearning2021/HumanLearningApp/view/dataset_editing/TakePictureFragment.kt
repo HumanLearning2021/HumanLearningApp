@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -95,23 +94,11 @@ class TakePictureFragment : Fragment() {
         } else {
             permissionNeededDialog()
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
-
-    }
-
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
         _binding = null
-
     }
 
     /**
