@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
@@ -81,8 +80,6 @@ class SelectPictureFragment : Fragment() {
             )
             findNavController().popBackStack()
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
     private fun launchOpenPicture() {
@@ -122,18 +119,10 @@ class SelectPictureFragment : Fragment() {
         }
     }
 
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
         _binding = null
-
     }
 
     private fun displayPicture(pic: Uri) {

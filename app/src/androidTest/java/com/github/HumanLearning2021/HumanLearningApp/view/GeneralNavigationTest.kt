@@ -3,7 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view
 import android.content.Intent
 import androidx.navigation.fragment.findNavController
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions
@@ -13,6 +13,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
@@ -131,6 +132,21 @@ class GeneralNavigationTest {
     fun buttonOnHomeToLearningWorks() {
         onView(withId(R.id.startLearningButton)).perform(click())
         assertCurrentFragmentIsCorrect(R.id.learningDatasetSelectionFragment)
+    }
+
+    @Test
+    fun addPicturePressBackIsCorrect() {
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToDisplayDataset()
+            assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
+            openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().targetContext)
+            onView(withText(R.string.add_new_picture)).perform(click())
+            pressBack()
+            assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
+        }
     }
 
 

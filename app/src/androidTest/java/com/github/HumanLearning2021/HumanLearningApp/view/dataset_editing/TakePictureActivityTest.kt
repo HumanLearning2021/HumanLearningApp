@@ -4,7 +4,6 @@ import android.Manifest
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.repeatedlyUntil
@@ -252,14 +251,7 @@ class TakePictureActivityTest {
         launchFragmentWithErrorDialog()
         onView(withText("Error")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
     }
-
-
-    @Test
-    fun backButtonWorks() {
-        Espresso.pressBack()
-        Mockito.verify(navController).popBackStack()
-    }
-
+    
     private fun launchFragment() {
         val args = bundleOf("categories" to catSetArray, "datasetId" to datasetId)
         launchFragmentInHiltContainer<TakePictureFragment>(args) {
