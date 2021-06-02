@@ -12,7 +12,8 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.notNullValue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -63,16 +64,6 @@ abstract class ScratchDatabaseServiceTest {
         assertThat(user.uid, equalTo(firebaseUser.uid))
         assertThat(user.displayName, equalTo(firebaseUser.displayName))
         assertThat(user.email, equalTo(firebaseUser.email))
-    }
-
-    @Test
-    fun test_putStatistic() = runBlocking {
-        val event = Event.SUCCESS
-        val userId = User.Id("aaaaa", User.Type.TEST)
-        val datasetId = "real dataset"
-        db.putStatistic(Statistic(Statistic.Id(userId, datasetId), mapOf(event to 42)))
-        val statistic = db.getStatistic(userId, datasetId)
-        assertThat(statistic?.occurrences, hasEntry(event, 42))
     }
 }
 

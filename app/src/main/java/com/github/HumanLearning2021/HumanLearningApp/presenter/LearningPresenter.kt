@@ -2,7 +2,9 @@ package com.github.HumanLearning2021.HumanLearningApp.presenter
 
 import android.util.Log
 import android.widget.ImageView
-import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
+import com.github.HumanLearning2021.HumanLearningApp.model.ImageDisplayer
 import com.github.HumanLearning2021.HumanLearningApp.model.learning.LearningModel
 import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import kotlinx.coroutines.CoroutineScope
@@ -97,11 +99,6 @@ class LearningPresenter(
         view.contentDescription = currentCategory.name
         view.invalidate()
     }
-
-    suspend fun saveEvent(event: Event) =
-        auth.currentUser?.let { user ->
-            dbMgt.countOccurrence(user.id, dataset.id, event)
-        }
 
     /**
      * @see LearningModel.isSortingCorrect for documentation
