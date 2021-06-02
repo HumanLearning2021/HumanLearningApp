@@ -6,7 +6,6 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
@@ -203,13 +202,6 @@ class MetadataEditingFragmentTest {
             val updatedDataset = dbMgt.getDatasetById(datasetId)!!
             assert(nbCategories + 1 == updatedDataset.categories.size)
         }
-    }
-
-    @Test
-    fun backButtonWorks() {
-        launchFragment()
-        Espresso.pressBack()
-        verify(navController).popBackStack()
     }
 
     @Test

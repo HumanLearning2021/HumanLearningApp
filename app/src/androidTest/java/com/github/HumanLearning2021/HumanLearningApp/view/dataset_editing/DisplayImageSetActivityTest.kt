@@ -7,7 +7,6 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
@@ -173,13 +172,6 @@ class DisplayImageSetActivityTest {
                 datasetId
             )
         )
-    }
-
-    @Test
-    fun onBackPressedWorks() {
-        launchFragment()
-        Espresso.pressBack()
-        verify(navController).popBackStack()
     }
 
     @Test

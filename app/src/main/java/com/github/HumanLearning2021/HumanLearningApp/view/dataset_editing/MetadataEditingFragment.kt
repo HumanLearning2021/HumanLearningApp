@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -136,19 +135,10 @@ class MetadataEditingFragment : Fragment() {
                 setButtonsListener()
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
-    }
-
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
         _binding = null
     }
 

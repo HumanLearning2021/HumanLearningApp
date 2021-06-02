@@ -2,6 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view
 
 
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -23,6 +24,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -32,7 +34,7 @@ class GoogleSignInWidgetTest {
     val hiltRule = HiltAndroidRule(this)
 
     private lateinit var fragment: GoogleSignInWidget
-    private lateinit var navController: NavController
+    private val mockNavController: NavController = Mockito.mock(NavController::class.java)
 
 
     @Before
@@ -93,7 +95,6 @@ class GoogleSignInWidgetTest {
             fragment.activity?.runOnUiThread {
                 fragment.updateUi()
                 fragment.onSignOutPress()
-                fragment.updateUi()
                 assertThat(fragment.presenter.currentUser, Matchers.nullValue())
             }
         }
@@ -138,6 +139,7 @@ class GoogleSignInWidgetTest {
     private fun launchFragment() {
         launchFragmentInHiltContainer<GoogleSignInWidget> {
             fragment = this
+            Navigation.setViewNavController(requireView(), mockNavController)
         }
     }
 }

@@ -1,4 +1,4 @@
-FROM reactivecircus/android-sdk-30:latest
+FROM reactivecircus/android-sdk-24:latest
 
 # Install packages
 RUN apt-get -qqy update && \
@@ -17,9 +17,9 @@ EXPOSE 8080
 # Install system images
 ENV ARCH=x86 \
     TARGET=google_apis \
-    EMULATOR_API_LEVEL=30
+    EMULATOR_API_LEVEL=24
 
-# API 30 system image
+# API 24 system image
 RUN sdkmanager --install "system-images;android-${EMULATOR_API_LEVEL};${TARGET};${ARCH}" \
     "platforms;android-${EMULATOR_API_LEVEL}" \
     "emulator"
