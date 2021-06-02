@@ -9,7 +9,6 @@ import android.widget.AbsListView
 import android.widget.BaseAdapter
 import android.widget.GridView
 import android.widget.ImageView
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -119,22 +118,11 @@ class DisplayImageSetFragment : Fragment() {
         }
         binding.displayImageSetImagesGridView.choiceMode = GridView.CHOICE_MODE_MULTIPLE_MODAL
         setGridViewMultipleChoiceModeListener()
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
-
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
-    }
-
-
+    
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
         _binding = null
-
     }
 
     /**

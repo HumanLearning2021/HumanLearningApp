@@ -3,7 +3,6 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
-import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.room.RoomOfflineDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -11,10 +10,9 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.hasSize
-import org.junit.*
-import org.junit.Assume.assumeThat
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
 
@@ -69,17 +67,5 @@ class UniqueDatabaseManagementTest {
             fDbMan.getCategories().map { cat -> cat.id },
             equalTo(oDbman.getCategories().map { cat -> cat.id })
         )
-    }
-
-    @Ignore("functionality removed for the time being")
-    @Test
-    fun offlineDatabaseThrowsIfNotDownloaded() = runBlocking {
-        kotlin.runCatching {
-            DefaultDatabaseManagement(OfflineDatabaseService(dbName, context, room))
-        }.fold({
-            Assert.fail("unexpected successful completion")
-        }, {
-            assertThat(it, Matchers.instanceOf(IllegalStateException::class.java))
-        })
     }
 }
