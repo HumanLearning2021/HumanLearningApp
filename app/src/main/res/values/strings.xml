@@ -75,7 +75,7 @@
     <string name="nav_graph_label_add_picture">Add a New Picture</string>
     <string name="nav_graph_label_take_picture">Take a Picture</string>
     <string name="nav_graph_label_select_picture">Select a Picture</string>
-    <string name="LoginAdminCheckBox">Check if Admin</string>
+    <string name="LoginAdminCheckBox">sign up as admin</string>
     <string name="nav_graph_label_evaluation_result">Evaluation Result</string>
     <string name="search">Search</string>
     <string name="download_icon">download_icon</string>
