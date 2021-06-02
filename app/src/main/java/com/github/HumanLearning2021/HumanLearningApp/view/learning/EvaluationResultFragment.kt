@@ -91,4 +91,9 @@ class EvaluationResultFragment : Fragment() {
             }.toTypedArray()
         )
     }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
