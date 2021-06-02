@@ -122,16 +122,16 @@ class LearningSettingsFragmentTest {
     @Test
     fun titleTestAndButtonsDisplayed() {
         launchFragment()
-        assertDisplayed(R.id.learningSettings_btChoosePresentation)
-        assertDisplayed(R.id.learningSettings_btChooseRepresentation)
-        assertDisplayed(R.id.learningSettings_btChooseEvaluation)
-        assertDisplayed(R.id.learningSettings_tvMode)
+        assertDisplayed(R.id.button_choose_presentation)
+        assertDisplayed(R.id.button_choose_representation)
+        assertDisplayed(R.id.button_choose_evaluation)
+        assertDisplayed(R.id.textView_learning_mode)
     }
 
-  @Test
+    @Test
     fun clickOnInfoButtonWorks() {
-        onView(withId(R.id.startLearningButton)).perform(click())
-        onView(withId(R.id.DatasetList_list))
+        onView(withId(R.id.button_start_learning)).perform(click())
+        onView(withId(R.id.recyclerView_dataset_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
@@ -149,7 +149,7 @@ class LearningSettingsFragmentTest {
         )
         pressBack()
         waitFor(10)
-        onView(withId(R.id.learningSettings_btChooseEvaluation)).check(matches(isDisplayed()))
+        onView(withId(R.id.button_choose_evaluation)).check(matches(isDisplayed()))
     }
 
     private fun launchFragment() {
