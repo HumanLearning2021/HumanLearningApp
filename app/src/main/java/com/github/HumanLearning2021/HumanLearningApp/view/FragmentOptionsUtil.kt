@@ -4,7 +4,21 @@ import android.app.AlertDialog
 import android.content.Context
 import android.view.MenuItem
 
+/**
+ * Util object for fragments.
+ */
 object FragmentOptionsUtil {
+    /**
+     * Helper function used to display an info menu alert dialog
+     *
+     * @param item the menu item that was clicked
+     * @param infoItemId the item id of the info menu item
+     * @param title the title of the alert dialog
+     * @param message the message for the alert dialog to display
+     * @param context the current context
+     *
+     * @return a boolean, necessary if this function is called in onOptionsItemSelected()
+     */
     fun displayInfoMenu(
         item: MenuItem,
         infoItemId: Int,
