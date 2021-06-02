@@ -13,7 +13,7 @@
         (said there were duplicate ids, but in reality not).
     -->
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView_image_to_sort"
+        android:id="@+id/cardView_to_sort"
         android:layout_width="@dimen/learning_image_size"
         android:layout_height="@dimen/learning_image_size"
         app:cardCornerRadius="@dimen/learning_image_corner_radius"
@@ -42,14 +42,14 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_image_cat_0"
+            android:id="@+id/cardView_cat_0"
             android:layout_width="@dimen/learning_image_size"
             android:layout_height="@dimen/learning_image_size"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/learning_image_corner_radius"
 
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/cardView_image_cat_1"
+            app:layout_constraintEnd_toStartOf="@+id/cardView_cat_1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -64,15 +64,15 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_image_cat_1"
+            android:id="@+id/cardView_cat_1"
             android:layout_width="@dimen/learning_image_size"
             android:layout_height="@dimen/learning_image_size"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/learning_image_corner_radius"
 
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/cardView_image_cat_2"
-            app:layout_constraintStart_toEndOf="@+id/cardView_image_cat_0"
+            app:layout_constraintEnd_toStartOf="@+id/cardView_cat_2"
+            app:layout_constraintStart_toEndOf="@+id/cardView_cat_0"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
@@ -86,7 +86,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_image_cat_2"
+            android:id="@+id/cardView_cat_2"
             android:layout_width="@dimen/learning_image_size"
             android:layout_height="@dimen/learning_image_size"
             app:cardBackgroundColor="@color/white"
@@ -94,7 +94,7 @@
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cardView_image_cat_1"
+            app:layout_constraintStart_toEndOf="@+id/cardView_cat_1"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView

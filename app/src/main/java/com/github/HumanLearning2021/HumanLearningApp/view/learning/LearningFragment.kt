@@ -114,8 +114,8 @@ class LearningFragment : Fragment() {
                 neutralColor = getColor(requireContext(), R.color.blue),
                 positiveColor = getColor(requireContext(), R.color.light_green),
                 negativeColor = getColor(requireContext(), R.color.red),
-                sourceCardView = learningToSortCv,
-                targetCardViews = listOf(learningCat0Cv, learningCat1Cv, learningCat2Cv)
+                sourceCardView = cardViewToSort,
+                targetCardViews = listOf(cardViewCat0, cardViewCat1, cardViewCat2)
             )
         }.also { it.sourceCardViewShouldBlink(true) }
     }
@@ -267,9 +267,9 @@ class LearningFragment : Fragment() {
      */
     private fun enclosingCardView(v: ImageView) = with(binding) {
         when (v) {
-            imageViewCat0 -> cardViewImageCat0
-            imageViewCat1 -> cardViewImageCat1
-            imageViewCat2 -> cardViewImageCat2
+            imageViewCat0 -> cardViewCat0
+            imageViewCat1 -> cardViewCat1
+            imageViewCat2 -> cardViewCat2
             else -> null
         }
     }
