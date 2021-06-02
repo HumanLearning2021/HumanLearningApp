@@ -23,9 +23,9 @@
 
     <Button
         android:id="@+id/button_choose_presentation"
-        android:layout_width="400dp"
+        android:layout_width="@dimen/LearningSettings_sw600dp_land_btn_width"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
+        android:textSize="@dimen/LearningSettings_sw600dp_land_btn_textSize"
         android:text="@string/learning_settings_btPresentation"
         app:layout_constraintBottom_toTopOf="@id/learning_settings_guideline3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,14 +34,25 @@
 
     <Button
         android:id="@+id/button_choose_representation"
-        android:layout_width="400dp"
+        android:layout_width="@dimen/LearningSettings_sw600dp_land_btn_width"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
+        android:textSize="@dimen/LearningSettings_sw600dp_land_btn_textSize"
         android:text="@string/learning_settings_btRepresentation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/learning_settings_guideline3"
         app:layout_constraintBottom_toTopOf="@id/learning_settings_guideline4" />
+
+    <Button
+        android:id="@+id/learningSettings_btChooseEvaluation"
+        android:layout_width="@dimen/LearningSettings_sw600dp_land_btn_width"
+        android:layout_height="wrap_content"
+        android:text="@string/learning_settings_btEvaluation"
+        android:textSize="@dimen/LearningSettings_sw600dp_land_btn_textSize"
+        app:layout_constraintBottom_toTopOf="@id/learning_settings_guideline5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/learning_settings_guideline4" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -71,5 +82,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.6" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/learning_settings_guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

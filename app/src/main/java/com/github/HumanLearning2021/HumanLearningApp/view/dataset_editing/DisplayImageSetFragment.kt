@@ -1,6 +1,5 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.TypedValue
@@ -19,6 +18,7 @@ import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentDisplayImageSetBinding
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.*
+import com.github.HumanLearning2021.HumanLearningApp.view.FragmentOptionsUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -318,22 +318,12 @@ class DisplayImageSetFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            /**
-             * When the info menu button is clicked, display information to the user about
-             * the possible actions.
-             */
-            R.id.display_imageset_menu_info -> {
-                AlertDialog.Builder(this.context)
-                    .setIcon(android.R.drawable.ic_dialog_info)
-                    .setTitle(getString(R.string.info))
-                    .setMessage(getString(R.string.displayImagesetInfo))
-                    .show()
-                true
-            }
-            else -> {
-                true
-            }
-        }
+        return FragmentOptionsUtil.displayInfoMenu(
+            item = item,
+            infoItemId = R.id.display_imageset_menu_info,
+            title = getString(R.string.info),
+            message = getString(R.string.displayImagesetInfo),
+            context = this.context
+        )
     }
 }

@@ -114,13 +114,8 @@ class LearningFragment : Fragment() {
                 neutralColor = getColor(requireContext(), R.color.blue),
                 positiveColor = getColor(requireContext(), R.color.light_green),
                 negativeColor = getColor(requireContext(), R.color.red),
-                // TODO remove !! once enclosing CardViews put in all layouts
-                sourceCardView = cardViewImageToSort!!,
-                targetCardViews = listOf(
-                    cardViewImageCat0!!,
-                    cardViewImageCat1!!,
-                    cardViewImageCat2!!
-                )
+                sourceCardView = learningToSortCv,
+                targetCardViews = listOf(learningCat0Cv, learningCat1Cv, learningCat2Cv)
             )
         }.also { it.sourceCardViewShouldBlink(true) }
     }

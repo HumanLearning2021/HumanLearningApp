@@ -16,7 +16,6 @@
         android:id="@+id/cardView_image_to_sort"
         android:layout_width="@dimen/learning_image_size"
         android:layout_height="@dimen/learning_image_size"
-        app:cardBackgroundColor="@color/light_green"
         app:cardCornerRadius="@dimen/learning_image_corner_radius"
 
         app:layout_constraintBottom_toBottomOf="parent"

@@ -1,30 +1,37 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
-import android.view.View
+import android.content.Context
+import android.content.Intent
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Id
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
+import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
+import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListRecyclerViewAdapter
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import junit.framework.AssertionFailedError
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -54,21 +61,32 @@ class LearningSettingsFragmentTest {
 
     val navController = mock(NavController::class.java)
 
+    @get:Rule
+    val activityScenarioRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(
+        Intent(
+            ApplicationProvider.getApplicationContext(),
+            MainActivity::class.java
+        )
+    )
 
     @Before
     fun setup() {
         hiltRule.inject()
+        Intents.init()
         dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         datasetId = TestUtils.getFirstDataset(dbMgt).id
-        launchFragment()
+    }
+
+    @After
+    fun cleanUp() {
+        Intents.release()
+        activityScenarioRule.scenario.close()
     }
 
     @Test
     fun pressingPresentationButtonLaunchesLearningActivity() {
-
+        launchFragment()
         onView(withId(R.id.button_choose_presentation)).perform(click())
-
-
         verify(navController).navigate(
             LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
                 datasetId,
@@ -79,6 +97,7 @@ class LearningSettingsFragmentTest {
 
     @Test
     fun pressingRepresentationButtonLaunchesLearningActivity() {
+        launchFragment()
         onView(withId(R.id.button_choose_representation)).perform(click())
         verify(navController).navigate(
             LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
@@ -90,6 +109,7 @@ class LearningSettingsFragmentTest {
 
     @Test
     fun pressingEvaluationButtonLaunchesLearningActivity() {
+        launchFragment()
         onView(withId(R.id.button_choose_evaluation)).perform(click())
         verify(navController).navigate(
             LearningSettingsFragmentDirections.actionLearningSettingsFragmentToLearningFragment(
@@ -99,43 +119,37 @@ class LearningSettingsFragmentTest {
         )
     }
 
-    private fun titleTestAndButtonsDisplayed() {
-        assertDisplayed(R.id.button_choose_presentation)
-        assertDisplayed(R.id.button_choose_representation)
-        assertDisplayed(R.id.button_choose_evaluation)
-        assertDisplayed(R.id.textView_learning_mode)
-    }
-
-    private fun learningModeTooltipsAreCorrect() {
-        val res = InstrumentationRegistry.getInstrumentation().targetContext.resources
-        onView(withId(R.id.button_choose_presentation))
-            .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_presentation)))
-        onView(withId(R.id.button_choose_representation))
-            .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_representation)))
-        onView(withId(R.id.button_choose_evaluation))
-            .check(HasTooltipText(res.getString(R.string.learning_settings_tooltip_evaluation)))
-    }
-
     @Test
-    fun staticUITests() {
-        learningModeTooltipsAreCorrect()
-        titleTestAndButtonsDisplayed()
+    fun titleTestAndButtonsDisplayed() {
+        launchFragment()
+        assertDisplayed(R.id.learningSettings_btChoosePresentation)
+        assertDisplayed(R.id.learningSettings_btChooseRepresentation)
+        assertDisplayed(R.id.learningSettings_btChooseEvaluation)
+        assertDisplayed(R.id.learningSettings_tvMode)
     }
 
-
-    inner class HasTooltipText(private val text: String) : ViewAssertion {
-        override fun check(view: View?, noViewFoundException: NoMatchingViewException?) {
-            if (view != null && noViewFoundException == null) {
-                if (view.tooltipText.toString() != text) {
-                    throw AssertionFailedError(
-                        "The tooltip text was different than expected " +
-                                "was \"${view.tooltipText}\", expected \"$text\""
-                    )
-                }
-            } else {
-                throw AssertionFailedError("The view was not found")
-            }
-        }
+  @Test
+    fun clickOnInfoButtonWorks() {
+        onView(withId(R.id.startLearningButton)).perform(click())
+        onView(withId(R.id.DatasetList_list))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
+                    0,
+                    click()
+                )
+            )
+        onView(withId(R.id.learning_settings_menu_info)).perform(click())
+        onView(
+            withText(
+                ApplicationProvider.getApplicationContext<Context>()
+                    .getString(R.string.displayLearningSettingsInfo)
+            )
+        ).check(
+            matches(isDisplayed())
+        )
+        pressBack()
+        waitFor(10)
+        onView(withId(R.id.learningSettings_btChooseEvaluation)).check(matches(isDisplayed()))
     }
 
     private fun launchFragment() {
@@ -143,6 +157,5 @@ class LearningSettingsFragmentTest {
         launchFragmentInHiltContainer<LearningSettingsFragment>(fragmentArgs = args) {
             Navigation.setViewNavController(requireView(), navController)
         }
-
     }
 }

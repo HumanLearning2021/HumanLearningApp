@@ -2,10 +2,9 @@ package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -13,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningSettingsBinding
+import com.github.HumanLearning2021.HumanLearningApp.view.FragmentOptionsUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,6 +29,7 @@ class LearningSettingsFragment : Fragment() {
     ): View? {
         parentActivity = requireActivity()
         _binding = FragmentLearningSettingsBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -59,17 +60,26 @@ class LearningSettingsFragment : Fragment() {
             )
         }
 
-        binding.buttonChoosePresentation.tooltipText =
-            getString(R.string.learning_settings_tooltip_presentation)
-        binding.buttonChooseRepresentation.tooltipText =
-            getString(R.string.learning_settings_tooltip_representation)
-        binding.buttonChooseEvaluation?.tooltipText =
-            getString(R.string.learning_settings_tooltip_evaluation)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.learning_settings_info_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return FragmentOptionsUtil.displayInfoMenu(
+            item = item,
+            infoItemId = R.id.learning_settings_menu_info,
+            title = getString(R.string.info),
+            message = getString(R.string.displayLearningSettingsInfo),
+            context = this.context
+        )
     }
 }
 
