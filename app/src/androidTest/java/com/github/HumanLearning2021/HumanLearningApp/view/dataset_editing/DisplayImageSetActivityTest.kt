@@ -16,7 +16,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
@@ -229,6 +229,14 @@ class DisplayImageSetActivityTest {
             navigateToDisplayImagesetFragment()
             onView(withId(R.id.display_imageset_menu_info)).perform(click())
             waitFor(1) // increase if needed
+            onView(
+                withText(
+                    ApplicationProvider.getApplicationContext<Context>()
+                        .getString(R.string.displayImagesetInfo)
+                )
+            ).check(
+                ViewAssertions.matches(isDisplayed())
+            )
             pressBack()
             waitFor(1) // increase if needed
             onView(withId(R.id.display_image_set_imagesGridView)).check(

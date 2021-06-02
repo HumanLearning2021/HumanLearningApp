@@ -1,5 +1,6 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.Context
 import android.content.Intent
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -175,6 +176,14 @@ class MetadataEditingFragmentTest {
             navigateToCreateDatasetFragment()
             onView(withId(R.id.categories_editing_menu_info)).perform(click())
             waitFor(1) // increase if needed
+            onView(
+                withText(
+                    ApplicationProvider.getApplicationContext<Context>()
+                        .getString(R.string.metadataEditingInfo)
+                )
+            ).check(
+                ViewAssertions.matches(isDisplayed())
+            )
             pressBack()
             waitFor(1) // increase if needed
             onView(withId(R.id.button_add)).check(ViewAssertions.matches(isDisplayed()))
