@@ -7,7 +7,7 @@
 ## The application
 Human Learning is an application whose objective is to facilitate learning of abstraction by matching images. There are two main aspects to the application: learning on a dataset and managing datasets. Traditionnaly one would use this learning methods with printed images, but this takes a lot of time to prepare and update. Here you can do all of this digitally.
 
-The application's database is organized in datasets who contain categories. Pictures are assigned to categories and each category has a picture which is set as it's representative.
+The application's database is organized in datasets who contain categories. Pictures are assigned to categories and each category has a picture which is set as its representative.
 
 ## Features
 - Login with Google accounts (either as an administrator who can alter datasets or as a learner)
@@ -23,6 +23,7 @@ The application's database is organized in datasets who contain categories. Pict
     - Add and remove pictures using either the phone's camera or by choosing a picture present on the device
     - Modify the representative picture of a category
     - Modify dataset names
+- Most layouts are adapted for use with a tablet
 
 ## Installation instructions
 To compile the code from source you need to put the cleartext copy of the build secrets at the root of the repository. Please contact the development team to get access to them.
