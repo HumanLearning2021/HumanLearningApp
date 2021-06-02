@@ -2,9 +2,7 @@ package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
