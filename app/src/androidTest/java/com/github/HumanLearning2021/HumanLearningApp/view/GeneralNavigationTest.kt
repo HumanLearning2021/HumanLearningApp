@@ -139,7 +139,7 @@ class GeneralNavigationTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDisplayDataset()
             assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
             openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().targetContext)
