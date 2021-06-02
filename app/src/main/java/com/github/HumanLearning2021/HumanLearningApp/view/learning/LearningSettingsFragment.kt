@@ -1,6 +1,5 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
-import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -13,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningSettingsBinding
+import com.github.HumanLearning2021.HumanLearningApp.view.FragmentOptionsUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -84,23 +84,13 @@ class LearningSettingsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            /**
-             * When the info menu button is clicked, display information to the user about
-             * the possible actions.
-             */
-            R.id.learning_settings_menu_info -> {
-                AlertDialog.Builder(this.context)
-                    .setIcon(android.R.drawable.ic_dialog_info)
-                    .setTitle(getString(R.string.info))
-                    .setMessage(getString(R.string.displayLearningSettingsInfo))
-                    .show()
-                true
-            }
-            else -> {
-                true
-            }
-        }
+        return FragmentOptionsUtil.displayInfoMenu(
+            item = item,
+            infoItemId = R.id.learning_settings_menu_info,
+            title = getString(R.string.info),
+            message = getString(R.string.displayLearningSettingsInfo),
+            context = this.context
+        )
     }
 }
 
