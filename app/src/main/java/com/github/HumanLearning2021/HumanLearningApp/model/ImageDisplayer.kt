@@ -25,6 +25,11 @@ import kotlin.coroutines.suspendCoroutine
  * Utility to handle displaying images. Supports Google Storage.
  */
 interface ImageDisplayer {
+
+    /**
+     * Displays the underlying picture of a CategorizedPicture
+     * @param target the ImageView where the picture will be displayed
+     */
     suspend fun (CategorizedPicture).displayOn(target: ImageView)
 }
 
@@ -59,14 +64,18 @@ private class RequestListenerAdapter(val cont: Continuation<Unit>) : RequestList
 
 }
 
+/**
+ * Default ImageDisplayer
+ * @property currentActivity where the images will be displayed
+ */
 class DefaultImageDisplayer constructor(
     private val currentActivity: Activity,
 ) : ImageDisplayer {
+
     /**
      * A function that allows to display this image on an ImageView
      *
      *  @param target the ImageView on which to display the image
-     *
      */
     override suspend fun (CategorizedPicture).displayOn(target: ImageView) {
         val requestManager = Glide.with(currentActivity)
@@ -86,11 +95,5 @@ object ImageDisplayerModule {
     @Provides
     fun provideImageDisplayer(currentActivity: Activity): ImageDisplayer =
         DefaultImageDisplayer(currentActivity)
-}
-
-object NoopImageDisplayer : ImageDisplayer {
-    override suspend fun CategorizedPicture.displayOn(target: ImageView) {
-        // nothing to do!
-    }
 }
 

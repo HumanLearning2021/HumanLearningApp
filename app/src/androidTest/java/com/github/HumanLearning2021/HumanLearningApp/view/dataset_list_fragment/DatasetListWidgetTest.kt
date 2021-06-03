@@ -42,7 +42,7 @@ class DatasetListWidgetTest {
 
     lateinit var dbMgt: DatabaseManagement
 
-    lateinit var dummyDatasets: Set<Dataset>
+    private lateinit var dummyDatasets: Set<Dataset>
 
     @Before
     fun setUp() {

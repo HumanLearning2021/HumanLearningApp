@@ -8,13 +8,13 @@ import java.util.*
  * A class representing a dummy data set Interface
  * Categories are uniquely defined by their name
  */
+@Suppress("OverridingDeprecatedMember")
 class DummyDatabaseService internal constructor() : DatabaseService {
     private val pictures = InMemoryRepository<CategorizedPicture>()
     private val categories = InMemoryRepository<Category>()
     private val datasets = InMemoryRepository<Dataset>()
     private val representativePictures: MutableMap<String, CategorizedPicture> = mutableMapOf()
     private val users = InMemoryRepository<User>()
-    private val statistics = InMemoryRepository<Statistic>()
 
     private suspend fun requireCategoryPresent(category: Category) {
         categories.getById(category.id) ?: throw DatabaseService.NotFoundException(category.id)
@@ -171,11 +171,4 @@ class DummyDatabaseService internal constructor() : DatabaseService {
 
     override suspend fun getUser(type: User.Type, uid: String) =
         users.getById(User.Id(uid, type).toString())
-
-    override suspend fun getStatistic(userId: User.Id, datasetId: Id): Statistic? =
-        statistics.getById(Statistic.Id(userId, datasetId).toString())
-
-    override suspend fun putStatistic(statistic: Statistic) {
-        statistics.update(statistic.id.toString(), statistic)
-    }
 }

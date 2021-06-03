@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
@@ -16,6 +15,9 @@ import com.github.HumanLearning2021.HumanLearningApp.view.DownloadSwitchFragment
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragment where the user is presented with a choice of datasets to learn on
+ */
 @AndroidEntryPoint
 class LearningDatasetSelectionFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
@@ -27,7 +29,7 @@ class LearningDatasetSelectionFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         _binding = FragmentLearningDatasetSelectionBinding.inflate(inflater, container, false)
         return binding.root
@@ -53,21 +55,10 @@ class LearningDatasetSelectionFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
-    }
-
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
         _binding = null
-
     }
 }

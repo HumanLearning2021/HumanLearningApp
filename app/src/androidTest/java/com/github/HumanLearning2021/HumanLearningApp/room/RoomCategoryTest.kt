@@ -6,13 +6,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.contains
-import org.hamcrest.Matchers.hasSize
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -71,8 +66,8 @@ class RoomCategoryTest {
         databaseDao.insertAll(*refs.toTypedArray())
         val res = databaseDao.loadByName(dbName)!!.categories
 
-        MatcherAssert.assertThat(res, Matchers.hasSize(numberOfCategories))
-        MatcherAssert.assertThat(res, Matchers.containsInAnyOrder(*testCategories.toTypedArray()))
+        assertThat(res, hasSize(numberOfCategories))
+        assertThat(res, containsInAnyOrder(*testCategories.toTypedArray()))
     }
 
     @Test
@@ -90,8 +85,8 @@ class RoomCategoryTest {
 
         val res = categoryDao.loadAllPictures(category.categoryId)!!.pictures
 
-        MatcherAssert.assertThat(res, Matchers.hasSize(numberOfPictures))
-        MatcherAssert.assertThat(res, Matchers.containsInAnyOrder(*testPictures.toTypedArray()))
+        assertThat(res, hasSize(numberOfPictures))
+        assertThat(res, containsInAnyOrder(*testPictures.toTypedArray()))
     }
 
     @Test
@@ -110,7 +105,7 @@ class RoomCategoryTest {
 
         val res = categoryDao.loadPicture(loadPicture.pictureId)
 
-        MatcherAssert.assertThat(res, equalTo(loadPicture))
+        assertThat(res, equalTo(loadPicture))
     }
 
     @Test
@@ -135,8 +130,8 @@ class RoomCategoryTest {
 
         val res = categoryDao.loadAllPictures(category.categoryId)!!.pictures
 
-        MatcherAssert.assertThat(res, Matchers.hasSize(expectedPictures.size))
-        MatcherAssert.assertThat(res, Matchers.containsInAnyOrder(*expectedPictures.toTypedArray()))
+        assertThat(res, hasSize(expectedPictures.size))
+        assertThat(res, containsInAnyOrder(*expectedPictures.toTypedArray()))
     }
 
 
@@ -150,7 +145,7 @@ class RoomCategoryTest {
 
         val res = categoryDao.loadRepresentativePicture(category.categoryId)
 
-        MatcherAssert.assertThat(
+        assertThat(
             res,
             equalTo(
                 RoomRepresentativePicture(
@@ -174,7 +169,7 @@ class RoomCategoryTest {
 
         val res = categoryDao.loadById(loadCategory.categoryId)
 
-        MatcherAssert.assertThat(res, equalTo(loadCategory))
+        assertThat(res, equalTo(loadCategory))
     }
 
     @Test
@@ -196,8 +191,8 @@ class RoomCategoryTest {
 
         val res = categoryDao.loadByName(commonName)
 
-        MatcherAssert.assertThat(res, Matchers.hasSize(loadCategories.size))
-        MatcherAssert.assertThat(res, Matchers.containsInAnyOrder(*loadCategories.toTypedArray()))
+        assertThat(res, hasSize(loadCategories.size))
+        assertThat(res, containsInAnyOrder(*loadCategories.toTypedArray()))
     }
 
     @Test
@@ -218,9 +213,9 @@ class RoomCategoryTest {
         categoryDao.update(updatedCategory)
         val res = databaseDao.loadByName(dbName)!!.categories
 
-        MatcherAssert.assertThat(res, Matchers.hasSize(numberOfCategories))
-        MatcherAssert.assertThat(res, CoreMatchers.not(Matchers.contains(toUpdateCategory)))
-        MatcherAssert.assertThat(
+        assertThat(res, hasSize(numberOfCategories))
+        assertThat(res, not(contains(toUpdateCategory)))
+        assertThat(
             categoryDao.loadById(updatedCategory.categoryId),
             equalTo(updatedCategory)
         )
@@ -243,8 +238,8 @@ class RoomCategoryTest {
         categoryDao.delete(deletionPicture)
         val res = categoryDao.loadAllPictures(requestCat)!!.pictures
 
-        MatcherAssert.assertThat(res, hasSize(numberOfPictures - 1))
-        MatcherAssert.assertThat(res, not(contains(deletionPicture)))
+        assertThat(res, hasSize(numberOfPictures - 1))
+        assertThat(res, not(contains(deletionPicture)))
     }
 
     @Test
@@ -261,6 +256,6 @@ class RoomCategoryTest {
         categoryDao.delete(deletionCategory)
         val res = databaseDao.loadByName(dbName)!!.categories
 
-        MatcherAssert.assertThat(res, not(contains(deletionCategory)))
+        assertThat(res, not(contains(deletionCategory)))
     }
 }

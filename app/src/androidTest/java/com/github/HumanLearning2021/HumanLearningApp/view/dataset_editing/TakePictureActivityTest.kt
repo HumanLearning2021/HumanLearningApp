@@ -4,7 +4,6 @@ import android.Manifest
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.repeatedlyUntil
@@ -15,6 +14,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
@@ -58,13 +58,13 @@ class TakePictureActivityTest {
 
     lateinit var datasetId: String
 
-    private val catSet = setOf<Category>(
+    private val catSet = setOf(
         Category("cat1", "cat1"),
         Category("cat2", "cat2"),
         Category("cat3", "cat3"),
     )
 
-    val catSetArray = catSet.toTypedArray()
+    private val catSetArray = catSet.toTypedArray()
 
     private val navController: NavController = Mockito.mock(NavController::class.java)
 
@@ -76,8 +76,8 @@ class TakePictureActivityTest {
     fun setUp() {
         hiltRule.inject()
         dbMgt = globalDatabaseManagement.accessDatabase(dbName)
-        TestUtils.getFirstDataset(dbMgt).id
-        datasetId = TestUtils.getFirstDataset(dbMgt).id
+        getFirstDataset(dbMgt).id
+        datasetId = getFirstDataset(dbMgt).id
         launchFragment()
         // By waiting before the test starts, it allows time for the app to startup to prevent the
         // following error to appear on cirrus:
@@ -85,7 +85,7 @@ class TakePictureActivityTest {
         // This solution is not ideal because it slows down the tests, and it might not work
         // every time. But there isn't a better solution that I (Niels Lachat) know of.
         val delayBeforeTestStart: Long = 1 // increase if needed
-        TestUtils.waitFor(delayBeforeTestStart)
+        waitFor(delayBeforeTestStart)
     }
 
 
@@ -192,7 +192,7 @@ class TakePictureActivityTest {
     fun selectingCategoryChangesButtonText() {
         grantCameraPermission()
         onView(withId(R.id.selectCategoryButton)).perform(click())
-        TestUtils.waitFor(delayAfterSelectCategoryBtn)
+        waitFor(delayAfterSelectCategoryBtn)
         onView(withText("cat1")).perform(click())
         onView(withId(R.id.selectCategoryButton)).check(matches(withText("cat1")))
     }
@@ -201,38 +201,10 @@ class TakePictureActivityTest {
     fun selectingCategoryChangesButtonTextColor() {
         grantCameraPermission()
         onView(withId(R.id.selectCategoryButton)).perform(click())
-        TestUtils.waitFor(delayAfterSelectCategoryBtn)
+        waitFor(delayAfterSelectCategoryBtn)
         onView(withText("cat1")).perform(click())
         onView(withId(R.id.selectCategoryButton)).check(matches(hasTextColor(R.color.black)))
     }
-
-
-    /*
-    TODO: convert to fragment
-
-    @Test
-    fun receiveIntentFromCamera() {
-        Intents.init()
-        val imageUri =
-            Uri.parse("android.resource://com.github.HumanLearning2021.HumanLearningApp/" + R.drawable.knife)
-        Intents.intending(hasComponent(TakePictureFragment::class.qualifiedName)).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                Intent().putExtra(
-                    "result",
-                    bundleOf("category" to DummyCategory("cat1", "cat1"), "image" to imageUri)
-                )
-            )
-        )
-        Espresso.onView(ViewMatchers.withId(R.id.use_camera))
-            .perform(ViewActions.click())
-        val result = testRule.scenario.result
-        MatcherAssert.assertThat(result.resultCode, Matchers.equalTo(Activity.RESULT_OK))
-        MatcherAssert.assertThat(result.resultData, IntentMatchers.hasExtraWithKey("result"))
-        Intents.release()
-    }
-     */
-
 
     @Test
     fun permissionNeededDialogShowsCorrectDialog() {
@@ -251,13 +223,6 @@ class TakePictureActivityTest {
         grantCameraPermission()
         launchFragmentWithErrorDialog()
         onView(withText("Error")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
-    }
-
-
-    @Test
-    fun backButtonWorks() {
-        Espresso.pressBack()
-        Mockito.verify(navController).popBackStack()
     }
 
     private fun launchFragment() {
@@ -289,18 +254,4 @@ class TakePictureActivityTest {
             method.invoke(this)
         }
     }
-
-    /*
-    private fun launchFragmentForResult() {
-        val args = bundleOf("categories" to catSetArray, "datasetId" to datasetId)
-        launchFragmentInHiltContainer<TakePictureFragment>(args) {
-            Navigation.setViewNavController(requireView(), navController)
-            this.parentFragmentManager.setFragmentResult(AddPictureFragment.REQUEST_KEY, bundleOf("chosenCategory" to chosenCategory, "pictureUri" to pictureUri))
-            assertThat(fragment.result).isEqualTo(expectedResult)
-
-        }
-    }
-
-     */
-
 }

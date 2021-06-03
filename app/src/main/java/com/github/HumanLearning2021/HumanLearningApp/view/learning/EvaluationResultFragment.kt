@@ -29,7 +29,7 @@ class EvaluationResultFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentEvaluationResultBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -90,5 +90,10 @@ class EvaluationResultFragment : Fragment() {
                     "$it categories"
             }.toTypedArray()
         )
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

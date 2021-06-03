@@ -54,6 +54,7 @@ class FirestoreCategorizedPictureTest {
     fun displayOnWorksAsExpected() {
         val pic = runBlocking {
             val cats = db.getCategories()
+            @Suppress("DEPRECATION")
             db.getPicture(cats.first())
         }
         assumeThat("no picture to test display", pic, notNullValue())

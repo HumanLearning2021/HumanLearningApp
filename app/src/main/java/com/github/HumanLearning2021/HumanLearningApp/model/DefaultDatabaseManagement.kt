@@ -2,12 +2,18 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 
 import android.net.Uri
 
+/**
+ * Wraps a DatabaseService
+ * @property databaseService providing the entry point to the underlying database
+ */
 class DefaultDatabaseManagement internal constructor(
     private val databaseService: DatabaseService
 ) : DatabaseManagement {
 
+    @Suppress("OverridingDeprecatedMember")
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         return try {
+            @Suppress("DEPRECATION")
             databaseService.getPicture(category)
         } catch (e: DatabaseService.NotFoundException) {
             throw e
@@ -120,13 +126,6 @@ class DefaultDatabaseManagement internal constructor(
         }
     }
 
-    /**
-     * Sets a categorized picture as the representative picture of the category it is assigned to,
-     * removing it from the pictures of the category in the process.
-     *
-     * @param picture - the categorized picture to set as representative picture
-     * @throws DatabaseService.NotFoundException if the underlying database does not contain the specified picture
-     */
     override suspend fun putRepresentativePicture(picture: CategorizedPicture) {
         databaseService.putRepresentativePicture(picture)
     }
@@ -174,25 +173,6 @@ class DefaultDatabaseManagement internal constructor(
             databaseService.addCategoryToDataset(dataset, category)
         } catch (e: DatabaseService.NotFoundException) {
             throw e
-        }
-    }
-
-    override suspend fun countOccurrence(userId: User.Id, datasetId: Id, event: Event) {
-        (databaseService.getStatistic(userId, datasetId) ?: Statistic(
-            Statistic.Id(
-                userId,
-                datasetId
-            ),
-            mapOf()
-        )).let { stat ->
-            stat.copy(occurrences = stat.occurrences.let {
-                it + (event to it.getOrDefault(
-                    event,
-                    0
-                ) + 1)
-            })
-        }.also { stat ->
-            databaseService.putStatistic(stat)
         }
     }
 }

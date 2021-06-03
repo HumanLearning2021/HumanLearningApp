@@ -15,7 +15,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
-import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitForAction
+import com.github.HumanLearning2021.HumanLearningApp.TestUtils.setTextInSearchView
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
@@ -33,7 +33,10 @@ import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
 
@@ -83,7 +86,7 @@ class SearchTest {
         runBlocking {
             require(dbMgt.getDatasetByName(datasetName).size == 1) {
                 "The database has to contain exactly one dataset with name $datasetName " +
-                        "to be able to procede."
+                        "to be able to proceed."
             }
         }
         Intents.init()
@@ -168,14 +171,17 @@ class SearchTest {
     }
 
     @Test
-    @Ignore("haven't found a way to clear the text")
     fun datasetsOverviewTypeTextAndThenClearYieldsAllResults() {
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+        }
+        onView(withId(R.id.startLearningButton)).perform(click())
         navigateToDatasetsOverview()
         typeTextAndThenClearYieldsAllResults()
     }
 
     @Test
-    @Ignore("haven't found a way to clear the text")
     fun learningDatasetSelectionTypeTextAndThenClearYieldsAllResults() {
         navigateToLearningDatasetSelection()
         typeTextAndThenClearYieldsAllResults()
@@ -204,7 +210,7 @@ class SearchTest {
         onView(withId(R.id.action_search)).perform(
             click(),
             typeText(discriminatingPrefix),
-            clearText()
+            setTextInSearchView(""),
         )
         onView(withId(R.id.DatasetList_list)).check(
             ViewAssertions.matches(
@@ -248,7 +254,7 @@ class SearchTest {
 
     private fun assertCurrentFragmentIsCorrect(expected: Int) {
         activityScenarioRule.scenario.onActivity {
-            var currentFragmentContainer =
+            val currentFragmentContainer =
                 it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
             val currentFragment = currentFragmentContainer?.findNavController()?.currentDestination
             ViewMatchers.assertThat(currentFragment?.id, CoreMatchers.equalTo(expected))
