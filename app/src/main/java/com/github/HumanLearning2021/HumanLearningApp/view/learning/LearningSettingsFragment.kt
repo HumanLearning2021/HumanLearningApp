@@ -13,6 +13,9 @@ import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearnin
 import com.github.HumanLearning2021.HumanLearningApp.view.FragmentOptionsUtil
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragment where the user is presented with a choice of learning modes/settings to choose from
+ */
 @AndroidEntryPoint
 class LearningSettingsFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
@@ -70,7 +73,6 @@ class LearningSettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

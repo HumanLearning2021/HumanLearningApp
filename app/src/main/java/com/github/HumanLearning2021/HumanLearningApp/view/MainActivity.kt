@@ -24,17 +24,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-
+/**
+ * The application's entry point.
+ * Contains the navigation bars as well as the HomeFragment.
+ */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var navController: NavController
-    private lateinit var appBarConfiguration: AppBarConfiguration
 
     @Inject
     lateinit var authPresenter: AuthenticationPresenter
-
-    lateinit var prefs: SharedPreferences
-
 
     @Inject
     lateinit var globalDatabaseManagement: UniqueDatabaseManagement
@@ -43,7 +41,10 @@ class MainActivity : AppCompatActivity() {
     @ProductionDatabaseName
     lateinit var dbName: String
 
-    lateinit var dbMgt: DatabaseManagement
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var prefs: SharedPreferences
+    private lateinit var dbMgt: DatabaseManagement
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,11 +81,10 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 goToDsEditingButton?.isVisible = false
                 val user = authPresenter.currentUser
-                var isAdmin: Boolean
-                if (prefs!!.getBoolean("hasLogin", false)) {
-                    isAdmin = prefs!!.getBoolean("isAdmin", false)
+                val isAdmin = if (prefs.getBoolean("hasLogin", false)) {
+                    prefs.getBoolean("isAdmin", false)
                 } else {
-                    isAdmin = user?.isAdmin ?: false
+                    user?.isAdmin ?: false
                 }
                 isAdmin.let {
                     goToDsEditingButton?.isVisible = it

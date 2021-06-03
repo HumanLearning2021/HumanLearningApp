@@ -69,6 +69,9 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
         return view
     }
 
+    /**
+     * Checks if the production database is currently downloaded and sets the switch state accordingly
+     */
     private fun setSwitchState() {
         runBlocking {
             switch.isChecked = globalDatabaseManagement.getDownloadedDatabases().contains(
@@ -77,6 +80,10 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
         }
     }
 
+    /**
+     * Listener associated to the download switch which will download or de-download the
+     * production database according the the switch state (set or not set)
+     */
     private fun setSwitchLogic() {
         switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -91,7 +98,7 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
                     }
                 }
             } else {
-                globalDatabaseManagement.removeDatabaseFromDownloadsAsync(dbName).onAwait
+                globalDatabaseManagement.removeDatabaseFromDownloadsAsync(dbName).onJoin
             }
         }
     }

@@ -12,10 +12,16 @@ import javax.inject.Inject
 
 /**
  * Utility to handle downloading images. Supports Google Storage.
+ * @property context the application context
  */
 class ImageDownloader @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
+
+    /**
+     * Function to download a the underlying picture of a CategorizedPicture
+     * @param dest the download destination
+     */
     suspend fun (CategorizedPicture).downloadTo(dest: File) {
         if (picture.scheme == "gs")
             Firebase.storage.getReferenceFromUrl(picture.toString()).getFile(dest).await()
