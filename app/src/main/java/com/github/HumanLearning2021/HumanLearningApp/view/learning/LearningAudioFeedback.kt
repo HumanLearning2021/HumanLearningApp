@@ -4,22 +4,34 @@ import android.content.Context
 import android.media.MediaPlayer
 import com.github.HumanLearning2021.HumanLearningApp.R
 
+/**
+ * Class used to provide audio feedback during learning
+ * @property applicationContext of the app
+ */
 class LearningAudioFeedback(val applicationContext: Context) {
     private lateinit var correctMp: MediaPlayer
     private lateinit var incorrectMp: MediaPlayer
 
+    /**
+     * Initialize media players
+     */
     fun initMediaPlayers() {
         correctMp = MediaPlayer.create(applicationContext, R.raw.bravo)
         incorrectMp = MediaPlayer.create(applicationContext, R.raw.dommage)
     }
 
+    /**
+     * Release media players
+     */
     fun releaseMediaPlayers() {
         // we release when the user pauses the app so that we don't eat up resources uselessly
         correctMp.release()
         incorrectMp.release()
     }
 
-
+    /**
+     * Stops the media players and prepares them for next event
+     */
     fun stopAndPrepareMediaPlayers() {
         stopAndPrepare(correctMp)
         stopAndPrepare(incorrectMp)
@@ -35,10 +47,16 @@ class LearningAudioFeedback(val applicationContext: Context) {
         }
     }
 
+    /**
+     * Play the feedback congratulating the user for his success
+     */
     fun startCorrectFeedback() {
         correctMp.start()
     }
 
+    /**
+     * Play the feedback commiserating the user for his mistake
+     */
     fun startIncorrectFeedback() {
         incorrectMp.start()
     }

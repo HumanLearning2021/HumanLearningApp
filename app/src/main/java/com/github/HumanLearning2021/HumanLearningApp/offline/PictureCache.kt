@@ -15,8 +15,8 @@ import java.util.*
 /**
  * Allows to access picture from and save them to local storage
  * @property dbName name of the database the pictures belong to
- * @property context application context
- * @property folder can be used to specify storage location, by default directory named after$
+ * @property context the application context
+ * @property folder can be used to specify storage location, by default directory named after
  * the database in local storage
  */
 class PictureCache(
@@ -27,6 +27,13 @@ class PictureCache(
     private val imageDownloader = ImageDownloader(context)
 
     companion object {
+        /**
+         * Provides the picture cache stored in the application's cache folder.
+         * Should be used when the intent is to cache pictures without having to deal with their
+         * deletion.
+         * @param dbName of the database the pictures belong to
+         * @param context the application context
+         */
         fun applicationPictureCache(
             dbName: String,
             context: Context

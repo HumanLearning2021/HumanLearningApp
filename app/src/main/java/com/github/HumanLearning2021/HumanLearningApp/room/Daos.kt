@@ -3,6 +3,9 @@ package com.github.HumanLearning2021.HumanLearningApp.room
 import androidx.room.*
 import com.github.HumanLearning2021.HumanLearningApp.model.User
 
+/**
+ * Data access object for everything concerning categories in on device storage
+ */
 @Dao
 interface CategoryDao {
     @Query("SELECT * FROM category")
@@ -48,6 +51,9 @@ interface CategoryDao {
     suspend fun delete(picture: RoomUnlinkedRepresentativePicture)
 }
 
+/**
+ * Data access object for everything concerning datasets in on device storage
+ */
 @Dao
 interface DatasetDao {
     @Transaction
@@ -81,6 +87,9 @@ interface DatasetDao {
     suspend fun delete(vararg refs: RoomDatasetCategoriesCrossRef)
 }
 
+/**
+ * Data access object for everything concerning databases in on device storage
+ */
 @Dao
 interface DatabaseDao {
     @Transaction
@@ -116,6 +125,9 @@ interface DatabaseDao {
     suspend fun delete(ref: RoomDatabasePicturesCrossRef)
 }
 
+/**
+ * Data access object for everything concerning pictures in on device storage
+ */
 @Dao
 interface PictureDao {
     @Query("SELECT * FROM picture")
@@ -125,6 +137,9 @@ interface PictureDao {
     suspend fun loadAllRepresentativePictures(): List<RoomUnlinkedRepresentativePicture>
 }
 
+/**
+ * Data access object for everything concerning users in on device storage
+ */
 @Dao
 interface UserDao {
     @Query("SELECT * FROM user")
