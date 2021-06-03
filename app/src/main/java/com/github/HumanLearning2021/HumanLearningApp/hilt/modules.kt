@@ -22,37 +22,51 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+/**
+ * Defines which database the application uses
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ProductionDatabaseName
 
-/** In-memory database for testing,
-preloaded with known data.
+/**
+ * In-memory database for testing, preloaded with known data.
  */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DummyDatabase
 
-/** Read-only database used in unit tests,
-preloaded with known data in the Firebase emulator.
+/**
+ * Read-only database used in unit tests, preloaded with known data in the Firebase emulator.
  */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class TestDatabase
 
-/** Writable database used in unit tests. */
+/**
+ * Writable database used in unit tests.
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ScratchDatabase
 
+/**
+ * Pre-downloaded TestDatabase, used for unit tests
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class OfflineTestDatabase
 
+/**
+ * Pre-downloaded ScratchDatabase, used for unit tests
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class OfflineScratchDatabase
 
+/**
+ * Room database used for on device persistent database
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class RoomDatabase

@@ -9,7 +9,6 @@ import kotlinx.parcelize.Parcelize
  * @property name Human readable name of the Dataset
  * @property categories Set of Category included in the Dataset
  */
-
 @Parcelize
 data class Dataset(
     val id: Id,

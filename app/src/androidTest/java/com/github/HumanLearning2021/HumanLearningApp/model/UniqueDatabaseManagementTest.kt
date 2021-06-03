@@ -10,9 +10,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import javax.inject.Inject
 
@@ -46,7 +44,7 @@ class UniqueDatabaseManagementTest {
 
     @Test
     fun getDatabaseNamesWorks() = runBlocking {
-        assertThat(uDbMan.getDatabases(), hasItems(dbName))
+        assertThat(uDbMan.getCloudDatabases(), hasItems(dbName))
     }
 
     @Test

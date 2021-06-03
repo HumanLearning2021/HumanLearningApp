@@ -170,7 +170,7 @@
     </fragment>
     <fragment
         android:id="@+id/googleSignInWidget"
-        android:name="com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInWidget"
+        android:name="com.github.HumanLearning2021.HumanLearningApp.view.GoogleSignInFragment"
         android:label="@string/nav_graph_label_login"
         tools:layout="@layout/fragment_google_sign_in" >
         <action

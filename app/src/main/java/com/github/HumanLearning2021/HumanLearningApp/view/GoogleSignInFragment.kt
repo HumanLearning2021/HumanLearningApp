@@ -14,7 +14,6 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.IdpResponse
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
@@ -24,10 +23,10 @@ import javax.inject.Inject
 
 
 /**
- * Fragment used to log in & out the user and set the access privileges.
+ * Fragment where the user can sign in with his Google account
  */
 @AndroidEntryPoint
-class GoogleSignInWidget : Fragment() {
+class GoogleSignInFragment : Fragment() {
 
     @Inject
     lateinit var presenter: AuthenticationPresenter
@@ -76,13 +75,12 @@ class GoogleSignInWidget : Fragment() {
         lifecycleScope.launch {
             presenter.signOut()
         }
-        editor?.putString("name", "")
-        editor?.putString("email", "")
-        editor?.putString("uid", "")
-        editor?.putBoolean("hasLogin", false)
-        editor?.putBoolean("isAdmin", false)
-        editor?.apply()
-        findNavController().navigate(GoogleSignInWidgetDirections.actionGoogleSignInWidgetToHomeFragment())
+        editor.putString("name", "")
+        editor.putString("email", "")
+        editor.putString("uid", "")
+        editor.putBoolean("hasLogin", false)
+        editor.putBoolean("isAdmin", false)
+        editor.apply()
         updateUi()
     }
 
@@ -107,15 +105,15 @@ class GoogleSignInWidget : Fragment() {
      * to persist the login after closing the app
      */
     fun handleSignIn() {
-        val user = presenter.currentUser
-        if (user != null) {
-            editor?.putString("name", user?.displayName)
-            editor?.putString("email", user?.email)
-            editor?.putString("uid", user?.uid)
-            editor?.putBoolean("hasLogin", true)
-            editor?.putBoolean("isAdmin", isAdmin)
-            editor?.apply()
+        presenter.currentUser?.let { user ->
+            editor.putString("name", user.displayName)
+            editor.putString("email", user.email)
+            editor.putString("uid", user.uid)
+            editor.putBoolean("hasLogin", true)
+            editor.putBoolean("isAdmin", isAdmin)
+            editor.apply()
         }
+
     }
 
     /**
@@ -174,9 +172,9 @@ class GoogleSignInWidget : Fragment() {
      * Updates the Ui by taking into account logging persistance & access privileges.
      */
     fun updateUi() {
-        if (prefs!!.getBoolean("hasLogin", false)) {
+        if (prefs.getBoolean("hasLogin", false)) {
             view?.findViewById<TextView>(R.id.loginStatus)?.text =
-                prefs?.getString("name", "Not logged in!")
+                prefs.getString("name", "Not logged in!")
             setSignOutUi()
 
         } else {
