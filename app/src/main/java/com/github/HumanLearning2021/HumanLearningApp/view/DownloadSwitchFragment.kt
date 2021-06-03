@@ -98,7 +98,7 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
                     }
                 }
             } else {
-                globalDatabaseManagement.removeDatabaseFromDownloadsAsync(dbName).onAwait
+                globalDatabaseManagement.removeDatabaseFromDownloadsAsync(dbName).onJoin
             }
         }
     }
