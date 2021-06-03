@@ -31,3 +31,6 @@ To compile the code from source you need to put the cleartext copy of the build 
 If you want to run the unit tests you need to first run the Firebase emulators:
 - To install the emulators follow the instructions [here](https://firebase.google.com/docs/cli?authuser=5&hl=en#install_the_firebase_cli). There is no need to run `firebase init`, everything is already setup in the project. You only have to do `firebase login`.
 - Depending on your os, run the command `firebase emulators:start --import ./firestore_state_windows` or `firebase emulators:start --import ./firestore_state_linux` from within the root directory of the project before running any tests (including through gradle)
+
+## Credits
+A special thank you to Sandy Ghelfi for designing the logo of our app.
