@@ -7,9 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -158,7 +156,7 @@ class DisplayDatasetActivityTest {
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
-                    ViewActions.click()
+                    click()
                 )
             )
     }
@@ -254,16 +252,6 @@ class DisplayDatasetActivityTest {
             UiDevice.getInstance(getInstrumentation()).click(0, 100)
             onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
         }
-    }
-
-    @Test
-    fun onBackPressedWorks() {
-        launchFragment()
-        Espresso.closeSoftKeyboard()
-        val mDevice = UiDevice.getInstance(getInstrumentation())
-        mDevice.pressBack()
-
-        verify(mockNavController).popBackStack()
     }
 
     private fun launchFragment() {

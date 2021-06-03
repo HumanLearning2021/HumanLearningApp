@@ -3,6 +3,7 @@ package com.github.HumanLearning2021.HumanLearningApp.model
 import android.content.Context
 import com.github.HumanLearning2021.HumanLearningApp.firestore.FirestoreDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DummyDatabase
+import com.github.HumanLearning2021.HumanLearningApp.hilt.RoomDatabase
 import com.github.HumanLearning2021.HumanLearningApp.offline.CachedDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.OfflineDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.offline.PictureCache
@@ -13,27 +14,46 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
- * @param context: the application context
+ * The application's entry point to access any database
+ * @property context the application context
+ * @property room the Room database used for on device storage
+ * @property firestore Firebase Firestore used for cloud storage
+ * @property dummyDb dummy database (required for testing purposes and has to be injected for it to
+ * be a singleton)
  */
 class UniqueDatabaseManagement @Inject constructor(
     @ApplicationContext val context: Context,
-    private val room: RoomOfflineDatabase,
+    @RoomDatabase val room: RoomOfflineDatabase,
     private val firestore: FirebaseFirestore,
-    @DummyDatabase var dummyDb: DatabaseManagement
+    @DummyDatabase val dummyDb: DatabaseManagement
 ) {
 
     private val databaseDao = room.databaseDao()
     private val datasetDao = room.datasetDao()
     private val categoryDao = room.categoryDao()
 
+    /**
+     * Gets the names of all the currently downloaded databases
+     * @return list containing the names of all the currently downloaded databases
+     */
     fun getDownloadedDatabases(): List<String> = runBlocking {
         room.databaseDao().loadAll().map { db -> db.emptyHLDatabase.databaseName }.toList()
     }
 
-    fun getDatabases(): List<String> = runBlocking {
+    /**
+     * Gets the names of all the databases available on cloud storage
+     * @return list containing the names of all the databases available on cloud storage
+     */
+    fun getCloudDatabases(): List<String> = runBlocking {
         FirestoreDatabaseService.getDatabaseNames()
     }
 
+    /**
+     * Function to get the entry point to a desired database
+     * @param databaseName of the desired database
+     * @return the database management used to access the database. The underlying database will
+     * be either the cloud or offline version, depending on if it is currently downloaded or not
+     */
     fun accessDatabase(databaseName: String): DefaultDatabaseManagement = runBlocking {
         when {
             // necessary for current testing setup
@@ -57,6 +77,11 @@ class UniqueDatabaseManagement @Inject constructor(
         }
     }
 
+    /**
+     * Function to get the entry point to a desired database on the cloud storage.
+     * @param databaseName of the desired database
+     * @return the database management used to access the database
+     */
     fun accessCloudDatabase(databaseName: String): DatabaseManagement {
         return DefaultDatabaseManagement(
             CachedDatabaseService(
@@ -68,6 +93,11 @@ class UniqueDatabaseManagement @Inject constructor(
         )
     }
 
+    /**
+     * Downloads the desired database from cloud storage to on device storage.
+     * @param databaseName of the desired database
+     * @return the database management used to access the downloaded database
+     */
     suspend fun downloadDatabase(databaseName: String): DatabaseManagement =
         withContext(Dispatchers.IO) {
             PictureCache.applicationPictureCache(databaseName, context)
@@ -130,7 +160,12 @@ class UniqueDatabaseManagement @Inject constructor(
             initializeRoomCrossRefs(dbDsRefs, dbCatRefs, dbPicRefs, dsCatRefs)
             DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
         }
-
+    
+    /**
+     * Removes a database from on device storage asynchronously.
+     * @param databaseName of the database to remove from on device storage
+     * @return a job tracking completion of the operation
+     */
     fun removeDatabaseFromDownloads(databaseName: String): Job =
         CoroutineScope(Dispatchers.IO).launch {
             databaseDao.loadByName(databaseName)?.let {

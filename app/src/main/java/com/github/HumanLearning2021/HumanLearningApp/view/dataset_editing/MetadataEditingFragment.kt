@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -21,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+
 
 /**
  * Fragment used to modify the name and categories of the dataset if the user comes
@@ -135,19 +135,10 @@ class MetadataEditingFragment : Fragment() {
                 setButtonsListener()
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
-    }
-
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
         _binding = null
     }
 
@@ -272,7 +263,7 @@ class MetadataEditingFragment : Fragment() {
                 AlertDialog.Builder(this.context)
                     .setIcon(android.R.drawable.ic_dialog_info)
                     .setTitle(getString(R.string.info))
-                    .setMessage(getString(R.string.categoriesEditingInfo))
+                    .setMessage(getString(R.string.metadataEditingInfo))
                     .show()
                 true
             }

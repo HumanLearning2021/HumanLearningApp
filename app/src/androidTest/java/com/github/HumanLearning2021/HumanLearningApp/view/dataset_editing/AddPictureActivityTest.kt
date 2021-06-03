@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -25,7 +24,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
-import org.mockito.Mockito.verify
 import javax.inject.Inject
 
 @UninstallModules(DatabaseNameModule::class)
@@ -46,7 +44,7 @@ class AddPictureActivityTest {
 
     private lateinit var datasetId: Id
 
-    private val catSet = setOf<Category>(
+    private val catSet = setOf(
         Category("cat1", "cat1"),
         Category("cat2", "cat2"),
         Category("cat3", "cat3"),
@@ -70,12 +68,6 @@ class AddPictureActivityTest {
     fun correctLayoutIsDisplayAfterCreation() {
         BaristaVisibilityAssertions.assertDisplayed(R.id.select_existing_picture)
         BaristaVisibilityAssertions.assertDisplayed(R.id.use_camera)
-    }
-
-    @Test
-    fun backButtonWorks() {
-        Espresso.pressBack()
-        verify(navController).popBackStack()
     }
 
     private fun launchFragment(args: Bundle) {

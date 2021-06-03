@@ -187,14 +187,4 @@ interface DatabaseService {
     suspend fun checkIsAdmin(user: User): Boolean
 
     suspend fun getUser(type: User.Type, uid: String): User?
-
-    /**
-     * Retrieve the [Statistic] entity associated with the given keys, if any.
-     */
-    suspend fun getStatistic(userId: User.Id, datasetId: DatasetId): Statistic?
-
-    /**
-     * Store the given statistic in the database, overriding any conflicting ones.
-     */
-    suspend fun putStatistic(statistic: Statistic)
 }

@@ -1,13 +1,12 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.Context
 import android.content.Intent
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.closeSoftKeyboard
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -16,8 +15,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -25,7 +22,6 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.withIndex
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
@@ -43,8 +39,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.hasSize
-import org.junit.*
+import org.junit.After
 import org.junit.Assume.assumeTrue
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
@@ -68,8 +67,6 @@ class MetadataEditingFragmentTest {
         )
     )
 
-    private val dbService = DatabaseServiceModule.provideDummyService()
-
     @BindValue
     @ProductionDatabaseName
     val dbName = "dummy"
@@ -90,7 +87,6 @@ class MetadataEditingFragmentTest {
         dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         dataset = getFirstDataset(dbMgt)
         datasetId = getFirstDataset(dbMgt).id
-        launchFragment()
         runBlocking {
             val ds = dbMgt.getDatasetById(datasetId)
             require(ds != null) {
@@ -167,7 +163,6 @@ class MetadataEditingFragmentTest {
         )
     }
 
-    @Ignore("will be fixed later")
     @Test
     fun clickOnInfoButtonWorks() {
         runBlocking {
@@ -177,7 +172,15 @@ class MetadataEditingFragmentTest {
             navigateToCreateDatasetFragment()
             onView(withId(R.id.categories_editing_menu_info)).perform(click())
             waitFor(1) // increase if needed
-            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(0, 100)
+            onView(
+                withText(
+                    ApplicationProvider.getApplicationContext<Context>()
+                        .getString(R.string.metadataEditingInfo)
+                )
+            ).check(
+                ViewAssertions.matches(isDisplayed())
+            )
+            pressBack()
             waitFor(1) // increase if needed
             onView(withId(R.id.button_add)).check(ViewAssertions.matches(isDisplayed()))
         }
@@ -196,13 +199,6 @@ class MetadataEditingFragmentTest {
             val updatedDataset = dbMgt.getDatasetById(datasetId)!!
             assert(nbCategories + 1 == updatedDataset.categories.size)
         }
-    }
-
-    @Test
-    fun backButtonWorks() {
-        launchFragment()
-        Espresso.pressBack()
-        verify(navController).popBackStack()
     }
 
     @Test

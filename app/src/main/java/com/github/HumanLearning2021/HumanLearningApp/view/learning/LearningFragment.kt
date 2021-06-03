@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +22,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+/**
+ * Fragment where the user can learn abstraction by matching pictures
+ */
 @AndroidEntryPoint
 class LearningFragment : Fragment() {
     private lateinit var audioFeedback: LearningAudioFeedback
@@ -115,17 +117,10 @@ class LearningFragment : Fragment() {
                 neutralColor = getColor(requireContext(), R.color.blue),
                 positiveColor = getColor(requireContext(), R.color.light_green),
                 negativeColor = getColor(requireContext(), R.color.red),
-                // TODO remove !! once enclosing CardViews put in all layouts
-                sourceCardView = learningToSortCv!!,
-                targetCardViews = listOf(
-                    learningCat0Cv!!,
-                    learningCat1Cv!!,
-                    learningCat2Cv!!
-                )
+                sourceCardView = learningToSortCv,
+                targetCardViews = listOf(learningCat0Cv, learningCat1Cv, learningCat2Cv)
             )
         }.also { it.sourceCardViewShouldBlink(true) }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
 
@@ -183,18 +178,9 @@ class LearningFragment : Fragment() {
     }
 
 
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
         _binding = null
-
     }
 
     override fun onResume() {
@@ -262,7 +248,6 @@ class LearningFragment : Fragment() {
             targetImageViews = updateTargetImageViews()
 
             lifecycleScope.launch {
-                learningPresenter.saveEvent(Event.SUCCESS)
                 learningPresenter.updateForNextSorting(
                     targetImageViews,
                     binding.learningToSort
@@ -272,9 +257,6 @@ class LearningFragment : Fragment() {
             audioFeedback.startIncorrectFeedback()
             enclosingCardView(v)?.let { visualFeedback.startIncorrectFeedback(it) }
             evaluationModel?.addFailure()
-            lifecycleScope.launch {
-                learningPresenter.saveEvent(Event.MISTAKE)
-            }
         }
         evaluationModel?.let { Log.d("Evaluation", it.getCurrentEvaluationResult().toString()) }
         return sortingCorrect

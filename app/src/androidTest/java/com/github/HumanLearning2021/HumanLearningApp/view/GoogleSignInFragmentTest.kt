@@ -2,8 +2,9 @@ package com.github.HumanLearning2021.HumanLearningApp.view
 
 
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -23,29 +24,30 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class GoogleSignInWidgetTest {
+class GoogleSignInFragmentTest {
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    private lateinit var fragment: GoogleSignInWidget
-    private lateinit var navController: NavController
+    private lateinit var fragment: GoogleSignInFragment
+    private val mockNavController: NavController = Mockito.mock(NavController::class.java)
 
 
     @Before
     fun setUp() {
         hiltRule.inject()
         launchFragment()
-
     }
 
     @Test
     fun test_success() {
-        launchFragmentInHiltContainer<GoogleSignInWidget> {
-            onActivityResult(GoogleSignInWidget.RC_SIGN_IN, 0, null)
+        launchFragmentInHiltContainer<GoogleSignInFragment> {
+            @Suppress("DEPRECATION")
+            onActivityResult(GoogleSignInFragment.RC_SIGN_IN, 0, null)
         }
     }
 
@@ -65,10 +67,10 @@ class GoogleSignInWidgetTest {
     }
 
     @Test
-    fun uncheckedBoxSetAdminfalse() {
+    fun uncheckedBoxSetAdminFalse() {
         onView(withId(R.id.checkBox)).perform(click())
         onView(withId(R.id.checkBox)).perform(click())
-        assertThat(GoogleSignInWidget.isAdmin, equalTo(false))
+        assertThat(GoogleSignInFragment.isAdmin, equalTo(false))
     }
 
 
@@ -93,7 +95,6 @@ class GoogleSignInWidgetTest {
             fragment.activity?.runOnUiThread {
                 fragment.updateUi()
                 fragment.onSignOutPress()
-                fragment.updateUi()
                 assertThat(fragment.presenter.currentUser, Matchers.nullValue())
             }
         }
@@ -103,19 +104,19 @@ class GoogleSignInWidgetTest {
     }
 
     @Test
-    fun testLoginPersistance() {
+    fun testLoginPersistence() {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             fragment.presenter.onSuccessfulLogin(false)
             fragment.handleSignIn()
-            assertThat(fragment.prefs!!.getBoolean("hasLogin", false), equalTo(true))
-            assertThat(fragment.prefs!!.getBoolean("isAdmin", false), equalTo(false))
+            assertThat(fragment.prefs.getBoolean("hasLogin", false), equalTo(true))
+            assertThat(fragment.prefs.getBoolean("isAdmin", false), equalTo(false))
             fragment.activity?.runOnUiThread {
                 fragment.onSignOutPress()
-                assertThat(fragment.prefs!!.getBoolean("hasLogin", false), equalTo(false))
-                assertThat(fragment.prefs!!.getString("name", ""), equalTo(""))
-                assertThat(fragment.prefs!!.getString("email", ""), equalTo(""))
-                assertThat(fragment.prefs!!.getString("uid", ""), equalTo(""))
+                assertThat(fragment.prefs.getBoolean("hasLogin", false), equalTo(false))
+                assertThat(fragment.prefs.getString("name", ""), equalTo(""))
+                assertThat(fragment.prefs.getString("email", ""), equalTo(""))
+                assertThat(fragment.prefs.getString("uid", ""), equalTo(""))
             }
         }
     }
@@ -136,8 +137,9 @@ class GoogleSignInWidgetTest {
     }
 
     private fun launchFragment() {
-        launchFragmentInHiltContainer<GoogleSignInWidget> {
+        launchFragmentInHiltContainer<GoogleSignInFragment> {
             fragment = this
+            Navigation.setViewNavController(requireView(), mockNavController)
         }
     }
 }

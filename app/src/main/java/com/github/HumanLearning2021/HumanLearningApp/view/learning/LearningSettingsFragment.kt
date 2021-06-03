@@ -1,21 +1,21 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
-import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningSettingsBinding
+import com.github.HumanLearning2021.HumanLearningApp.view.FragmentOptionsUtil
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragment where the user is presented with a choice of learning modes/settings to choose from
+ */
 @AndroidEntryPoint
 class LearningSettingsFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
@@ -27,9 +27,10 @@ class LearningSettingsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         _binding = FragmentLearningSettingsBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -44,7 +45,6 @@ class LearningSettingsFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -60,13 +60,6 @@ class LearningSettingsFragment : Fragment() {
             )
         }
 
-        binding.learningSettingsBtChoosePresentation.tooltipText =
-            getString(R.string.learning_settings_tooltip_presentation)
-        binding.learningSettingsBtChooseRepresentation.tooltipText =
-            getString(R.string.learning_settings_tooltip_representation)
-        binding.learningSettingsBtChooseEvaluation?.tooltipText =
-            getString(R.string.learning_settings_tooltip_evaluation)
-
         requireActivity().onBackPressedDispatcher.addCallback(callback)
 
     }
@@ -79,10 +72,22 @@ class LearningSettingsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        callback.isEnabled = false
-        callback.remove()
         _binding = null
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.learning_settings_info_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return FragmentOptionsUtil.displayInfoMenu(
+            item = item,
+            infoItemId = R.id.learning_settings_menu_info,
+            title = getString(R.string.info),
+            message = getString(R.string.displayLearningSettingsInfo),
+            context = this.context
+        )
     }
 }
 
