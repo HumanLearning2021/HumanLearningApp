@@ -166,7 +166,7 @@ class UniqueDatabaseManagement @Inject constructor(
      * @param databaseName of the database to remove from on device storage
      * @return a job tracking completion of the operation
      */
-    fun removeDatabaseFromDownloadsAsync(databaseName: String) =
+    fun removeDatabaseFromDownloadsAsync(databaseName: String): Job =
         CoroutineScope(Dispatchers.IO).async {
             databaseDao.loadByName(databaseName)?.let {
                 it.datasets.forEach { ds -> datasetDao.delete(ds) }
