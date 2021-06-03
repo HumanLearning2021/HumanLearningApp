@@ -100,8 +100,6 @@ class UniqueDatabaseManagement @Inject constructor(
      */
     suspend fun downloadDatabase(databaseName: String): DatabaseManagement =
         withContext(Dispatchers.IO) {
-            PictureCache.applicationPictureCache(databaseName, context)
-                .clear() //TODO("reuse content from cache instead")
             val firestoreDbManagement =
                 // necessary for current testing setup
                 if (databaseName == "dummy") {
@@ -160,7 +158,7 @@ class UniqueDatabaseManagement @Inject constructor(
             initializeRoomCrossRefs(dbDsRefs, dbCatRefs, dbPicRefs, dsCatRefs)
             DefaultDatabaseManagement(OfflineDatabaseService(databaseName, context, room))
         }
-    
+
     /**
      * Removes a database from on device storage asynchronously.
      * @param databaseName of the database to remove from on device storage
