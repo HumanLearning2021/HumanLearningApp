@@ -133,7 +133,7 @@ class AddPictureNavigationTest {
                 )
             )
         Espresso.openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().targetContext)
-        onView(ViewMatchers.withText(R.string.add_new_picture)).perform(click())
+        onView(ViewMatchers.withText(R.string.DisplayDataset_addNewPictureButton)).perform(click())
     }
 
     private fun assertCurrentFragmentIsCorrect(expected: Int) {

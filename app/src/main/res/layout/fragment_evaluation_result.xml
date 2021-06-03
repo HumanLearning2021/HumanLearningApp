@@ -12,7 +12,7 @@
 
     <Button
         android:id="@+id/learnAgainButton"
-        android:text="@string/learn_again"
+        android:text="@string/EvaluationResult_learnAgainButton"
         android:layout_below="@id/barchart_evaluation_result"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"

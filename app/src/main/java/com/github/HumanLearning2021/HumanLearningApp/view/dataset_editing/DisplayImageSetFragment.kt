@@ -272,7 +272,7 @@ class DisplayImageSetFragment : Fragment() {
                     numberOfSelectedPictures += 1
                     mode!!.title =
                         resources.getQuantityString(
-                            R.plurals.numberOfSelectedPicturesText,
+                            R.plurals.DisplayImageSet_numberOfSelectedPicturesText,
                             numberOfSelectedPictures,
                             numberOfSelectedPictures
                         )
@@ -290,7 +290,7 @@ class DisplayImageSetFragment : Fragment() {
                     binding.displayImageSetImagesGridView[position].elevation = tenDp
                     mode!!.title =
                         resources.getQuantityString(
-                            R.plurals.numberOfSelectedPicturesText,
+                            R.plurals.DisplayImageSet_numberOfSelectedPicturesText,
                             numberOfSelectedPictures,
                             numberOfSelectedPictures
                         )
@@ -321,8 +321,8 @@ class DisplayImageSetFragment : Fragment() {
         return FragmentOptionsUtil.displayInfoMenu(
             item = item,
             infoItemId = R.id.display_imageset_menu_info,
-            title = getString(R.string.info),
-            message = getString(R.string.displayImagesetInfo),
+            title = getString(R.string.MetadataEditing_infoTitle),
+            message = getString(R.string.DisplayImageSet_infoTitle),
             context = this.context
         )
     }

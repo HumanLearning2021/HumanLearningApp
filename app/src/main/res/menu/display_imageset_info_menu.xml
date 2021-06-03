@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/display_imageset_menu_info"
-        android:title="@string/modify_categories"
+        android:title="@string/MetadataEditing_modifyCategoriesButton"
         android:icon="@android:drawable/ic_dialog_info"
         app:showAsAction="always" />
 </menu>
