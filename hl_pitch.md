@@ -8,21 +8,32 @@ Predownload an image if the demo is done on an emulator, then add this image dur
 
 ## Script
 
-Verbal communication is central to human interaction. This means that if you can't communicate verbally, it is difficult to integrate well into society. People with mental disabilities can have problems communicating verbally, which is why they often use picture-based communication.
+Verbal communication is central to human interaction. This means that if you can't communicate verbally, it is difficult to integrate well into society. 
 
-But let's say you are little Patrick, and you want an apple. So you give your apple pictogram to Bob, and you receive an apple. But that's not an apple, it's all green, not at all like on the pictogram!
+> Start video
 
-One way to help little Patrick, is to teach him concept abstraction through image matching. This is usually done by matching printed pictures, but with Human Learning, you can do all this *digitally*!
+People with mental disabilities can have problems communicating verbally, which is why they often use picture-based communication.
+
+
+So let's say you are little Patrick, and you want an apple. 
+
+> Before Patrick shows the apple.
+
+So you show your apple pictogram to Bob, and Bob goes get an apple for you.
+
+> When Patrick is sad
+
+But that's not an apple, it's all green, not at all like on the pictogram!
+
+> When Patrick does picture matching
+
+One way to help little Patrick, is to teach him concept abstraction through picture matching. This is usually done by matching printed pictures, but with Human Learning, you can do all this *digitally*!
 
 ### Learner mode
 
 > Start presenting from the app.
 
-After Patrick got frustrated because he didn't receive what he expected, he decided that he wants to improve his understanding of fruits. For this, he clicks on start learning!
-
-> click on "START LEARNING!"
-
-he selects the dataset on which he wants to learn
+After Patrick got frustrated because he didn't receive what he expected, he decides that he wants to improve his understanding of fruits. So he clicks on the fruit dataset on which he wants to learn.
 
 > click on "Fruits"
 
