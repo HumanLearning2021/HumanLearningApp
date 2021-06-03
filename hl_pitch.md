@@ -12,13 +12,13 @@ Verbal communication is central to human interaction. This means that if you can
 
 But let's say you are little Patrick, and you want an apple. So you give your apple pictogram to Bob, and you receive an apple. But that's not an apple, it's all green, not at all like on the pictogram!
 
-<!-- The problem now is that the same people often do not have good abstraction capabilites. If they show you a picture of a red apple and you give them a green apple, they do not recognize it as being what they requested.-->
+One way to help little Patrick, is to teach him concept abstraction through image matching. This is usually done by matching printed pictures, but with Human Learning, you can do all this *digitally*!
 
-A method to teach this abstraction is picture matching, which would traditionally require printing lots of images. With the Human Learning app, you can do all of this digitally, which greatly simplifies the process!
+### Learner mode
 
 > Start presenting from the app.
 
-After Patrick got frustrated because he didn't receive what he expected, he decides that he wants to improve his understanding of fruits. For this, he clicks on start learning
+After Patrick got frustrated because he didn't receive what he expected, he decided that he wants to improve his understanding of fruits. For this, he clicks on start learning!
 
 > click on "START LEARNING!"
 
@@ -26,21 +26,33 @@ he selects the dataset on which he wants to learn
 
 > click on "Fruits"
 
-He can now choose between 3 learning modes. 
-Presentation mode allows him to match pictures against an exact copy. This is the easiest mode. 
-Representation mode allows him to match pictures against a representative of its category. 
-Evaluation mode allows him to evaluate his knowledge of a given dataset.
-He chooses representation mode, because he already knows some things about fruits.
+He can now choose between 3 learning modes to learn at an adapted difficulty.
+Let's say he wants to learn in representation mode.
 
 > click on "REPRESENTATION"
 
-// TODO continue
-Now let's say I am an instructor. What I want is to create and manage datasets for my students to learn on. For this, I need administrator privileges, and so need to login as such.
+He can now match pictures to their representative, and improve his understanding of the concept of fruits.
 
-_goes on to login_
+> match 3 pictures, slowly. 1 right, 1 wrong, 1 right.
 
-_goes to dataset overview, click on dataset to manage_
+### Admin mode
 
- _goes in datasets overview, select the good dataset, first add a new picture from the storage, then go check to see if the picture has been added. There is also the picture that should not be in this dataset, delete it._
+Now let's say I am Bob, and I would like to help little Patrick recognize a new type of apple.
 
- Nice, now it is perfect ! My students can go back to learning with the improved dataset.
+Let me take a picture of this new apple.
+
+> click on [...], then "Add new picture"
+
+I want to use the camera
+
+> click on "USE CAMERA"
+
+I take the picture
+
+> click on "TAKE A PICTURE"
+
+I select the correct category
+
+> click on "SELECT THE CATEGORY", choose "Apple"
+
+And voilà! Patrick can now learn to recognize this new type of apple.
