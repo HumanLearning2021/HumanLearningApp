@@ -7,8 +7,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onData
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
@@ -16,11 +15,9 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
 import com.example.android.architecture.blueprints.todoapp.launchFragmentInHiltContainer
 import com.firebase.ui.auth.AuthUI
 import com.github.HumanLearning2021.HumanLearningApp.R
@@ -224,7 +221,15 @@ class DisplayImageSetActivityTest {
             navigateToDisplayImagesetFragment()
             onView(withId(R.id.display_imageset_menu_info)).perform(click())
             waitFor(1) // increase if needed
-            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(0, 100)
+            onView(
+                withText(
+                    ApplicationProvider.getApplicationContext<Context>()
+                        .getString(R.string.DisplayImageSet_infoTitle)
+                )
+            ).check(
+                ViewAssertions.matches(isDisplayed())
+            )
+            pressBack()
             waitFor(1) // increase if needed
             onView(withId(R.id.display_image_set_imagesGridView)).check(
                 ViewAssertions.matches(
