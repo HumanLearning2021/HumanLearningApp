@@ -8,22 +8,33 @@ Predownload an image if the demo is done on an emulator, then add this image dur
 
 ## Script
 
-Verbal communication is central to human interaction. This means that if you can't communicate verbally, it is difficult to integrate well into society. People with mental disabilities can have problems communicating verbally, which is why they often use picture based communication.
+Verbal communication is central to human interaction. This means that if you can't communicate verbally, it is difficult to integrate well into society. People with mental disabilities can have problems communicating verbally, which is why they often use picture-based communication.
 
-The problem now is that the same people often do not have good abstraction capabilites. If they show you a picture of a fork and you give them a fork that does not look like the fork in the picture they do not recognize it as being what they requested.
+But let's say you are little Patrick, and you want an apple. So you give your apple pictogram to Bob, and you receive an apple. But that's not an apple, it's all green, not at all like on the pictogram!
 
-A method to teach this abstraction is picture matching, which would traditionally require printing lots of images. With our app you can do all of this digitally, which greatly simplifies the process.
+<!-- The problem now is that the same people often do not have good abstraction capabilites. If they show you a picture of a red apple and you give them a green apple, they do not recognize it as being what they requested.-->
 
+A method to teach this abstraction is picture matching, which would traditionally require printing lots of images. With the Human Learning app, you can do all of this digitally, which greatly simplifies the process!
 
-So let's say I am learner. The main purpose of this app for me is to learn, so let's see what it can do!
+> Start presenting from the app.
 
-Let's see what datasets are available to me...
+After Patrick got frustrated because he didn't receive what he expected, he decides that he wants to improve his understanding of fruits. For this, he clicks on start learning
 
-_goes and looks at datasets overview (In the learning part)_ 
+> click on "START LEARNING!"
 
-_goes in representation mode and start learning_
+he selects the dataset on which he wants to learn
 
+> click on "Fruits"
 
+He can now choose between 3 learning modes. 
+Presentation mode allows him to match pictures against an exact copy. This is the easiest mode. 
+Representation mode allows him to match pictures against a representative of its category. 
+Evaluation mode allows him to evaluate his knowledge of a given dataset.
+He chooses representation mode, because he already knows some things about fruits.
+
+> click on "REPRESENTATION"
+
+// TODO continue
 Now let's say I am an instructor. What I want is to create and manage datasets for my students to learn on. For this, I need administrator privileges, and so need to login as such.
 
 _goes on to login_
