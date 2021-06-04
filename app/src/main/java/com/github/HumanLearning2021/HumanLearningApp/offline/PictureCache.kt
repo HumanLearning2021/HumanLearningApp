@@ -57,16 +57,16 @@ class PictureCache(
      * Saves a picture to local storage.
      * To be used to save pictures that are being added to the dataset.
      * @param uri pointing to the location of the image
-     * @return id associated to the picture
+     * @return id associated to the picture and the location Uri as a pair
      */
-    suspend fun savePicture(uri: Uri): Id {
+    suspend fun savePicture(uri: Uri): Pair<Id, Uri> {
         return withContext(Dispatchers.IO) {
             val id = "${UUID.randomUUID()}"
             val file = File(folder, id)
             val path = uri.path
             path ?: throw IllegalArgumentException("Invalid uri provided")
             File(path).copyTo(file, true, DEFAULT_BUFFER_SIZE)
-            id
+            id to file.toUri()
         }
     }
 
