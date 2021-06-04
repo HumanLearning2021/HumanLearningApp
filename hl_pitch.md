@@ -48,22 +48,30 @@ He can now match pictures to their representative, and improve his understanding
 
 ### Admin mode
 
-Now let's say I am Bob, and I would like to help little Patrick recognize a new type of apple.
+Now let's say I am Bob, and I would like to help little Patrick recognize a new type of apples I just bought!
 
-Let me take a picture of this new apple.
+So I click on the dataset I want to edit.
+
+> Click on Fruits
+
+I then click on "Add new picture"
 
 > click on [...], then "Add new picture"
 
-I want to use the camera
+And "USE CAMERA"
 
 > click on "USE CAMERA"
 
-I take the picture
+I take the picture of the apple.
 
 > click on "TAKE A PICTURE"
 
-I select the correct category
+I select the Apple category...
 
 > click on "SELECT THE CATEGORY", choose "Apple"
 
-And voilà! Patrick can now learn to recognize this new type of apple.
+and save!
+
+> Click on "Save selection"
+
+And voilà! Little Patrick can now learn to recognize this new type of apple.
