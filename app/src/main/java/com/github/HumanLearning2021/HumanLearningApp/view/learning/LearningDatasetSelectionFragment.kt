@@ -37,8 +37,8 @@ class LearningDatasetSelectionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val dsListFragment =
-            childFragmentManager.findFragmentById(R.id.LearningDatasetSelection_dataset_list)
-        
+            childFragmentManager.findFragmentById(R.id.fragment_dataset_list_learningDatasetSelection)
+
         if (savedInstanceState == null) {
             childFragmentManager.commit {
                 add(R.id.placeholder_for_download_switch, DownloadSwitchFragment())

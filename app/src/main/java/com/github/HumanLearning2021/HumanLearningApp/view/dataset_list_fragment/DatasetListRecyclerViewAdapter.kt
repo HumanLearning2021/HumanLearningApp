@@ -57,7 +57,7 @@ class DatasetListRecyclerViewAdapter(
         if (::datasetList.isInitialized) {
             val ds = datasetList[position]
             holder.itemView.apply {
-                findViewById<TextView>(R.id.DatasetList_elt_text).text = ds.name
+                findViewById<TextView>(R.id.textView_datasetList_elt_text).text = ds.name
                 setRepresentativePictures(this, ds)
 
                 // bind the dataset so that the holder can call `itemClickedCallback`
@@ -77,9 +77,9 @@ class DatasetListRecyclerViewAdapter(
 
                 with(view) {
                     with(imageDisplayer) {
-                        repr0?.displayOn(findViewById(R.id.DatasetList_elt_im0))
-                        repr1?.displayOn(findViewById(R.id.DatasetList_elt_im1))
-                        repr2?.displayOn(findViewById(R.id.DatasetList_elt_im2))
+                        repr0?.displayOn(findViewById(R.id.imageView_datasetList_elt_im0))
+                        repr1?.displayOn(findViewById(R.id.imageView_datasetList_elt_im1))
+                        repr2?.displayOn(findViewById(R.id.imageView_datasetList_elt_im2))
                     }
                 }
             }

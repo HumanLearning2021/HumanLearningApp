@@ -86,7 +86,7 @@ class GeneralNavigationTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDisplayDataset()
             assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
             onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
@@ -99,9 +99,9 @@ class GeneralNavigationTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             onView(withId(R.id.datasetsOverviewFragment)).perform(click())
-            onView(withId(R.id.createDatasetButton)).perform(click())
+            onView(withId(R.id.button_create_dataset)).perform(click())
             assertCurrentFragmentIsCorrect(R.id.categoriesEditingFragment)
             onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
             assertCurrentFragmentIsCorrect(R.id.datasetsOverviewFragment)
@@ -130,7 +130,7 @@ class GeneralNavigationTest {
 
     @Test
     fun buttonOnHomeToLearningWorks() {
-        onView(withId(R.id.startLearningButton)).perform(click())
+        onView(withId(R.id.button_start_learning)).perform(click())
         assertCurrentFragmentIsCorrect(R.id.learningDatasetSelectionFragment)
     }
 
@@ -139,7 +139,7 @@ class GeneralNavigationTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDisplayDataset()
             assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
             openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().targetContext)
@@ -152,7 +152,7 @@ class GeneralNavigationTest {
 
     private fun navigateToDisplayDataset() {
         onView(withId(R.id.datasetsOverviewFragment)).perform(click())
-        onView(withId(R.id.DatasetList_list))
+        onView(withId(R.id.recyclerView_dataset_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,

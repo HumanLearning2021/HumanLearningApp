@@ -137,12 +137,12 @@ class DisplayImageSetActivityTest {
     fun imageSetGridAndNameAreDisplayed() {
         launchFragment()
         assumeTrue(dsPictures.isNotEmpty())
-        onView(withId(R.id.display_image_set_imagesGridView)).check(
+        onView(withId(R.id.gridView_display_image_set)).check(
             ViewAssertions.matches(
                 isDisplayed()
             )
         )
-        onView(withId(R.id.display_image_set_name)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.textView_display_image_set)).check(ViewAssertions.matches(isDisplayed()))
 
     }
 
@@ -151,14 +151,14 @@ class DisplayImageSetActivityTest {
         launchFragment()
         assumeTrue(dsPictures.isNotEmpty())
         waitFor(1) // increase if needed
-        onView(withId(R.id.display_image_set_imagesGridView)).check(
+        onView(withId(R.id.gridView_display_image_set)).check(
             ViewAssertions.matches(
                 isDisplayed()
             )
         )
 
         onData(anything())
-            .inAdapterView(withId(R.id.display_image_set_imagesGridView))
+            .inAdapterView(withId(R.id.gridView_display_image_set))
             .atPosition(0)
             .perform(click())
 
@@ -179,7 +179,7 @@ class DisplayImageSetActivityTest {
 
             for (i in 0..2) {
                 onData(anything())
-                    .inAdapterView(withId(R.id.display_image_set_imagesGridView))
+                    .inAdapterView(withId(R.id.gridView_display_image_set))
                     .atPosition(0)
                     .perform(longClick())
             }
@@ -196,7 +196,7 @@ class DisplayImageSetActivityTest {
             val reprPicture = dbMgt.getRepresentativePicture(categories.elementAt(0).id)
             val nbOfPictures = dbMgt.getAllPictures(categories.elementAt(0)).size
             onData(anything())
-                .inAdapterView(withId(R.id.display_image_set_imagesGridView))
+                .inAdapterView(withId(R.id.gridView_display_image_set))
                 .atPosition(0)
                 .perform(longClick())
 
@@ -214,7 +214,7 @@ class DisplayImageSetActivityTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDisplayImageSetFragment()
             onView(withId(R.id.display_imageset_menu_info)).perform(click())
             waitFor(1) // increase if needed
@@ -228,7 +228,7 @@ class DisplayImageSetActivityTest {
             )
             pressBack()
             waitFor(1) // increase if needed
-            onView(withId(R.id.display_image_set_imagesGridView)).check(
+            onView(withId(R.id.gridView_display_image_set)).check(
                 ViewAssertions.matches(
                     isDisplayed()
                 )
@@ -238,14 +238,14 @@ class DisplayImageSetActivityTest {
 
     private fun navigateToDisplayImageSetFragment() {
         onView(withId(R.id.datasetsOverviewFragment)).perform(click())
-        onView(withId(R.id.DatasetList_list))
+        onView(withId(R.id.recyclerView_dataset_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
                     click()
                 )
             )
-        onData(anything()).inAdapterView(withId(R.id.display_dataset_imagesGridView)).atPosition(0)
+        onData(anything()).inAdapterView(withId(R.id.gridView_display_dataset_images)).atPosition(0)
             .perform(click())
     }
 

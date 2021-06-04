@@ -48,8 +48,7 @@ class GoogleSignInFragment : Fragment() {
         prefs = activity?.getSharedPreferences("LOGIN", MODE_PRIVATE)!!
         editor = prefs.edit()
 
-
-        view.findViewById<Button>(R.id.loginButton).setOnClickListener {
+        view.findViewById<Button>(R.id.button_login).setOnClickListener {
             onLoginButtonPress()
         }
 
@@ -57,7 +56,7 @@ class GoogleSignInFragment : Fragment() {
             isAdmin = view.findViewById<CheckBox>(R.id.checkBox).isChecked
         }
 
-        view.findViewById<Button>(R.id.singOutButton).setOnClickListener {
+        view.findViewById<Button>(R.id.button_sign_out).setOnClickListener {
             onSignOutPress()
         }
 
@@ -154,15 +153,15 @@ class GoogleSignInFragment : Fragment() {
     }
 
     fun setSignInUi() {
-        view?.findViewById<Button>(R.id.singOutButton)?.visibility = View.GONE
+        view?.findViewById<Button>(R.id.button_sign_out)?.visibility = View.GONE
         view?.findViewById<Button>(R.id.checkBox)?.visibility = View.VISIBLE
-        view?.findViewById<Button>(R.id.loginButton)?.visibility = View.VISIBLE
+        view?.findViewById<Button>(R.id.button_login)?.visibility = View.VISIBLE
     }
 
     fun setSignOutUi() {
-        view?.findViewById<Button>(R.id.singOutButton)?.visibility = View.VISIBLE
+        view?.findViewById<Button>(R.id.button_sign_out)?.visibility = View.VISIBLE
         view?.findViewById<Button>(R.id.checkBox)?.visibility = View.GONE
-        view?.findViewById<Button>(R.id.loginButton)?.visibility = View.GONE
+        view?.findViewById<Button>(R.id.button_login)?.visibility = View.GONE
     }
 
 
@@ -171,13 +170,13 @@ class GoogleSignInFragment : Fragment() {
      */
     fun updateUi() {
         if (prefs.getBoolean("hasLogin", false)) {
-            view?.findViewById<TextView>(R.id.loginStatus)?.text =
+            view?.findViewById<TextView>(R.id.textView_login_status)?.text =
                 prefs.getString("name", "Not logged in!")
             setSignOutUi()
 
         } else {
             val loggedUser = presenter.currentUser
-            view?.findViewById<TextView>(R.id.loginStatus)?.text =
+            view?.findViewById<TextView>(R.id.textView_login_status)?.text =
                 loggedUser?.let {
                     getString(
                         R.string.GoogleSignIn_loginStatusSuccessMessage,

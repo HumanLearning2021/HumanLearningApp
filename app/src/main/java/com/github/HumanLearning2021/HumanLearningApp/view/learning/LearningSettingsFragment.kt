@@ -48,26 +48,18 @@ class LearningSettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setButtonListener(binding.learningSettingsBtChoosePresentation, LearningMode.PRESENTATION)
+        setButtonListener(binding.buttonChoosePresentation, LearningMode.PRESENTATION)
         setButtonListener(
-            binding.learningSettingsBtChooseRepresentation,
+            binding.buttonChooseRepresentation,
             LearningMode.REPRESENTATION
         )
-        binding.learningSettingsBtChooseEvaluation?.let {
+        binding.buttonChooseEvaluation?.let {
             setButtonListener(
                 it,
                 LearningMode.EVALUATION
             )
         }
 
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
-
-    }
-
-    val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().popBackStack()
-        }
     }
 
     override fun onDestroyView() {

@@ -66,8 +66,8 @@ class AddPictureActivityTest {
 
     @Test
     fun correctLayoutIsDisplayAfterCreation() {
-        BaristaVisibilityAssertions.assertDisplayed(R.id.select_existing_picture)
-        BaristaVisibilityAssertions.assertDisplayed(R.id.use_camera)
+        BaristaVisibilityAssertions.assertDisplayed(R.id.button_select_existing_picture)
+        BaristaVisibilityAssertions.assertDisplayed(R.id.button_use_camera)
     }
 
     private fun launchFragment(args: Bundle) {

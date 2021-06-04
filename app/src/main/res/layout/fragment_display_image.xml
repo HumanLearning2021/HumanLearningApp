@@ -7,7 +7,7 @@
     tools:context=".view.dataset_editing.DisplayImageFragment">
 
     <ImageView
-        android:id="@+id/display_image_viewImage"
+        android:id="@+id/imageView_display_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toBottomOf="@id/display_image_guideline1" />
 
     <TextView
-        android:id="@+id/display_image_viewCategory"
+        android:id="@+id/textView_display_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="40sp"

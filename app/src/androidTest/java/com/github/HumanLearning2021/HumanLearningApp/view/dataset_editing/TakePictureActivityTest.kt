@@ -92,17 +92,17 @@ class TakePictureActivityTest {
     @Test
     fun correctLayoutIsDisplayAfterCreation() {
         grantCameraPermission()
-        assertDisplayed(R.id.cameraPreviewView)
-        assertDisplayed(R.id.selectCategoryButton)
-        assertDisplayed(R.id.takePictureButton)
-        assertDisplayed(R.id.saveButton)
-        onView(withId(R.id.cameraImageView)).check(matches(not(isDisplayed())))
+        assertDisplayed(R.id.previewView_camera)
+        assertDisplayed(R.id.button_select_category_take_picture_fragment)
+        assertDisplayed(R.id.button_take_picture)
+        assertDisplayed(R.id.button_save_take_picture_fragment)
+        onView(withId(R.id.imageView_camera)).check(matches(not(isDisplayed())))
     }
 
     @Test
     fun categoriesCorrectlySetAfterCreation() {
         grantCameraPermission()
-        onView(withId(R.id.selectCategoryButton)).perform(click())
+        onView(withId(R.id.button_select_category_take_picture_fragment)).perform(click())
         onView(withText("cat1")).check(matches(isDisplayed()))
         onView(withText("cat2")).check(matches(isDisplayed()))
         onView(withText("cat3")).check(matches(isDisplayed()))
@@ -112,20 +112,20 @@ class TakePictureActivityTest {
     @Test
     fun correctIntentIsSentOnSave() {
         grantCameraPermission()
-        onView(withId(R.id.selectCategoryButton)).perform(click())
+        onView(withId(R.id.button_select_category_take_picture_fragment)).perform(click())
         onView(withText("cat1")).perform(click())
-        onView(withId(R.id.takePictureButton)).perform(click())
-        onView(withId(R.id.cameraImageView)).perform(
+        onView(withId(R.id.button_take_picture)).perform(click())
+        onView(withId(R.id.imageView_camera)).perform(
             repeatedlyUntil(
                 TestUtils.waitForAction(1000),
                 isDisplayed(),
                 10
             )
         )
-        onView(withId(R.id.selectCategoryButton)).perform(click())
+        onView(withId(R.id.button_select_category_take_picture_fragment)).perform(click())
         onView(withText("cat1")).perform(click())
         waitFor(300)
-        onView(withId(R.id.saveButton)).perform(click())
+        onView(withId(R.id.button_save_take_picture_fragment)).perform(click())
         verify(navController).popBackStack()
     }
 
@@ -133,57 +133,57 @@ class TakePictureActivityTest {
     @Test
     fun clickingCaptureButtonShowsPicture() {
         grantCameraPermission()
-        onView(withId(R.id.takePictureButton)).perform(click())
-        onView(withId(R.id.cameraImageView)).perform(
+        onView(withId(R.id.button_take_picture)).perform(click())
+        onView(withId(R.id.imageView_camera)).perform(
             repeatedlyUntil(
                 TestUtils.waitForAction(1000),
                 isDisplayed(),
                 10
             )
         )
-        onView(withId(R.id.cameraPreviewView)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.cameraImageView)).check(matches(isDisplayed()))
+        onView(withId(R.id.previewView_camera)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.imageView_camera)).check(matches(isDisplayed()))
     }
 
     @Test
     fun reclickingCaptureButtonCorrectlyResetsIt() {
         grantCameraPermission()
-        onView(withId(R.id.takePictureButton)).perform(click())
-        onView(withId(R.id.cameraImageView)).perform(
+        onView(withId(R.id.button_take_picture)).perform(click())
+        onView(withId(R.id.imageView_camera)).perform(
             repeatedlyUntil(
                 TestUtils.waitForAction(1000),
                 isDisplayed(),
                 10
             )
         )
-        onView(withId(R.id.takePictureButton)).perform(click())
-        onView(withId(R.id.cameraPreviewView)).check(matches(isDisplayed()))
-        onView(withId(R.id.cameraImageView)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.button_take_picture)).perform(click())
+        onView(withId(R.id.previewView_camera)).check(matches(isDisplayed()))
+        onView(withId(R.id.imageView_camera)).check(matches(not(isDisplayed())))
     }
 
     @Test
     fun saveButtonIsNotClickableIfNoPictureIsTakenAndNoCategorySelected() {
         grantCameraPermission()
-        onView(withId(R.id.saveButton)).check(matches(not(isEnabled())))
+        onView(withId(R.id.button_save_take_picture_fragment)).check(matches(not(isEnabled())))
     }
 
     @Test
     fun clickingSelectCategoryOpensCorrectDialog() {
         grantCameraPermission()
-        onView(withId(R.id.selectCategoryButton)).perform(click())
+        onView(withId(R.id.button_select_category_take_picture_fragment)).perform(click())
         onView(withText("Pick a category")).check(matches(isDisplayed()))
     }
 
     @Test
     fun previewViewIsNotClickable() {
         grantCameraPermission()
-        onView(withId(R.id.cameraPreviewView)).check(matches(not(isClickable())))
+        onView(withId(R.id.previewView_camera)).check(matches(not(isClickable())))
     }
 
     @Test
     fun takePictureIsClickable() {
         grantCameraPermission()
-        onView(withId(R.id.takePictureButton)).check(matches(isClickable()))
+        onView(withId(R.id.button_take_picture)).check(matches(isClickable()))
     }
 
     private val delayAfterSelectCategoryBtn = 100L
@@ -191,19 +191,25 @@ class TakePictureActivityTest {
     @Test
     fun selectingCategoryChangesButtonText() {
         grantCameraPermission()
-        onView(withId(R.id.selectCategoryButton)).perform(click())
+        onView(withId(R.id.button_select_category_take_picture_fragment)).perform(click())
         waitFor(delayAfterSelectCategoryBtn)
         onView(withText("cat1")).perform(click())
-        onView(withId(R.id.selectCategoryButton)).check(matches(withText("cat1")))
+        onView(withId(R.id.button_select_category_take_picture_fragment)).check(matches(withText("cat1")))
     }
 
     @Test
     fun selectingCategoryChangesButtonTextColor() {
         grantCameraPermission()
-        onView(withId(R.id.selectCategoryButton)).perform(click())
+        onView(withId(R.id.button_select_category_take_picture_fragment)).perform(click())
         waitFor(delayAfterSelectCategoryBtn)
         onView(withText("cat1")).perform(click())
-        onView(withId(R.id.selectCategoryButton)).check(matches(hasTextColor(R.color.black)))
+        onView(withId(R.id.button_select_category_take_picture_fragment)).check(
+            matches(
+                hasTextColor(
+                    R.color.black
+                )
+            )
+        )
     }
 
     @Test

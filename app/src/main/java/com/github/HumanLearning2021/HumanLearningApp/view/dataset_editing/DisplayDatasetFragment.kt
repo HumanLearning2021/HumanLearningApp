@@ -116,7 +116,7 @@ class DisplayDatasetFragment : Fragment() {
 
         lifecycleScope.launch {
             dataset = dbManagement.getDatasetById(datasetId)!!
-            (binding.displayDatasetName as TextView).text = dataset.name
+            (binding.textViewDisplayDatasetName as TextView).text = dataset.name
             categories = dataset.categories
 
             /**
@@ -138,7 +138,7 @@ class DisplayDatasetFragment : Fragment() {
                     categories,
                 )
 
-            binding.displayDatasetImagesGridView.adapter = displayDatasetAdapter
+            binding.gridViewDisplayDatasetImages.adapter = displayDatasetAdapter
 
             setGridViewItemListener()
         }
@@ -230,8 +230,8 @@ class DisplayDatasetFragment : Fragment() {
                     false
                 )
 
-            val imageCat = view.findViewById<TextView>(R.id.image_and_category_item_imageCategory)
-            val imageView = view.findViewById<ImageView>(R.id.image_and_category_item_imageView)
+            val imageCat = view.findViewById<TextView>(R.id.textView_image_and_category_item)
+            val imageView = view.findViewById<ImageView>(R.id.imageView_image_and_category_item)
 
             val picture = images.elementAt(position)
             if (picture is CategorizedPicture) {
@@ -269,7 +269,7 @@ class DisplayDatasetFragment : Fragment() {
      * Navigate to the display imageSet fragment to display all the pictures of the category.
      */
     private fun setGridViewItemListener() {
-        binding.displayDatasetImagesGridView
+        binding.gridViewDisplayDatasetImages
             .setOnItemClickListener { _, _, i, _ ->
                 val category = categories.elementAt(i)
                 val action =

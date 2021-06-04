@@ -103,7 +103,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDatasetsOverview()
             searchByKeyWordYieldsCorrectResult()
         }
@@ -121,7 +121,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDatasetsOverview()
             searchNotFoundYieldsNoResult()
         }
@@ -139,7 +139,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDatasetsOverview()
             canClickOnSubsetOfDatasetsMatchingSearch()
             assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
@@ -158,7 +158,7 @@ class SearchTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDatasetsOverview()
             emptySpacePrefixHasNoInfluence()
         }
@@ -176,7 +176,7 @@ class SearchTest {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
         }
-        onView(withId(R.id.startLearningButton)).perform(click())
+        onView(withId(R.id.button_start_learning)).perform(click())
         navigateToDatasetsOverview()
         typeTextAndThenClearYieldsAllResults()
     }
@@ -199,7 +199,7 @@ class SearchTest {
     private fun emptySpacePrefixHasNoInfluence() {
         onView(withId(R.id.action_search)).perform(click(), typeText("          "))
         onView(isRoot()).perform(closeSoftKeyboard())
-        onView(withId(R.id.DatasetList_list)).check(
+        onView(withId(R.id.recyclerView_dataset_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(dummyDatasets.size)
             )
@@ -212,7 +212,7 @@ class SearchTest {
             typeText(discriminatingPrefix),
             setTextInSearchView(""),
         )
-        onView(withId(R.id.DatasetList_list)).check(
+        onView(withId(R.id.recyclerView_dataset_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(dummyDatasets.size)
             )
@@ -221,7 +221,7 @@ class SearchTest {
 
     private fun canClickOnSubsetOfDatasetsMatchingSearch() {
         onView(withId(R.id.action_search)).perform(click(), typeText(discriminatingPrefix))
-        onView(withId(R.id.DatasetList_list))
+        onView(withId(R.id.recyclerView_dataset_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
@@ -235,7 +235,7 @@ class SearchTest {
             click(),
             typeText("asdfghjkledfvboijhedfvbgbzuhikmolwsxd")
         )
-        onView(withId(R.id.DatasetList_list)).check(
+        onView(withId(R.id.recyclerView_dataset_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(0)
             )
@@ -244,7 +244,7 @@ class SearchTest {
 
     private fun searchByKeyWordYieldsCorrectResult() {
         onView(withId(R.id.action_search)).perform(click(), typeText(discriminatingPrefix))
-        onView(withId(R.id.DatasetList_list)).check(
+        onView(withId(R.id.recyclerView_dataset_list)).check(
             ViewAssertions.matches(
                 ViewMatchers.hasChildCount(1)
             )

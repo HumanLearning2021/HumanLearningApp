@@ -102,7 +102,7 @@ class MetadataEditingFragment : Fragment() {
                         addNewView()
                         v = binding.parentLinearLayout.getChildAt(i)
                         val categoryName: EditText =
-                            v.findViewById(R.id.data_creation_category_name)
+                            v.findViewById(R.id.editText_data_creation_category_name)
                         categoryName.setText(
                             dsCategories.elementAt(i).name,
                             TextView.BufferType.EDITABLE
@@ -123,7 +123,7 @@ class MetadataEditingFragment : Fragment() {
                         addNewView()
                         val v = binding.parentLinearLayout.getChildAt(i)
                         val categoryName: EditText =
-                            v.findViewById(R.id.data_creation_category_name)
+                            v.findViewById(R.id.editText_data_creation_category_name)
                         categoryName.setText(
                             String.format("Category %d", i),
                             TextView.BufferType.EDITABLE
@@ -165,7 +165,7 @@ class MetadataEditingFragment : Fragment() {
          * inside the view created in addNewView.
          */
         val categoryName: EditText =
-            (view.parent as View).findViewById(R.id.data_creation_category_name)
+            (view.parent as View).findViewById(R.id.editText_data_creation_category_name)
         lifecycleScope.launch {
             /**
              * If there are multiple categories with the same name, remove the last category.
@@ -195,7 +195,8 @@ class MetadataEditingFragment : Fragment() {
 
             for (i in dsCategories.size until count) {
                 v = binding.parentLinearLayout.getChildAt(i)
-                val categoryName: EditText = v.findViewById(R.id.data_creation_category_name)
+                val categoryName: EditText =
+                    v.findViewById(R.id.editText_data_creation_category_name)
                 val cat = dBManagement.putCategory(categoryName.text.toString())
                 newCategories = newCategories.plus(cat)
             }

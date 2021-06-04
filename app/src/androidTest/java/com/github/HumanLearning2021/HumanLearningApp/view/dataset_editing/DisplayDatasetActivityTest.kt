@@ -114,8 +114,8 @@ class DisplayDatasetActivityTest {
     @Test
     fun datasetGridAndNameAreDisplayed() {
         launchFragment()
-        onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
-        onView(withId(R.id.display_dataset_name)).check(matches(isDisplayed()))
+        onView(withId(R.id.gridView_display_dataset_images)).check(matches(isDisplayed()))
+        onView(withId(R.id.textView_display_dataset_name)).check(matches(isDisplayed()))
     }
 
     /**
@@ -134,7 +134,7 @@ class DisplayDatasetActivityTest {
             assumeTrue(datasetPictures.isNotEmpty())
 
             onData(anything())
-                .inAdapterView(withId(R.id.display_dataset_imagesGridView))
+                .inAdapterView(withId(R.id.gridView_display_dataset_images))
                 .atPosition(0)
                 .perform(click())
 
@@ -152,7 +152,7 @@ class DisplayDatasetActivityTest {
 
     private fun navigateToDisplayDatasetFragment() {
         onView(withId(R.id.datasetsOverviewFragment)).perform(click())
-        onView(withId(R.id.DatasetList_list))
+        onView(withId(R.id.recyclerView_dataset_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
@@ -166,7 +166,7 @@ class DisplayDatasetActivityTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
             onView(withText("Modify name and categories")).perform(click())
@@ -183,7 +183,7 @@ class DisplayDatasetActivityTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
             onView(withText(R.string.DisplayDataset_addNewPictureButton)).perform(click())
@@ -199,13 +199,13 @@ class DisplayDatasetActivityTest {
             assumeTrue(categories.isNotEmpty())
 
             val numberOfPictures = dbMgt.getAllPictures(categories.elementAt(index)).size
-            onView(withId(R.id.takePictureButton)).perform(click())
-            onView(withId(R.id.selectCategoryButton)).perform(click())
+            onView(withId(R.id.button_take_picture)).perform(click())
+            onView(withId(R.id.button_select_category_take_picture_fragment)).perform(click())
             onView(withText(categories.elementAt(index).name)).perform(click())
             waitFor(300) // increase if needed
-            onView(withId(R.id.saveButton)).perform(click())
+            onView(withId(R.id.button_save_take_picture_fragment)).perform(click())
             waitFor(150) // increase if needed
-            onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
+            onView(withId(R.id.gridView_display_dataset_images)).check(matches(isDisplayed()))
             assert(dbMgt.getAllPictures(categories.elementAt(index)).size == numberOfPictures + 1)
 
         }
@@ -216,7 +216,7 @@ class DisplayDatasetActivityTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
             onView(withText(R.string.DisplayDataset_deleteDatasetButton)).perform(click())
@@ -246,11 +246,11 @@ class DisplayDatasetActivityTest {
         runBlocking {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
-            onView(withId(R.id.startLearningButton)).perform(click())
+            onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
             UiDevice.getInstance(getInstrumentation()).click(0, 100)
-            onView(withId(R.id.display_dataset_imagesGridView)).check(matches(isDisplayed()))
+            onView(withId(R.id.gridView_display_dataset_images)).check(matches(isDisplayed()))
         }
     }
 

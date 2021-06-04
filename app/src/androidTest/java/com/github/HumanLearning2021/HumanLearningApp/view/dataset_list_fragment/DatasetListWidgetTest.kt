@@ -60,7 +60,7 @@ class DatasetListWidgetTest {
                 ) { "clicked dataset $it was not in $dummyDatasets" }
             }
         }
-        onView(withId(R.id.DatasetList_list))
+        onView(withId(R.id.recyclerView_dataset_list))
             .perform(
                 actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
@@ -72,7 +72,7 @@ class DatasetListWidgetTest {
     @Test
     fun fragmentHasChildrenViews() {
         launchFragmentInHiltContainer<DatasetListWidget>()
-        onView(withId(R.id.DatasetList_list)).check(
+        onView(withId(R.id.recyclerView_dataset_list)).check(
             matches(
                 ViewMatchers.hasChildCount(dummyDatasets.size)
             )

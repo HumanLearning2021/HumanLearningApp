@@ -7,7 +7,7 @@
     tools:context=".view.dataset_editing.SelectPictureFragment">
 
     <Button
-        android:id="@+id/saveButton3"
+        android:id="@+id/button_save_select_picture_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/purple_500"
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/selectedPicturePreview"
+        android:id="@+id/imageView_select_picture_preview"
         android:contentDescription="@string/SelectPicture_previewContentDescription"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -31,7 +31,7 @@
         app:srcCompat="@drawable/question_mark" />
 
     <Button
-        android:id="@+id/selectCategoryButton2"
+        android:id="@+id/button_select_category_select_picture_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/AddPicture_selectCategoryButtonText"
@@ -42,7 +42,7 @@
         tools:ignore="ButtonStyle" />
 
     <Button
-        android:id="@+id/choosePictureButton"
+        android:id="@+id/button_choose_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/SelectPicture_choosePictureButton"

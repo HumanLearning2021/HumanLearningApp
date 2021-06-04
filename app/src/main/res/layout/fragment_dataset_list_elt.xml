@@ -8,19 +8,19 @@
 
 
     <TextView
-        android:id="@+id/DatasetList_elt_text"
+        android:id="@+id/textView_datasetList_elt_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/DatasetList_defaultDatasetNameText"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/DatasetList_elt_im1"
-        app:layout_constraintEnd_toEndOf= "@id/ds_list_elt_guideline2"
+        app:layout_constraintBottom_toTopOf="@+id/imageView_datasetList_elt_im1"
+        app:layout_constraintEnd_toEndOf="@id/ds_list_elt_guideline2"
         app:layout_constraintStart_toStartOf="@id/ds_list_elt_guideline1"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/DatasetList_elt_im0"
+        android:id="@+id/imageView_datasetList_elt_im0"
         android:layout_width="@dimen/DatasetList_im_size"
         android:layout_height="@dimen/DatasetList_im_size"
         android:background="@color/white"
@@ -29,12 +29,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ds_list_elt_guideline1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DatasetList_elt_text"
+        app:layout_constraintTop_toBottomOf="@+id/textView_datasetList_elt_text"
         app:srcCompat="@drawable/default_representative_picture"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
-        android:id="@+id/DatasetList_elt_im1"
+        android:id="@+id/imageView_datasetList_elt_im1"
         android:layout_width="@dimen/DatasetList_im_size"
         android:layout_height="@dimen/DatasetList_im_size"
         android:background="@color/white"
@@ -43,12 +43,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ds_list_elt_guideline2"
         app:layout_constraintStart_toEndOf="@id/ds_list_elt_guideline1"
-        app:layout_constraintTop_toBottomOf="@+id/DatasetList_elt_text"
+        app:layout_constraintTop_toBottomOf="@+id/textView_datasetList_elt_text"
         app:srcCompat="@drawable/default_representative_picture"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
-        android:id="@+id/DatasetList_elt_im2"
+        android:id="@+id/imageView_datasetList_elt_im2"
         android:layout_width="@dimen/DatasetList_im_size"
         android:layout_height="@dimen/DatasetList_im_size"
         android:background="@color/white"
@@ -57,7 +57,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ds_list_elt_guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/DatasetList_elt_text"
+        app:layout_constraintTop_toBottomOf="@+id/textView_datasetList_elt_text"
         app:srcCompat="@drawable/default_representative_picture"
         tools:srcCompat="@tools:sample/avatars" />
 

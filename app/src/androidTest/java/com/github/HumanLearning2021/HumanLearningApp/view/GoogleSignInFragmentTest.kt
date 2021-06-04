@@ -53,7 +53,7 @@ class GoogleSignInFragmentTest {
 
     @Test
     fun checkBoxUiTest() {
-        onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
+        onView(withId(R.id.textView_login_status)).check(matches(withText("Not logged in!")))
         onView(withId(R.id.checkBox)).check(matches(not(isChecked())))
         onView(withId(R.id.checkBox)).perform(click()).check(matches(isChecked()))
         onView(withId(R.id.checkBox)).perform(click()).check(matches(not(isChecked())))
@@ -83,7 +83,7 @@ class GoogleSignInFragmentTest {
                 fragment.updateUi()
             }
         }
-        onView(withId(R.id.singOutButton)).check(matches((isDisplayed())))
+        onView(withId(R.id.button_sign_out)).check(matches((isDisplayed())))
     }
 
 
@@ -98,9 +98,9 @@ class GoogleSignInFragmentTest {
                 assertThat(fragment.presenter.currentUser, Matchers.nullValue())
             }
         }
-        onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
+        onView(withId(R.id.button_login)).check(matches(isDisplayed()))
         onView(withId(R.id.checkBox)).check(matches(isDisplayed()))
-        onView(withId(R.id.loginStatus)).check(matches(withText("Not logged in!")))
+        onView(withId(R.id.textView_login_status)).check(matches(withText("Not logged in!")))
     }
 
     @Test
@@ -124,7 +124,7 @@ class GoogleSignInFragmentTest {
     @Test
     fun test_setSignInUI() {
         fragment.setSignInUi()
-        onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
+        onView(withId(R.id.button_login)).check(matches(isDisplayed()))
         onView(withId(R.id.checkBox)).check(matches(isDisplayed()))
     }
 
@@ -133,7 +133,7 @@ class GoogleSignInFragmentTest {
         fragment.activity?.runOnUiThread {
             fragment.setSignOutUi()
         }
-        onView(withId(R.id.singOutButton)).check(matches((isDisplayed())))
+        onView(withId(R.id.button_sign_out)).check(matches((isDisplayed())))
     }
 
     private fun launchFragment() {
