@@ -175,7 +175,7 @@ class MetadataEditingFragmentTest {
             onView(
                 withText(
                     ApplicationProvider.getApplicationContext<Context>()
-                        .getString(R.string.metadataEditingInfo)
+                        .getString(R.string.MetadataEditing_infoTitle)
                 )
             ).check(
                 ViewAssertions.matches(isDisplayed())

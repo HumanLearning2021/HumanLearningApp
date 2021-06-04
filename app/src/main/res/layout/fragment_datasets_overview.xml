@@ -30,7 +30,7 @@
         android:id="@+id/button_create_dataset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/DataOverview_CreateButton"
+        android:text="@string/DatasetsOverview_createButton"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

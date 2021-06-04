@@ -186,8 +186,8 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-            onView(withText(R.string.add_new_picture)).perform(click())
-            onView(withText(R.string.use_camera)).perform(click())
+            onView(withText(R.string.DisplayDataset_addNewPictureButton)).perform(click())
+            onView(withText(R.string.AddPicture_useCameraButton)).perform(click())
 
             activityScenarioRule.scenario.onActivity {
                 val currentFragment =
@@ -219,14 +219,14 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.button_start_learning)).perform(click())
             navigateToDisplayDatasetFragment()
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-            onView(withText(R.string.delete_dataset)).perform(click())
+            onView(withText(R.string.DisplayDataset_deleteDatasetButton)).perform(click())
             onView(withText("No")).perform(click())
 
 
             val numberOfDatasets = dbMgt.getDatasets().size
 
             openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-            onView(withText(R.string.delete_dataset)).perform(click())
+            onView(withText(R.string.DisplayDataset_deleteDatasetButton)).perform(click())
             onView(withText("Yes")).perform(click())
 
             activityScenarioRule.scenario.onActivity {

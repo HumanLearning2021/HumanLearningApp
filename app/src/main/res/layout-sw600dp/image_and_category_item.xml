@@ -15,7 +15,7 @@
 
         <ImageView
             android:id="@+id/imageView_image_and_category_item"
-            android:contentDescription="@string/image_and_category_item_contentDescription"
+            android:contentDescription="@string/ImageAndCategory_itemContentDescription"
             android:layout_width="fill_parent"
             android:layout_height="250dp"
             android:layout_alignParentStart="true"

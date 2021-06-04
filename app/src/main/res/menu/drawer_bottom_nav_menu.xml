@@ -5,12 +5,12 @@
     <item
         android:id="@+id/learningDatasetSelectionFragment"
         android:icon="@drawable/ic_baseline_book_24"
-        android:title="@string/menu_goto_learning"
+        android:title="@string/BottomNav_gotoLearningButton"
         app:actionViewClass="android.widget.Button" />
     <item
         android:id="@+id/datasetsOverviewFragment"
         android:icon="@drawable/ic_baseline_photo_24"
-        android:title="@string/menu_goto_dataset_editing"
+        android:title="@string/BottomNav_gotoDatasetEditingButton"
         app:actionViewClass="android.widget.Button"/>
 </menu>
 

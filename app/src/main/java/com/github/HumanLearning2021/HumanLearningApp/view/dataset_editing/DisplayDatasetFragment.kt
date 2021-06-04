@@ -163,8 +163,8 @@ class DisplayDatasetFragment : Fragment() {
             R.id.display_dataset_menu_delete_dataset -> {
                 AlertDialog.Builder(this.context)
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle(getString(R.string.deletingDataset))
-                    .setMessage(getString(R.string.deleteConfirmationMessage))
+                    .setTitle(getString(R.string.DisplayDataset_deletingDatasetText))
+                    .setMessage(getString(R.string.DisplayDataset_deleteConfirmationMessage))
                     .setPositiveButton(
                         getString(R.string.Yes)
                     ) { _, _ ->

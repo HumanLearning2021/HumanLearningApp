@@ -3,11 +3,11 @@
 
     <item
         android:id="@+id/display_dataset_menu_modify_name_and_categories"
-        android:title="@string/modify_categories" />
+        android:title="@string/MetadataEditing_modifyCategoriesButton" />
     <item
         android:id="@+id/display_dataset_menu_add_new_picture"
-        android:title="@string/add_new_picture" />
+        android:title="@string/DisplayDataset_addNewPictureButton" />
     <item
         android:id="@+id/display_dataset_menu_delete_dataset"
-        android:title="@string/delete_dataset" />
+        android:title="@string/DisplayDataset_deleteDatasetButton" />
 </menu>

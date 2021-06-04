@@ -129,7 +129,7 @@ class MetadataEditingFragment : Fragment() {
                             TextView.BufferType.EDITABLE
                         )
                     }
-                    binding.datasetName?.setText(R.string.ds_name)
+                    binding.datasetName?.setText(R.string.DisplayDataset_datasetNameText)
                 }
 
                 setButtonsListener()
@@ -263,8 +263,8 @@ class MetadataEditingFragment : Fragment() {
             R.id.categories_editing_menu_info -> {
                 AlertDialog.Builder(this.context)
                     .setIcon(android.R.drawable.ic_dialog_info)
-                    .setTitle(getString(R.string.info))
-                    .setMessage(getString(R.string.metadataEditingInfo))
+                    .setTitle(getString(R.string.MetadataEditing_infoTitle))
+                    .setMessage(getString(R.string.MetadataEditing_categoriesEditingInfo))
                     .show()
                 true
             }
