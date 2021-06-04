@@ -21,6 +21,12 @@ android {
             storeFile file('keystore')
             storePassword keystoreProperties['storePassword']
         }
+        release {
+            keyAlias 'key0'
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file('keystore')
+            storePassword keystoreProperties['storePassword']
+        }
     }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -40,6 +46,7 @@ android {
                 arguments["room.incremental"] = "true"
             }
         }
+        signingConfig signingConfigs.release
     }
 
     buildFeatures {
