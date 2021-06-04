@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
 import com.github.HumanLearning2021.HumanLearningApp.R
 import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearningDatasetSelectionBinding
+import com.github.HumanLearning2021.HumanLearningApp.view.DownloadSwitchFragment
 import com.github.HumanLearning2021.HumanLearningApp.view.dataset_list_fragment.DatasetListWidget
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,6 +38,13 @@ class LearningDatasetSelectionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val dsListFragment =
             childFragmentManager.findFragmentById(R.id.LearningDatasetSelection_dataset_list)
+        
+        if (savedInstanceState == null) {
+            childFragmentManager.commit {
+                add(R.id.placeholder_for_download_switch, DownloadSwitchFragment())
+            }
+        }
+
         if (dsListFragment is DatasetListWidget) {
             dsListFragment.selectedDataset.observe(requireActivity()) {
                 Log.d(parentActivity.localClassName, "Selected dataset $it")

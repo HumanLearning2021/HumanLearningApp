@@ -66,7 +66,16 @@ data class RoomDatabasePicturesCrossRef(
  * @property datasetId unique identifier of the dataset
  * @property categoryId unique identifier of the category belonging  to the dataset
  */
-@Entity(tableName = "datasetCrossRefs", primaryKeys = ["datasetId", "categoryId"])
+@Entity(
+    tableName = "datasetCrossRefs",
+    primaryKeys = ["datasetId", "categoryId"],
+    foreignKeys = [ForeignKey(
+        entity = RoomDatasetWithoutCategories::class,
+        parentColumns = ["datasetId"],
+        childColumns = ["datasetId"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
 data class RoomDatasetCategoriesCrossRef(
     val datasetId: String,
     @ColumnInfo(index = true) val categoryId: String,

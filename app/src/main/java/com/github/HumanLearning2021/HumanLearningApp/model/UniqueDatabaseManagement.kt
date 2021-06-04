@@ -100,8 +100,6 @@ class UniqueDatabaseManagement @Inject constructor(
      */
     suspend fun downloadDatabase(databaseName: String): DatabaseManagement =
         withContext(Dispatchers.IO) {
-            PictureCache.applicationPictureCache(databaseName, context)
-                .clear() //TODO("reuse content from cache instead")
             val firestoreDbManagement =
                 // necessary for current testing setup
                 if (databaseName == "dummy") {
@@ -166,8 +164,8 @@ class UniqueDatabaseManagement @Inject constructor(
      * @param databaseName of the database to remove from on device storage
      * @return a job tracking completion of the operation
      */
-    fun removeDatabaseFromDownloadsAsync(databaseName: String): Job =
-        CoroutineScope(Dispatchers.IO).async {
+    fun removeDatabaseFromDownloads(databaseName: String): Job =
+        CoroutineScope(Dispatchers.IO).launch {
             databaseDao.loadByName(databaseName)?.let {
                 it.datasets.forEach { ds -> datasetDao.delete(ds) }
                 it.categories.forEach { cat -> categoryDao.delete(cat) }
