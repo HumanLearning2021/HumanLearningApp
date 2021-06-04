@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".view.learning.LearningDatasetSelectionFragment">
 
+    <FrameLayout
+        android:id="@+id/placeholder_for_download_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/LearningDatasetSelection_dataset_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_dataset_list_learningDatasetSelection"
         android:layout_width="wrap_content"

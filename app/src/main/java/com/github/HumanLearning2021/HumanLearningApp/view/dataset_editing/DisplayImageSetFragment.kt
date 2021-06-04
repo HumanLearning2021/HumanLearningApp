@@ -119,8 +119,9 @@ class DisplayImageSetFragment : Fragment() {
         binding.gridViewDisplayImageSet.choiceMode = GridView.CHOICE_MODE_MULTIPLE_MODAL
         setGridViewMultipleChoiceModeListener()
     }
-    
+
     override fun onDestroyView() {
+        binding.gridViewDisplayImageSet.choiceMode = GridView.CHOICE_MODE_MULTIPLE
         super.onDestroyView()
         _binding = null
     }

@@ -15,8 +15,8 @@ import java.util.*
 /**
  * Allows to access picture from and save them to local storage
  * @property dbName name of the database the pictures belong to
- * @property context application context
- * @property folder can be used to specify storage location, by default directory named after$
+ * @property context the application context
+ * @property folder can be used to specify storage location, by default directory named after
  * the database in local storage
  */
 class PictureCache(
@@ -27,6 +27,13 @@ class PictureCache(
     private val imageDownloader = ImageDownloader(context)
 
     companion object {
+        /**
+         * Provides the picture cache stored in the application's cache folder.
+         * Should be used when the intent is to cache pictures without having to deal with their
+         * deletion.
+         * @param dbName of the database the pictures belong to
+         * @param context the application context
+         */
         fun applicationPictureCache(
             dbName: String,
             context: Context
@@ -50,16 +57,16 @@ class PictureCache(
      * Saves a picture to local storage.
      * To be used to save pictures that are being added to the dataset.
      * @param uri pointing to the location of the image
-     * @return id associated to the picture
+     * @return id associated to the picture and the location Uri as a pair
      */
-    suspend fun savePicture(uri: Uri): Id {
+    suspend fun savePicture(uri: Uri): Pair<Id, Uri> {
         return withContext(Dispatchers.IO) {
             val id = "${UUID.randomUUID()}"
             val file = File(folder, id)
             val path = uri.path
             path ?: throw IllegalArgumentException("Invalid uri provided")
             File(path).copyTo(file, true, DEFAULT_BUFFER_SIZE)
-            id
+            id to file.toUri()
         }
     }
 

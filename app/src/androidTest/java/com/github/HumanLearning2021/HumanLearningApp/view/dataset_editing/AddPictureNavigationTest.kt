@@ -7,7 +7,6 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
@@ -70,7 +69,7 @@ class AddPictureNavigationTest {
     @BindValue
     val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
 
-    private val catSet = setOf<Category>(
+    private val catSet = setOf(
         Category("cat1", "cat1"),
         Category("cat2", "cat2"),
         Category("cat3", "cat3"),
@@ -115,8 +114,8 @@ class AddPictureNavigationTest {
             authPresenter.onSuccessfulLogin(true)
             onView(withId(R.id.button_start_learning)).perform(click())
             navigateToAddPictureActivity()
-            Espresso.onView(ViewMatchers.withId(R.id.button_use_camera))
-                .perform(ViewActions.click())
+            onView(withId(R.id.use_camera))
+                .perform(click())
 
             assertCurrentFragmentIsCorrect(R.id.takePictureFragment)
         }
@@ -125,11 +124,11 @@ class AddPictureNavigationTest {
 
     private fun navigateToAddPictureActivity() {
         onView(withId(R.id.datasetsOverviewFragment)).perform(click())
-        Espresso.onView(ViewMatchers.withId(R.id.recyclerView_dataset_list))
+        onView(withId(R.id.DatasetList_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
-                    ViewActions.click()
+                    click()
                 )
             )
         Espresso.openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().targetContext)

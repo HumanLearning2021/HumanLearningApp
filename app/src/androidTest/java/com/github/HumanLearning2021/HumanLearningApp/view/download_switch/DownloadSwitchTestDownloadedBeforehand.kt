@@ -47,8 +47,8 @@ class DownloadSwitchTestDownloadedBeforehand {
     @RoomDatabase
     lateinit var room: RoomOfflineDatabase
 
-    lateinit var dbMgt: DatabaseManagement
-    lateinit var dbDao: DatabaseDao
+    private lateinit var dbMgt: DatabaseManagement
+    private lateinit var dbDao: DatabaseDao
 
     @Before
     fun setUp() {

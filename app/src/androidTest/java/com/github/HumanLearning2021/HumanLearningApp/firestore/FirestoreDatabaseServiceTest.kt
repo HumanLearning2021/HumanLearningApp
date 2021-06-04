@@ -41,20 +41,17 @@ class FirestoreDatabaseServiceTest {
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
-    lateinit var appleCategoryId: String
-    lateinit var pearCategoryId: String
-    lateinit var fakeCategory: Category
-    lateinit var fakeDataset: Dataset
+
+    private val appleCategoryId = "LbaIwsl1kizvTod4q1TG"
+    private val pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
+    private val fakeCategory = Category("oopsy", "oopsy")
+    private val fakeDataset = Dataset("oopsy", "oopsy", setOf())
     private lateinit var presenter: AuthenticationPresenter
 
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        appleCategoryId = "LbaIwsl1kizvTod4q1TG"
-        pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory = Category("oopsy", "oopsy")
-        fakeDataset = Dataset("oopsy", "oopsy", setOf())
         presenter = AuthenticationPresenter(AuthUI.getInstance(), scratchInterface)
 
     }

@@ -39,7 +39,7 @@ class AddPictureFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setFragmentResultListener(REQUEST_KEY) { requestKey, bundle ->
+        setFragmentResultListener(REQUEST_KEY) { _, bundle ->
             setFragmentResult(DisplayDatasetFragment.REQUEST_KEY, bundle)
             findNavController().popBackStack()
         }

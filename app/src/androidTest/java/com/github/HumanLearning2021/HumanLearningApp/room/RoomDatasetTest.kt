@@ -41,10 +41,6 @@ class RoomDatasetTest {
     private fun getRandomDatasetWithoutCategories() =
         RoomDatasetWithoutCategories(getRandomString(), getRandomString())
 
-    private fun asDataset(ds: RoomDatasetWithoutCategories) = RoomDataset(ds, listOf())
-    private fun asDatasets(dss: List<RoomDatasetWithoutCategories>) =
-        dss.map { ds -> asDataset(ds) }
-
     @Test
     fun addCategoriesToDatasetThenLoadThem() = runBlocking {
         val categories = listOf(getRandomCategory(), getRandomCategory(), getRandomCategory())

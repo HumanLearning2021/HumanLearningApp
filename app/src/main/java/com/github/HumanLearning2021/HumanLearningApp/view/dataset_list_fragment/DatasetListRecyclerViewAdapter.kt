@@ -22,10 +22,12 @@ class DatasetListRecyclerViewAdapter(
     private val itemClickedCallback: (Dataset) -> Unit
 ) : RecyclerView.Adapter<DatasetListRecyclerViewAdapter.ListItemViewHolder>(), Filterable {
 
-    /**
-     * Defines the number of categories shown on one ListItemViewHolder
-     */
-    private val NB_REPRESENTATIVES_SHOWN = 3
+    companion object {
+        /**
+         * Defines the number of categories shown on one ListItemViewHolder
+         */
+        const val NB_REPRESENTATIVES_SHOWN = 3
+    }
 
     private lateinit var datasetList: List<Dataset>
     private lateinit var originalDatasetList: List<Dataset>
@@ -97,19 +99,20 @@ class DatasetListRecyclerViewAdapter(
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     override fun getFilter(): Filter {
+        /** type-erasure countermeasure */
+        class ListOfDatasets(val value: List<Dataset>)
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
+                val filterPattern = constraint.toString().toLowerCase(Locale.getDefault()).trim()
                 val filteredList = originalDatasetList.filter {
-                    it.name.lowercase(Locale.getDefault()).startsWith(filterPattern)
+                    it.name.toLowerCase(Locale.getDefault()).startsWith(filterPattern)
                 }
-                return FilterResults().apply { values = filteredList }
+                return FilterResults().apply { values = ListOfDatasets(filteredList) }
             }
 
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                datasetList = results?.values as ArrayList<Dataset>
+            override fun publishResults(constraint: CharSequence?, results: FilterResults) {
+                datasetList = (results.values as ListOfDatasets).value
                 notifyDataSetChanged()
             }
         }

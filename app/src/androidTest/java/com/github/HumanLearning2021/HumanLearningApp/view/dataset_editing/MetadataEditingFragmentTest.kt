@@ -1,12 +1,12 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.dataset_editing
 
+import android.content.Context
 import android.content.Intent
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.closeSoftKeyboard
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -22,7 +22,6 @@ import com.github.HumanLearning2021.HumanLearningApp.TestUtils.getFirstDataset
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.waitFor
 import com.github.HumanLearning2021.HumanLearningApp.TestUtils.withIndex
 import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseNameModule
-import com.github.HumanLearning2021.HumanLearningApp.hilt.DatabaseServiceModule
 import com.github.HumanLearning2021.HumanLearningApp.hilt.ProductionDatabaseName
 import com.github.HumanLearning2021.HumanLearningApp.model.DatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.model.Dataset
@@ -30,11 +29,14 @@ import com.github.HumanLearning2021.HumanLearningApp.model.DummyDatabaseService
 import com.github.HumanLearning2021.HumanLearningApp.model.UniqueDatabaseManagement
 import com.github.HumanLearning2021.HumanLearningApp.presenter.AuthenticationPresenter
 import com.github.HumanLearning2021.HumanLearningApp.view.MainActivity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.hasSize
 import org.junit.After
@@ -65,8 +67,6 @@ class MetadataEditingFragmentTest {
         )
     )
 
-    private val dbService = DatabaseServiceModule.provideDummyService()
-
     @BindValue
     @ProductionDatabaseName
     val dbName = "dummy"
@@ -87,7 +87,6 @@ class MetadataEditingFragmentTest {
         dbMgt = globalDatabaseManagement.accessDatabase(dbName)
         dataset = getFirstDataset(dbMgt)
         datasetId = getFirstDataset(dbMgt).id
-        launchFragment()
         runBlocking {
             val ds = dbMgt.getDatasetById(datasetId)
             require(ds != null) {
@@ -162,6 +161,29 @@ class MetadataEditingFragmentTest {
                 datasetId
             )
         )
+    }
+
+    @Test
+    fun clickOnInfoButtonWorks() {
+        runBlocking {
+            Firebase.auth.signInAnonymously().await().user!!
+            authPresenter.onSuccessfulLogin(true)
+            onView(withId(R.id.startLearningButton)).perform(click())
+            navigateToCreateDatasetFragment()
+            onView(withId(R.id.categories_editing_menu_info)).perform(click())
+            waitFor(1) // increase if needed
+            onView(
+                withText(
+                    ApplicationProvider.getApplicationContext<Context>()
+                        .getString(R.string.metadataEditingInfo)
+                )
+            ).check(
+                ViewAssertions.matches(isDisplayed())
+            )
+            pressBack()
+            waitFor(1) // increase if needed
+            onView(withId(R.id.button_add)).check(ViewAssertions.matches(isDisplayed()))
+        }
     }
 
     @Test

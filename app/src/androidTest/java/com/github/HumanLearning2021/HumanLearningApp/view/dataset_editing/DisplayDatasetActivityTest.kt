@@ -8,7 +8,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -157,7 +156,7 @@ class DisplayDatasetActivityTest {
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
-                    ViewActions.click()
+                    click()
                 )
             )
     }
@@ -254,7 +253,7 @@ class DisplayDatasetActivityTest {
             onView(withId(R.id.gridView_display_dataset_images)).check(matches(isDisplayed()))
         }
     }
-    
+
     private fun launchFragment() {
         val args = bundleOf("datasetId" to datasetId)
         launchFragmentInHiltContainer<DisplayDatasetFragment>(args) {

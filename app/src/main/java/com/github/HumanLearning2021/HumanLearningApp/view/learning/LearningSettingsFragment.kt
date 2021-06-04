@@ -1,11 +1,9 @@
 package com.github.HumanLearning2021.HumanLearningApp.view.learning
 
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
@@ -15,6 +13,9 @@ import com.github.HumanLearning2021.HumanLearningApp.databinding.FragmentLearnin
 import com.github.HumanLearning2021.HumanLearningApp.view.FragmentOptionsUtil
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragment where the user is presented with a choice of learning modes/settings to choose from
+ */
 @AndroidEntryPoint
 class LearningSettingsFragment : Fragment() {
     private lateinit var parentActivity: FragmentActivity
@@ -26,7 +27,7 @@ class LearningSettingsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         parentActivity = requireActivity()
         _binding = FragmentLearningSettingsBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
@@ -44,7 +45,6 @@ class LearningSettingsFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

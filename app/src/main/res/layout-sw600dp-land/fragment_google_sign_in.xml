@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.GoogleSignInWidget">
+    tools:context=".view.GoogleSignInFragment">
 
     <TextView
         android:id="@+id/textView_login_status"

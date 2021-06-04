@@ -10,7 +10,6 @@ import com.github.HumanLearning2021.HumanLearningApp.view.learning.LearningMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-
 /**
  * Presenter for the learning fragment
  * @param dbMgt database manager used to retrieve data for learning

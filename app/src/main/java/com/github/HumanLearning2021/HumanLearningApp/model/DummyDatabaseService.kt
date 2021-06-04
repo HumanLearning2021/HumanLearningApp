@@ -8,6 +8,7 @@ import java.util.*
  * A class representing a dummy data set Interface
  * Categories are uniquely defined by their name
  */
+@Suppress("OverridingDeprecatedMember")
 class DummyDatabaseService internal constructor() : DatabaseService {
     private val pictures = InMemoryRepository<CategorizedPicture>()
     private val categories = InMemoryRepository<Category>()

@@ -48,7 +48,7 @@ class TakePictureFragment : Fragment() {
     private lateinit var imageCapture: ImageCapture
     private lateinit var pictureUri: Uri
     private lateinit var chosenCategory: Category
-    private lateinit var datasetId: Id // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesnt seem to work
+    private lateinit var datasetId: Id // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesn't seem to work
     private var imageTaken: Boolean = false
     private var categorySet: Boolean = false
 

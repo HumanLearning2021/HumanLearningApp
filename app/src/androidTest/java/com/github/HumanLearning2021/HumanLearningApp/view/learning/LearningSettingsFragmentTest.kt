@@ -59,7 +59,7 @@ class LearningSettingsFragmentTest {
 
     private lateinit var datasetId: Id
 
-    val navController = mock(NavController::class.java)
+    val navController: NavController = mock(NavController::class.java)
 
     @get:Rule
     val activityScenarioRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(

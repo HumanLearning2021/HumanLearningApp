@@ -60,7 +60,7 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = super.onCreateView(inflater, container, savedInstanceState) as ConstraintLayout
         switch = view.getViewById(R.id.download_switch) as SwitchCompat
         progressIcon = view.getViewById(R.id.download_progress_icon) as ProgressBar
@@ -69,6 +69,9 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
         return view
     }
 
+    /**
+     * Checks if the production database is currently downloaded and sets the switch state accordingly
+     */
     private fun setSwitchState() {
         runBlocking {
             switch.isChecked = globalDatabaseManagement.getDownloadedDatabases().contains(
@@ -77,10 +80,15 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
         }
     }
 
+    /**
+     * Listener associated to the download switch which will download or de-download the
+     * production database according the the switch state (set or not set)
+     */
     private fun setSwitchLogic() {
         switch.setOnCheckedChangeListener { _, isChecked ->
+            switch.isClickable = false
+            progressIcon.visibility = View.VISIBLE
             if (isChecked) {
-                progressIcon.visibility = View.VISIBLE
                 CoroutineScope(Dispatchers.IO).launch {
                     globalDatabaseManagement.downloadDatabase(
                         dbName
@@ -88,10 +96,17 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
                 }.invokeOnCompletion {
                     CoroutineScope(Dispatchers.Main).launch {
                         progressIcon.visibility = View.INVISIBLE
+                        switch.isClickable = true
                     }
                 }
             } else {
-                globalDatabaseManagement.removeDatabaseFromDownloadsAsync(dbName).onAwait
+                globalDatabaseManagement.removeDatabaseFromDownloads(dbName)
+                    .invokeOnCompletion {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            progressIcon.visibility = View.INVISIBLE
+                            switch.isClickable = true
+                        }
+                    }
             }
         }
     }
