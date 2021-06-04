@@ -142,7 +142,7 @@ class DisplayImageSetActivityTest {
                 isDisplayed()
             )
         )
-        onView(withId(R.id.textView_display_image_set)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.textView_display_image_set)).check(ViewAssertions.matches(isDisplayed()))
 
     }
 

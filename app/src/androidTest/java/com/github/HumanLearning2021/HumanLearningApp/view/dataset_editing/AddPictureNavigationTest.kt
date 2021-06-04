@@ -114,7 +114,7 @@ class AddPictureNavigationTest {
             authPresenter.onSuccessfulLogin(true)
             onView(withId(R.id.button_start_learning)).perform(click())
             navigateToAddPictureActivity()
-            onView(withId(R.id.use_camera))
+            onView(withId(R.id.button_use_camera))
                 .perform(click())
 
             assertCurrentFragmentIsCorrect(R.id.takePictureFragment)
@@ -124,7 +124,7 @@ class AddPictureNavigationTest {
 
     private fun navigateToAddPictureActivity() {
         onView(withId(R.id.datasetsOverviewFragment)).perform(click())
-        onView(withId(R.id.DatasetList_list))
+        onView(withId(R.id.recyclerView_dataset_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
