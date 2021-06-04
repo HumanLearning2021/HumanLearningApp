@@ -33,7 +33,7 @@ class EvaluationModel(private val dataset: Dataset) {
          *
          * Ideally, this should by configurable in LearningSettings
          */
-        val STREAK_LENGTH = 5
+        const val STREAK_LENGTH = 5
 
         /**
          * At the end of each streak, we check
@@ -42,7 +42,7 @@ class EvaluationModel(private val dataset: Dataset) {
          *
          * Ideally, this should by configurable in LearningSettings
          */
-        val MIN_SUCCESS_RATE_FOR_NEXT_PHASE = .8
+        const val MIN_SUCCESS_RATE_FOR_NEXT_PHASE = .8
     }
 
 

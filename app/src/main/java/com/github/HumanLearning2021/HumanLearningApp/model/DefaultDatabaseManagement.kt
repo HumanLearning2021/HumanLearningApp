@@ -10,8 +10,10 @@ class DefaultDatabaseManagement internal constructor(
     private val databaseService: DatabaseService
 ) : DatabaseManagement {
 
+    @Suppress("OverridingDeprecatedMember")
     override suspend fun getPicture(category: Category): CategorizedPicture? {
         return try {
+            @Suppress("DEPRECATION")
             databaseService.getPicture(category)
         } catch (e: DatabaseService.NotFoundException) {
             throw e

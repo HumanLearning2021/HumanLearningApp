@@ -41,18 +41,14 @@ class OfflineDatabaseManagementTest {
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
-    lateinit var appleCategoryId: String
-    lateinit var pearCategoryId: String
-    lateinit var fakeCategory: Category
-    lateinit var fakeDataset: Dataset
+
+    private val appleCategoryId = "LbaIwsl1kizvTod4q1TG"
+    private val pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
+    private val fakeCategory = Category("oopsy", "oopsy")
 
     @Before
-    fun setUp() = runBlocking {
+    fun setUp() {
         hiltRule.inject()
-        appleCategoryId = "LbaIwsl1kizvTod4q1TG"
-        pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory = Category("oopsy", "oopsy")
-        fakeDataset = Dataset("oopsy", "oopsy", setOf())
     }
 
     @After
@@ -63,6 +59,7 @@ class OfflineDatabaseManagementTest {
 
     private fun getRandomString() = "${UUID.randomUUID()}"
 
+    @Suppress("DEPRECATION")
     @Test
     fun test_getPicture_categoryNotPresent() = runBlocking {
         runCatching {
@@ -77,6 +74,7 @@ class OfflineDatabaseManagementTest {
         })
     }
 
+    @Suppress("DEPRECATION")
     @Test
     fun test_getPicture() = runBlocking {
         val appleCategory = dbMgt.getCategoryById(appleCategoryId)
@@ -103,7 +101,7 @@ class OfflineDatabaseManagementTest {
 
     @Test
     fun test_getPictureById() = runBlocking {
-        val appleCategory = dbMgt.getCategoryById(appleCategoryId) as Category
+        val appleCategory = dbMgt.getCategoryById(appleCategoryId)
         requireNotNull(appleCategory, { "category of apples no found in demo database" })
         val picId = dbMgt.getPictureIds(appleCategory).random()
         val pic = dbMgt.getPicture(picId)
@@ -350,7 +348,7 @@ class OfflineDatabaseManagementTest {
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cat = dbMgt.putCategory(randomCategoryName)
         val tmp = File.createTempFile("droid", ".png", ctx.filesDir)
-        var pic: CategorizedPicture
+        val pic: CategorizedPicture
         try {
             ctx.resources.openRawResource(R.drawable.fork).use { img ->
                 tmp.outputStream().use {

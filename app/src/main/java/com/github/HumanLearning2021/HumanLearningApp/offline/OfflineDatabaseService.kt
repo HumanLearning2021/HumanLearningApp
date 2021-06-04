@@ -67,9 +67,9 @@ class OfflineDatabaseService internal constructor(
         val cat = categoryDao.loadById(category.id) ?: throw DatabaseService.NotFoundException(
             category.id
         )
-        val pic = RoomPicture(getID(), picture, cat.categoryId)
+        val uri = pictureCache.savePicture(picture).second
+        val pic = RoomPicture(getID(), uri, cat.categoryId)
         val ref = RoomDatabasePicturesCrossRef(dbName, pic.pictureId)
-        pictureCache.savePicture(picture)
         categoryDao.insertAll(pic)
         databaseDao.insertAll(ref)
         return fromPicture(pic, categoryDao)

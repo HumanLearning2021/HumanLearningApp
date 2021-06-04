@@ -8,28 +8,70 @@ Predownload an image if the demo is done on an emulator, then add this image dur
 
 ## Script
 
-Verbal communication is central to human interaction. This means that if you can't communicate verbally, it is difficult to integrate well into society. People with mental disabilities can have problems communicating verbally, which is why they often use picture based communication.
+Verbal communication is central to human interaction. This means that if you can't communicate verbally, it is difficult to integrate well into society. 
 
-The problem now is that the same people often do not have good abstraction capabilites. If they show you a picture of a fork and you give them a fork that does not look like the fork in the picture they do not recognize it as being what they requested.
+> Start video
 
-A method to teach this abstraction is picture matching, which would traditionally require printing lots of images. With our app you can do all of this digitally, which greatly simplifies the process.
-
-
-So let's say I am learner. The main purpose of this app for me is to learn, so let's see what it can do!
-
-Let's see what datasets are available to me...
-
-_goes and looks at datasets overview (In the learning part)_ 
-
-_goes in representation mode and start learning_
+People with mental disabilities can have problems communicating verbally, which is why they often use picture-based communication.
 
 
-Now let's say I am an instructor. What I want is to create and manage datasets for my students to learn on. For this, I need administrator privileges, and so need to login as such.
+So let's say you are little Patrick, and you want an apple. 
 
-_goes on to login_
+> Before Patrick shows the apple.
 
-_goes to dataset overview, click on dataset to manage_
+So you show your apple pictogram to Bob, and Bob goes get an apple for you.
 
- _goes in datasets overview, select the good dataset, first add a new picture from the storage, then go check to see if the picture has been added. There is also the picture that should not be in this dataset, delete it._
+> When Patrick is sad
 
- Nice, now it is perfect ! My students can go back to learning with the improved dataset.
+But that's not an apple, it's all green, not at all like on the pictogram!
+
+> When Patrick does picture matching
+
+One way to help little Patrick, is to teach him concept abstraction through picture matching. This is usually done by matching printed pictures, but with Human Learning, you can do all this *digitally*!
+
+### Learner mode
+
+> Start presenting from the app.
+
+After Patrick got frustrated because he didn't receive what he expected, he decides that he wants to improve his understanding of fruits. So he clicks on the fruit dataset on which he wants to learn.
+
+> click on "Fruits"
+
+He can now choose between 3 learning modes to learn at an adapted difficulty.
+Let's say he wants to learn in representation mode.
+
+> click on "REPRESENTATION"
+
+He can now match pictures to their representative, and improve his understanding of the concept of fruits.
+
+> match 3 pictures, slowly. 1 right, 1 wrong, 1 right.
+
+### Admin mode
+
+Now let's say I am Bob, and I would like to help little Patrick recognize a new type of apples I just bought!
+
+So I click on the dataset I want to edit.
+
+> Click on Fruits
+
+I then click on "Add new picture"
+
+> click on [...], then "Add new picture"
+
+And "USE CAMERA"
+
+> click on "USE CAMERA"
+
+I take the picture of the apple.
+
+> click on "TAKE A PICTURE"
+
+I select the Apple category...
+
+> click on "SELECT THE CATEGORY", choose "Apple"
+
+and save!
+
+> Click on "Save selection"
+
+And voilà! Little Patrick can now learn to recognize this new type of apple.

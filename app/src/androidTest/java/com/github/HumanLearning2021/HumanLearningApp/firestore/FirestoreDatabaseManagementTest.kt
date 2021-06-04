@@ -37,18 +37,13 @@ class FirestoreDatabaseManagementTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    lateinit var appleCategoryId: String
-    lateinit var pearCategoryId: String
-    lateinit var fakeCategory: Category
-    lateinit var fakeDataset: Dataset
+    private val appleCategoryId = "LbaIwsl1kizvTod4q1TG"
+    private val pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
+    private val fakeCategory = Category("oopsy", "oopsy")
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        appleCategoryId = "LbaIwsl1kizvTod4q1TG"
-        pearCategoryId = "T4UkpkduhRtvjdCDqBFz"
-        fakeCategory = Category("oopsy", "oopsy")
-        fakeDataset = Dataset("oopsy", "oopsy", setOf())
     }
 
     private fun getRandomString() = "${UUID.randomUUID()}"
@@ -56,6 +51,7 @@ class FirestoreDatabaseManagementTest {
     @Test
     fun test_getPicture_categoryNotPresent() = runBlocking {
         runCatching {
+            @Suppress("DEPRECATION")
             scratchManagement.getPicture(Category(getRandomString(), getRandomString()))
         }.fold({
             fail("unexpected successful completion")
@@ -64,12 +60,11 @@ class FirestoreDatabaseManagementTest {
         })
     }
 
-    @Suppress("DEPRECATED")
     @Test
     fun test_getPicture() = runBlocking {
         val appleCategory = dbMgt.getCategoryById(appleCategoryId)
         requireNotNull(appleCategory, { "category of apples no found in demo database" })
-        val pic = dbMgt.getPicture(appleCategory)
+        @Suppress("DEPRECATION") val pic = dbMgt.getPicture(appleCategory)
         assertThat(pic, hasCategory(equalTo(appleCategory)))
     }
 
@@ -200,6 +195,7 @@ class FirestoreDatabaseManagementTest {
             tmp.delete()
         }
         scratchManagement.removePicture(pic)
+        @Suppress("DEPRECATION")
         assertThat(scratchManagement.getPicture(cat), equalTo(null))
     }
 
@@ -309,7 +305,7 @@ class FirestoreDatabaseManagementTest {
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cat = scratchManagement.putCategory(randomCategoryName)
         val tmp = File.createTempFile("droid", ".png")
-        var pic: CategorizedPicture
+        val pic: CategorizedPicture
         try {
             ctx.resources.openRawResource(R.drawable.fork).use { img ->
                 tmp.outputStream().use {

@@ -29,7 +29,7 @@ class SelectPictureFragment : Fragment() {
     private var selectedPicture: Uri? = null
     private var selectedCategory: Category? = null
     private var categories = setOf<Category>()
-    private lateinit var datasetId: Id // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesnt seem to work
+    private lateinit var datasetId: Id // ugly hack, but necessary to navigate back to display dataset fragment. Popping backstack doesn't seem to work
 
     private var _binding: FragmentSelectPictureBinding? = null
     private val binding get() = _binding!!

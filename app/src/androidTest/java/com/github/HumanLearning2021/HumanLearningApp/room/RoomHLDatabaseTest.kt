@@ -28,7 +28,6 @@ class RoomHLDatabaseTest {
     private lateinit var databaseDao: DatabaseDao
     private lateinit var datasetDao: DatasetDao
     private lateinit var categoryDao: CategoryDao
-    private lateinit var pictureDao: PictureDao
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -40,7 +39,6 @@ class RoomHLDatabaseTest {
         databaseDao = db.databaseDao()
         datasetDao = db.datasetDao()
         categoryDao = db.categoryDao()
-        pictureDao = db.pictureDao()
     }
 
     @After

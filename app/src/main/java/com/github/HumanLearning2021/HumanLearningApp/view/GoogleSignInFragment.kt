@@ -21,7 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 /**
  * Fragment where the user can sign in with his Google account
  */
@@ -33,7 +32,7 @@ class GoogleSignInFragment : Fragment() {
 
     var isAdmin = false
     lateinit var prefs: SharedPreferences
-    lateinit private var editor: SharedPreferences.Editor
+    private lateinit var editor: SharedPreferences.Editor
 
 
     override fun onCreateView(
@@ -47,7 +46,7 @@ class GoogleSignInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prefs = activity?.getSharedPreferences("LOGIN", MODE_PRIVATE)!!
-        editor = prefs!!.edit()
+        editor = prefs.edit()
 
 
         view.findViewById<Button>(R.id.loginButton).setOnClickListener {
@@ -69,7 +68,7 @@ class GoogleSignInFragment : Fragment() {
      * Handles the logging out of the user.
      *
      * Clears the informations of the current logged in user from the shared preferences
-     * and resets the user access priviliges.
+     * and resets the user access privileges.
      */
     fun onSignOutPress() {
         lifecycleScope.launch {
@@ -113,7 +112,6 @@ class GoogleSignInFragment : Fragment() {
             editor.putBoolean("isAdmin", isAdmin)
             editor.apply()
         }
-
     }
 
     /**
@@ -169,7 +167,7 @@ class GoogleSignInFragment : Fragment() {
 
 
     /**
-     * Updates the Ui by taking into account logging persistance & access privileges.
+     * Updates the Ui by taking into account logging persistence & access privileges.
      */
     fun updateUi() {
         if (prefs.getBoolean("hasLogin", false)) {

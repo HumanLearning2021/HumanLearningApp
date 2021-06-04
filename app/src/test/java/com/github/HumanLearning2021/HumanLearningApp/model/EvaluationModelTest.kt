@@ -57,7 +57,7 @@ class EvaluationModelTest {
     }
 
     @Test
-    fun failuresDontIncreasePhase() {
+    fun failuresDoNotIncreasePhase() {
         val m = EvaluationModel(makeMockDataset("blip", 2))
         val startPhase = m.getCurrentPhase()
         val nbFailures = 49

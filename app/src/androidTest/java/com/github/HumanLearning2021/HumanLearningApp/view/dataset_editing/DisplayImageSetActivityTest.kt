@@ -8,13 +8,11 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -36,7 +34,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.anything
 import org.junit.After
 import org.junit.Assume.assumeTrue
@@ -142,10 +139,10 @@ class DisplayImageSetActivityTest {
         assumeTrue(dsPictures.isNotEmpty())
         onView(withId(R.id.display_image_set_imagesGridView)).check(
             ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
+                isDisplayed()
             )
         )
-        onView(withId(R.id.display_image_set_name)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.display_image_set_name)).check(ViewAssertions.matches(isDisplayed()))
 
     }
 
@@ -156,11 +153,11 @@ class DisplayImageSetActivityTest {
         waitFor(1) // increase if needed
         onView(withId(R.id.display_image_set_imagesGridView)).check(
             ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
+                isDisplayed()
             )
         )
 
-        onData(CoreMatchers.anything())
+        onData(anything())
             .inAdapterView(withId(R.id.display_image_set_imagesGridView))
             .atPosition(0)
             .perform(click())
@@ -181,7 +178,7 @@ class DisplayImageSetActivityTest {
             val nbOfPictures = dbMgt.getAllPictures(categories.elementAt(0)).size
 
             for (i in 0..2) {
-                onData(CoreMatchers.anything())
+                onData(anything())
                     .inAdapterView(withId(R.id.display_image_set_imagesGridView))
                     .atPosition(0)
                     .perform(longClick())
@@ -198,7 +195,7 @@ class DisplayImageSetActivityTest {
         runBlocking {
             val reprPicture = dbMgt.getRepresentativePicture(categories.elementAt(0).id)
             val nbOfPictures = dbMgt.getAllPictures(categories.elementAt(0)).size
-            onData(CoreMatchers.anything())
+            onData(anything())
                 .inAdapterView(withId(R.id.display_image_set_imagesGridView))
                 .atPosition(0)
                 .perform(longClick())
@@ -218,7 +215,7 @@ class DisplayImageSetActivityTest {
             Firebase.auth.signInAnonymously().await().user!!
             authPresenter.onSuccessfulLogin(true)
             onView(withId(R.id.startLearningButton)).perform(click())
-            navigateToDisplayImagesetFragment()
+            navigateToDisplayImageSetFragment()
             onView(withId(R.id.display_imageset_menu_info)).perform(click())
             waitFor(1) // increase if needed
             onView(
@@ -233,19 +230,19 @@ class DisplayImageSetActivityTest {
             waitFor(1) // increase if needed
             onView(withId(R.id.display_image_set_imagesGridView)).check(
                 ViewAssertions.matches(
-                    ViewMatchers.isDisplayed()
+                    isDisplayed()
                 )
             )
         }
     }
 
-    private fun navigateToDisplayImagesetFragment() {
+    private fun navigateToDisplayImageSetFragment() {
         onView(withId(R.id.datasetsOverviewFragment)).perform(click())
         onView(withId(R.id.DatasetList_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DatasetListRecyclerViewAdapter.ListItemViewHolder>(
                     0,
-                    ViewActions.click()
+                    click()
                 )
             )
         onData(anything()).inAdapterView(withId(R.id.display_dataset_imagesGridView)).atPosition(0)

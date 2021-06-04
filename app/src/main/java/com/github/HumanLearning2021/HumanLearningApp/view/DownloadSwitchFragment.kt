@@ -60,7 +60,7 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = super.onCreateView(inflater, container, savedInstanceState) as ConstraintLayout
         switch = view.getViewById(R.id.download_switch) as SwitchCompat
         progressIcon = view.getViewById(R.id.download_progress_icon) as ProgressBar
@@ -86,8 +86,9 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
      */
     private fun setSwitchLogic() {
         switch.setOnCheckedChangeListener { _, isChecked ->
+            switch.isClickable = false
+            progressIcon.visibility = View.VISIBLE
             if (isChecked) {
-                progressIcon.visibility = View.VISIBLE
                 CoroutineScope(Dispatchers.IO).launch {
                     globalDatabaseManagement.downloadDatabase(
                         dbName
@@ -95,10 +96,17 @@ class DownloadSwitchFragment : Fragment(R.layout.fragment_download_switch) {
                 }.invokeOnCompletion {
                     CoroutineScope(Dispatchers.Main).launch {
                         progressIcon.visibility = View.INVISIBLE
+                        switch.isClickable = true
                     }
                 }
             } else {
-                globalDatabaseManagement.removeDatabaseFromDownloadsAsync(dbName).onJoin
+                globalDatabaseManagement.removeDatabaseFromDownloads(dbName)
+                    .invokeOnCompletion {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            progressIcon.visibility = View.INVISIBLE
+                            switch.isClickable = true
+                        }
+                    }
             }
         }
     }

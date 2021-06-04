@@ -62,7 +62,7 @@ class GeneralNavigationTest {
     @ProductionDatabaseName
     val dbName = "dummy"
 
-    lateinit var dbMgt: DatabaseManagement
+    private lateinit var dbMgt: DatabaseManagement
 
     @BindValue
     val authPresenter = AuthenticationPresenter(AuthUI.getInstance(), DummyDatabaseService())
