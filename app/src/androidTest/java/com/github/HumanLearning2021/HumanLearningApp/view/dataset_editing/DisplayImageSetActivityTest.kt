@@ -221,7 +221,7 @@ class DisplayImageSetActivityTest {
             onView(
                 withText(
                     ApplicationProvider.getApplicationContext<Context>()
-                        .getString(R.string.displayImagesetInfo)
+                        .getString(R.string.DisplayImageSet_infoTitle)
                 )
             ).check(
                 ViewAssertions.matches(isDisplayed())

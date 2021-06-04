@@ -144,7 +144,7 @@ class LearningSettingsFragmentTest {
         onView(
             withText(
                 ApplicationProvider.getApplicationContext<Context>()
-                    .getString(R.string.displayLearningSettingsInfo)
+                    .getString(R.string.LearningSetting_displaysInfo)
             )
         ).check(
             matches(isDisplayed())

@@ -57,7 +57,7 @@ class EvaluationResultFragment : Fragment() {
             }
         }
 
-        val barDataset = BarDataSet(barEntries, getString(R.string.evaluation_result_graph_label))
+        val barDataset = BarDataSet(barEntries, getString(R.string.EvaluationResult_graphLabel))
         barDataset.color = R.color.blue
         val barData = BarData(barDataset)
         barData.barWidth = 0.7f

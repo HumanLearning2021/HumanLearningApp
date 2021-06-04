@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
-        android:contentDescription="@string/imagetobedisplayed"
+        android:contentDescription="@string/DisplayImage_imageTobeDisplayed"
         app:layout_constraintBottom_toTopOf="@id/display_image_guideline4"
         app:layout_constraintEnd_toStartOf="@id/display_image_guideline3"
         app:layout_constraintStart_toEndOf="@id/display_image_guideline2"

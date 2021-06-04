@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toStartOf="@+id/download_switch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/download_icon" />
+        android:contentDescription="@string/Download_icon" />
 
     <ProgressBar
         android:id="@+id/download_progress_icon"

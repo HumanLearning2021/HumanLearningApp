@@ -143,7 +143,7 @@ class GeneralNavigationTest {
             navigateToDisplayDataset()
             assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
             openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().targetContext)
-            onView(withText(R.string.add_new_picture)).perform(click())
+            onView(withText(R.string.DisplayDataset_addNewPictureButton)).perform(click())
             pressBack()
             assertCurrentFragmentIsCorrect(R.id.displayDatasetFragment)
         }

@@ -8,72 +8,67 @@
     <string name="AddPicture_categorySelectionDialogTitle">Pick a category</string>
     <string name="AddPicture_permissionNeededDialogTitle">Camera required</string>
     <string name="AddPicture_permissionNeededDialogMessage">To use this functionality, access to the camera is required. Either you have denied the app the permission to use it or your device has no camera.</string>
-    <string name="DataCreationActivity_DataCreationTitle">Categories List :</string>
-    <string name="DataCreationActivity_DataCreationSubmitButton">Save changes</string>
-    <string name="DataCreationActivity_DataCreationAddButton">Add new category</string>
-    <string name="DataCreationActivity_DataCreationCat">Enter category name</string>
+    <string name="MetadataEditing_DataCreationTitle">Categories List :</string>
+    <string name="MetadataEditing_DataCreationSubmitButton">Save changes</string>
+    <string name="MetadataEditing_DataCreationAddButton">Add new category</string>
+    <string name="MetadataEditing_DataCreationCategoryHintText">Enter category name</string>
     <string name="AddPicture_errorWhileTakingPictureDialogTitle">Error</string>
     <string name="AddPicture_errorWhileTakingPictureDialogMessage">An error occurred while taking the picture, please try again.</string>
     <string name="AddPicture_camareImageViewDescription">Shows the picture which has just been taken</string>
-    <string name="learning_im_to_sort_descr">Image to sort</string>
-    <string name="learning_cat_0_descr">First target category</string>
-    <string name="learning_cat_1_descr">Second target category</string>
-    <string name="learning_cat_2_descr">Third target category</string>
-    <string name="learning_settings_btPresentation">PRESENTATION</string>
-    <string name="learning_settings_btRepresentation">REPRESENTATION</string>
-    <string name="learning_settings_btEvaluation">EVALUATION</string>
-    <string name="learning_settings_tvLearningMode">LEARNING MODE</string>
+    <string name="LearningSettings_presentationButton">PRESENTATION</string>
+    <string name="LearningSettings_representationButton">REPRESENTATION</string>
+    <string name="LearningSettings_evaluationButton">EVALUATION</string>
+    <string name="LearningSettings_tvLearningModeText">LEARNING MODE</string>
 
-    <string name="info">Info</string>
-    <string name="modify_categories">Modify name and categories</string>
-    <string name="add_new_picture">Add new picture</string>
-    <string name="delete_dataset">Delete dataset</string>
-    <string name="enter_dataset_name">Enter dataset name</string>
-    <string name="ds_name">Dataset name</string>
-    <string name="imagetobedisplayed">image to be displayed</string>
-    <string name="DataOverview_CreateButton">Create dataset</string>
+    <string name="MetadataEditing_infoTitle">Info</string>
+    <string name="MetadataEditing_modifyCategoriesButton">Modify name and categories</string>
+    <string name="DisplayDataset_addNewPictureButton">Add new picture</string>
+    <string name="DisplayDataset_deleteDatasetButton">Delete dataset</string>
+    <string name="MetadataEditing_enterDatasetNameHintText">Enter dataset name</string>
+    <string name="DisplayDataset_datasetNameText">Dataset name</string>
+    <string name="DisplayImage_imageTobeDisplayed">image to be displayed</string>
+    <string name="DatasetsOverview_createButton">Create dataset</string>
     <string name="DatasetsOverview_Title">Datasets Overview</string>
-    <string name="deletingDataset">Deleting dataset</string>
-    <string name="deleteConfirmationMessage">Are you sure you want to delete this dataset?</string>
-    <string name="metadataEditingInfo"> General information :\n\n
-        - A category is a word representing a type of object (Ex: Fork).\n\n
-        - Every picture belongs to a category of the dataset.\n\n
-    Possible actions :\n\n
-    - You can add a new category and name it as you wish by clicking the "Add new category"
-    button.\n\n
-    - You can delete a category by clicking on the red trashcan icon.\n\n
-    - You can modify the name of the dataset by clicking on the name of the dataset on the top of
-    the screen. \n\n
-    - Once you have finished everything you wanted to do, you can click on the "Save data" button to
-    save your modifications.</string>
-    <string name="displayImagesetInfo">
-        General information :\n\n
-        - Here are displayed all the pictures of the selected category.\n\n
-        - A representative picture is a picture that is used to represent the category in the dataset.
-        Such a picture is not part of the pictures of the category.\n\n
-        Possible actions :\n\n
-        - To delete pictures : click longer on the picture you want to delete, select all the pictures to delete and press the trashcan icon.\n\n
-        - To set an picture as representative of the category : click longer on the picture and select the star icon.</string>
+    <string name="DisplayDataset_deletingDatasetText">Deleting dataset</string>
+    <string name="DisplayDataset_deleteConfirmationMessage">Are you sure you want to delete this dataset?</string>
+    <string name="MetadataEditing_categoriesEditingInfo">General information :\n\n
+         - A category is a word representing a type of object (Ex: Fork).\n\n
+         - Every picture belongs to a category of the dataset.\n\n
+     Possible actions :\n\n
+     - You can add a new category and name it as you wish by clicking the "Add new category"
+     button.\n\n
+     - You can delete a category by clicking on the red trashcan icon.\n\n
+     - You can modify the name of the dataset by clicking on the name of the dataset on the top of
+     the screen. \n\n
+     - Once you have finished everything you wanted to do, you can click on the "Save data" button to
+     save your modifications.</string>
+    <string name="DisplayImageSet_infoTitle"> General information :\n\n
+         - Here are displayed all the pictures of the selected category.\n\n
+         - A representative picture is a picture that is used to represent the category in the dataset.
+         Such a picture is not part of the pictures of the category.\n\n
+         Possible actions :\n\n
+         - To delete pictures : click longer on the picture you want to delete, select all the pictures to delete and press the trashcan icon.\n\n
+         - To set an picture as representative of the category : click longer on the picture and select the star icon.</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
-    <plurals name="numberOfSelectedPicturesText">
+    <plurals name="DisplayImageSet_numberOfSelectedPicturesText">
         <item quantity="one">%d picture selected </item>
         <item quantity="other">%d pictures selected </item>
     </plurals>
-    <string name="SignInFragment_loginStatusSuccessMessage">Welcome %1$s</string>
-    <string name="SignInFragment_loginStatusDefaultMessage">Not logged in</string>
-    <string name="DatasetList_default_ds_name">Dataset name</string>
-    <string name="DatasetList_im_content_description">Category representative of the dataset</string>
-    <string name="button_to_delete_a_category">Button to delete a category</string>
-    <string name="select_existing_picture">Select Existing Picture</string>
-    <string name="use_camera">Use camera</string>
-    <string name="choose_picture">Choose Picture</string>
-    <string name="delete_selected_pictures">Delete selected pictures</string>
-    <string name="set_as_representative_picture">Set as representative picture</string>
-    <string name="menu_goto_learning">Learning</string>
-    <string name="login">Login</string>
-    <string name="startLearning">START LEARNING!</string>
-    <string name="menu_goto_dataset_editing">Dataset Editing</string>
+    <string name="GoogleSignIn_loginStatusSuccessMessage">Welcome %1$s</string>
+    <string name="GoogleSignIn_loginStatusDefaultMessage">Not logged in</string>
+    <string name="DatasetList_defaultDatasetNameText">Dataset name</string>
+    <string name="DatasetList_imageContentDescription">Category representative of the dataset</string>
+    <string name="DatasetList_deleteCategoryButton">Button to delete a category</string>
+    <string name="AddPicture_selectExistingPictureButton">Select Existing Picture</string>
+    <string name="AddPicture_useCameraButton">Use camera</string>
+    <string name="SelectPicture_choosePictureButton">Choose Picture</string>
+    <string name="SelectPicture_deleteSelectedPicturesButton">Delete selected pictures</string>
+    <string name="DisplayImageSet_setAsRepresentativePictureButton">Set as representative picture</string>
+    <string name="BottomNav_gotoLearningButton">Learning</string>
+    <string name="SideNav_loginMenu">Login</string>
+    <string name="Home_startLearningButton">START LEARNING!</string>
+    <string name="BottomNav_gotoDatasetEditingButton">Dataset Editing</string>
     <string name="nav_graph_label_home">Home</string>
     <string name="nav_graph_label_datasets_overview">Datasets Overview</string>
     <string name="nav_graph_label_login">Login</string>
@@ -87,24 +82,24 @@
     <string name="nav_graph_label_add_picture">Add a New Picture</string>
     <string name="nav_graph_label_take_picture">Take a Picture</string>
     <string name="nav_graph_label_select_picture">Select a Picture</string>
-    <string name="LoginAdminCheckBox">sign up as admin</string>
+    <string name="GoogleSignIn_loginAdminCheckBox">sign up as admin</string>
     <string name="nav_graph_label_evaluation_result">Evaluation Result</string>
-    <string name="search">Search</string>
-    <string name="download_icon">download_icon</string>
-    <string name="evaluation_result_graph_label">Success percentage</string>
-    <string name="learn_again">Learn Again!</string>
-    <string name="home">Home</string>
-    <string name="LoginButtonSignOut">SIGN OUT</string>
-    <string name="imageViewLogoContentDescription">Home Logo</string>
+    <string name="Search_title">Search</string>
+    <string name="Download_icon">download_icon</string>
+    <string name="EvaluationResult_graphLabel">Success percentage</string>
+    <string name="EvaluationResult_learnAgainButton">Learn Again!</string>
+    <string name="Home_title">Home</string>
+    <string name="GoogleSignIn_signOutButton">SIGN OUT</string>
+    <string name="Home_imageViewLogoContentDescription">Home Logo</string>
     <string name="learning_im_to_sort_contentDescription">Image To Sort</string>
-    <string name="learning_cat_2_contentDescription">Third category to sort</string>
-    <string name="learning_cat_1_contentDescription">Second category to sort</string>
-    <string name="learning_cat_0_contentDescription">First category to sort</string>
-    <string name="selectPicturePreviewContentDescription">Selected Image Preview</string>
-    <string name="image_and_category_item_contentDescription">Image/Category Pair</string>
-    <string name="image_item_contentDescription">Image Item</string>
-    <string name="learning_settings_info">Learning Settings Info</string>
-    <string name="displayLearningSettingsInfo">
+    <string name="Learning_cat_2_contentDescription">Third category to sort</string>
+    <string name="Learning_cat_1_contentDescription">Second category to sort</string>
+    <string name="Learning_cat_0_contentDescription">First category to sort</string>
+    <string name="SelectPicture_previewContentDescription">Selected Image Preview</string>
+    <string name="ImageAndCategory_itemContentDescription">Image/Category Pair</string>
+    <string name="ImageItem_contentDescription">Image Item</string>
+    <string name="LearningSettings_info">Learning Settings Info</string>
+    <string name="LearningSetting_displaysInfo">
         - Presentation : an image must be classified against an exact copy \n\n
         - Representation : an image must be classified against a representative of its category \n\n
         - Evaluation : perform a ComVoor-like evaluation on the selected dataset

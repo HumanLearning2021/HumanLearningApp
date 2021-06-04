@@ -3,13 +3,13 @@
 
     <item
         android:id="@+id/delete_pictures"
-        android:title="@string/delete_selected_pictures"
+        android:title="@string/SelectPicture_deleteSelectedPicturesButton"
         android:icon="@android:drawable/ic_menu_delete"
         />
 
     <item
         android:id="@+id/set_representative_picture"
-        android:title="@string/set_as_representative_picture"
+        android:title="@string/DisplayImageSet_setAsRepresentativePictureButton"
         android:icon="@android:drawable/btn_star_big_off"
         />
 

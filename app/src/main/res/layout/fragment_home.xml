@@ -11,7 +11,7 @@
         android:id="@+id/startLearningButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/startLearning"
+        android:text="@string/Home_startLearningButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,7 +19,7 @@
 
     <ImageView
         android:id="@+id/imageViewLogo"
-        android:contentDescription="@string/imageViewLogoContentDescription"
+        android:contentDescription="@string/Home_imageViewLogoContentDescription"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="24dp"

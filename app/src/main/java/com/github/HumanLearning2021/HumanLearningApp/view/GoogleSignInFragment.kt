@@ -180,7 +180,7 @@ class GoogleSignInFragment : Fragment() {
             view?.findViewById<TextView>(R.id.loginStatus)?.text =
                 loggedUser?.let {
                     getString(
-                        R.string.SignInFragment_loginStatusSuccessMessage,
+                        R.string.GoogleSignIn_loginStatusSuccessMessage,
                         loggedUser.displayName
                     )
                 } ?: "Not logged in!"

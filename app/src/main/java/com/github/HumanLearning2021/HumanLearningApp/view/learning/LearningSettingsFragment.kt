@@ -84,8 +84,8 @@ class LearningSettingsFragment : Fragment() {
         return FragmentOptionsUtil.displayInfoMenu(
             item = item,
             infoItemId = R.id.learning_settings_menu_info,
-            title = getString(R.string.info),
-            message = getString(R.string.displayLearningSettingsInfo),
+            title = getString(R.string.MetadataEditing_infoTitle),
+            message = getString(R.string.LearningSetting_displaysInfo),
             context = this.context
         )
     }

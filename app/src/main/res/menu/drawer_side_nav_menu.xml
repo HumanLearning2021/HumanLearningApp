@@ -3,9 +3,9 @@
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/home_icon"
-        android:title="@string/home"/>
+        android:title="@string/Home_title"/>
     <item
         android:id="@+id/googleSignInWidget"
         android:icon="@drawable/ic_baseline_login_24"
-        android:title="@string/login"/>
+        android:title="@string/SideNav_loginMenu"/>
 </menu>
